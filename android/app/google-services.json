@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1047945808084",
+    "project_id": "saxat-savita-flutter",
+    "storage_bucket": "saxat-savita-flutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1047945808084:android:8bf8721ad3acbecd669341",
+        "android_client_info": {
+          "package_name": "com.farenidham.books.saxatsavita_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1047945808084-q16sjesqtln7b983rcjorm073kkkguc5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.farenidham.books.saxatsavita_flutter",
+            "certificate_hash": "387bec22ed686fe7a9131d00846ce7ed16c47343"
+          }
+        },
+        {
+          "client_id": "1047945808084-ricmnkicke96hf5548ptg7bg1gckid5p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAg0r8Pny9Kc4F89JzP3bWbyrFwUylRQvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1047945808084-ricmnkicke96hf5548ptg7bg1gckid5p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1047945808084-1apup4nlgd0qttdn2lp5kvhfrnsao00u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.farenidham.books.saxatsavitaFlutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
