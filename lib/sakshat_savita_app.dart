@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'pages/homepage.dart';
 import 'firebase_options.dart';
 
@@ -34,7 +33,7 @@ class SakshatSavitaApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,
       ),
-      home: const GoogleSignInPage(),
+      home: const HomePage(),
     );
   }
 }

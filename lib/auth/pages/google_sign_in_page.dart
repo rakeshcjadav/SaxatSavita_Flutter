@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/pages/homepage.dart';
 
 class GoogleSignInPage extends StatefulWidget {
   const GoogleSignInPage({super.key});
@@ -13,56 +15,146 @@ class GoogleSignInPage extends StatefulWidget {
 class GoogleSignInPageState extends State<GoogleSignInPage> {
   GoogleSignInAccount? _currentUser;
   String _errorMessage = '';
+  bool _isSigningIn = false;
+  StreamSubscription<GoogleSignInAuthenticationEvent>? _authSubscription;
+
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn.instance;
 
   @override
   void initState() {
     super.initState();
-    // Initialize any required resources here
-
-    // #docregion google_sign_in
-    final GoogleSignIn googleSignIn = GoogleSignIn.instance;
-    unawaited(
-      googleSignIn.initialize().then((_) {
-        googleSignIn.authenticationEvents
-            .listen(_handleAuthenticationEvent)
-            .onError(_handleAuthenticationError);
-        googleSignIn.attemptLightweightAuthentication();
-      }),
-    );
-    // #enddocregion google_sign_in
+    print("GoogleSignInPage: initState");
+    _initializeGoogleSignIn();
   }
 
-  void _handleAuthenticationEvent(GoogleSignInAuthenticationEvent event) async {
+  Future<void> _initializeGoogleSignIn() async {
+    try {
+      await googleSignIn.initialize();
+      _authSubscription = googleSignIn.authenticationEvents.listen(
+        _handleAuthenticationEvent,
+        onError: _handleAuthenticationError,
+      );
+      await googleSignIn.attemptLightweightAuthentication();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Initialization error: ${e.toString()}';
+          _isSigningIn = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleAuthenticationEvent(
+    GoogleSignInAuthenticationEvent event,
+  ) async {
+    if (!mounted) return;
+
     final GoogleSignInAccount? user = switch (event) {
       GoogleSignInAuthenticationEventSignIn() => event.user,
       GoogleSignInAuthenticationEventSignOut() => null,
     };
 
-    final GoogleSignInAuthentication? googleAuth = user?.authentication;
-
-    try {
-      GoogleAuthProvider credential = GoogleAuthProvider();
-
-      //await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (e) {
-      print('Error obtaining Google credentials: $e');
-      setState(() {
-        _errorMessage = 'Error obtaining Google credentials: $e';
-      });
+    if (user == null) {
+      // User signed out
+      if (mounted) {
+        setState(() {
+          _currentUser = null;
+          _errorMessage = '';
+        });
+      }
+      await firebaseAuth.signOut();
       return;
     }
 
-    setState(() {
-      _currentUser = user;
-      _errorMessage = '';
-    });
+    try {
+      final GoogleSignInAuthentication googleAuth = await user.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      await firebaseAuth.signInWithCredential(credential);
+
+      if (mounted) {
+        setState(() {
+          _currentUser = user;
+          _errorMessage = '';
+          _isSigningIn = false;
+        });
+
+        // Navigate after state is updated
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Error obtaining Google credentials: $e';
+          _isSigningIn = false;
+        });
+      }
+      debugPrint('Authentication error: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _handleSignOut() async {
-    // Disconnect instead of just signing out, to reset the example state as
-    // much as possible.
-    //await FirebaseAuth.instance.signOut();
-    await GoogleSignIn.instance.disconnect();
+    try {
+      // Show loading indicator
+      if (mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder:
+              (context) => const Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      // Sign out from Google
+      await googleSignIn.signOut();
+      // Sign out from Firebase
+      await firebaseAuth.signOut();
+
+      if (mounted) {
+        // Pop loading indicator
+        Navigator.pop(context);
+        setState(() {
+          _currentUser = null;
+          _errorMessage = '';
+        });
+
+        // Navigate back to sign-in page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const GoogleSignInPage()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        // Pop loading indicator if showing
+        Navigator.pop(context);
+        setState(() {
+          _errorMessage = 'Error signing out: ${e.toString()}';
+        });
+
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error signing out: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      debugPrint('Sign out error: $e');
+    }
   }
 
   void _handleAuthenticationError(Object e) async {
@@ -88,12 +180,13 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   Widget _buildBody() {
     final GoogleSignInAccount? user = _currentUser;
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         if (user != null)
           ..._buildAuthenticatedWidgets(user, _errorMessage)
         else
           ..._buildUnauthenticatedWidgets(),
+        const SizedBox(height: 20),
         if (_errorMessage.isNotEmpty) Text(_errorMessage),
       ],
     );
@@ -120,34 +213,77 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   /// Returns the list of widgets to include if the user is not authenticated.
   List<Widget> _buildUnauthenticatedWidgets() {
     return <Widget>[
-      const Text('You are not currently signed in.'),
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary,
+            width: 5,
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Image(
+            image: AssetImage('assets/res/z_jogi_swami.jpg'),
+            fit: BoxFit.cover,
+            width: double.infinity,
+          ),
+        ),
+      ),
+      const SizedBox(height: 20),
       // #docregion ExplicitSignIn
-      if (GoogleSignIn.instance.supportsAuthenticate())
+      if (googleSignIn.supportsAuthenticate())
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black87,
+            //minimumSize: const Size(double.infinity, 50),
+          ),
           onPressed: () async {
             try {
-              await GoogleSignIn.instance.authenticate();
+              await googleSignIn.authenticate();
             } catch (e) {
               // #enddocregion ExplicitSignIn
               _errorMessage = e.toString();
               // #docregion ExplicitSignIn
             }
           },
-          child: const Text('SIGN IN'),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 15, bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/signin-assets/android_light_rd_na@2x.png',
+                  height: 36.0,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  AppLocalizations.of(context)!.loginWithGoogle,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
         )
       else ...<Widget>[
         // #enddocregion ExplicitSignIn
         const Text('This platform does not have a known authentication method'),
         // #docregion ExplicitSignIn
       ],
-      // #enddocregion ExplicitSignIn
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Google Sign-In Page')),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(AppLocalizations.of(context)!.sakshatSavita),
+        surfaceTintColor: Colors.transparent,
+      ),
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       body: ConstrainedBox(
         constraints: const BoxConstraints.expand(),
         child: _buildBody(),

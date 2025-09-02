@@ -8,5 +8,8 @@
     "menu_three": "Information",
     "menu_four": "Notes",
     "menu_five": "Search",
-    "menu_six": "Previous Readings"
+    "menu_six": "Previous Readings",
+    "loginWithGoogle": "Sign in with Google",
+    "logout": "Logout",
+    "profile": "Profile"
 }
