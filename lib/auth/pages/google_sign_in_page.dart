@@ -24,7 +24,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   @override
   void initState() {
     super.initState();
-    print("GoogleSignInPage: initState");
+    debugPrint("GoogleSignInPage: initState");
     _initializeGoogleSignIn();
   }
 
