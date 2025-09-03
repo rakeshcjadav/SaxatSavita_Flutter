@@ -15,8 +15,6 @@ class GoogleSignInPage extends StatefulWidget {
 class GoogleSignInPageState extends State<GoogleSignInPage> {
   GoogleSignInAccount? _currentUser;
   String _errorMessage = '';
-  bool _isSigningIn = false;
-  StreamSubscription<GoogleSignInAuthenticationEvent>? _authSubscription;
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn.instance;
@@ -24,38 +22,40 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   @override
   void initState() {
     super.initState();
-    debugPrint("GoogleSignInPage: initState");
     _initializeGoogleSignIn();
   }
 
   Future<void> _initializeGoogleSignIn() async {
     try {
-      await googleSignIn.initialize();
-      _authSubscription = googleSignIn.authenticationEvents.listen(
-        _handleAuthenticationEvent,
-        onError: _handleAuthenticationError,
+      // #docregion Setup
+      unawaited(
+        googleSignIn.initialize().then((_) {
+          googleSignIn.authenticationEvents
+              .listen(_handleAuthenticationEvent)
+              .onError(_handleAuthenticationError);
+          googleSignIn.attemptLightweightAuthentication();
+        }),
       );
-      await googleSignIn.attemptLightweightAuthentication();
+      // #enddocregion Setup
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = 'Initialization error: ${e.toString()}';
-          _isSigningIn = false;
-        });
-      }
+      setState(() {
+        _errorMessage = 'Initialization error: ${e.toString()}';
+        debugPrint('_initializeGoogleSignIn : $_errorMessage');
+      });
     }
   }
 
   Future<void> _handleAuthenticationEvent(
     GoogleSignInAuthenticationEvent event,
   ) async {
+    debugPrint('_handleAuthenticationEvent : start');
     if (!mounted) return;
-
+    debugPrint('_handleAuthenticationEvent : mounted');
     final GoogleSignInAccount? user = switch (event) {
       GoogleSignInAuthenticationEventSignIn() => event.user,
       GoogleSignInAuthenticationEventSignOut() => null,
     };
-
+    debugPrint('_handleAuthenticationEvent : $user');
     if (user == null) {
       // User signed out
       if (mounted) {
@@ -67,6 +67,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
       await firebaseAuth.signOut();
       return;
     }
+    debugPrint('_handleAuthenticationEvent : $user');
 
     try {
       final GoogleSignInAuthentication googleAuth = await user.authentication;
@@ -74,36 +75,39 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
         idToken: googleAuth.idToken,
       );
 
+      debugPrint('_handleAuthenticationEvent : $googleAuth');
+
       await firebaseAuth.signInWithCredential(credential);
+
+      debugPrint('_handleAuthenticationEvent : $firebaseAuth');
 
       if (mounted) {
         setState(() {
           _currentUser = user;
           _errorMessage = '';
-          _isSigningIn = false;
+          debugPrint('_handleAuthenticationEvent : setState() $user');
         });
+
+        debugPrint('_handleAuthenticationEvent : Rounte : HomePage()');
 
         // Navigate after state is updated
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
+
+        debugPrint('_handleAuthenticationEvent : Rounted : HomePage()');
       }
+
+      debugPrint('_handleAuthenticationEvent : end');
     } catch (e) {
       if (mounted) {
         setState(() {
           _errorMessage = 'Error obtaining Google credentials: $e';
-          _isSigningIn = false;
         });
       }
       debugPrint('Authentication error: $e');
     }
-  }
-
-  @override
-  void dispose() {
-    _authSubscription?.cancel();
-    super.dispose();
   }
 
   Future<void> _handleSignOut() async {
@@ -158,12 +162,14 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   }
 
   void _handleAuthenticationError(Object e) async {
+    debugPrint('_handleAuthenticationError : start');
     setState(() {
       _currentUser = null;
       _errorMessage =
           e is GoogleSignInException
               ? _errorMessageFromSignInException(e)
               : 'Unknown error occurred : $e';
+      debugPrint('_handleAuthenticationError : $_errorMessage');
     });
   }
 
@@ -241,7 +247,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
           ),
           onPressed: () async {
             try {
-              await googleSignIn.authenticate();
+              await GoogleSignIn.instance.authenticate();
             } catch (e) {
               // #enddocregion ExplicitSignIn
               _errorMessage = e.toString();
