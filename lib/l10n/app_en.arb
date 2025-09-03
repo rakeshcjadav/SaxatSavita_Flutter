@@ -11,5 +11,9 @@
     "menu_six": "Previous Readings",
     "loginWithGoogle": "Sign in with Google",
     "logout": "Logout",
-    "profile": "Profile"
+    "profile": "Profile",
+    "settings": "Settings",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
 }

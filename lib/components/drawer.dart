@@ -79,6 +79,16 @@ class _DrawerState extends State<MyDrawer> {
             onTap: () {},
           ),
           ListTile(
+            leading: const Icon(Icons.person),
+            title: Text(AppLocalizations.of(context)!.profile),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: Text(AppLocalizations.of(context)!.settings),
+            onTap: () {},
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: Text(AppLocalizations.of(context)!.logout),
             onTap: () async {
