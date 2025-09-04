@@ -13,7 +13,13 @@
     "logout": "Logout",
     "profile": "Profile",
     "settings": "Settings",
+    "bookmark": "Bookmark",
     "language": "Language",
     "darkMode": "Dark Mode",
-    "lightMode": "Light Mode"
+    "lightMode": "Light Mode",
+    "part1": "Part 1",
+    "part2": "Part 2",
+    "part3": "Part 3",
+    "part4": "Part 4",
+    "part5": "Part 5"
 }

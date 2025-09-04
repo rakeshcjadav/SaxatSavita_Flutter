@@ -67,6 +67,7 @@ flutter:
   assets:
       - assets/res/
       - assets/signin-assets/
+      - assets/jsons/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

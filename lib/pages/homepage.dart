@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
+import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,24 +21,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(AppLocalizations.of(context)!.sakshatSavita),
-        surfaceTintColor: Colors.transparent,
-        elevation: 20,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.info, size: 24),
-            tooltip: AppLocalizations.of(context)!.menu_three,
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.search, size: 24),
-            tooltip: AppLocalizations.of(context)!.menu_five,
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: buildAppBar(context),
       drawer: const MyDrawer(),
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       body: Stack(
@@ -52,7 +37,12 @@ class HomePageState extends State<HomePage> {
           Container(
             padding: EdgeInsets.only(bottom: 90),
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BookMainpage()),
+                );
+              },
               iconAlignment: IconAlignment.start,
               icon: const Icon(Icons.menu_book, size: 30),
               style: ButtonStyle(
