@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
 class Navigationbar extends StatefulWidget {
   const Navigationbar({super.key});

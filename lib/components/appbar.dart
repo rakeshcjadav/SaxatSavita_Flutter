@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
 AppBar buildAppBar(BuildContext context) {
   return AppBar(

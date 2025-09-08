@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 

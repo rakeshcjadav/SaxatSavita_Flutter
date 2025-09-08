@@ -1,0 +1,73 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Gujarati (`gu`).
+class AppLocalizationsGu extends AppLocalizations {
+  AppLocalizationsGu([String locale = 'gu']) : super(locale);
+
+  @override
+  String get sampRakhjo => 'સંપ રાખજો.';
+
+  @override
+  String get sakshatSavita => 'સાક્ષાત્ સવિતા';
+
+  @override
+  String get menu_one => 'સાક્ષાત્‌ સવિતા';
+
+  @override
+  String get menu_two => 'આશીર્વચન';
+
+  @override
+  String get menu_three => 'માહિતી';
+
+  @override
+  String get menu_four => 'નોંધ';
+
+  @override
+  String get menu_five => 'શોધો';
+
+  @override
+  String get menu_six => 'પૂર્વ વાંચન';
+
+  @override
+  String get loginWithGoogle => 'Sign in with Google';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get profile => 'પ્રોફાઇલ';
+
+  @override
+  String get settings => 'સેટિંગ્સ';
+
+  @override
+  String get bookmark => 'બુકમાર્ક';
+
+  @override
+  String get language => 'ભાષા';
+
+  @override
+  String get darkMode => 'ડાર્ક મોડ';
+
+  @override
+  String get lightMode => 'લાઇટ મોડ';
+
+  @override
+  String get part1 => 'ભાગ ૧';
+
+  @override
+  String get part2 => 'ભાગ ૨';
+
+  @override
+  String get part3 => 'ભાગ ૩';
+
+  @override
+  String get part4 => 'ભાગ ૪';
+
+  @override
+  String get part5 => 'ભાગ ૫';
+}

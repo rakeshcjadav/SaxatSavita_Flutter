@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
