@@ -18,7 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_one => 'Sakshat Savita';
 
   @override
-  String get menu_two => 'Aashirvachan';
+  String get aashirvachan => 'Aashirvachan';
 
   @override
   String get menu_three => 'Information';

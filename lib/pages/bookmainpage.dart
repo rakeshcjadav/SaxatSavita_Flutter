@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
+import 'package:saxatsavita_flutter/pages/aashirvachanpage.dart';
 
 class BookMainpage extends StatefulWidget {
   const BookMainpage({super.key});
@@ -35,7 +36,10 @@ class _BookmainpageState extends State<BookMainpage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.orange.shade100,
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(
+        context,
+        title: AppLocalizations.of(context)!.sakshatSavita,
+      ),
       body: Column(
         children: [
           ColoredBox(
@@ -46,7 +50,14 @@ class _BookmainpageState extends State<BookMainpage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Aashirvachanpage(),
+                        ),
+                      );
+                    },
                     style: ButtonStyle(
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
@@ -57,7 +68,7 @@ class _BookmainpageState extends State<BookMainpage> {
                     child: Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
-                        AppLocalizations.of(context)!.menu_two,
+                        AppLocalizations.of(context)!.aashirvachan,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 20,

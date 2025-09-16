@@ -113,11 +113,11 @@ abstract class AppLocalizations {
   /// **'Sakshat Savita'**
   String get menu_one;
 
-  /// No description provided for @menu_two.
+  /// No description provided for @aashirvachan.
   ///
   /// In en, this message translates to:
   /// **'Aashirvachan'**
-  String get menu_two;
+  String get aashirvachan;
 
   /// No description provided for @menu_three.
   ///

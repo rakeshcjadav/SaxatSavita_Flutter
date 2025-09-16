@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
-AppBar buildAppBar(BuildContext context) {
+AppBar buildAppBar(BuildContext context, {String title = ''}) {
   return AppBar(
     backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-    title: Text(AppLocalizations.of(context)!.sakshatSavita),
+    title: Text(
+      title.isEmpty ? AppLocalizations.of(context)!.sakshatSavita : title,
+    ),
     surfaceTintColor: Colors.transparent,
     elevation: 20,
     actions: [
