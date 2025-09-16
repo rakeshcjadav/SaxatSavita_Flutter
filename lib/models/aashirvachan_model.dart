@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class AashirvachanContent {
   final String? image;
   final String? text;
