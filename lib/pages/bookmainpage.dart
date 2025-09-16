@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,92 +47,93 @@ class _BookmainpageState extends State<BookMainpage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                CarouselSlider(
-                  items: [
-                    Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: const ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Image(
-                          image: AssetImage(
-                            'assets/res/z_ashirvachan_jogiswami_image.webp',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+          Expanded(child: bookPartsWidget()),
+        ],
+      ),
+    );
+  }
+
+  Padding _carouselSlider(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          CarouselSlider(
+            items: [
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: const ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  child: Image(
+                    image: AssetImage(
+                      'assets/res/z_ashirvachan_jogiswami_image.webp',
                     ),
-                    Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: const ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Image(
-                          image: AssetImage(
-                            'assets/res/z_ashirvachan_swami_shree_image.webp',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ],
-                  options: CarouselOptions(
-                    height: 150,
-                    aspectRatio: 16 / 9,
-                    viewportFraction: 0.8,
-                    initialPage: 0,
-                    enableInfiniteScroll: false,
-                    reverse: false,
-                    autoPlay: false,
-                    autoPlayInterval: const Duration(seconds: 3),
-                    autoPlayAnimationDuration: const Duration(
-                      milliseconds: 800,
-                    ),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enlargeCenterPage: true,
-                    scrollDirection: Axis.horizontal,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
+                    fit: BoxFit.cover,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(2, (index) {
-                      return Container(
-                        width: _currentIndex == index ? 24 : 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color:
-                              _currentIndex == index
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withOpacity(0.3),
-                        ),
-                      );
-                    }),
+              ),
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: const ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  child: Image(
+                    image: AssetImage(
+                      'assets/res/z_ashirvachan_swami_shree_image.webp',
+                    ),
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ],
+              ),
+            ],
+            options: CarouselOptions(
+              height: 150,
+              aspectRatio: 16 / 9,
+              viewportFraction: 0.8,
+              initialPage: 0,
+              enableInfiniteScroll: false,
+              reverse: false,
+              autoPlay: false,
+              autoPlayInterval: const Duration(seconds: 3),
+              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+              autoPlayCurve: Curves.fastOutSlowIn,
+              enlargeCenterPage: true,
+              scrollDirection: Axis.horizontal,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
             ),
           ),
-          Expanded(child: bookPartsWidget()),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(2, (index) {
+                return Container(
+                  width: _currentIndex == index ? 24 : 8,
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color:
+                        _currentIndex == index
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(
+                              context,
+                            ).colorScheme.primary.withOpacity(0.3),
+                  ),
+                );
+              }),
+            ),
+          ),
         ],
       ),
     );

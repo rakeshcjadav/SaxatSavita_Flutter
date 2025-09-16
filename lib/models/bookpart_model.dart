@@ -22,4 +22,24 @@ class Bookpartmodel {
       range: json['range'],
     );
   }
+
+  factory Bookpartmodel.fromMap(Map<String, dynamic> map) {
+    return Bookpartmodel(
+      id: map['id'] as String,
+      partNumber: map['partNumber'] as int,
+      displayname: map['displayname'] as String,
+      image: map['image'] as String,
+      range: map['range'] as String,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'partNumber': partNumber,
+      'displayname': displayname,
+      'image': image,
+      'range': range,
+    };
+  }
 }
