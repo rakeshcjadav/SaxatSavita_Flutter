@@ -70,4 +70,10 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get part5 => 'ભાગ ૫';
+
+  @override
+  String get read => 'વાંચો';
+
+  @override
+  String get preface => 'પ્રસ્તાવના';
 }

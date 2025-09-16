@@ -38,15 +38,60 @@ class _BookmainpageState extends State<BookMainpage> {
       appBar: buildAppBar(context),
       body: Column(
         children: [
-          const SizedBox(height: 20),
-          Text(
-            AppLocalizations.of(context)!.menu_two,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          ColoredBox(
+            color: Theme.of(context).colorScheme.inversePrimary,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0.0),
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        AppLocalizations.of(context)!.menu_two,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0.0),
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        AppLocalizations.of(context)!.preface,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+
           Expanded(child: bookPartsWidget()),
         ],
       ),
@@ -198,7 +243,10 @@ class _BookmainpageState extends State<BookMainpage> {
                     elevation: 2,
                   ),
                   onPressed: () {},
-                  child: Text("Read"),
+                  child: Text(
+                    AppLocalizations.of(context)!.read,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
                 titleTextStyle: TextStyle(
                   color: Theme.of(context).colorScheme.primary,

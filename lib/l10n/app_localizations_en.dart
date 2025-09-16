@@ -70,4 +70,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get part5 => 'Part 5';
+
+  @override
+  String get read => 'Read';
+
+  @override
+  String get preface => 'Preface';
 }

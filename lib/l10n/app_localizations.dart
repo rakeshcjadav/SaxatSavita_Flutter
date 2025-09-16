@@ -220,6 +220,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Part 5'**
   String get part5;
+
+  /// No description provided for @read.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get read;
+
+  /// No description provided for @preface.
+  ///
+  /// In en, this message translates to:
+  /// **'Preface'**
+  String get preface;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
