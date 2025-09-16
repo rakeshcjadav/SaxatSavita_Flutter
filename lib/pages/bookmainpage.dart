@@ -237,7 +237,7 @@ class _BookmainpageState extends State<BookMainpage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.bookmark + ": ",
+                      "${AppLocalizations.of(context)!.bookmark}: ",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       ),

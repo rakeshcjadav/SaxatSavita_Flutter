@@ -53,7 +53,7 @@ class HomePageState extends State<HomePage> {
                   TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
-              label: Text("  " + AppLocalizations.of(context)!.menu_one),
+              label: Text("  ${AppLocalizations.of(context)!.menu_one}"),
             ),
           ),
           Container(
