@@ -4,11 +4,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
+import 'package:saxatsavita_flutter/services/appdataservice.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Load JSON data
+  await AppDataService().loadJson('assets/jsons/data.json');
   runApp(const SakshatSavitaApp());
 }
 

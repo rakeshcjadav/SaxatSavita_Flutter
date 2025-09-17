@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/aashirvachan_model.dart';
+import 'package:saxatsavita_flutter/pages/aashirvachanpage.dart';
 
 class Aashirvachanpage extends StatelessWidget {
   const Aashirvachanpage({super.key});
@@ -13,8 +14,8 @@ class Aashirvachanpage extends StatelessWidget {
         tag: 'jogiswami',
         image: 'assets/res/z_ashirvachan_jogiswami_image.webp',
         content: AashirvachanContent(
-          image: 'assets/res/z_ashirvachan_jogiswami_image.webp',
-          text: 'Jogi Swami',
+          image: null,
+          text: 'aashirvachan_jogiswami_content',
         ),
       ),
       AashirvachanModel(
@@ -22,8 +23,8 @@ class Aashirvachanpage extends StatelessWidget {
         tag: 'swamishree',
         image: 'assets/res/z_ashirvachan_swami_shree_image.webp',
         content: AashirvachanContent(
-          image: 'assets/res/z_ashirvachan_swami_shree_image.webp',
-          text: 'Swamishree',
+          image: 'assets/res/z_ashirvachan_swami_shree.webp',
+          text: null,
         ),
       ),
     ];
@@ -47,19 +48,32 @@ class Aashirvachanpage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Hero(
-                  tag: '${aashirvachan.tag}-image',
-                  child: Material(
-                    elevation: 5,
-                    borderRadius: BorderRadius.circular(16),
-                    clipBehavior: Clip.antiAlias,
-                    child: ClipRRect(
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => AashirvachanDetailPage(
+                              aashirvachan: aashirvachan,
+                            ),
+                      ),
+                    );
+                  },
+                  child: Hero(
+                    tag: '${aashirvachan.tag}-image',
+                    child: Material(
+                      elevation: 5,
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        aashirvachan.image,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                      clipBehavior: Clip.antiAlias,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          aashirvachan.image,
+                          height: 190,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

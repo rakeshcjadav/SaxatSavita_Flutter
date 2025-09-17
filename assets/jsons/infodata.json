@@ -1,0 +1,24 @@
+{
+    "infodata": [
+        {
+            "title": "preface",
+            "content": "Preface Data"
+        },
+        {
+            "title": "about_us",
+            "content": "About Us Content Data"
+        },
+        {
+            "title": "jogi_swami_biography",
+            "content": "Jogiswami Content Data"
+        },
+        {
+            "title": "about_book",
+            "content": "About Book Content Data"
+        },
+        {
+            "title": "grath_darshan",
+            "content": "Grath Darshan Content Data"
+        }
+    ]
+}

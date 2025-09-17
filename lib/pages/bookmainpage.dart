@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
-import 'package:saxatsavita_flutter/pages/aashirvachanpage.dart';
+import 'package:saxatsavita_flutter/pages/aashirvachanlistpage.dart';
 
 class BookMainpage extends StatefulWidget {
   const BookMainpage({super.key});
@@ -102,7 +102,12 @@ class _BookmainpageState extends State<BookMainpage> {
               ),
             ),
           ),
-
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            child: Image(
+              image: const AssetImage('assets/res/z_swami_aashirvad.webp'),
+            ),
+          ),
           Expanded(child: bookPartsWidget()),
         ],
       ),
