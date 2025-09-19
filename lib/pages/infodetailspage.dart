@@ -5,7 +5,6 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/services/customtagregistry.dart';
 import '../models/infocontent_model.dart';
 import '../components/appbar.dart';
-import '../components/customWebViewWidget.dart';
 
 String generateHtmlContent(String bodyContent, int fontSize, Color textColor) {
   return """
@@ -81,7 +80,6 @@ class Infodetailspage extends StatelessWidget {
                   ),
                 ],
               ),
-
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(

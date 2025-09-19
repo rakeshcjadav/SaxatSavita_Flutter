@@ -1,11 +1,12 @@
 import 'dart:convert';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
 import 'package:saxatsavita_flutter/pages/aashirvachanlistpage.dart';
+import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
+import 'package:saxatsavita_flutter/services/appdataservice.dart';
 
 class BookMainpage extends StatefulWidget {
   const BookMainpage({super.key});
@@ -15,8 +16,6 @@ class BookMainpage extends StatefulWidget {
 }
 
 class _BookmainpageState extends State<BookMainpage> {
-  int _currentIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -78,7 +77,16 @@ class _BookmainpageState extends State<BookMainpage> {
                     ),
                   ),
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final infoItem = AppDataService().getInfoValue("preface");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => Infodetailspage(infoItem: infoItem!),
+                        ),
+                      );
+                    },
                     style: ButtonStyle(
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
@@ -114,6 +122,7 @@ class _BookmainpageState extends State<BookMainpage> {
     );
   }
 
+  /*
   Padding _carouselSlider(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -199,6 +208,7 @@ class _BookmainpageState extends State<BookMainpage> {
       ),
     );
   }
+  */
 
   /*************  ✨ Windsurf Command ⭐  *************/
   /// A widget that shows a list of book parts.

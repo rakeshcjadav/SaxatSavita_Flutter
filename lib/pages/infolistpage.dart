@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import '../components/appbar.dart';
-import '../models/infocontent_model.dart';
 import 'infodetailspage.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
@@ -9,10 +8,10 @@ class Infolistpage extends StatefulWidget {
   const Infolistpage({super.key});
 
   final List<String> infoKeys = const [
-    'about_us',
     'jogi_swami_biography',
     'about_book',
     'granth_darshan',
+    'about_us',
     // Add more titles as needed
   ];
 
@@ -36,7 +35,19 @@ class _InfolistpageState extends State<Infolistpage> {
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(
-              title: Center(child: Text(infoItem!.title)),
+              title: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    infoItem!.title,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
               onTap: () {
                 Navigator.push(
                   context,
