@@ -21,7 +21,10 @@ class AppLocalizationsGu extends AppLocalizations {
   String get aashirvachan => 'આશીર્વચન';
 
   @override
-  String get menu_three => 'માહિતી';
+  String get information => 'માહિતી';
+
+  @override
+  String get information_section => 'માહિતી વિભાગ';
 
   @override
   String get menu_four => 'નોંધ';

@@ -21,7 +21,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aashirvachan => 'Aashirvachan';
 
   @override
-  String get menu_three => 'Information';
+  String get information => 'Information';
+
+  @override
+  String get information_section => 'Information Section';
 
   @override
   String get menu_four => 'Notes';

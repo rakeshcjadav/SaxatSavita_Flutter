@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:saxatsavita_flutter/components/customWebViewWidget.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/services/customtagregistry.dart';
 import '../models/infocontent_model.dart';
 import '../components/appbar.dart';
@@ -53,33 +54,73 @@ class Infodetailspage extends StatelessWidget {
     String strContent = infoItem.content.replaceAll('&nbsp; &nbsp;', '󠁪⠀ ');
     //String strContent = generateHtmlContent(infoItem.content, 18, fontColor);
     return Scaffold(
-      appBar: buildAppBar(context, title: infoItem.title),
+      appBar: buildAppBar(
+        context,
+        title: AppLocalizations.of(context)!.information,
+      ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+        padding: const EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          top: 16.0,
+          bottom: 16,
+        ),
         //child: Customwebviewwidget(content: infoItem.content),
-        child: SingleChildScrollView(
-          child: GestureDetector(
-            onTap: () {
-              //FocusScope.of(context).unfocus();
-              debugPrint("Unfocus TextField");
-            },
-            child: Html(
-              onAnchorTap:
-                  (url, attributes, element) => {
-                    debugPrint("Opening $url..."),
-                    //launchUrlString(url!)
-                  },
-              data: strContent,
-              extensions: [...customTagRegistry.buildExtensions(context)],
-              style: {
-                "body": Style(
-                  color: fontColor,
-                  fontSize: FontSize(18),
-                  textAlign: TextAlign.justify,
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: fontColor.withOpacity(1.0),
+                borderRadius: BorderRadius.circular(8.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  infoItem.title,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              },
+              ),
             ),
-          ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: GestureDetector(
+                  onTap: () {
+                    //FocusScope.of(context).unfocus();
+                    debugPrint("Unfocus TextField");
+                  },
+                  child: Html(
+                    onAnchorTap:
+                        (url, attributes, element) => {
+                          debugPrint("Opening $url..."),
+                          //launchUrlString(url!)
+                        },
+                    data: strContent,
+                    extensions: [...customTagRegistry.buildExtensions(context)],
+                    style: {
+                      "body": Style(
+                        color: fontColor,
+                        fontSize: FontSize(18),
+                        textAlign: TextAlign.justify,
+                      ),
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

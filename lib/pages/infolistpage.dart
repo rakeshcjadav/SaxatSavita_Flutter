@@ -3,6 +3,7 @@ import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import '../components/appbar.dart';
 import '../models/infocontent_model.dart';
 import 'infodetailspage.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
 class Infolistpage extends StatefulWidget {
   const Infolistpage({super.key});
@@ -23,7 +24,10 @@ class _InfolistpageState extends State<Infolistpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, title: "Info List"),
+      appBar: buildAppBar(
+        context,
+        title: AppLocalizations.of(context)!.information_section,
+      ),
       body: ListView.builder(
         itemCount: widget.infoKeys.length,
         itemBuilder: (context, index) {

@@ -12,7 +12,7 @@ AppBar buildAppBar(BuildContext context, {String title = ''}) {
     actions: [
       IconButton(
         icon: const Icon(Icons.info, size: 24),
-        tooltip: AppLocalizations.of(context)!.menu_three,
+        tooltip: AppLocalizations.of(context)!.information_section,
         onPressed: () {
           Navigator.pushNamed(context, '/info');
         },
