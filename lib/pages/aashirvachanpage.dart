@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/aashirvachan_model.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
+import '../components/customWebViewWidget.dart';
+import 'package:flutter_html/flutter_html.dart';
+import '../services/customtagregistry.dart';
 
 String generateHtmlContent(String bodyContent) {
   return """
@@ -26,9 +29,12 @@ String generateHtmlContent(String bodyContent) {
 }
 
 class AashirvachanDetailPage extends StatefulWidget {
-  const AashirvachanDetailPage({super.key, required this.aashirvachan});
+  AashirvachanDetailPage({super.key, required this.aashirvachan}) {
+    customTagRegistry.registerCustomTags();
+  }
 
   final AashirvachanModel aashirvachan;
+  final CustomTagRegistry customTagRegistry = CustomTagRegistry();
 
   @override
   State<AashirvachanDetailPage> createState() => _AashirvachanDetailPageState();
@@ -77,7 +83,7 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
   Widget build(BuildContext context) {
     final bgColor = Theme.of(context).colorScheme.inversePrimary;
     return Scaffold(
-      backgroundColor: bgColor,
+      backgroundColor: Colors.orange.shade100,
       appBar: AppBar(
         backgroundColor: bgColor,
         surfaceTintColor: Colors.transparent,
@@ -128,32 +134,21 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
             ],
             if (widget.aashirvachan.content.text != null) ...[
               const SizedBox(height: 16),
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    AnimatedCrossFade(
-                      duration: Duration(milliseconds: 300),
-                      firstChild: SizedBox(
-                        height: _webViewHeight,
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                      secondChild: AnimatedSlide(
-                        offset: _isLoading ? Offset(0, 0.1) : Offset(0, 0),
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeIn,
-                        child: SizedBox(
-                          height: _webViewHeight,
-                          child: WebViewWidget(controller: _controllerWebView),
-                        ),
-                      ),
-                      crossFadeState:
-                          _isLoading
-                              ? CrossFadeState.showFirst
-                              : CrossFadeState.showSecond,
-                    ),
-                    Text('Below WebView Content'),
-                  ],
-                ),
+              Html(
+                data:
+                    AppDataService().getValue(
+                      widget.aashirvachan.content.text!,
+                    )!,
+                style: {
+                  "body": Style(
+                    fontSize: FontSize(18),
+                    textAlign: TextAlign.justify,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                },
+                extensions: [
+                  ...widget.customTagRegistry.buildExtensions(context),
+                ],
               ),
             ],
           ],
