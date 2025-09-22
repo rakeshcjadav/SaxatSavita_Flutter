@@ -1,12 +1,12 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
 import 'package:saxatsavita_flutter/pages/aashirvachanlistpage.dart';
 import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
+import 'package:saxatsavita_flutter/services/bookservice.dart';
+import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 
 class BookMainpage extends StatefulWidget {
   const BookMainpage({super.key});
@@ -21,14 +21,8 @@ class _BookmainpageState extends State<BookMainpage> {
     super.initState();
   }
 
-  Future<List<Bookpartmodel>> getBookparts() async {
-    final Locale locale = Localizations.localeOf(context);
-    final String filename =
-        'assets/jsons/bookparts_${locale.languageCode}.json';
-    final jsondata = await rootBundle.loadString(filename);
-    final list = json.decode(jsondata) as List<dynamic>;
-
-    return list.map((e) => Bookpartmodel.fromJson(e)).toList();
+  Future<List<Bookpartmodel>> get bookparts {
+    return Bookservice().loadBook(context, 'saxatsavita');
   }
 
   @override
@@ -223,7 +217,7 @@ class _BookmainpageState extends State<BookMainpage> {
   /// *****  b6267d94-c980-431f-8075-38044a3ebe49  ******
   Widget bookPartsWidget() {
     return FutureBuilder(
-      future: getBookparts(),
+      future: bookparts,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -296,7 +290,11 @@ class _BookmainpageState extends State<BookMainpage> {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      "12h:54m:10s",
+                      KiranListService()
+                              .getKiranList(bookparts[index].id)
+                              ?.totalWordCount
+                              .toString() ??
+                          "0",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       ),

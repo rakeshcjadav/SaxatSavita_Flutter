@@ -1,0 +1,14 @@
+
+
+
+Sentence containing words : \s+[^.!?]*નિર્બીજ[^.!?]*યોગ[^.!?]*[.!?]
+
+Sentence containing words : \s+[^.!?]*નિર્બીજ[િીુૂાૈોીેે્ં]*[^.!?]*યોગ[િીુૂાૈોીેે્ં]*[^.!?]*[.!?]
+
+Sentence : \s+[^.!?]*[.!?]
+
+Santo na naam : \s+[^.?! ]+સ્વામી
+
+Vachnamrut Ref : \(.*?\)
+
+(?:\S+\s\S+\s)?\S*સહજાનંદ\\S*(?:\s\S+\s\S+)?
