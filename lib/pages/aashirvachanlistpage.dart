@@ -36,6 +36,7 @@ class Aashirvachanpage extends StatelessWidget {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.aashirvachan,
+        actionItems: [ActionOptions.info, ActionOptions.settings],
       ),
       body: ListView.builder(
         itemCount: getAashirvachan().length,

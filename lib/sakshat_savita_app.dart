@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'pages/settingspage.dart';
+import 'pages/aashirvachanlistpage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +33,9 @@ class SakshatSavitaApp extends StatelessWidget {
         ColorScheme colorScheme = ColorScheme.fromSeed(
           seedColor: settings.themeColor,
         );
-        debugPrint('Theme Color: ${settings.themeColor}');
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          locale: const Locale('gu', 'IN'),
+          locale: Locale(settings.language, 'IN'),
           localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -138,6 +139,8 @@ class SakshatSavitaApp extends StatelessWidget {
           routes: {
             '/info': (context) => const Infolistpage(),
             '/settings': (context) => const SettingsPage(),
+            '/aashirvachan': (context) => const Aashirvachanpage(),
+            '/home': (context) => const HomePage(),
           },
         );
       },

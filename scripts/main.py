@@ -101,7 +101,7 @@ def ExtractKirans(book, inputfile, location, directory, range, fileErrorLog, bFo
         file_content[nIndex]["main"]["word_count"] = wordCount
 
         #Disabling for flutter app
-        #content = content.replace("\t<slok>", "<b><slok>").replace("</slok>\n", "</slok></b>")
+        content = content.replace("\t<slok>", "<slok>").replace("</slok>\n", "</slok>")
         content = content.replace("\t", "<p>&nbsp; &nbsp;").replace("\n", "</p>")
         
         content = content.strip().replace(footer, "", 1)
@@ -294,7 +294,7 @@ def Verify(location):
 
 def main():
     #SaveAll("../feature/src/main/assets/saxatsavita/", False)
-    SaveAll("../assets/book/saxatsavita/", False)
+    SaveAll("../assets/book/saxatsavita/", True)
     SaveAll("saxatsavita/", True)
 
     Verify("saxatsavita/")

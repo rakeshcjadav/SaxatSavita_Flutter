@@ -85,4 +85,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get kiran => 'Kiran';
+
+  @override
+  String get font_size => 'Font Size';
+
+  @override
+  String get theme_color => 'Theme Color';
+
+  @override
+  String get reading_speed => 'Reading Speed';
+
+  @override
+  String get select_language => 'Select Language';
 }

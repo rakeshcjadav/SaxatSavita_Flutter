@@ -85,4 +85,16 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get kiran => 'કિરણ';
+
+  @override
+  String get font_size => 'અક્ષરની સાઇઝ';
+
+  @override
+  String get theme_color => 'થિમનો રંગ';
+
+  @override
+  String get reading_speed => 'વાંચવાની ગતિ';
+
+  @override
+  String get select_language => 'ભાષા પસંદ કરો';
 }

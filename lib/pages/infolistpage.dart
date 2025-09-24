@@ -26,6 +26,7 @@ class _InfolistpageState extends State<Infolistpage> {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.information_section,
+        actionItems: [ActionOptions.settings],
       ),
       body: ListView.builder(
         itemCount: widget.infoKeys.length,

@@ -16,6 +16,7 @@ class Infodetailspage extends StatelessWidget {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.information,
+        actionItems: [ActionOptions.settings],
       ),
       body: Padding(
         padding: const EdgeInsets.only(

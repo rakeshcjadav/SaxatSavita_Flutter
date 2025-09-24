@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -12,21 +14,27 @@ class _SettingsPageState extends State<SettingsPage> {
   double _fontSize = appSettingsNotifier.value.fontSize;
   Color _themeColor = appSettingsNotifier.value.themeColor;
   double _readingSpeed = appSettingsNotifier.value.readingSpeed;
+  String _language =
+      appSettingsNotifier.value.language ??
+      'gu'; // 'gu' for Gujarati, 'en' for English
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: buildAppBar(
+        context,
+        title: AppLocalizations.of(context)!.settings,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
             // Font Size
             ListTile(
-              title: const Text('Font Size'),
+              title: Text(AppLocalizations.of(context)!.font_size),
               subtitle: Slider(
-                min: 12,
-                max: 32,
+                min: 15,
+                max: 25,
                 divisions: 10,
                 value: _fontSize,
                 label: _fontSize.round().toString(),
@@ -37,27 +45,31 @@ class _SettingsPageState extends State<SettingsPage> {
                       fontSize: _fontSize,
                       themeColor: appSettingsNotifier.value.themeColor,
                       readingSpeed: appSettingsNotifier.value.readingSpeed,
+                      language: appSettingsNotifier.value.language,
                     );
                   });
                 },
               ),
             ),
+            const SizedBox(height: 16),
             // Theme Color
             ListTile(
-              title: const Text('Theme Color'),
+              title: Text(AppLocalizations.of(context)!.theme_color),
               subtitle: Row(
                 children: [
-                  _buildColorOption(Colors.blue.shade500),
-                  _buildColorOption(Colors.green.shade500),
-                  _buildColorOption(Colors.orange.shade500),
-                  _buildColorOption(Colors.purple.shade500),
-                  _buildColorOption(Colors.brown.shade500),
+                  _buildColorOption(Colors.blue),
+                  _buildColorOption(Colors.green),
+                  _buildColorOption(Colors.orange),
+                  _buildColorOption(Colors.purple),
+                  _buildColorOption(Colors.brown),
+                  _buildColorOption(Colors.teal),
                 ],
               ),
             ),
+            const SizedBox(height: 16),
             // Reading Speed
             ListTile(
-              title: const Text('Reading Speed'),
+              title: Text(AppLocalizations.of(context)!.reading_speed),
               subtitle: Slider(
                 min: 0.5,
                 max: 2.0,
@@ -71,9 +83,51 @@ class _SettingsPageState extends State<SettingsPage> {
                       fontSize: appSettingsNotifier.value.fontSize,
                       themeColor: appSettingsNotifier.value.themeColor,
                       readingSpeed: _readingSpeed,
+                      language: appSettingsNotifier.value.language,
                     );
                   });
                 },
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Language Selection
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.language),
+              subtitle: Row(
+                children: [
+                  Radio<String>(
+                    value: 'gu',
+                    groupValue: _language,
+                    onChanged: (value) {
+                      setState(() {
+                        _language = value!;
+                        appSettingsNotifier.value = AppSettings(
+                          fontSize: appSettingsNotifier.value.fontSize,
+                          themeColor: appSettingsNotifier.value.themeColor,
+                          readingSpeed: appSettingsNotifier.value.readingSpeed,
+                          language: _language,
+                        );
+                      });
+                    },
+                  ),
+                  const Text('Gujarati'),
+                  Radio<String>(
+                    value: 'en',
+                    groupValue: _language,
+                    onChanged: (value) {
+                      setState(() {
+                        _language = value!;
+                        appSettingsNotifier.value = AppSettings(
+                          fontSize: appSettingsNotifier.value.fontSize,
+                          themeColor: appSettingsNotifier.value.themeColor,
+                          readingSpeed: appSettingsNotifier.value.readingSpeed,
+                          language: _language,
+                        );
+                      });
+                    },
+                  ),
+                  const Text('English'),
+                ],
               ),
             ),
           ],
@@ -91,6 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
               fontSize: appSettingsNotifier.value.fontSize,
               themeColor: _themeColor,
               readingSpeed: appSettingsNotifier.value.readingSpeed,
+              language: appSettingsNotifier.value.language,
             );
           }),
       child: Container(

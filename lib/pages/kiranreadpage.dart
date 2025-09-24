@@ -51,6 +51,7 @@ class _KiranReadPageState extends State<KiranReadPage> {
         context,
         title:
             '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number}',
+        actionItems: [ActionOptions.settings],
       ),
       body: Padding(
         padding: const EdgeInsets.only(
@@ -101,14 +102,12 @@ class _KiranReadPageState extends State<KiranReadPage> {
                       return const Center(child: Text('No content found.'));
                     }
                     final contentData = snapshot.data!;
-                    return SafeArea(
-                      child: Column(
-                        children: [
-                          CustomHtmlWidget(
-                            htmlContent: getKiranContent(contentData),
-                          ),
-                        ],
-                      ),
+                    return Column(
+                      children: [
+                        CustomHtmlWidget(
+                          htmlContent: getKiranContent(contentData),
+                        ),
+                      ],
                     );
                   },
                 ),

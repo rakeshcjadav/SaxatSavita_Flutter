@@ -250,6 +250,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Kiran'**
   String get kiran;
+
+  /// No description provided for @font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Font Size'**
+  String get font_size;
+
+  /// No description provided for @theme_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Color'**
+  String get theme_color;
+
+  /// No description provided for @reading_speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Speed'**
+  String get reading_speed;
+
+  /// No description provided for @select_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get select_language;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

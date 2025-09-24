@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import '../models/aashirvachan_model.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -26,7 +27,11 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
   Widget build(BuildContext context) {
     TextStyle bodyStyle = Theme.of(context).textTheme.bodyMedium!;
     return Scaffold(
-      appBar: AppBar(elevation: 5, title: Text(widget.aashirvachan.title)),
+      appBar: buildAppBar(
+        context,
+        title: widget.aashirvachan.title,
+        actionItems: [ActionOptions.settings],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(

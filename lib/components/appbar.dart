@@ -1,20 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
-AppBar buildAppBar(BuildContext context, {String title = ''}) {
+enum ActionOptions { info, settings, search }
+
+AppBar buildAppBar(
+  BuildContext context, {
+  String title = '',
+  List<ActionOptions>? actionItems,
+}) {
   return AppBar(
     title: Text(
       title.isEmpty ? AppLocalizations.of(context)!.sakshatSavita : title,
     ),
     elevation: 5,
     actions: [
-      IconButton(
-        icon: const Icon(Icons.info, size: 24),
-        tooltip: AppLocalizations.of(context)!.information_section,
-        onPressed: () {
-          Navigator.pushNamed(context, '/info');
-        },
-      ),
+      if (actionItems?.contains(ActionOptions.info) ?? false)
+        IconButton(
+          icon: const Icon(Icons.info),
+          tooltip: AppLocalizations.of(context)!.information_section,
+          onPressed: () {
+            Navigator.pushNamed(context, '/info');
+          },
+        ),
+      if (actionItems?.contains(ActionOptions.settings) ?? false)
+        IconButton(
+          icon: const Icon(Icons.settings),
+          tooltip: AppLocalizations.of(context)!.settings,
+          onPressed: () {
+            Navigator.pushNamed(context, '/settings');
+          },
+        ),
     ],
   );
 }

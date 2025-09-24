@@ -57,7 +57,11 @@ class _KiranlistpageState extends State<Kiranlistpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, title: widget.bookPart.displayname),
+      appBar: buildAppBar(
+        context,
+        title: widget.bookPart.displayname,
+        actionItems: [ActionOptions.info, ActionOptions.settings],
+      ),
       body: FutureBuilder<KiranList>(
         future: _futureKiranList,
         builder: (context, snapshot) {

@@ -29,28 +29,48 @@ class CustomTagRegistry {
   }
 
   void registerCustomTags() {
+    register("slok-", (context, extensionContext, innerHtml) {
+      Color fontColor = Theme.of(context).colorScheme.primary;
+      TextStyle slokStyle = Theme.of(context).textTheme.titleSmall!;
+      return Html(
+        data: innerHtml,
+        style: {
+          "body": Style(
+            color: fontColor,
+            fontSize:
+                slokStyle.fontSize != null
+                    ? FontSize(slokStyle.fontSize!)
+                    : FontSize(18),
+            fontWeight: slokStyle.fontWeight,
+            lineHeight: LineHeight(1.0),
+            textAlign: TextAlign.center,
+            display: Display.inline,
+          ),
+        },
+      );
+    });
+
     register("slok", (context, extensionContext, innerHtml) {
       Color fontColor = Theme.of(context).colorScheme.primary;
       TextStyle slokStyle = Theme.of(context).textTheme.titleSmall!;
       return Container(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
         decoration: BoxDecoration(
-          color: fontColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.0),
+          color: fontColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(0),
         ),
-        child: Html(
-          data: innerHtml,
-          style: {
-            "body": Style(
-              color: fontColor,
-              fontSize:
-                  slokStyle.fontSize != null
-                      ? FontSize(slokStyle.fontSize!)
-                      : FontSize(18),
-              fontWeight: slokStyle.fontWeight,
-              lineHeight: LineHeight(1.0),
-              textAlign: TextAlign.center,
+        child: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
+              child: ColoredBox(
+                color: fontColor,
+                child: SizedBox(width: 4, height: slokStyle.fontSize! * 2.0),
+              ),
             ),
-          },
+            const SizedBox(width: 8),
+            Expanded(child: Text(innerHtml, style: slokStyle)),
+          ],
         ),
       );
     });

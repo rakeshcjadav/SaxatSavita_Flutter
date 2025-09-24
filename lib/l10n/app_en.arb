@@ -26,5 +26,9 @@
     "read": "Read",
     "preface": "Preface",
     "kiran_start": "।। સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ।।",
-    "kiran": "Kiran"
+    "kiran": "Kiran",
+    "font_size": "Font Size",
+    "theme_color": "Theme Color",
+    "reading_speed": "Reading Speed",
+    "select_language": "Select Language"
 }

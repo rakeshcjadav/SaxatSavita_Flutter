@@ -21,7 +21,11 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(
+        context,
+        title: AppLocalizations.of(context)!.sakshatSavita,
+        actionItems: [ActionOptions.info, ActionOptions.settings],
+      ),
       drawer: const MyDrawer(),
       body: Stack(
         alignment: Alignment.bottomCenter,
