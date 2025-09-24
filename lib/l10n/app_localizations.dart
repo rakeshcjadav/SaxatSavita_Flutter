@@ -244,6 +244,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'<slok>|| સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ||</slok>'**
   String get kiran_start;
+
+  /// No description provided for @kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran'**
+  String get kiran;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

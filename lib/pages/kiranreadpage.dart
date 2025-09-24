@@ -48,7 +48,11 @@ class _KiranReadPageState extends State<KiranReadPage> {
   Widget build(BuildContext context) {
     Color fontColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
-      appBar: buildAppBar(context, title: 'Kiran ${widget.kiranInfo.number}'),
+      appBar: buildAppBar(
+        context,
+        title:
+            '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number}',
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -69,7 +73,7 @@ class _KiranReadPageState extends State<KiranReadPage> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  widget.kiranInfo.title,
+                  '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
