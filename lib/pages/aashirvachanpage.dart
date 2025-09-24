@@ -24,6 +24,7 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle bodyStyle = Theme.of(context).textTheme.bodyMedium!;
     return Scaffold(
       appBar: AppBar(elevation: 20, title: Text(widget.aashirvachan.title)),
       body: Padding(
@@ -51,11 +52,7 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
             Center(
               child: Text(
                 widget.aashirvachan.title,
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             if (widget.aashirvachan.content.image != null) ...[
@@ -77,7 +74,10 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
                     )!,
                 style: {
                   "body": Style(
-                    fontSize: FontSize(18),
+                    fontSize:
+                        bodyStyle.fontSize != null
+                            ? FontSize(bodyStyle.fontSize!)
+                            : FontSize(16),
                     textAlign: TextAlign.justify,
                     color: Theme.of(context).colorScheme.primary,
                   ),

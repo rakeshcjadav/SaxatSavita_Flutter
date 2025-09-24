@@ -82,7 +82,10 @@ class _DrawerState extends State<MyDrawer> {
           ListTile(
             leading: const Icon(Icons.settings),
             title: Text(AppLocalizations.of(context)!.settings),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/settings');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout),

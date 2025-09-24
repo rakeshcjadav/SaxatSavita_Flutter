@@ -33,8 +33,6 @@ class CustomTagRegistry {
       Color fontColor = Theme.of(context).colorScheme.primary;
       TextStyle slokStyle = Theme.of(context).textTheme.titleSmall!;
       return Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         decoration: BoxDecoration(
           color: fontColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8.0),

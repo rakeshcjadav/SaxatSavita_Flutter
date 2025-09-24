@@ -79,11 +79,7 @@ class Aashirvachanpage extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   aashirvachan.title,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),

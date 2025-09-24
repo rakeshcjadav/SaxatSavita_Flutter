@@ -32,7 +32,7 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
       style: {
         "body": Style(
           color: fontColor,
-          fontSize: FontSize(18),
+          fontSize: FontSize(Theme.of(context).textTheme.bodyLarge!.fontSize!),
           textAlign: TextAlign.justify,
         ),
       },

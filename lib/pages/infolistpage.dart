@@ -39,11 +39,7 @@ class _InfolistpageState extends State<Infolistpage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     infoItem!.title,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
               ),
