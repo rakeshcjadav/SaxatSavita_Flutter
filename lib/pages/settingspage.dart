@@ -14,9 +14,7 @@ class _SettingsPageState extends State<SettingsPage> {
   double _fontSize = appSettingsNotifier.value.fontSize;
   Color _themeColor = appSettingsNotifier.value.themeColor;
   double _readingSpeed = appSettingsNotifier.value.readingSpeed;
-  String _language =
-      appSettingsNotifier.value.language ??
-      'gu'; // 'gu' for Gujarati, 'en' for English
+  String _language = appSettingsNotifier.value.language;
 
   @override
   Widget build(BuildContext context) {
@@ -57,12 +55,12 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(AppLocalizations.of(context)!.theme_color),
               subtitle: Row(
                 children: [
-                  _buildColorOption(Colors.blue),
-                  _buildColorOption(Colors.green),
-                  _buildColorOption(Colors.orange),
-                  _buildColorOption(Colors.purple),
-                  _buildColorOption(Colors.brown),
-                  _buildColorOption(Colors.teal),
+                  _buildColorOption(Colors.brown.shade900),
+                  _buildColorOption(Colors.blue.shade900),
+                  _buildColorOption(Colors.green.shade900),
+                  _buildColorOption(Colors.orange.shade900),
+                  _buildColorOption(Colors.purple.shade900),
+                  _buildColorOption(Colors.teal.shade900),
                 ],
               ),
             ),
