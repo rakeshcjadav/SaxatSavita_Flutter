@@ -23,7 +23,6 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: buildAppBar(context),
       drawer: const MyDrawer(),
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [

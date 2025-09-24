@@ -28,8 +28,8 @@ class _DrawerState extends State<MyDrawer> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.inversePrimary,
                   width: 2,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
               child: CircleAvatar(
@@ -42,19 +42,15 @@ class _DrawerState extends State<MyDrawer> {
             accountName: Text(
               FirebaseAuth.instance.currentUser?.displayName ??
                   AppLocalizations.of(context)!.sakshatSavita,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.inversePrimary,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
             accountEmail: Text(
               FirebaseAuth.instance.currentUser?.email ??
                   AppLocalizations.of(context)!.sakshatSavita,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.inversePrimary,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
           ),

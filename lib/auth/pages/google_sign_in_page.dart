@@ -284,12 +284,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(AppLocalizations.of(context)!.sakshatSavita),
-        surfaceTintColor: Colors.transparent,
-      ),
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.sakshatSavita)),
       body: ConstrainedBox(
         constraints: const BoxConstraints.expand(),
         child: _buildBody(),

@@ -29,7 +29,6 @@ class _BookmainpageState extends State<BookMainpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange.shade100,
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.sakshatSavita,
@@ -37,7 +36,7 @@ class _BookmainpageState extends State<BookMainpage> {
       body: Column(
         children: [
           ColoredBox(
-            color: Theme.of(context).colorScheme.inversePrimary,
+            color: Theme.of(context).colorScheme.primary,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -53,9 +52,12 @@ class _BookmainpageState extends State<BookMainpage> {
                       );
                     },
                     style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                        Theme.of(context).colorScheme.onPrimary,
+                      ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                       ),
                     ),
@@ -63,11 +65,7 @@ class _BookmainpageState extends State<BookMainpage> {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
                         AppLocalizations.of(context)!.aashirvachan,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
                   ),
@@ -83,9 +81,12 @@ class _BookmainpageState extends State<BookMainpage> {
                       );
                     },
                     style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                        Theme.of(context).colorScheme.onPrimary,
+                      ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                       ),
                     ),
@@ -93,11 +94,7 @@ class _BookmainpageState extends State<BookMainpage> {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
                         AppLocalizations.of(context)!.preface,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
                   ),
@@ -244,23 +241,18 @@ class _BookmainpageState extends State<BookMainpage> {
   Widget bookPartWidget(List<Bookpartmodel> bookparts, int index) {
     return GestureDetector(
       child: Card(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        elevation: 5,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               ListTile(
-                leading: Icon(
-                  Icons.book,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                leading: Icon(Icons.book),
                 title: Text(bookparts[index].displayname.toString()),
                 subtitle: Text(bookparts[index].range),
                 trailing: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     elevation: 2,
                   ),
                   onPressed: () {
@@ -275,29 +267,20 @@ class _BookmainpageState extends State<BookMainpage> {
                   },
                   child: Text(
                     AppLocalizations.of(context)!.read,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
                 ),
-                titleTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-                subtitleTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 15,
-                ),
+                titleTextStyle: Theme.of(context).textTheme.titleLarge,
+                subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Icon(
-                      Icons.timer,
-                      size: 20,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    Icon(Icons.timer, size: 20),
                     const SizedBox(width: 5),
                     Text(
                       KiranListService()
@@ -305,10 +288,9 @@ class _BookmainpageState extends State<BookMainpage> {
                               ?.totalWordCount
                               .toString() ??
                           "0",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
+                    const SizedBox(width: 15),
                   ],
                 ),
               ),
@@ -320,9 +302,7 @@ class _BookmainpageState extends State<BookMainpage> {
                   children: [
                     Text(
                       "${AppLocalizations.of(context)!.bookmark}: ",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     ElevatedButton.icon(
                       label: Text(AppLocalizations.of(context)!.sakshatSavita),

@@ -32,9 +32,7 @@ class Aashirvachanpage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = Colors.orange.shade100;
     return Scaffold(
-      backgroundColor: bgColor,
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.aashirvachan,

@@ -36,6 +36,25 @@ class _KiranlistpageState extends State<Kiranlistpage> {
   int? _expandedIndex;
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _navigateToKiranReadPage(KiranInfo kiran, KiranUserInfo kiranUserInfo) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => KiranReadPage(
+              partNumber: widget.bookPart.id,
+              kiranInfo: kiran,
+              kiranUserInfo: kiranUserInfo,
+            ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context, title: widget.bookPart.displayname),
@@ -57,34 +76,23 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               final kiranUserInfo =
                   KiranUserService().getKiranUserInfo(kiran.index)!;
               return Card(
-                elevation: 3,
-                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    dividerColor: Colors.transparent,
-                    dividerTheme: const DividerThemeData(
-                      space: 0,
-                      thickness: 1,
-                    ),
+                child: ExpansionTile(
+                  showTrailingIcon: true,
+                  key: Key(kiran.index.toString()),
+                  initiallyExpanded: _expandedIndex == index,
+                  onExpansionChanged: (expanded) {
+                    setState(() {
+                      _expandedIndex = expanded ? index : null;
+                    });
+                  },
+                  title: _buildKiranListItemWidget(
+                    kiran,
+                    kiranUserInfo,
+                    _expandedIndex == index,
                   ),
-                  child: ExpansionTile(
-                    showTrailingIcon: false,
-                    key: Key(kiran.index.toString()),
-                    initiallyExpanded: _expandedIndex == index,
-                    onExpansionChanged: (expanded) {
-                      setState(() {
-                        _expandedIndex = expanded ? index : null;
-                      });
-                    },
-                    title: _buildKiranListItemWidget(
-                      kiran,
-                      kiranUserInfo,
-                      _expandedIndex == index,
-                    ),
-                    children: _buildKiranListItemExpandedWidget(
-                      kiran,
-                      kiranUserInfo,
-                    ),
+                  children: _buildKiranListItemExpandedWidget(
+                    kiran,
+                    kiranUserInfo,
                   ),
                 ),
               );
@@ -103,7 +111,15 @@ class _KiranlistpageState extends State<Kiranlistpage> {
       ListTile(subtitle: Text('Words: ${kiran.wordCount}')),
       Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListTile(title: Text(kiran.title)),
+        child: ListTile(
+          title: Text(kiran.title),
+          trailing: ElevatedButton(
+            onPressed: () {
+              _navigateToKiranReadPage(kiran, kiranUserInfo);
+            },
+            child: const Text('Read'),
+          ),
+        ),
       ),
     ];
   }
@@ -116,17 +132,14 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     return ListTile(
       title: Row(
         children: [
-          Text(
-            kiran.number,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
+          Text(kiran.number, style: Theme.of(context).textTheme.titleSmall),
           SizedBox(width: 8),
           Expanded(
             child: Text(
               kiran.title,
               overflow: TextOverflow.clip,
               softWrap: true,
-              style: TextStyle(fontSize: 18),
+              style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
         ],
@@ -138,21 +151,21 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         children: [
           Row(
             children: [
-              Icon(Icons.menu_book, size: 16, color: Colors.grey[600]),
+              Icon(Icons.menu_book, size: 16),
               SizedBox(width: 4),
               Text(
                 '#${kiran.wordCount}',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               Spacer(),
               if (kiranUserInfo.isFavourite == 1)
-                Icon(Icons.favorite, size: 16, color: Colors.amber),
+                Icon(Icons.favorite, size: 16),
               if (kiranUserInfo.isFavourite == 0)
-                Icon(Icons.favorite_border, size: 16, color: Colors.grey),
+                Icon(Icons.favorite_border, size: 16),
               Spacer(),
               Text(
                 'vanchan: #${kiranUserInfo.readCount}',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),
@@ -164,7 +177,9 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                   value: 100 / kiran.wordCount,
                   minHeight: 6,
                   borderRadius: BorderRadius.circular(3),
-                  backgroundColor: Colors.grey.shade300,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).primaryColor.withValues(alpha: 0.2),
                   valueColor: AlwaysStoppedAnimation<Color>(
                     Theme.of(context).colorScheme.primary,
                   ),
@@ -173,22 +188,6 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             ],
           ),
         ],
-      ),
-      trailing: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => KiranReadPage(
-                    partNumber: widget.bookPart.id,
-                    kiranInfo: kiran,
-                    kiranUserInfo: kiranUserInfo,
-                  ),
-            ),
-          );
-        },
-        child: const Text('Read'),
       ),
     );
   }

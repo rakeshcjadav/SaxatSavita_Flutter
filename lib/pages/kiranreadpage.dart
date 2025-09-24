@@ -39,7 +39,7 @@ class _KiranReadPageState extends State<KiranReadPage> {
   }
 
   String getKiranContent(Map<String, dynamic> contentData) {
-    return '${AppLocalizations.of(context)!.kiran_start}'
+    return '<header>${AppLocalizations.of(context)!.kiran_start}</header>'
         '${contentData['main']['content'] ?? ''}'
         '<p><footer>${contentData['main']['footer'] ?? ''}</footer></p>';
   }
@@ -74,10 +74,8 @@ class _KiranReadPageState extends State<KiranReadPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.surface,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
               ),

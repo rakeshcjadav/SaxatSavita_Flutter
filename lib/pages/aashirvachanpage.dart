@@ -24,15 +24,8 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = Theme.of(context).colorScheme.inversePrimary;
     return Scaffold(
-      backgroundColor: Colors.orange.shade100,
-      appBar: AppBar(
-        backgroundColor: bgColor,
-        surfaceTintColor: Colors.transparent,
-        elevation: 20,
-        title: Text(widget.aashirvachan.title),
-      ),
+      appBar: AppBar(elevation: 20, title: Text(widget.aashirvachan.title)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(

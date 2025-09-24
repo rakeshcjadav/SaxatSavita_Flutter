@@ -24,11 +24,6 @@ class MyHomePage extends StatelessWidget {
   final String title;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
-      ),
-    );
+    return Scaffold(appBar: AppBar(title: Text(title)));
   }
 }

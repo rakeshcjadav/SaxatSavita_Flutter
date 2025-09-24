@@ -25,8 +25,9 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
   @override
   Widget build(BuildContext context) {
     Color fontColor = Theme.of(context).colorScheme.primary;
+    String htmlContent = widget.htmlContent.replaceAll('&nbsp; &nbsp;', '⠀ ');
     return Html(
-      data: widget.htmlContent,
+      data: htmlContent,
       extensions: [...widget.customTagRegistry.buildExtensions(context)],
       style: {
         "body": Style(

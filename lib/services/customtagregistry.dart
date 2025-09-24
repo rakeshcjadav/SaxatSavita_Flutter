@@ -31,11 +31,12 @@ class CustomTagRegistry {
   void registerCustomTags() {
     register("slok", (context, extensionContext, innerHtml) {
       Color fontColor = Theme.of(context).colorScheme.primary;
+      TextStyle slokStyle = Theme.of(context).textTheme.titleSmall!;
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         decoration: BoxDecoration(
-          color: fontColor.withOpacity(0.1),
+          color: fontColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Html(
@@ -43,8 +44,11 @@ class CustomTagRegistry {
           style: {
             "body": Style(
               color: fontColor,
-              fontSize: FontSize(18),
-              fontWeight: FontWeight.bold,
+              fontSize:
+                  slokStyle.fontSize != null
+                      ? FontSize(slokStyle.fontSize!)
+                      : FontSize(18),
+              fontWeight: slokStyle.fontWeight,
               lineHeight: LineHeight(1.0),
               textAlign: TextAlign.center,
             ),
@@ -55,43 +59,57 @@ class CustomTagRegistry {
 
     register("sq", (context, extensionContext, innerHtml) {
       Color fontColor = Theme.of(context).colorScheme.primary;
+      TextStyle sqStyle = Theme.of(context).textTheme.titleSmall!;
       return Html(
         data: innerHtml,
         style: {
           "body": Style(
             color: fontColor,
-            fontWeight: FontWeight.bold,
-            fontSize: FontSize(18),
+            fontWeight: sqStyle.fontWeight,
+            fontSize:
+                sqStyle.fontSize != null
+                    ? FontSize(sqStyle.fontSize!)
+                    : FontSize(18),
             display: Display.inline,
           ),
         },
+        extensions: buildExtensions(context),
       );
     });
 
     register("dq", (context, extensionContext, innerHtml) {
       Color fontColor = Theme.of(context).colorScheme.primary;
+      TextStyle dqStyle = Theme.of(context).textTheme.titleSmall!;
       return Html(
         data: innerHtml,
         style: {
           "body": Style(
             color: fontColor,
-            fontWeight: FontWeight.bold,
-            fontSize: FontSize(18),
+            fontWeight: dqStyle.fontWeight,
+            fontSize:
+                dqStyle.fontSize != null
+                    ? FontSize(dqStyle.fontSize!)
+                    : FontSize(18),
             display: Display.inline,
           ),
         },
+        extensions: buildExtensions(context),
       );
     });
 
     register("a", (context, extensionContext, innerHtml) {
-      Color fontColor = Colors.deepOrange.shade900;
+      Color fontColor = oppositeColor(Theme.of(context).colorScheme.primary);
+      TextStyle anchorStyle = Theme.of(context).textTheme.titleSmall!;
       return Html(
         data: innerHtml,
         style: {
           "body": Style(
             color: fontColor,
-            fontWeight: FontWeight.bold,
-            fontSize: FontSize(18),
+            fontWeight: anchorStyle.fontWeight,
+            fontSize:
+                anchorStyle.fontSize != null
+                    ? FontSize(anchorStyle.fontSize!)
+                    : FontSize(18),
             display: Display.inline,
             lineHeight: LineHeight(1.0),
           ),
@@ -99,17 +117,21 @@ class CustomTagRegistry {
       );
     });
 
-    register("footer", (context, extensionContext, innerHtml) {
+    register("header", (context, extensionContext, innerHtml) {
       Color fontColor = Theme.of(context).colorScheme.primary;
+      TextStyle headerStyle = Theme.of(context).textTheme.bodyLarge!;
       return Align(
-        alignment: Alignment.centerRight,
+        alignment: Alignment.center,
         child: Html(
           data: innerHtml,
           style: {
             "body": Style(
               color: fontColor,
-              fontWeight: FontWeight.bold,
-              fontSize: FontSize(18),
+              fontWeight: headerStyle.fontWeight,
+              fontSize:
+                  headerStyle.fontSize != null
+                      ? FontSize(headerStyle.fontSize!)
+                      : FontSize(18),
               display: Display.inline,
               lineHeight: LineHeight(1.0),
             ),
@@ -117,5 +139,33 @@ class CustomTagRegistry {
         ),
       );
     });
+    register("footer", (context, extensionContext, innerHtml) {
+      Color fontColor = Theme.of(context).colorScheme.primary;
+      TextStyle footerStyle = Theme.of(context).textTheme.titleSmall!;
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Html(
+          data: innerHtml,
+          style: {
+            "body": Style(
+              color: fontColor,
+              fontWeight: footerStyle.fontWeight,
+              fontSize:
+                  footerStyle.fontSize != null
+                      ? FontSize(footerStyle.fontSize!)
+                      : FontSize(18),
+              display: Display.inline,
+              lineHeight: LineHeight(1.0),
+            ),
+          },
+        ),
+      );
+    });
+  }
+
+  Color oppositeColor(Color color) {
+    final hsl = HSLColor.fromColor(color);
+    final oppositeHue = (hsl.hue + 180.0) % 360.0;
+    return hsl.withHue(oppositeHue).toColor();
   }
 }

@@ -33,7 +33,6 @@ class _InfolistpageState extends State<Infolistpage> {
           final infoKey = widget.infoKeys[index];
           final infoItem = AppDataService().getInfoValue(infoKey);
           return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(
               title: Center(
                 child: Padding(

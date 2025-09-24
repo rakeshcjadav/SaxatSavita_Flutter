@@ -53,7 +53,6 @@ class Infodetailspage extends StatelessWidget {
           top: 16.0,
           bottom: 16,
         ),
-        //child: Customwebviewwidget(content: infoItem.content),
         child: Column(
           children: [
             Container(
@@ -73,10 +72,8 @@ class Infodetailspage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   infoItem.title,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
               ),
