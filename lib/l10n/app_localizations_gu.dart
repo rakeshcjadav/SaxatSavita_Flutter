@@ -93,6 +93,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get theme_color => 'થિમનો રંગ';
 
   @override
+  String get theme_contrast => 'થિમનો વિસંગતિ';
+
+  @override
   String get reading_speed => 'વાંચવાની ગતિ';
 
   @override

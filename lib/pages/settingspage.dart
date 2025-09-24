@@ -13,6 +13,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   double _fontSize = appSettingsNotifier.value.fontSize;
   Color _themeColor = appSettingsNotifier.value.themeColor;
+  double _themeContrastLevel = appSettingsNotifier.value.themeContrastLevel;
   double _readingSpeed = appSettingsNotifier.value.readingSpeed;
   String _language = appSettingsNotifier.value.language;
 
@@ -44,6 +45,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       themeColor: appSettingsNotifier.value.themeColor,
                       readingSpeed: appSettingsNotifier.value.readingSpeed,
                       language: appSettingsNotifier.value.language,
+                      themeContrastLevel:
+                          appSettingsNotifier.value.themeContrastLevel,
                     );
                   });
                 },
@@ -53,15 +56,42 @@ class _SettingsPageState extends State<SettingsPage> {
             // Theme Color
             ListTile(
               title: Text(AppLocalizations.of(context)!.theme_color),
-              subtitle: Row(
-                children: [
-                  _buildColorOption(Colors.brown.shade900),
-                  _buildColorOption(Colors.blue.shade900),
-                  _buildColorOption(Colors.green.shade900),
-                  _buildColorOption(Colors.orange.shade900),
-                  _buildColorOption(Colors.purple.shade900),
-                  _buildColorOption(Colors.teal.shade900),
-                ],
+              subtitle: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildColorOption(Colors.grey.shade900),
+                    _buildColorOption(Colors.brown.shade900),
+                    _buildColorOption(Colors.blue.shade900),
+                    _buildColorOption(Colors.orange.shade900),
+                    _buildColorOption(Colors.purple.shade900),
+                    _buildColorOption(Colors.teal.shade900),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Theme Contrast Level
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.theme_contrast),
+              subtitle: Slider(
+                min: -1.0,
+                max: 1.0,
+                divisions: 10,
+                value: _themeContrastLevel,
+                label: '${_themeContrastLevel}x',
+                onChanged: (value) {
+                  setState(() {
+                    _themeContrastLevel = value;
+                    appSettingsNotifier.value = AppSettings(
+                      fontSize: appSettingsNotifier.value.fontSize,
+                      themeColor: appSettingsNotifier.value.themeColor,
+                      readingSpeed: appSettingsNotifier.value.readingSpeed,
+                      language: appSettingsNotifier.value.language,
+                      themeContrastLevel: _themeContrastLevel,
+                    );
+                  });
+                },
               ),
             ),
             const SizedBox(height: 16),
@@ -82,6 +112,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       themeColor: appSettingsNotifier.value.themeColor,
                       readingSpeed: _readingSpeed,
                       language: appSettingsNotifier.value.language,
+                      themeContrastLevel:
+                          appSettingsNotifier.value.themeContrastLevel,
                     );
                   });
                 },
@@ -104,6 +136,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           themeColor: appSettingsNotifier.value.themeColor,
                           readingSpeed: appSettingsNotifier.value.readingSpeed,
                           language: _language,
+                          themeContrastLevel:
+                              appSettingsNotifier.value.themeContrastLevel,
                         );
                       });
                     },
@@ -120,6 +154,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           themeColor: appSettingsNotifier.value.themeColor,
                           readingSpeed: appSettingsNotifier.value.readingSpeed,
                           language: _language,
+                          themeContrastLevel:
+                              appSettingsNotifier.value.themeContrastLevel,
                         );
                       });
                     },
@@ -144,6 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
               themeColor: _themeColor,
               readingSpeed: appSettingsNotifier.value.readingSpeed,
               language: appSettingsNotifier.value.language,
+              themeContrastLevel: appSettingsNotifier.value.themeContrastLevel,
             );
           }),
       child: Container(

@@ -93,6 +93,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get theme_color => 'Theme Color';
 
   @override
+  String get theme_contrast => 'Theme Contrast';
+
+  @override
   String get reading_speed => 'Reading Speed';
 
   @override

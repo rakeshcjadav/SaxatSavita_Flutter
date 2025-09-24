@@ -155,7 +155,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         children: [
           Row(
             children: [
-              Icon(Icons.menu_book, size: 16),
+              Icon(Icons.menu_book, size: 24),
               SizedBox(width: 4),
               Text(
                 '#${kiran.wordCount}',
@@ -163,9 +163,9 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               ),
               Spacer(),
               if (kiranUserInfo.isFavourite == 1)
-                Icon(Icons.favorite, size: 16),
+                Icon(Icons.favorite, size: 24),
               if (kiranUserInfo.isFavourite == 0)
-                Icon(Icons.favorite_border, size: 16),
+                Icon(Icons.favorite_border, size: 24),
               Spacer(),
               Text(
                 'vanchan: #${kiranUserInfo.readCount}',

@@ -29,6 +29,7 @@
     "kiran": "Kiran",
     "font_size": "Font Size",
     "theme_color": "Theme Color",
+    "theme_contrast": "Theme Contrast",
     "reading_speed": "Reading Speed",
     "select_language": "Select Language"
 }

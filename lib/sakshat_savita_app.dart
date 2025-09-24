@@ -32,6 +32,8 @@ class SakshatSavitaApp extends StatelessWidget {
       builder: (context, settings, child) {
         ColorScheme colorScheme = ColorScheme.fromSeed(
           seedColor: settings.themeColor,
+          contrastLevel: settings.themeContrastLevel,
+          brightness: Brightness.light,
         );
         return MaterialApp(
           debugShowCheckedModeBanner: false,

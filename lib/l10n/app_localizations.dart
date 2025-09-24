@@ -263,6 +263,12 @@ abstract class AppLocalizations {
   /// **'Theme Color'**
   String get theme_color;
 
+  /// No description provided for @theme_contrast.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Contrast'**
+  String get theme_contrast;
+
   /// No description provided for @reading_speed.
   ///
   /// In en, this message translates to:

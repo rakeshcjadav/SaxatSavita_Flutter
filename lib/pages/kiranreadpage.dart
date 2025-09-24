@@ -83,7 +83,7 @@ class _KiranReadPageState extends State<KiranReadPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
