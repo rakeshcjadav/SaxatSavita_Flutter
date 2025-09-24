@@ -3,6 +3,7 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});
@@ -137,6 +138,22 @@ class _DrawerState extends State<MyDrawer> {
                 }
                 debugPrint('Sign out error: $e');
               }
+            },
+          ),
+          const Divider(),
+          FutureBuilder<PackageInfo>(
+            future: PackageInfo.fromPlatform(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return SizedBox();
+              final version = snapshot.data!.version;
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Version: $version + ${snapshot.data!.buildNumber}',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              );
             },
           ),
         ],
