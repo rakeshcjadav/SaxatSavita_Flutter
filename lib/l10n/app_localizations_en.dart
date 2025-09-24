@@ -79,4 +79,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get preface => 'Preface';
+
+  @override
+  String get kiran_start => '<slok>|| સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ||</slok>';
 }

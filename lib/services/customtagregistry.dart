@@ -45,10 +45,10 @@ class CustomTagRegistry {
               color: fontColor,
               fontSize: FontSize(18),
               fontWeight: FontWeight.bold,
+              lineHeight: LineHeight(1.0),
               textAlign: TextAlign.center,
             ),
           },
-          extensions: buildExtensions(context),
         ),
       );
     });
@@ -65,7 +65,6 @@ class CustomTagRegistry {
             display: Display.inline,
           ),
         },
-        extensions: buildExtensions(context),
       );
     });
 
@@ -81,7 +80,41 @@ class CustomTagRegistry {
             display: Display.inline,
           ),
         },
-        extensions: buildExtensions(context),
+      );
+    });
+
+    register("a", (context, extensionContext, innerHtml) {
+      Color fontColor = Colors.deepOrange.shade900;
+      return Html(
+        data: innerHtml,
+        style: {
+          "body": Style(
+            color: fontColor,
+            fontWeight: FontWeight.bold,
+            fontSize: FontSize(18),
+            display: Display.inline,
+            lineHeight: LineHeight(1.0),
+          ),
+        },
+      );
+    });
+
+    register("footer", (context, extensionContext, innerHtml) {
+      Color fontColor = Theme.of(context).colorScheme.primary;
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Html(
+          data: innerHtml,
+          style: {
+            "body": Style(
+              color: fontColor,
+              fontWeight: FontWeight.bold,
+              fontSize: FontSize(18),
+              display: Display.inline,
+              lineHeight: LineHeight(1.0),
+            ),
+          },
+        ),
       );
     });
   }

@@ -79,4 +79,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get preface => 'પ્રસ્તાવના';
+
+  @override
+  String get kiran_start => '<slok>|| સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ||</slok>';
 }

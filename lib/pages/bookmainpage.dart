@@ -7,6 +7,7 @@ import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'kiranlistpage.dart';
 
 class BookMainpage extends StatefulWidget {
   const BookMainpage({super.key});
@@ -262,7 +263,16 @@ class _BookmainpageState extends State<BookMainpage> {
                     foregroundColor: Colors.white,
                     elevation: 2,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                Kiranlistpage(bookPart: bookparts[index]),
+                      ),
+                    );
+                  },
                   child: Text(
                     AppLocalizations.of(context)!.read,
                     style: TextStyle(fontWeight: FontWeight.bold),

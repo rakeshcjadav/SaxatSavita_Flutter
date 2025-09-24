@@ -238,6 +238,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Preface'**
   String get preface;
+
+  /// No description provided for @kiran_start.
+  ///
+  /// In en, this message translates to:
+  /// **'<slok>|| સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ||</slok>'**
+  String get kiran_start;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

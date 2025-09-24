@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:saxatsavita_flutter/components/customHtmlWidget.dart';
 import 'package:saxatsavita_flutter/components/customWebViewWidget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
-import 'package:saxatsavita_flutter/services/customtagregistry.dart';
 import '../models/infocontent_model.dart';
 import '../components/appbar.dart';
 
@@ -33,19 +32,9 @@ String generateHtmlContent(String bodyContent, int fontSize, Color textColor) {
 }
 
 class Infodetailspage extends StatelessWidget {
-  Infodetailspage({super.key, required this.infoItem}) {
-    // Initialize the custom tag registry if needed
-    // This can be used to register custom HTML tags for rendering
-    // For example, you can register a custom tag for <slok> or <dq>
-    // to style them differently in the HTML content.
-    // Here, we are just creating an instance of CustomTagRegistry.
-    // You can expand this as per your requirements.
-    customTagRegistry.registerCustomTags();
-  }
+  const Infodetailspage({super.key, required this.infoItem});
 
   final InfoContentModel infoItem;
-
-  final CustomTagRegistry customTagRegistry = CustomTagRegistry();
 
   @override
   Widget build(BuildContext context) {
@@ -99,21 +88,8 @@ class Infodetailspage extends StatelessWidget {
                     //FocusScope.of(context).unfocus();
                     debugPrint("Unfocus TextField");
                   },
-                  child: Html(
-                    onAnchorTap:
-                        (url, attributes, element) => {
-                          debugPrint("Opening $url..."),
-                          //launchUrlString(url!)
-                        },
-                    data: strContent,
-                    extensions: [...customTagRegistry.buildExtensions(context)],
-                    style: {
-                      "body": Style(
-                        color: fontColor,
-                        fontSize: FontSize(18),
-                        textAlign: TextAlign.justify,
-                      ),
-                    },
+                  child: SafeArea(
+                    child: CustomHtmlWidget(htmlContent: strContent),
                   ),
                 ),
               ),
