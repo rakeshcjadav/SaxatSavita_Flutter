@@ -119,7 +119,7 @@ class CustomTagRegistry {
 
     register("header", (context, extensionContext, innerHtml) {
       Color fontColor = Theme.of(context).colorScheme.primary;
-      TextStyle headerStyle = Theme.of(context).textTheme.bodyLarge!;
+      TextStyle headerStyle = Theme.of(context).textTheme.bodySmall!;
       return Align(
         alignment: Alignment.center,
         child: Html(

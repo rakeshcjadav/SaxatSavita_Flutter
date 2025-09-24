@@ -15,11 +15,6 @@ AppBar buildAppBar(BuildContext context, {String title = ''}) {
           Navigator.pushNamed(context, '/info');
         },
       ),
-      IconButton(
-        icon: const Icon(Icons.search, size: 24),
-        tooltip: AppLocalizations.of(context)!.menu_five,
-        onPressed: () {},
-      ),
     ],
   );
 }

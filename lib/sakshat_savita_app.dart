@@ -24,7 +24,7 @@ class SakshatSavitaApp extends StatelessWidget {
   final String titleText = 'Sakshat Savita';
   @override
   Widget build(BuildContext context) {
-    final colorScheme = ColorScheme.fromSeed(seedColor: Colors.brown.shade100);
+    final colorScheme = ColorScheme.fromSeed(seedColor: Colors.orange.shade500);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       locale: const Locale('gu', 'IN'),
@@ -84,7 +84,7 @@ class SakshatSavitaApp extends StatelessWidget {
           centerTitle: true,
         ),
         drawerTheme: DrawerThemeData(
-          backgroundColor: colorScheme.surface,
+          backgroundColor: colorScheme.surfaceContainer,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(20),
@@ -101,7 +101,7 @@ class SakshatSavitaApp extends StatelessWidget {
         listTileTheme: ListTileThemeData(
           textColor: colorScheme.primary,
           iconColor: colorScheme.primary,
-          tileColor: colorScheme.surface,
+          tileColor: colorScheme.surfaceContainer,
           selectedColor: Colors.white,
           selectedTileColor: Colors.blue.shade300,
           shape: RoundedRectangleBorder(
@@ -109,7 +109,7 @@ class SakshatSavitaApp extends StatelessWidget {
           ),
         ),
         cardTheme: CardThemeData(
-          color: colorScheme.surface,
+          color: colorScheme.surfaceContainer,
           shadowColor: Colors.black54,
           elevation: 5,
           margin: const EdgeInsets.all(8.0),

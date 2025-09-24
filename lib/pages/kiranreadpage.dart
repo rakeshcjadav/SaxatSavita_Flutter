@@ -54,14 +54,23 @@ class _KiranReadPageState extends State<KiranReadPage> {
             '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number}',
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          top: 0,
+          bottom: 16.0,
+        ),
         child: Column(
           children: [
             Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: fontColor.withOpacity(1.0),
-                borderRadius: BorderRadius.circular(8.0),
+                color: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainer.withOpacity(1.0),
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(20.0),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black12,
@@ -71,11 +80,11 @@ class _KiranReadPageState extends State<KiranReadPage> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
                   '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),

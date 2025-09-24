@@ -50,7 +50,7 @@ class Infodetailspage extends StatelessWidget {
         padding: const EdgeInsets.only(
           left: 16.0,
           right: 16.0,
-          top: 16.0,
+          top: .0,
           bottom: 16,
         ),
         child: Column(
@@ -58,8 +58,12 @@ class Infodetailspage extends StatelessWidget {
             Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: fontColor.withOpacity(1.0),
-                borderRadius: BorderRadius.circular(8.0),
+                color: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainer.withOpacity(1.0),
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(20.0),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black12,
@@ -69,11 +73,11 @@ class Infodetailspage extends StatelessWidget {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
                   infoItem.title,
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),

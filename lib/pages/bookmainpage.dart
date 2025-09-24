@@ -42,7 +42,7 @@ class _BookmainpageState extends State<BookMainpage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OutlinedButton(
+                  ElevatedButton(
                     onPressed: () async {
                       await Navigator.push(
                         context,
@@ -52,12 +52,13 @@ class _BookmainpageState extends State<BookMainpage> {
                       );
                     },
                     style: ButtonStyle(
+                      elevation: WidgetStatePropertyAll(5),
                       backgroundColor: WidgetStatePropertyAll(
                         Theme.of(context).colorScheme.onPrimary,
                       ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
                     ),
@@ -69,7 +70,7 @@ class _BookmainpageState extends State<BookMainpage> {
                       ),
                     ),
                   ),
-                  OutlinedButton(
+                  ElevatedButton(
                     onPressed: () async {
                       final infoItem = AppDataService().getInfoValue("preface");
                       Navigator.push(
@@ -81,12 +82,13 @@ class _BookmainpageState extends State<BookMainpage> {
                       );
                     },
                     style: ButtonStyle(
+                      elevation: WidgetStatePropertyAll(5),
                       backgroundColor: WidgetStatePropertyAll(
                         Theme.of(context).colorScheme.onPrimary,
                       ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
                     ),
