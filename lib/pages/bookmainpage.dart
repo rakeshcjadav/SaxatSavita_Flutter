@@ -54,7 +54,7 @@ class _BookmainpageState extends State<BookMainpage> {
                     style: ButtonStyle(
                       elevation: WidgetStatePropertyAll(5),
                       backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(context).colorScheme.onPrimary,
+                        Theme.of(context).colorScheme.surfaceContainer,
                       ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
@@ -84,7 +84,7 @@ class _BookmainpageState extends State<BookMainpage> {
                     style: ButtonStyle(
                       elevation: WidgetStatePropertyAll(5),
                       backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(context).colorScheme.onPrimary,
+                        Theme.of(context).colorScheme.surfaceContainer,
                       ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(

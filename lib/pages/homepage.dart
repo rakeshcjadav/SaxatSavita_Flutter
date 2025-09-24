@@ -33,43 +33,47 @@ class HomePageState extends State<HomePage> {
               width: double.infinity,
             ),
           ),
-          Container(
-            padding: EdgeInsets.only(bottom: 90),
-            child: ElevatedButton.icon(
-              onPressed: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BookMainpage()),
-                );
-              },
-              iconAlignment: IconAlignment.start,
-              icon: const Icon(Icons.menu_book, size: 30),
-              style: ButtonStyle(
-                padding: const WidgetStatePropertyAll(
-                  EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          SafeArea(
+            child: Container(
+              padding: EdgeInsets.only(bottom: 70),
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BookMainpage(),
+                    ),
+                  );
+                },
+                iconAlignment: IconAlignment.start,
+                icon: const Icon(Icons.menu_book, size: 30),
+                style: ButtonStyle(
+                  padding: const WidgetStatePropertyAll(
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  textStyle: WidgetStatePropertyAll(
+                    Theme.of(context).textTheme.titleLarge,
+                  ),
                 ),
-                textStyle: const WidgetStatePropertyAll(
-                  TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                label: Text("  ${AppLocalizations.of(context)!.sakshatSavita}"),
               ),
-              label: Text("  ${AppLocalizations.of(context)!.menu_one}"),
             ),
           ),
-          Container(
-            padding: EdgeInsets.only(bottom: 45),
-            child: Text(
-              AppLocalizations.of(context)!.sampRakhjo,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-                color: Colors.orange.shade100,
-                shadows: [
-                  Shadow(
-                    offset: Offset(1.0, 1.0),
-                    blurRadius: 5.0,
-                    color: Color.fromARGB(115, 0, 0, 0),
-                  ),
-                ],
+          SafeArea(
+            child: Container(
+              padding: EdgeInsets.only(bottom: 25),
+              child: Text(
+                AppLocalizations.of(context)!.sampRakhjo,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(1.0, 1.0),
+                      blurRadius: 3.0,
+                      color: Colors.black.withOpacity(0.8),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
