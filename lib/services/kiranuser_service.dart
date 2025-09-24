@@ -12,7 +12,7 @@ class KiranUserService {
       _kiranUserInfoList = [];
       buildKiranUserInfoList();
     }
-    return _kiranUserInfoList![kiranIndex - 1];
+    return _kiranUserInfoList[kiranIndex - 1];
   }
 
   void buildKiranUserInfoList() {

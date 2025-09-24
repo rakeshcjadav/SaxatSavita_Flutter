@@ -1,35 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/customHtmlWidget.dart';
-import 'package:saxatsavita_flutter/components/customWebViewWidget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import '../models/infocontent_model.dart';
 import '../components/appbar.dart';
-
-String generateHtmlContent(String bodyContent, int fontSize, Color textColor) {
-  return """
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <style>
-          body { margin:8; padding:0; 
-          font-size: ${fontSize}px; 
-          text-align: justify; 
-          color: ${colorToCss(textColor)};
-          font-family: 'Noto Sans Gujarati', 'Shruti', 'Gujarati MT', sans-serif;}
-        </style>
-        <script>
-          function getContentHeight() {
-            return document.documentElement.scrollHeight;
-          }
-        </script>
-      </head>
-      <body>
-        $bodyContent
-      </body>
-    </html>
-  """;
-}
 
 class Infodetailspage extends StatelessWidget {
   const Infodetailspage({super.key, required this.infoItem});
@@ -38,9 +11,7 @@ class Infodetailspage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color fontColor = Theme.of(context).colorScheme.primary;
     String strContent = infoItem.content.replaceAll('&nbsp; &nbsp;', '󠁪⠀ ');
-    //String strContent = generateHtmlContent(infoItem.content, 18, fontColor);
     return Scaffold(
       appBar: buildAppBar(
         context,

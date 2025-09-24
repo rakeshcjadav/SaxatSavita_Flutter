@@ -46,7 +46,6 @@ class _KiranReadPageState extends State<KiranReadPage> {
 
   @override
   Widget build(BuildContext context) {
-    Color fontColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
       appBar: buildAppBar(
         context,
