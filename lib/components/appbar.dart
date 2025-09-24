@@ -6,7 +6,7 @@ AppBar buildAppBar(BuildContext context, {String title = ''}) {
     title: Text(
       title.isEmpty ? AppLocalizations.of(context)!.sakshatSavita : title,
     ),
-    elevation: 20,
+    elevation: 5,
     actions: [
       IconButton(
         icon: const Icon(Icons.info, size: 24),

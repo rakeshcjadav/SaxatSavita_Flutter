@@ -26,7 +26,7 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
   Widget build(BuildContext context) {
     TextStyle bodyStyle = Theme.of(context).textTheme.bodyMedium!;
     return Scaffold(
-      appBar: AppBar(elevation: 20, title: Text(widget.aashirvachan.title)),
+      appBar: AppBar(elevation: 5, title: Text(widget.aashirvachan.title)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -62,6 +62,7 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
                   widget.aashirvachan.content.image!,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],

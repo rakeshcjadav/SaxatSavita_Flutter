@@ -108,6 +108,7 @@ class _BookmainpageState extends State<BookMainpage> {
             padding: const EdgeInsets.all(20.0),
             child: Image(
               image: const AssetImage('assets/res/z_swami_aashirvad.webp'),
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
           Expanded(child: bookPartsWidget()),
