@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1047945808084-2liqmi2mp5ah0jbaef3qg6503pp7aiqr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.farenidham.books.saxatsavita_flutter",
+            "certificate_hash": "28341c08c2d77b43ac9ac0695bdaf4d0077f4d22"
+          }
+        },
+        {
           "client_id": "1047945808084-e0vcddrfckh0k86tu2vq2725ppig42mf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
