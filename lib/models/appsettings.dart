@@ -21,7 +21,7 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
     fontSize: 16,
     themeColor: Colors.brown,
     themeContrastLevel: 1.0,
-    readingSpeed: 1.0,
+    readingSpeed: 300.0,
     language: 'gu',
   ),
 );

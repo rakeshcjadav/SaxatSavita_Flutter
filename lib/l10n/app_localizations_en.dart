@@ -100,4 +100,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_language => 'Select Language';
+
+  @override
+  String reading_count(int count) {
+    return 'Read $count times';
+  }
+
+  @override
+  String get not_yet_read => 'Not yet read';
+
+  @override
+  String last_read(DateTime time, DateTime date) {
+    final intl.DateFormat timeDateFormat = intl.DateFormat.jm(localeName);
+    final String timeString = timeDateFormat.format(time);
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMMMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$timeString,$dateString';
+  }
+
+  @override
+  String time_to_read(String time) {
+    return '$time';
+  }
+
+  @override
+  String get words_per_minute => 'words per min';
 }

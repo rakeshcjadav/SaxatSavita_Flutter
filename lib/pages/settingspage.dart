@@ -30,7 +30,9 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             // Font Size
             ListTile(
-              title: Text(AppLocalizations.of(context)!.font_size),
+              title: Text(
+                '${AppLocalizations.of(context)!.font_size}: $_fontSize',
+              ),
               subtitle: Slider(
                 min: 15,
                 max: 25,
@@ -73,7 +75,9 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 16),
             // Theme Contrast Level
             ListTile(
-              title: Text(AppLocalizations.of(context)!.theme_contrast),
+              title: Text(
+                '${AppLocalizations.of(context)!.theme_contrast}: $_themeContrastLevel',
+              ),
               subtitle: Slider(
                 min: -1.0,
                 max: 1.0,
@@ -97,13 +101,15 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 16),
             // Reading Speed
             ListTile(
-              title: Text(AppLocalizations.of(context)!.reading_speed),
+              title: Text(
+                '${AppLocalizations.of(context)!.reading_speed}: $_readingSpeed ${AppLocalizations.of(context)!.words_per_minute}',
+              ),
               subtitle: Slider(
-                min: 0.5,
-                max: 2.0,
-                divisions: 6,
+                min: 50,
+                max: 300.0,
+                divisions: 25,
                 value: _readingSpeed,
-                label: '${_readingSpeed}x',
+                label: '$_readingSpeed',
                 onChanged: (value) {
                   setState(() {
                     _readingSpeed = value;

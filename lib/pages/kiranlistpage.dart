@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranlist_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
+import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 import '../models/bookpart_model.dart';
 import '../services/kiranuser_service.dart';
 
@@ -112,17 +118,34 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     KiranUserInfo kiranUserInfo,
   ) {
     return [
-      ListTile(subtitle: Text('Words: ${kiran.wordCount}')),
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListTile(
-          title: Text(kiran.title),
-          trailing: ElevatedButton(
-            onPressed: () {
-              _navigateToKiranReadPage(kiran, kiranUserInfo);
-            },
-            child: const Text('Read'),
-          ),
+      ListTile(
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  kiranUserInfo.toggleFavourite();
+                });
+              },
+              iconSize: appSettingsNotifier.value.fontSize * 2.0,
+              icon: Icon(
+                kiranUserInfo.isFavourite == 1
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+                color:
+                    kiranUserInfo.isFavourite == 1
+                        ? Colors.pink
+                        : Theme.of(context).iconTheme.color,
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        trailing: ElevatedButton(
+          onPressed: () {
+            _navigateToKiranReadPage(kiran, kiranUserInfo);
+          },
+          child: Text(AppLocalizations.of(context)!.read),
         ),
       ),
     ];
@@ -133,66 +156,111 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     KiranUserInfo kiranUserInfo,
     bool isExpanded,
   ) {
-    return ListTile(
-      title: Row(
-        children: [
-          Text(kiran.number, style: Theme.of(context).textTheme.titleSmall),
-          SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              kiran.title,
-              overflow: TextOverflow.clip,
-              softWrap: true,
-              style: Theme.of(context).textTheme.titleSmall,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 1. Kiran Number and Name
+        Row(
+          children: [
+            Text(kiran.number, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                kiran.title,
+                style: Theme.of(context).textTheme.titleLarge,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        // 2. All data from KiranUserInfo
+        Row(
+          children: [
+            Icon(
+              kiranUserInfo.isFavourite == 1
+                  ? Icons.favorite
+                  : Icons.favorite_border,
+              color:
+                  kiranUserInfo.isFavourite == 1
+                      ? Colors.pink.withValues(alpha: 0.3)
+                      : Colors.grey.withValues(alpha: 0.0),
+            ),
+            const Spacer(),
+            Icon(Icons.timer, color: Colors.grey.withOpacity(0.3)),
+            const SizedBox(width: 4),
+            Text(
+              AppLocalizations.of(
+                context,
+              )!.time_to_read(Utils.getEstimatedReadingTime(kiran.wordCount)),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        // Progress bar (if relevant)
+        LinearProgressIndicator(
+          value: kiranUserInfo.progress.toDouble(),
+          //value: 100 / kiran.wordCount,
+          minHeight: 3,
+          borderRadius: BorderRadius.circular(3),
+          backgroundColor: Theme.of(
+            context,
+          ).primaryColor.withValues(alpha: 0.1),
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Theme.of(context).colorScheme.primary,
           ),
-        ],
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.menu_book, size: 24),
-              SizedBox(width: 4),
-              Text(
-                '#${kiran.wordCount}',
-                style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 8),
+        // Any other KiranUserInfo fields
+        Row(
+          children: [
+            if (kiranUserInfo.updatedAt != null) ...[
+              Icon(
+                Icons.history,
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.3),
               ),
-              Spacer(),
-              if (kiranUserInfo.isFavourite == 1)
-                Icon(Icons.favorite, size: 24),
-              if (kiranUserInfo.isFavourite == 0)
-                Icon(Icons.favorite_border, size: 24),
-              Spacer(),
-              Text(
-                'vanchan: #${kiranUserInfo.readCount}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          ),
-          SizedBox(height: 4),
-          Row(
-            children: [
+              const SizedBox(width: 4),
               Expanded(
-                child: LinearProgressIndicator(
-                  value: 100 / kiran.wordCount,
-                  minHeight: 6,
-                  borderRadius: BorderRadius.circular(3),
-                  backgroundColor: Theme.of(
-                    context,
-                  ).primaryColor.withValues(alpha: 0.2),
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).colorScheme.primary,
-                  ),
+                child: Text(
+                  getLastUpdatedDate(kiranUserInfo),
+                  style: Theme.of(context).textTheme.bodySmall,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
-          ),
-        ],
-      ),
+            Text(
+              getReadCount(kiranUserInfo),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ],
     );
+  }
+
+  bool isBookmarked(KiranUserInfo kiranUserInfo) {
+    BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
+      kiranUserInfo.partNumber,
+    );
+    return kiranUserInfo.kiranIndex == bookUserInfo.bookmarkKiranIndex;
+  }
+
+  String getLastUpdatedDate(KiranUserInfo kiranUserInfo) {
+    if (kiranUserInfo.updatedAt == null) {
+      return "";
+    }
+    return AppLocalizations.of(
+      context,
+    )!.last_read(kiranUserInfo.updatedAt!, kiranUserInfo.updatedAt!);
+  }
+
+  String getReadCount(KiranUserInfo kiranUserInfo) {
+    if (kiranUserInfo.readCount == 0) {
+      return AppLocalizations.of(context)!.not_yet_read;
+    }
+    return AppLocalizations.of(context)!.reading_count(kiranUserInfo.readCount);
   }
 }

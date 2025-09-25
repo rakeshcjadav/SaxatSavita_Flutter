@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 
 /// Registry for mapping custom tag → widget builder
 typedef CustomTagBuilder =
@@ -116,7 +117,9 @@ class CustomTagRegistry {
     });
 
     register("a", (context, extensionContext, innerHtml) {
-      Color fontColor = oppositeColor(Theme.of(context).colorScheme.primary);
+      Color fontColor = Utils.oppositeColor(
+        Theme.of(context).colorScheme.primary,
+      );
       TextStyle anchorStyle = Theme.of(context).textTheme.titleSmall!;
       return Html(
         data: innerHtml,
@@ -179,11 +182,5 @@ class CustomTagRegistry {
         ),
       );
     });
-  }
-
-  Color oppositeColor(Color color) {
-    final hsl = HSLColor.fromColor(color);
-    final oppositeHue = (hsl.hue + 180.0) % 360.0;
-    return hsl.withHue(oppositeHue).toColor();
   }
 }

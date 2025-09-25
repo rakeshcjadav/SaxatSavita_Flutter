@@ -31,5 +31,41 @@
     "theme_color": "થિમનો રંગ",
     "theme_contrast": "થિમનો વિસંગતિ",
     "reading_speed": "વાંચવાની ગતિ",
-    "select_language": "ભાષા પસંદ કરો"
+    "select_language": "ભાષા પસંદ કરો",
+    "reading_count": "{count} વખત વાંચ્યું",
+    "@reading_count": {
+        "description": "Indicates how many times the user has read a particular item.",
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
+    "not_yet_read": "હજી વાંચ્યું નથી",
+    "last_read": "{time}, {date}",
+    "@last_read": {
+        "description": "Indicates the last date the user read a particular item.",
+        "placeholders": {
+            "time": {
+                "type": "DateTime",
+                "format": "jm"
+            },
+            "date": {
+                "type": "DateTime",
+                "format": "yMMMd"
+            }
+        }
+    },
+    "time_to_read": "{time}",
+    "@time_to_read": {
+        "description": "Indicates the estimated time to read a particular item.",
+        "placeholders": {
+            "time": {
+                "type": "String",
+                "example": "5m: 30s"
+            }
+        }
+    },
+    "words_per_minute": "શબ્દો પ્રતિ મિનિટ"
 }

@@ -50,7 +50,10 @@ class SakshatSavitaApp extends StatelessWidget {
             colorScheme: colorScheme,
             useMaterial3: true,
             fontFamily: 'NotoSansGujarati',
-            iconTheme: IconThemeData(color: colorScheme.primary),
+            iconTheme: IconThemeData(
+              color: colorScheme.primary,
+              size: settings.fontSize,
+            ),
             textTheme: TextTheme(
               bodyLarge: TextStyle(
                 fontSize: settings.fontSize,

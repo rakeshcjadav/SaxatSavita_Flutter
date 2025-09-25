@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'dart:convert';
 import '../models/bookpart_model.dart';
 import 'kiranlistservice.dart';
@@ -11,6 +12,21 @@ class Bookservice {
 
   List<Bookpartmodel>? _bookparts;
   List<Bookpartmodel>? get bookparts => _bookparts;
+
+  List<BookUserInfo>? _bookUserInfoList = [];
+  List<BookUserInfo>? get bookUserInfoList => _bookUserInfoList;
+
+  BookUserInfo getBookUserInfo(int partNumber) {
+    return _bookUserInfoList!.firstWhere(
+      (info) => info.partNumber == partNumber,
+      orElse:
+          () => BookUserInfo(
+            id: "Unknown",
+            partNumber: partNumber,
+            bookmarkKiranIndex: 1,
+          ),
+    );
+  }
 
   Future<List<Bookpartmodel>> loadBook(
     BuildContext context,
@@ -41,6 +57,20 @@ class Bookservice {
     final jsondata = await rootBundle.loadString(filename);
     final list = json.decode(jsondata) as List<dynamic>;
 
-    return list.map((e) => Bookpartmodel.fromJson(e)).toList();
+    List<Bookpartmodel> bookparts =
+        list.map((e) => Bookpartmodel.fromJson(e)).toList();
+
+    _bookUserInfoList =
+        bookparts
+            .map(
+              (part) => BookUserInfo(
+                id: part.id,
+                partNumber: part.partNumber,
+                bookmarkKiranIndex: 1,
+              ),
+            )
+            .toList();
+
+    return bookparts;
   }
 }

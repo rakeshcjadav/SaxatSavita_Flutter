@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
 import 'package:saxatsavita_flutter/pages/aashirvachanlistpage.dart';
 import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 import 'kiranlistpage.dart';
 
 class BookMainpage extends StatefulWidget {
@@ -218,26 +220,31 @@ class _BookmainpageState extends State<BookMainpage> {
   /// Otherwise, it shows the list of book parts.
   /// *****  b6267d94-c980-431f-8075-38044a3ebe49  ******
   Widget bookPartsWidget() {
-    return FutureBuilder(
-      future: bookparts,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No data found"));
-        } else if (snapshot.data != null) {
-          var bookparts = snapshot.data as List<Bookpartmodel>;
-          return ListView.builder(
-            itemCount: bookparts.length,
-            itemBuilder: (context, index) {
-              return bookPartWidget(bookparts, index);
-            },
-          );
-        } else {
-          return const Center(child: Text("No data found"));
-        }
+    return ValueListenableBuilder<AppSettings>(
+      valueListenable: appSettingsNotifier,
+      builder: (context, appSettings, child) {
+        return FutureBuilder(
+          future: bookparts,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+              return const Center(child: Text("No data found"));
+            } else if (snapshot.data != null) {
+              var bookparts = snapshot.data as List<Bookpartmodel>;
+              return ListView.builder(
+                itemCount: bookparts.length,
+                itemBuilder: (context, index) {
+                  return bookPartWidget(bookparts, index);
+                },
+              );
+            } else {
+              return const Center(child: Text("No data found"));
+            }
+          },
+        );
       },
     );
   }
@@ -250,7 +257,10 @@ class _BookmainpageState extends State<BookMainpage> {
           child: Column(
             children: [
               ListTile(
-                leading: Icon(Icons.book),
+                leading: Icon(
+                  Icons.book,
+                  size: appSettingsNotifier.value.fontSize * 2.0,
+                ),
                 title: Text(bookparts[index].displayname.toString()),
                 subtitle: Text(bookparts[index].range),
                 trailing: ElevatedButton(
@@ -277,28 +287,31 @@ class _BookmainpageState extends State<BookMainpage> {
                   ),
                 ),
                 titleTextStyle: Theme.of(context).textTheme.titleLarge,
-                subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
+                subtitleTextStyle: Theme.of(context).textTheme.bodySmall,
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Icon(Icons.timer, size: 20),
+                    Icon(Icons.timer),
                     const SizedBox(width: 5),
                     Text(
-                      KiranListService()
-                              .getKiranList(bookparts[index].id)
-                              ?.totalWordCount
-                              .toString() ??
-                          "0",
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      Utils.getEstimatedReadingTime(
+                        KiranListService()
+                                .getKiranList(bookparts[index].id)
+                                ?.totalWordCount ??
+                            0,
+                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(width: 15),
                   ],
                 ),
               ),
+              const SizedBox(height: 8),
               Divider(),
+              const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
                 child: Row(
@@ -306,12 +319,12 @@ class _BookmainpageState extends State<BookMainpage> {
                   children: [
                     Text(
                       "${AppLocalizations.of(context)!.bookmark}: ",
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     ElevatedButton.icon(
                       label: Text(AppLocalizations.of(context)!.sakshatSavita),
                       onPressed: () {},
-                      icon: const Icon(Icons.bookmark, size: 20),
+                      icon: const Icon(Icons.bookmark),
                       style: ButtonStyle(elevation: WidgetStatePropertyAll(0)),
                     ),
                   ],

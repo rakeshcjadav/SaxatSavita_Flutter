@@ -280,6 +280,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Language'**
   String get select_language;
+
+  /// Indicates how many times the user has read a particular item.
+  ///
+  /// In en, this message translates to:
+  /// **'Read {count} times'**
+  String reading_count(int count);
+
+  /// No description provided for @not_yet_read.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet read'**
+  String get not_yet_read;
+
+  /// Indicates the last date the user read a particular item.
+  ///
+  /// In en, this message translates to:
+  /// **'{time},{date}'**
+  String last_read(DateTime time, DateTime date);
+
+  /// Indicates the estimated time to read a particular item.
+  ///
+  /// In en, this message translates to:
+  /// **'{time}'**
+  String time_to_read(String time);
+
+  /// No description provided for @words_per_minute.
+  ///
+  /// In en, this message translates to:
+  /// **'words per min'**
+  String get words_per_minute;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -31,5 +31,41 @@
     "theme_color": "Theme Color",
     "theme_contrast": "Theme Contrast",
     "reading_speed": "Reading Speed",
-    "select_language": "Select Language"
+    "select_language": "Select Language",
+    "reading_count": "Read {count} times",
+    "@reading_count": {
+        "description": "Indicates how many times the user has read a particular item.",
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
+    "not_yet_read": "Not yet read",
+    "last_read": "{time},{date}",
+    "@last_read": {
+        "description": "Indicates the last date the user read a particular item.",
+        "placeholders": {
+            "time": {
+                "type": "DateTime",
+                "format": "jm"
+            },
+            "date": {
+                "type": "DateTime",
+                "format": "yMMMd"
+            }
+        }
+    },
+    "time_to_read": "{time}",
+    "@time_to_read": {
+        "description": "Indicates the estimated time to read a particular item.",
+        "placeholders": {
+            "time": {
+                "type": "String",
+                "example": "5m: 30s"
+            }
+        }
+    },
+    "words_per_minute": "words per min"
 }

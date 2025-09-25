@@ -25,6 +25,13 @@ class KiranUserInfo {
     this.updatedAt,
   });
 
+  String get notes => note ?? '';
+
+  void toggleFavourite() {
+    isFavourite = isFavourite == 1 ? 0 : 1;
+    updatedAt = DateTime.now();
+  }
+
   factory KiranUserInfo.fromJson(Map<String, dynamic> json) {
     return KiranUserInfo(
       kiranIndex: json['kiranIndex'],
