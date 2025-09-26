@@ -12,6 +12,7 @@ class Infolistpage extends StatefulWidget {
     'about_book',
     'granth_darshan',
     'about_us',
+    'reference_books',
     // Add more titles as needed
   ];
 
