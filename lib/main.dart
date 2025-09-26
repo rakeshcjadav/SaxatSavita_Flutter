@@ -33,7 +33,7 @@ class SakshatSavitaApp extends StatelessWidget {
         ColorScheme colorScheme = ColorScheme.fromSeed(
           seedColor: settings.themeColor,
           contrastLevel: settings.themeContrastLevel,
-          brightness: Brightness.dark,
+          brightness: settings.brightness,
           dynamicSchemeVariant: settings.themeVariant,
         );
         return MaterialApp(

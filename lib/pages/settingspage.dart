@@ -15,6 +15,7 @@ class _SettingsPageState extends State<SettingsPage> {
   double _lineHeight = appSettingsNotifier.value.lineHeight;
   Color _themeColor = appSettingsNotifier.value.themeColor;
   DynamicSchemeVariant _themeVariant = appSettingsNotifier.value.themeVariant;
+  Brightness _brightness = appSettingsNotifier.value.brightness;
   double _themeContrastLevel = appSettingsNotifier.value.themeContrastLevel;
   double _readingSpeed = appSettingsNotifier.value.readingSpeed;
   String _language = appSettingsNotifier.value.language;
@@ -44,15 +45,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (value) {
                   setState(() {
                     _fontSize = value;
-                    appSettingsNotifier.value = AppSettings(
+                    appSettingsNotifier.value = copyAppSettings(
+                      appSettingsNotifier.value,
                       fontSize: _fontSize,
-                      themeColor: appSettingsNotifier.value.themeColor,
-                      themeVariant: appSettingsNotifier.value.themeVariant,
-                      lineHeight: appSettingsNotifier.value.lineHeight,
-                      readingSpeed: appSettingsNotifier.value.readingSpeed,
-                      language: appSettingsNotifier.value.language,
-                      themeContrastLevel:
-                          appSettingsNotifier.value.themeContrastLevel,
                     );
                   });
                 },
@@ -73,15 +68,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (value) {
                   setState(() {
                     _lineHeight = value;
-                    appSettingsNotifier.value = AppSettings(
-                      fontSize: appSettingsNotifier.value.fontSize,
-                      themeColor: appSettingsNotifier.value.themeColor,
-                      themeVariant: appSettingsNotifier.value.themeVariant,
+                    appSettingsNotifier.value = copyAppSettings(
+                      appSettingsNotifier.value,
                       lineHeight: _lineHeight,
-                      readingSpeed: appSettingsNotifier.value.readingSpeed,
-                      language: appSettingsNotifier.value.language,
-                      themeContrastLevel:
-                          appSettingsNotifier.value.themeContrastLevel,
                     );
                   });
                 },
@@ -125,19 +114,44 @@ class _SettingsPageState extends State<SettingsPage> {
                   if (value != null) {
                     setState(() {
                       _themeVariant = value;
-                      appSettingsNotifier.value = AppSettings(
-                        fontSize: appSettingsNotifier.value.fontSize,
-                        lineHeight: appSettingsNotifier.value.lineHeight,
-                        themeColor: appSettingsNotifier.value.themeColor,
+                      appSettingsNotifier.value = copyAppSettings(
+                        appSettingsNotifier.value,
                         themeVariant: _themeVariant,
-                        readingSpeed: appSettingsNotifier.value.readingSpeed,
-                        language: appSettingsNotifier.value.language,
-                        themeContrastLevel:
-                            appSettingsNotifier.value.themeContrastLevel,
                       );
                     });
                   }
                 },
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Language Selection
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.language),
+              subtitle: RadioGroup<Brightness>(
+                groupValue: _brightness,
+                onChanged: (Brightness? value) {
+                  setState(() {
+                    _brightness = value!;
+                    appSettingsNotifier.value = copyAppSettings(
+                      appSettingsNotifier.value,
+                      brightness: _brightness,
+                    );
+                  });
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ListTile(
+                      title: Text('Light'),
+                      leading: Radio<Brightness>(value: Brightness.light),
+                    ),
+                    const ListTile(
+                      title: Text('Dark'),
+                      leading: Radio<Brightness>(value: Brightness.dark),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -155,13 +169,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (value) {
                   setState(() {
                     _themeContrastLevel = value;
-                    appSettingsNotifier.value = AppSettings(
-                      fontSize: appSettingsNotifier.value.fontSize,
-                      lineHeight: appSettingsNotifier.value.lineHeight,
-                      themeColor: appSettingsNotifier.value.themeColor,
-                      themeVariant: appSettingsNotifier.value.themeVariant,
-                      readingSpeed: appSettingsNotifier.value.readingSpeed,
-                      language: appSettingsNotifier.value.language,
+                    appSettingsNotifier.value = copyAppSettings(
+                      appSettingsNotifier.value,
                       themeContrastLevel: _themeContrastLevel,
                     );
                   });
@@ -183,15 +192,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (value) {
                   setState(() {
                     _readingSpeed = value;
-                    appSettingsNotifier.value = AppSettings(
-                      fontSize: appSettingsNotifier.value.fontSize,
-                      lineHeight: appSettingsNotifier.value.lineHeight,
-                      themeColor: appSettingsNotifier.value.themeColor,
-                      themeVariant: appSettingsNotifier.value.themeVariant,
+                    appSettingsNotifier.value = copyAppSettings(
+                      appSettingsNotifier.value,
                       readingSpeed: _readingSpeed,
-                      language: appSettingsNotifier.value.language,
-                      themeContrastLevel:
-                          appSettingsNotifier.value.themeContrastLevel,
                     );
                   });
                 },
@@ -201,49 +204,31 @@ class _SettingsPageState extends State<SettingsPage> {
             // Language Selection
             ListTile(
               title: Text(AppLocalizations.of(context)!.language),
-              subtitle: Row(
-                children: [
-                  Radio<String>(
-                    value: 'gu',
-                    groupValue: _language,
-                    onChanged: (value) {
-                      setState(() {
-                        _language = value!;
-                        appSettingsNotifier.value = AppSettings(
-                          fontSize: appSettingsNotifier.value.fontSize,
-                          lineHeight: appSettingsNotifier.value.lineHeight,
-                          themeColor: appSettingsNotifier.value.themeColor,
-                          themeVariant: appSettingsNotifier.value.themeVariant,
-                          readingSpeed: appSettingsNotifier.value.readingSpeed,
-                          language: _language,
-                          themeContrastLevel:
-                              appSettingsNotifier.value.themeContrastLevel,
-                        );
-                      });
-                    },
-                  ),
-                  const Text('Gujarati'),
-                  Radio<String>(
-                    value: 'en',
-                    groupValue: _language,
-                    onChanged: (value) {
-                      setState(() {
-                        _language = value!;
-                        appSettingsNotifier.value = AppSettings(
-                          fontSize: appSettingsNotifier.value.fontSize,
-                          lineHeight: appSettingsNotifier.value.lineHeight,
-                          themeColor: appSettingsNotifier.value.themeColor,
-                          themeVariant: appSettingsNotifier.value.themeVariant,
-                          readingSpeed: appSettingsNotifier.value.readingSpeed,
-                          language: _language,
-                          themeContrastLevel:
-                              appSettingsNotifier.value.themeContrastLevel,
-                        );
-                      });
-                    },
-                  ),
-                  const Text('English'),
-                ],
+              subtitle: RadioGroup<String>(
+                groupValue: _language,
+                onChanged: (String? value) {
+                  setState(() {
+                    _language = value!;
+                    appSettingsNotifier.value = copyAppSettings(
+                      appSettingsNotifier.value,
+                      language: _language,
+                    );
+                  });
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ListTile(
+                      title: Text('ગુજરાતી'),
+                      leading: Radio<String>(value: 'gu'),
+                    ),
+                    const ListTile(
+                      title: Text('English'),
+                      leading: Radio<String>(value: 'en'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -257,14 +242,9 @@ class _SettingsPageState extends State<SettingsPage> {
       onTap:
           () => setState(() {
             _themeColor = color;
-            appSettingsNotifier.value = AppSettings(
-              fontSize: appSettingsNotifier.value.fontSize,
-              lineHeight: appSettingsNotifier.value.lineHeight,
+            appSettingsNotifier.value = copyAppSettings(
+              appSettingsNotifier.value,
               themeColor: _themeColor,
-              themeVariant: appSettingsNotifier.value.themeVariant,
-              readingSpeed: appSettingsNotifier.value.readingSpeed,
-              language: appSettingsNotifier.value.language,
-              themeContrastLevel: appSettingsNotifier.value.themeContrastLevel,
             );
           }),
       child: Container(
