@@ -20,10 +20,10 @@ class Infodetailspage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.only(
-          left: 6.0,
-          right: 6.0,
-          top: .0,
-          bottom: 6,
+          left: 16.0,
+          right: 16.0,
+          top: 0.0,
+          bottom: 0.0,
         ),
         child: Column(
           children: [
@@ -55,14 +55,17 @@ class Infodetailspage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: GestureDetector(
-                  onTap: () {
-                    //FocusScope.of(context).unfocus();
-                    debugPrint("Unfocus TextField");
-                  },
-                  child: SafeArea(
-                    child: CustomHtmlWidget(htmlContent: strContent),
+              child: Scrollbar(
+                interactive: true,
+                child: SingleChildScrollView(
+                  child: GestureDetector(
+                    onTap: () {
+                      //FocusScope.of(context).unfocus();
+                      debugPrint("Unfocus TextField");
+                    },
+                    child: SafeArea(
+                      child: CustomHtmlWidget(htmlContent: strContent),
+                    ),
                   ),
                 ),
               ),

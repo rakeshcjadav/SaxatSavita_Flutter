@@ -140,6 +140,17 @@ class SakshatSavitaApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.0),
               ),
             ),
+            scrollbarTheme: ScrollbarThemeData(
+              thumbColor: WidgetStateProperty.all(
+                colorScheme.primary.withValues(alpha: 0.5),
+              ),
+              trackColor: WidgetStateProperty.all(
+                colorScheme.primary.withValues(alpha: 0.1),
+              ),
+              trackBorderColor: WidgetStateProperty.all(Colors.transparent),
+              radius: const Radius.circular(6),
+              thickness: WidgetStateProperty.all(3.0),
+            ),
           ),
           home: const SplashPage(),
           routes: {
