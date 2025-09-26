@@ -50,7 +50,7 @@ class _KiranReadPageState extends State<KiranReadPage> {
       appBar: buildAppBar(
         context,
         title:
-            '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number}',
+            '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}',
         actionItems: [ActionOptions.settings],
       ),
       body: Padding(
