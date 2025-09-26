@@ -105,61 +105,7 @@ def ExtractKirans(book, inputfile, location, directory, range, fileErrorLog, bFo
         content = content.replace("\t", "<p>&nbsp; &nbsp;").replace("\n", "</p>")
         
         content = content.strip().replace(footer, "", 1)
-        anchor_tags = []
-        anchortag_template = { "b":0, "e":0, "word":"" }
-        for meaning in meaning_list["list"]:
-            pos = 0
-            tempcontent = content
-            mainpos = 0
-            count = 0
-            while pos < len(tempcontent):
-                tempcontent = tempcontent[pos:]
-                pos = tempcontent.find(meaning["word"])
-                if pos != -1:
-                    if IsWithinActorTag(mainpos + pos, anchor_tags) == True:
-                        pos = pos + 1
-                        mainpos += pos
-                    else:
-                        previousOne = tempcontent[pos-1:pos]
-                        previousTwo = tempcontent[pos-2:pos-1]
-                        endtag = tempcontent[pos + len(meaning["word"]): pos + len(meaning["word"]) + 4]
-                        if previousOne.strip() == ":" or previousOne.strip() == ">":
-                            pos = pos + len(meaning["word"]) + 1
-                            mainpos += pos
-                        elif previousTwo.strip() == ":" or previousTwo.strip() == ">":
-                            pos = pos + len(meaning["word"]) + 1
-                            mainpos += pos
-                        elif endtag == "</a>":
-                            pos = pos + len(meaning["word"]) + 1
-                            mainpos += pos
-                        else:
-                            found = re.search(re_continuation, tempcontent[pos + len(meaning["word"]):])
-                            if found != None:
-                                if int(found.span()[0]) == 0:
-                                    fileErrorLog.write("kiran : " + str(kiran) + " :: " + meaning["word"] + " != "+ tempcontent[pos:pos + len(meaning["word"]) + 1] + "\n")
-                                    pos = pos + len(meaning["word"]) + 1
-                                    mainpos = pos
-                                    continue
-                                elif int(count) == 0:
-                                    count = 1
-                                    meaning["count"] += 1
-                                    anchor_tag = copy.deepcopy(anchortag_template)
-                                    anchor_tag["b"] = mainpos + pos
-                                    anchor_tag["word"] = meaning["word"]
-                                    replacement = "<a href=\"dict:"+meaning["word"]+"\">" + meaning["word"] + "</a>"
-                                    anchor_tag["e"] = mainpos + pos + len(meaning["word"])
-                                    pos = pos + len(meaning["word"]) + int(found.span()[0])
-                                    mainpos += pos
-                                    anchor_tags.append(anchor_tag)
-                                    meaning["kirans"].append(kiran)
-                                    break
-                            break
-                else:
-                    break
-        sorted_anchor_tags = sorted(anchor_tags, key=lambda k: k["b"], reverse=True)
-        for tag in sorted_anchor_tags:
-            replacement = "<a href=\"dict:"+tag["word"]+"\">" + tag["word"] + "</a>"
-            content = content[0:tag["b"]] + content[tag["b"]:].replace(tag["word"], replacement, 1)
+        content = linkMeaningWords(fileErrorLog, kiran, content)
 
         file_content[nIndex]["main"]["content"] = content
         if bFormat == True:
@@ -198,6 +144,64 @@ def ExtractKirans(book, inputfile, location, directory, range, fileErrorLog, bFo
     print("Successful parsing : " + inputfile)
 
     return True, totalWordCount
+
+def linkMeaningWords(fileErrorLog, kiran, content):
+    anchor_tags = []
+    anchortag_template = { "b":0, "e":0, "word":"" }
+    for meaning in meaning_list["list"]:
+        pos = 0
+        tempcontent = content
+        mainpos = 0
+        count = 0
+        while pos < len(tempcontent):
+            tempcontent = tempcontent[pos:]
+            pos = tempcontent.find(meaning["word"])
+            if pos != -1:
+                if IsWithinActorTag(mainpos + pos, anchor_tags) == True:
+                    pos = pos + 1
+                    mainpos += pos
+                else:
+                    previousOne = tempcontent[pos-1:pos]
+                    previousTwo = tempcontent[pos-2:pos-1]
+                    endtag = tempcontent[pos + len(meaning["word"]): pos + len(meaning["word"]) + 4]
+                    if previousOne.strip() == ":" or previousOne.strip() == ">":
+                        pos = pos + len(meaning["word"]) + 1
+                        mainpos += pos
+                    elif previousTwo.strip() == ":" or previousTwo.strip() == ">":
+                        pos = pos + len(meaning["word"]) + 1
+                        mainpos += pos
+                    elif endtag == "</a>":
+                        pos = pos + len(meaning["word"]) + 1
+                        mainpos += pos
+                    else:
+                        found = re.search(re_continuation, tempcontent[pos + len(meaning["word"]):])
+                        if found != None:
+                            if int(found.span()[0]) == 0:
+                                fileErrorLog.write("kiran : " + str(kiran) + " :: " + meaning["word"] + " != "+ tempcontent[pos:pos + len(meaning["word"]) + 1] + "\n")
+                                pos = pos + len(meaning["word"]) + 1
+                                mainpos = pos
+                                continue
+                            elif int(count) == 0:
+                                count = 1
+                                meaning["count"] += 1
+                                anchor_tag = copy.deepcopy(anchortag_template)
+                                anchor_tag["b"] = mainpos + pos
+                                anchor_tag["word"] = meaning["word"]
+                                replacement = "<a href=\"dict:"+meaning["word"]+"\">" + meaning["word"] + "</a>"
+                                anchor_tag["e"] = mainpos + pos + len(meaning["word"])
+                                pos = pos + len(meaning["word"]) + int(found.span()[0])
+                                mainpos += pos
+                                anchor_tags.append(anchor_tag)
+                                meaning["kirans"].append(kiran)
+                                break
+                        break
+            else:
+                break
+    sorted_anchor_tags = sorted(anchor_tags, key=lambda k: k["b"], reverse=True)
+    for tag in sorted_anchor_tags:
+        replacement = "<a href=\"dict:"+tag["word"]+"\">" + tag["word"] + "</a>"
+        content = content[0:tag["b"]] + content[tag["b"]:].replace(tag["word"], replacement, 1)
+    return content
 
 def ExtractCountDetails(content) :
     contentTemp = content

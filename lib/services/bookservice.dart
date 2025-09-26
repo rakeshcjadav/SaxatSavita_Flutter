@@ -4,6 +4,7 @@ import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'dart:convert';
 import '../models/bookpart_model.dart';
 import 'kiranlistservice.dart';
+import '../models/meanings_model.dart';
 
 class Bookservice {
   static final Bookservice _instance = Bookservice._internal();
@@ -16,6 +17,9 @@ class Bookservice {
   List<BookUserInfo>? _bookUserInfoList = [];
   List<BookUserInfo>? get bookUserInfoList => _bookUserInfoList;
 
+  MeaningsModel? _meanings;
+  MeaningsModel? get meanings => _meanings;
+
   BookUserInfo getBookUserInfo(int partNumber) {
     return _bookUserInfoList!.firstWhere(
       (info) => info.partNumber == partNumber,
@@ -24,6 +28,24 @@ class Bookservice {
             id: "Unknown",
             partNumber: partNumber,
             bookmarkKiranIndex: 1,
+          ),
+    );
+  }
+
+  MeaningItem? getMeaning(String key) {
+    String word = key.replaceAll("dict:", "");
+    if (_meanings == null) {
+      return null;
+    }
+    return _meanings!.list.firstWhere(
+      (item) => item.word == word,
+      orElse:
+          () => MeaningItem(
+            index: -1,
+            word: word,
+            meaning: 'No meaning found',
+            count: 0,
+            kirans: [],
           ),
     );
   }
@@ -42,6 +64,7 @@ class Bookservice {
           KiranListService().loadPart('saxatsavita', bookparts[i].id);
         }
       }
+      _meanings = await loadMeanings(bookName);
       return _bookparts!;
     }
   }
@@ -72,5 +95,18 @@ class Bookservice {
             .toList();
 
     return bookparts;
+  }
+
+  Future<MeaningsModel?> loadMeanings(String bookName) async {
+    debugPrint("Loading meanings for $bookName");
+    final String filename = 'assets/book/$bookName/meanings/meanings.json';
+    try {
+      final jsondata = await rootBundle.loadString(filename);
+      final Map<String, dynamic> map = json.decode(jsondata);
+      return MeaningsModel.fromMap(map);
+    } catch (e) {
+      debugPrint("Error loading meanings: $e");
+      return null;
+    }
   }
 }

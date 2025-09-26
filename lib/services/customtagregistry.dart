@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:saxatsavita_flutter/models/meanings_model.dart';
+import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 
 /// Registry for mapping custom tag → widget builder
@@ -121,20 +123,78 @@ class CustomTagRegistry {
         Theme.of(context).colorScheme.primary,
       );
       TextStyle anchorStyle = Theme.of(context).textTheme.titleSmall!;
-      return Html(
-        data: innerHtml,
-        style: {
-          "body": Style(
-            color: fontColor,
-            fontWeight: anchorStyle.fontWeight,
-            fontSize:
-                anchorStyle.fontSize != null
-                    ? FontSize(anchorStyle.fontSize!)
-                    : FontSize(18),
-            display: Display.inline,
-            lineHeight: LineHeight(1.0),
-          ),
+      return GestureDetector(
+        onTap: () {
+          String? href = extensionContext.attributes['href'];
+          if (href != null && href.isNotEmpty) {
+            MeaningItem? meaning = Bookservice().getMeaning(href);
+            if (meaning != null && meaning.index != -1) {
+              debugPrint("Meaning found: ${meaning.meaning}");
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return SafeArea(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withOpacity(0.1),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Text(
+                                  meaning.word,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                meaning.meaning,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                                overflow: TextOverflow.visible,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            } else {
+              debugPrint("Meaning not found for: $href");
+            }
+          }
         },
+        child: Html(
+          data: innerHtml,
+          style: {
+            "body": Style(
+              color: fontColor,
+              fontWeight: anchorStyle.fontWeight,
+              fontSize:
+                  anchorStyle.fontSize != null
+                      ? FontSize(anchorStyle.fontSize!)
+                      : FontSize(18),
+              display: Display.inline,
+              lineHeight: LineHeight(1.0),
+            ),
+          },
+        ),
       );
     });
 
