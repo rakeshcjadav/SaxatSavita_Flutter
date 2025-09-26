@@ -40,6 +40,7 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
                 Theme.of(context).textTheme.bodyLarge!.fontSize!,
               ),
               textAlign: TextAlign.justify,
+              padding: HtmlPaddings.all(10),
               lineHeight: LineHeight(appSettingsNotifier.value.lineHeight),
             ),
           },

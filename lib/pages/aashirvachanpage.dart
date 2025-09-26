@@ -30,22 +30,25 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(6.0),
             child: Column(
               children: [
-                Hero(
-                  tag: '${widget.aashirvachan.tag}-image',
-                  child: Material(
-                    elevation: 5,
-                    borderRadius: BorderRadius.circular(16),
-                    clipBehavior: Clip.antiAlias,
-                    child: ClipRRect(
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Hero(
+                    tag: '${widget.aashirvachan.tag}-image',
+                    child: Material(
+                      elevation: 5,
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        widget.aashirvachan.image,
-                        height: 195,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                      clipBehavior: Clip.antiAlias,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          widget.aashirvachan.image,
+                          height: 195,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -59,12 +62,15 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
                 ),
                 if (widget.aashirvachan.content.image != null) ...[
                   const SizedBox(height: 16),
-                  Center(
-                    child: Image.asset(
-                      widget.aashirvachan.content.image!,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      color: Theme.of(context).colorScheme.primary,
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Center(
+                      child: Image.asset(
+                        widget.aashirvachan.content.image!,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
                 ],

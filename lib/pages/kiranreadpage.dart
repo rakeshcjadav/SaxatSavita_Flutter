@@ -55,10 +55,10 @@ class _KiranReadPageState extends State<KiranReadPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
+          left: 6.0,
+          right: 6.0,
           top: 0,
-          bottom: 16.0,
+          bottom: 6.0,
         ),
         child: Column(
           children: [
@@ -90,26 +90,28 @@ class _KiranReadPageState extends State<KiranReadPage> {
               ),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: FutureBuilder<Map<String, dynamic>>(
-                  future: _futureKiranContent,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData) {
-                      return const Center(child: Text('No content found.'));
-                    }
-                    final contentData = snapshot.data!;
-                    return Column(
-                      children: [
-                        CustomHtmlWidget(
-                          htmlContent: getKiranContent(contentData),
-                        ),
-                      ],
-                    );
-                  },
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  child: FutureBuilder<Map<String, dynamic>>(
+                    future: _futureKiranContent,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData) {
+                        return const Center(child: Text('No content found.'));
+                      }
+                      final contentData = snapshot.data!;
+                      return Column(
+                        children: [
+                          CustomHtmlWidget(
+                            htmlContent: getKiranContent(contentData),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
