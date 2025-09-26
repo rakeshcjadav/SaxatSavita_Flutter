@@ -14,6 +14,7 @@ class _SettingsPageState extends State<SettingsPage> {
   double _fontSize = appSettingsNotifier.value.fontSize;
   double _lineHeight = appSettingsNotifier.value.lineHeight;
   Color _themeColor = appSettingsNotifier.value.themeColor;
+  DynamicSchemeVariant _themeVariant = appSettingsNotifier.value.themeVariant;
   double _themeContrastLevel = appSettingsNotifier.value.themeContrastLevel;
   double _readingSpeed = appSettingsNotifier.value.readingSpeed;
   String _language = appSettingsNotifier.value.language;
@@ -46,6 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     appSettingsNotifier.value = AppSettings(
                       fontSize: _fontSize,
                       themeColor: appSettingsNotifier.value.themeColor,
+                      themeVariant: appSettingsNotifier.value.themeVariant,
                       lineHeight: appSettingsNotifier.value.lineHeight,
                       readingSpeed: appSettingsNotifier.value.readingSpeed,
                       language: appSettingsNotifier.value.language,
@@ -74,6 +76,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     appSettingsNotifier.value = AppSettings(
                       fontSize: appSettingsNotifier.value.fontSize,
                       themeColor: appSettingsNotifier.value.themeColor,
+                      themeVariant: appSettingsNotifier.value.themeVariant,
                       lineHeight: _lineHeight,
                       readingSpeed: appSettingsNotifier.value.readingSpeed,
                       language: appSettingsNotifier.value.language,
@@ -92,14 +95,49 @@ class _SettingsPageState extends State<SettingsPage> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildColorOption(Colors.grey.shade900),
-                    _buildColorOption(Colors.brown.shade900),
-                    _buildColorOption(Colors.blue.shade900),
-                    _buildColorOption(Colors.orange.shade900),
-                    _buildColorOption(Colors.purple.shade900),
-                    _buildColorOption(Colors.teal.shade900),
+                    _buildColorOption(Colors.indigo),
+                    _buildColorOption(Colors.blue),
+                    _buildColorOption(Colors.yellow),
+                    _buildColorOption(Colors.orange),
+                    _buildColorOption(Colors.deepOrange),
+                    _buildColorOption(Colors.teal),
+                    _buildColorOption(Colors.pink),
                   ],
                 ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Theme Variant Selection
+            ListTile(
+              title: Text('Theme Variant'),
+              subtitle: DropdownButton<DynamicSchemeVariant>(
+                value: appSettingsNotifier.value.themeVariant,
+                items:
+                    DynamicSchemeVariant.values.map((variant) {
+                      return DropdownMenuItem(
+                        value: variant,
+                        child: Text(
+                          variant.toString().split('.').last.toUpperCase(),
+                        ),
+                      );
+                    }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _themeVariant = value;
+                      appSettingsNotifier.value = AppSettings(
+                        fontSize: appSettingsNotifier.value.fontSize,
+                        lineHeight: appSettingsNotifier.value.lineHeight,
+                        themeColor: appSettingsNotifier.value.themeColor,
+                        themeVariant: _themeVariant,
+                        readingSpeed: appSettingsNotifier.value.readingSpeed,
+                        language: appSettingsNotifier.value.language,
+                        themeContrastLevel:
+                            appSettingsNotifier.value.themeContrastLevel,
+                      );
+                    });
+                  }
+                },
               ),
             ),
             const SizedBox(height: 16),
@@ -121,6 +159,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       fontSize: appSettingsNotifier.value.fontSize,
                       lineHeight: appSettingsNotifier.value.lineHeight,
                       themeColor: appSettingsNotifier.value.themeColor,
+                      themeVariant: appSettingsNotifier.value.themeVariant,
                       readingSpeed: appSettingsNotifier.value.readingSpeed,
                       language: appSettingsNotifier.value.language,
                       themeContrastLevel: _themeContrastLevel,
@@ -148,6 +187,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       fontSize: appSettingsNotifier.value.fontSize,
                       lineHeight: appSettingsNotifier.value.lineHeight,
                       themeColor: appSettingsNotifier.value.themeColor,
+                      themeVariant: appSettingsNotifier.value.themeVariant,
                       readingSpeed: _readingSpeed,
                       language: appSettingsNotifier.value.language,
                       themeContrastLevel:
@@ -173,6 +213,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           fontSize: appSettingsNotifier.value.fontSize,
                           lineHeight: appSettingsNotifier.value.lineHeight,
                           themeColor: appSettingsNotifier.value.themeColor,
+                          themeVariant: appSettingsNotifier.value.themeVariant,
                           readingSpeed: appSettingsNotifier.value.readingSpeed,
                           language: _language,
                           themeContrastLevel:
@@ -192,6 +233,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           fontSize: appSettingsNotifier.value.fontSize,
                           lineHeight: appSettingsNotifier.value.lineHeight,
                           themeColor: appSettingsNotifier.value.themeColor,
+                          themeVariant: appSettingsNotifier.value.themeVariant,
                           readingSpeed: appSettingsNotifier.value.readingSpeed,
                           language: _language,
                           themeContrastLevel:
@@ -219,6 +261,7 @@ class _SettingsPageState extends State<SettingsPage> {
               fontSize: appSettingsNotifier.value.fontSize,
               lineHeight: appSettingsNotifier.value.lineHeight,
               themeColor: _themeColor,
+              themeVariant: appSettingsNotifier.value.themeVariant,
               readingSpeed: appSettingsNotifier.value.readingSpeed,
               language: appSettingsNotifier.value.language,
               themeContrastLevel: appSettingsNotifier.value.themeContrastLevel,

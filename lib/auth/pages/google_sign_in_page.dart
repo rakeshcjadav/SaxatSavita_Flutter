@@ -22,7 +22,9 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   @override
   void initState() {
     super.initState();
-    _initializeGoogleSignIn();
+    if (googleSignIn.supportsAuthenticate()) {
+      _initializeGoogleSignIn();
+    }
   }
 
   Future<void> _initializeGoogleSignIn() async {
@@ -276,6 +278,15 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
       else ...<Widget>[
         // #enddocregion ExplicitSignIn
         const Text('This platform does not have a known authentication method'),
+        ElevatedButton(
+          onPressed: () async {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          },
+          child: const Text("Enter"),
+        ),
         // #docregion ExplicitSignIn
       ],
     ];
