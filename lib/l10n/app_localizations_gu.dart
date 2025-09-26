@@ -51,7 +51,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get bookmark => 'બુકમાર્ક';
 
   @override
-  String get language => 'ભાષા';
+  String get language => 'એપ્લિકેશનની ભાષા';
 
   @override
   String get darkMode => 'ડાર્ક મોડ';
@@ -94,6 +94,12 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get theme_color => 'થિમનો રંગ';
+
+  @override
+  String get theme_variant => 'થિમનો પ્રકાર';
+
+  @override
+  String get theme_mode => 'થિમનો મોડ';
 
   @override
   String get theme_contrast => 'થિમનો વિસંગતિ';

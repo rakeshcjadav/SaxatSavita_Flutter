@@ -182,7 +182,7 @@ abstract class AppLocalizations {
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
-  /// **'Language'**
+  /// **'Application Language'**
   String get language;
 
   /// No description provided for @darkMode.
@@ -268,6 +268,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Theme Color'**
   String get theme_color;
+
+  /// No description provided for @theme_variant.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Variant'**
+  String get theme_variant;
+
+  /// No description provided for @theme_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Mode'**
+  String get theme_mode;
 
   /// No description provided for @theme_contrast.
   ///

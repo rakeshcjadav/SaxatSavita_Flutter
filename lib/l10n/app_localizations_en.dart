@@ -51,7 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bookmark => 'Bookmark';
 
   @override
-  String get language => 'Language';
+  String get language => 'Application Language';
 
   @override
   String get darkMode => 'Dark Mode';
@@ -94,6 +94,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get theme_color => 'Theme Color';
+
+  @override
+  String get theme_variant => 'Theme Variant';
+
+  @override
+  String get theme_mode => 'Theme Mode';
 
   @override
   String get theme_contrast => 'Theme Contrast';
