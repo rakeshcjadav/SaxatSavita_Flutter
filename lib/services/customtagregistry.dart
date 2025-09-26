@@ -160,6 +160,7 @@ class CustomTagRegistry {
         ),
       );
     });
+
     register("footer", (context, extensionContext, innerHtml) {
       Color fontColor = Theme.of(context).colorScheme.primary;
       TextStyle footerStyle = Theme.of(context).textTheme.titleSmall!;
@@ -181,6 +182,22 @@ class CustomTagRegistry {
           },
         ),
       );
+    });
+
+    register("img", (context, extensionContext, innerHtml) {
+      Color primaryColor = Theme.of(context).colorScheme.primary;
+      String? src = extensionContext.attributes['src'];
+      if (src == null || src.isEmpty) {
+        return const SizedBox.shrink();
+      }
+      if (src.startsWith('http://') || src.startsWith('https://')) {
+        return Image.network(src);
+      } else {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Image.asset(src, color: primaryColor),
+        );
+      }
     });
   }
 }

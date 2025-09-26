@@ -55,14 +55,14 @@ class _DrawerState extends State<MyDrawer> {
               ),
             ),
           ),
-          ListTile(
+          /*ListTile(
             leading: const Icon(Icons.home),
             title: Text(AppLocalizations.of(context)!.menu_one),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/home');
             },
-          ),
+          ),*/
           ListTile(
             leading: const Icon(Icons.description),
             title: Text(AppLocalizations.of(context)!.aashirvachan),

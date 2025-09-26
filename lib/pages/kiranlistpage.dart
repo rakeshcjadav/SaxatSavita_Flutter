@@ -161,12 +161,12 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         // 1. Kiran Number and Name
         Row(
           children: [
-            Text(kiran.number, style: Theme.of(context).textTheme.titleLarge),
+            Text(kiran.number, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 kiran.title,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleMedium,
                 overflow: TextOverflow.ellipsis,
               ),
             ),

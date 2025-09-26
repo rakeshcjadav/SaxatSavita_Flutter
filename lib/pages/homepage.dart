@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
@@ -50,13 +51,16 @@ class HomePageState extends State<HomePage> {
                   );
                 },
                 iconAlignment: IconAlignment.start,
-                icon: const Icon(Icons.menu_book, size: 30),
+                icon: Icon(
+                  Icons.menu_book,
+                  size: appSettingsNotifier.value.fontSize,
+                ),
                 style: ButtonStyle(
                   padding: const WidgetStatePropertyAll(
                     EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   ),
                   textStyle: WidgetStatePropertyAll(
-                    Theme.of(context).textTheme.titleLarge,
+                    Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
                 label: Text("  ${AppLocalizations.of(context)!.sakshatSavita}"),
@@ -68,7 +72,7 @@ class HomePageState extends State<HomePage> {
               padding: EdgeInsets.only(bottom: 25),
               child: Text(
                 AppLocalizations.of(context)!.sampRakhjo,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: Theme.of(context).colorScheme.surfaceContainer,
                   shadows: [
                     Shadow(

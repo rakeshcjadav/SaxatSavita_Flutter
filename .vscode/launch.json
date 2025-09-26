@@ -8,7 +8,7 @@
             "name": "Flutter",
             "request": "launch",
             "type": "dart",
-            "program": "lib/sakshat_savita_app.dart" // Adjust the path to your main Dart file if necessary
+            "program": "lib/main.dart" // Adjust the path to your main Dart file if necessary
         }
     ]
 }

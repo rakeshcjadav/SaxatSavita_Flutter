@@ -48,7 +48,7 @@ class Infodetailspage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   infoItem.title,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),

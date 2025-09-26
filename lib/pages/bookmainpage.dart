@@ -286,7 +286,7 @@ class _BookmainpageState extends State<BookMainpage> {
                     ),
                   ),
                 ),
-                titleTextStyle: Theme.of(context).textTheme.titleLarge,
+                titleTextStyle: Theme.of(context).textTheme.titleMedium,
                 subtitleTextStyle: Theme.of(context).textTheme.bodySmall,
               ),
               Padding(
