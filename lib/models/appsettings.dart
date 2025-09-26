@@ -24,12 +24,12 @@ class AppSettings {
 
 ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
   AppSettings(
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 2.0,
     themeColor: Colors.deepOrange,
-    themeVariant: DynamicSchemeVariant.neutral,
+    themeVariant: DynamicSchemeVariant.fruitSalad,
     brightness: Brightness.light,
-    themeContrastLevel: 1.0,
+    themeContrastLevel: 0.0,
     readingSpeed: 300.0,
     language: 'gu',
   ),

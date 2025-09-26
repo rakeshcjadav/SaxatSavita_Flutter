@@ -89,8 +89,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildColorOption(Colors.yellow),
                     _buildColorOption(Colors.orange),
                     _buildColorOption(Colors.deepOrange),
+                    _buildColorOption(Colors.brown),
                     _buildColorOption(Colors.teal),
                     _buildColorOption(Colors.pink),
+                    _buildColorOption(Colors.deepPurple),
                   ],
                 ),
               ),
@@ -163,7 +165,7 @@ class _SettingsPageState extends State<SettingsPage> {
               subtitle: Slider(
                 min: -1.0,
                 max: 1.0,
-                divisions: 10,
+                divisions: 4,
                 value: _themeContrastLevel,
                 label: '${_themeContrastLevel}x',
                 onChanged: (value) {
