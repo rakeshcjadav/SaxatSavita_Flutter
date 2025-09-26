@@ -39,8 +39,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 subtitle: Slider(
                   min: 15,
-                  max: 25,
-                  divisions: 10,
+                  max: 35,
+                  divisions: 20,
                   value: _fontSize,
                   label: _fontSize.round().toString(),
                   onChanged: (value) {

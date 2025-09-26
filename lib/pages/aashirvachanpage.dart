@@ -27,56 +27,58 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
         title: widget.aashirvachan.title,
         actionItems: [ActionOptions.settings],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Hero(
-                tag: '${widget.aashirvachan.tag}-image',
-                child: Material(
-                  elevation: 5,
-                  borderRadius: BorderRadius.circular(16),
-                  clipBehavior: Clip.antiAlias,
-                  child: ClipRRect(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Hero(
+                  tag: '${widget.aashirvachan.tag}-image',
+                  child: Material(
+                    elevation: 5,
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      widget.aashirvachan.image,
-                      height: 195,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                    clipBehavior: Clip.antiAlias,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.asset(
+                        widget.aashirvachan.image,
+                        height: 195,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Center(
-                child: Text(
-                  widget.aashirvachan.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              if (widget.aashirvachan.content.image != null) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 Center(
-                  child: Image.asset(
-                    widget.aashirvachan.content.image!,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    color: Theme.of(context).colorScheme.primary,
+                  child: Text(
+                    widget.aashirvachan.title,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
+                if (widget.aashirvachan.content.image != null) ...[
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Image.asset(
+                      widget.aashirvachan.content.image!,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
+                if (widget.aashirvachan.content.text != null) ...[
+                  const SizedBox(height: 16),
+                  CustomHtmlWidget(
+                    htmlContent:
+                        AppDataService().getValue(
+                          widget.aashirvachan.content.text!,
+                        )!,
+                  ),
+                ],
               ],
-              if (widget.aashirvachan.content.text != null) ...[
-                const SizedBox(height: 16),
-                CustomHtmlWidget(
-                  htmlContent:
-                      AppDataService().getValue(
-                        widget.aashirvachan.content.text!,
-                      )!,
-                ),
-              ],
-            ],
+            ),
           ),
         ),
       ),
