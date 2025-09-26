@@ -39,50 +39,78 @@ class HomePageState extends State<HomePage> {
             ),
           ),
           SafeArea(
-            child: Container(
-              padding: EdgeInsets.only(bottom: 70),
-              child: ElevatedButton.icon(
-                onPressed: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const BookMainpage(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text(
+                    AppLocalizations.of(context)!.header_slok,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1.0, 1.0),
+                          blurRadius: 3.0,
+                          color: Colors.black.withOpacity(0.8),
+                        ),
+                      ],
                     ),
-                  );
-                },
-                iconAlignment: IconAlignment.start,
-                icon: Icon(
-                  Icons.menu_book,
-                  size: appSettingsNotifier.value.fontSize,
-                ),
-                style: ButtonStyle(
-                  padding: const WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  ),
-                  textStyle: WidgetStatePropertyAll(
-                    Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
-                label: Text("  ${AppLocalizations.of(context)!.sakshatSavita}"),
-              ),
-            ),
-          ),
-          SafeArea(
-            child: Container(
-              padding: EdgeInsets.only(bottom: 25),
-              child: Text(
-                AppLocalizations.of(context)!.sampRakhjo,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  shadows: [
-                    Shadow(
-                      offset: Offset(1.0, 1.0),
-                      blurRadius: 3.0,
-                      color: Colors.black.withOpacity(0.8),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BookMainpage(),
+                            ),
+                          );
+                        },
+                        iconAlignment: IconAlignment.start,
+                        icon: Icon(
+                          Icons.menu_book,
+                          size: appSettingsNotifier.value.fontSize,
+                        ),
+                        style: ButtonStyle(
+                          padding: const WidgetStatePropertyAll(
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          ),
+                          textStyle: WidgetStatePropertyAll(
+                            Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                        label: Text(
+                          "  ${AppLocalizations.of(context)!.sakshatSavita}",
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        AppLocalizations.of(context)!.sampRakhjo,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(1.0, 1.0),
+                              blurRadius: 3.0,
+                              color: Colors.black.withOpacity(0.8),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
         ],

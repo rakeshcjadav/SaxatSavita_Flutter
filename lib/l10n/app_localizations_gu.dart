@@ -126,4 +126,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get words_per_minute => 'શબ્દો પ્રતિ મિનિટ';
+
+  @override
+  String get header_slok => '।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।';
 }

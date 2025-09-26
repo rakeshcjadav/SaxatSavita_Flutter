@@ -310,6 +310,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'words per min'**
   String get words_per_minute;
+
+  /// No description provided for @header_slok.
+  ///
+  /// In en, this message translates to:
+  /// **'।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।'**
+  String get header_slok;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
