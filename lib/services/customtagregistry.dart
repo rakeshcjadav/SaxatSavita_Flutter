@@ -45,7 +45,7 @@ class CustomTagRegistry {
                     ? FontSize(slokStyle.fontSize!)
                     : FontSize(18),
             fontWeight: slokStyle.fontWeight,
-            lineHeight: LineHeight(1.0),
+            lineHeight: LineHeight(1.5),
             textAlign: TextAlign.center,
             display: Display.inline,
           ),
@@ -92,6 +92,7 @@ class CustomTagRegistry {
                     ? FontSize(sqStyle.fontSize!)
                     : FontSize(18),
             display: Display.inline,
+            lineHeight: LineHeight(1.0),
           ),
         },
         extensions: buildExtensions(context),
@@ -112,6 +113,7 @@ class CustomTagRegistry {
                     ? FontSize(dqStyle.fontSize!)
                     : FontSize(18),
             display: Display.inline,
+            lineHeight: LineHeight(1.0),
           ),
         },
         extensions: buildExtensions(context),

@@ -12,6 +12,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   double _fontSize = appSettingsNotifier.value.fontSize;
+  double _lineHeight = appSettingsNotifier.value.lineHeight;
   Color _themeColor = appSettingsNotifier.value.themeColor;
   double _themeContrastLevel = appSettingsNotifier.value.themeContrastLevel;
   double _readingSpeed = appSettingsNotifier.value.readingSpeed;
@@ -45,6 +46,35 @@ class _SettingsPageState extends State<SettingsPage> {
                     appSettingsNotifier.value = AppSettings(
                       fontSize: _fontSize,
                       themeColor: appSettingsNotifier.value.themeColor,
+                      lineHeight: appSettingsNotifier.value.lineHeight,
+                      readingSpeed: appSettingsNotifier.value.readingSpeed,
+                      language: appSettingsNotifier.value.language,
+                      themeContrastLevel:
+                          appSettingsNotifier.value.themeContrastLevel,
+                    );
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Line Height
+            ListTile(
+              title: Text(
+                '${AppLocalizations.of(context)!.line_height}: ${_lineHeight}x',
+              ),
+              subtitle: Slider(
+                min: 1.5,
+                max: 3.0,
+                divisions: 15,
+                value: _lineHeight,
+                label: _lineHeight.round().toString(),
+                onChanged: (value) {
+                  setState(() {
+                    _lineHeight = value;
+                    appSettingsNotifier.value = AppSettings(
+                      fontSize: appSettingsNotifier.value.fontSize,
+                      themeColor: appSettingsNotifier.value.themeColor,
+                      lineHeight: _lineHeight,
                       readingSpeed: appSettingsNotifier.value.readingSpeed,
                       language: appSettingsNotifier.value.language,
                       themeContrastLevel:
@@ -89,6 +119,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     _themeContrastLevel = value;
                     appSettingsNotifier.value = AppSettings(
                       fontSize: appSettingsNotifier.value.fontSize,
+                      lineHeight: appSettingsNotifier.value.lineHeight,
                       themeColor: appSettingsNotifier.value.themeColor,
                       readingSpeed: appSettingsNotifier.value.readingSpeed,
                       language: appSettingsNotifier.value.language,
@@ -115,6 +146,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     _readingSpeed = value;
                     appSettingsNotifier.value = AppSettings(
                       fontSize: appSettingsNotifier.value.fontSize,
+                      lineHeight: appSettingsNotifier.value.lineHeight,
                       themeColor: appSettingsNotifier.value.themeColor,
                       readingSpeed: _readingSpeed,
                       language: appSettingsNotifier.value.language,
@@ -139,6 +171,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         _language = value!;
                         appSettingsNotifier.value = AppSettings(
                           fontSize: appSettingsNotifier.value.fontSize,
+                          lineHeight: appSettingsNotifier.value.lineHeight,
                           themeColor: appSettingsNotifier.value.themeColor,
                           readingSpeed: appSettingsNotifier.value.readingSpeed,
                           language: _language,
@@ -157,6 +190,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         _language = value!;
                         appSettingsNotifier.value = AppSettings(
                           fontSize: appSettingsNotifier.value.fontSize,
+                          lineHeight: appSettingsNotifier.value.lineHeight,
                           themeColor: appSettingsNotifier.value.themeColor,
                           readingSpeed: appSettingsNotifier.value.readingSpeed,
                           language: _language,
@@ -183,6 +217,7 @@ class _SettingsPageState extends State<SettingsPage> {
             _themeColor = color;
             appSettingsNotifier.value = AppSettings(
               fontSize: appSettingsNotifier.value.fontSize,
+              lineHeight: appSettingsNotifier.value.lineHeight,
               themeColor: _themeColor,
               readingSpeed: appSettingsNotifier.value.readingSpeed,
               language: appSettingsNotifier.value.language,

@@ -90,6 +90,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get font_size => 'અક્ષરની સાઇઝ';
 
   @override
+  String get line_height => 'લાઇન હાઇટ';
+
+  @override
   String get theme_color => 'થિમનો રંગ';
 
   @override

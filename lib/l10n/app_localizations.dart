@@ -257,6 +257,12 @@ abstract class AppLocalizations {
   /// **'Font Size'**
   String get font_size;
 
+  /// No description provided for @line_height.
+  ///
+  /// In en, this message translates to:
+  /// **'Line Height'**
+  String get line_height;
+
   /// No description provided for @theme_color.
   ///
   /// In en, this message translates to:

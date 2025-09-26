@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/services/customtagregistry.dart';
 
 class CustomHtmlWidget extends StatefulWidget {
@@ -26,15 +27,23 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
   Widget build(BuildContext context) {
     Color fontColor = Theme.of(context).colorScheme.primary;
     String htmlContent = widget.htmlContent.replaceAll('&nbsp; &nbsp;', '⠀ ');
-    return Html(
-      data: htmlContent,
-      extensions: [...widget.customTagRegistry.buildExtensions(context)],
-      style: {
-        "body": Style(
-          color: fontColor,
-          fontSize: FontSize(Theme.of(context).textTheme.bodyLarge!.fontSize!),
-          textAlign: TextAlign.justify,
-        ),
+    return ValueListenableBuilder<AppSettings>(
+      valueListenable: appSettingsNotifier,
+      builder: (context, settings, child) {
+        return Html(
+          data: htmlContent,
+          extensions: [...widget.customTagRegistry.buildExtensions(context)],
+          style: {
+            "body": Style(
+              color: fontColor,
+              fontSize: FontSize(
+                Theme.of(context).textTheme.bodyLarge!.fontSize!,
+              ),
+              textAlign: TextAlign.justify,
+              lineHeight: LineHeight(appSettingsNotifier.value.lineHeight),
+            ),
+          },
+        );
       },
     );
   }

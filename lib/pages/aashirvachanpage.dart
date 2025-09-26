@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/components/customHtmlWidget.dart';
 import '../models/aashirvachan_model.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
-import 'package:flutter_html/flutter_html.dart';
-import '../services/customtagregistry.dart';
 
 class AashirvachanDetailPage extends StatefulWidget {
-  AashirvachanDetailPage({super.key, required this.aashirvachan}) {
-    customTagRegistry.registerCustomTags();
-  }
+  const AashirvachanDetailPage({super.key, required this.aashirvachan});
 
   final AashirvachanModel aashirvachan;
-  final CustomTagRegistry customTagRegistry = CustomTagRegistry();
 
   @override
   State<AashirvachanDetailPage> createState() => _AashirvachanDetailPageState();
@@ -25,7 +21,6 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle bodyStyle = Theme.of(context).textTheme.bodyMedium!;
     return Scaffold(
       appBar: buildAppBar(
         context,
@@ -74,24 +69,11 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
               ],
               if (widget.aashirvachan.content.text != null) ...[
                 const SizedBox(height: 16),
-                Html(
-                  data:
+                CustomHtmlWidget(
+                  htmlContent:
                       AppDataService().getValue(
                         widget.aashirvachan.content.text!,
                       )!,
-                  style: {
-                    "body": Style(
-                      fontSize:
-                          bodyStyle.fontSize != null
-                              ? FontSize(bodyStyle.fontSize!)
-                              : FontSize(16),
-                      textAlign: TextAlign.justify,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  },
-                  extensions: [
-                    ...widget.customTagRegistry.buildExtensions(context),
-                  ],
                 ),
               ],
             ],

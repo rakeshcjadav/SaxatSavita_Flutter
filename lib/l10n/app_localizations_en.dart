@@ -90,6 +90,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get font_size => 'Font Size';
 
   @override
+  String get line_height => 'Line Height';
+
+  @override
   String get theme_color => 'Theme Color';
 
   @override
