@@ -7,6 +7,7 @@ import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranlist_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
+import 'package:saxatsavita_flutter/pages/sliverkiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
@@ -57,6 +58,18 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             ),
       ),
     );
+    /*
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => SliverKiranReadPage(
+              partNumber: widget.bookPart.id,
+              kiranInfo: kiran,
+              kiranUserInfo: kiranUserInfo,
+            ),
+      ),
+    );*/
   }
 
   @override

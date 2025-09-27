@@ -103,6 +103,8 @@ def ExtractKirans(book, inputfile, location, directory, range, fileErrorLog, bFo
         #Disabling for flutter app
         content = content.replace("\t<slok>", "<slok>").replace("</slok>\n", "</slok>")
         content = content.replace("\t", "<p>&nbsp; &nbsp;").replace("\n", "</p>")
+        content = content.replace("<dq>", "<b>").replace("</dq>", "</b>")
+        content = content.replace("<sq>", "<b>").replace("</sq>", "</b>")
         
         content = content.strip().replace(footer, "", 1)
         content = linkMeaningWords(fileErrorLog, kiran, content)

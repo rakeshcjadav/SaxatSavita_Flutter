@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/meanings_model.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
@@ -45,9 +46,9 @@ class CustomTagRegistry {
                     ? FontSize(slokStyle.fontSize!)
                     : FontSize(18),
             fontWeight: slokStyle.fontWeight,
-            lineHeight: LineHeight(1.5),
             textAlign: TextAlign.center,
             display: Display.inline,
+            lineHeight: LineHeight(1.0),
           ),
         },
       );
@@ -78,48 +79,6 @@ class CustomTagRegistry {
       );
     });
 
-    register("sq", (context, extensionContext, innerHtml) {
-      Color fontColor = Theme.of(context).colorScheme.primary;
-      TextStyle sqStyle = Theme.of(context).textTheme.titleSmall!;
-      return Html(
-        data: innerHtml,
-        style: {
-          "body": Style(
-            color: fontColor,
-            fontWeight: sqStyle.fontWeight,
-            fontSize:
-                sqStyle.fontSize != null
-                    ? FontSize(sqStyle.fontSize!)
-                    : FontSize(18),
-            display: Display.inline,
-            lineHeight: LineHeight(1.0),
-          ),
-        },
-        extensions: buildExtensions(context),
-      );
-    });
-
-    register("dq", (context, extensionContext, innerHtml) {
-      Color fontColor = Theme.of(context).colorScheme.primary;
-      TextStyle dqStyle = Theme.of(context).textTheme.titleSmall!;
-      return Html(
-        data: innerHtml,
-        style: {
-          "body": Style(
-            color: fontColor,
-            fontWeight: dqStyle.fontWeight,
-            fontSize:
-                dqStyle.fontSize != null
-                    ? FontSize(dqStyle.fontSize!)
-                    : FontSize(18),
-            display: Display.inline,
-            lineHeight: LineHeight(1.0),
-          ),
-        },
-        extensions: buildExtensions(context),
-      );
-    });
-
     register("a", (context, extensionContext, innerHtml) {
       Color fontColor = Utils.oppositeColor(
         Theme.of(context).colorScheme.primary,
@@ -132,51 +91,7 @@ class CustomTagRegistry {
             MeaningItem? meaning = Bookservice().getMeaning(href);
             if (meaning != null && meaning.index != -1) {
               debugPrint("Meaning found: ${meaning.meaning}");
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return SafeArea(
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withOpacity(0.1),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Text(
-                                  meaning.word,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                meaning.meaning,
-                                style: Theme.of(context).textTheme.bodyLarge,
-                                overflow: TextOverflow.visible,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
+              showMeaningDialog(context, meaning);
             } else {
               debugPrint("Meaning not found for: $href");
             }
@@ -193,6 +108,7 @@ class CustomTagRegistry {
                       ? FontSize(anchorStyle.fontSize!)
                       : FontSize(18),
               display: Display.inline,
+              textAlign: TextAlign.justify,
               lineHeight: LineHeight(1.0),
             ),
           },
@@ -216,7 +132,7 @@ class CustomTagRegistry {
                       ? FontSize(headerStyle.fontSize!)
                       : FontSize(18),
               display: Display.inline,
-              lineHeight: LineHeight(1.0),
+              textAlign: TextAlign.center,
             ),
           },
         ),
@@ -239,7 +155,6 @@ class CustomTagRegistry {
                       ? FontSize(footerStyle.fontSize!)
                       : FontSize(18),
               display: Display.inline,
-              lineHeight: LineHeight(1.0),
             ),
           },
         ),
@@ -261,5 +176,52 @@ class CustomTagRegistry {
         );
       }
     });
+  }
+
+  Future<dynamic> showMeaningDialog(BuildContext context, MeaningItem meaning) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.1),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        meaning.word,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      meaning.meaning,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
