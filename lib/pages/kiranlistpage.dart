@@ -47,7 +47,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
   }
 
   void _navigateToKiranReadPage(KiranInfo kiran, KiranUserInfo kiranUserInfo) {
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder:
@@ -57,8 +57,8 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               kiranUserInfo: kiranUserInfo,
             ),
       ),
-    );
-    /*
+    );*/
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -69,7 +69,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               kiranUserInfo: kiranUserInfo,
             ),
       ),
-    );*/
+    );
   }
 
   @override

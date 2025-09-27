@@ -65,7 +65,7 @@ class _SliverKiranReadPageState extends State<SliverKiranReadPage> {
                 floating: true,
                 snap: false,
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                expandedHeight: 400.0,
+                expandedHeight: 150.0,
                 titleTextStyle: Theme.of(context).textTheme.titleSmall!
                     .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                 flexibleSpace: FlexibleSpaceBar(
@@ -96,10 +96,6 @@ class _SliverKiranReadPageState extends State<SliverKiranReadPage> {
                     ),
                   ),
                   expandedTitleScale: 1.0,
-                  background: Image.asset(
-                    "assets/res/z_jogi_swami_tall.webp",
-                    fit: BoxFit.cover,
-                  ),
                 ),
                 actions: [
                   IconButton(
@@ -117,7 +113,13 @@ class _SliverKiranReadPageState extends State<SliverKiranReadPage> {
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    CustomHtmlWidget(htmlContent: getKiranContent(contentData)),
+                    SafeArea(
+                      top: false,
+                      bottom: true,
+                      child: CustomHtmlWidget(
+                        htmlContent: getKiranContent(contentData),
+                      ),
+                    ),
                   ]),
                 ),
               ),
