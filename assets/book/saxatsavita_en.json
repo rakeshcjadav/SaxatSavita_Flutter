@@ -4,34 +4,44 @@
         "partNumber": 1,
         "displayname": "Part 1",
         "image": "assets/res/1.jpg",
-        "range": "from kiran 1 to 170"
+        "range": "from kiran 1 to 170",
+        "startKiranIndex": 1,
+        "endKiranIndex": 170
     },
     {
         "id": "part2",
         "partNumber": 2,
         "displayname": "Part 2",
         "image": "assets/res/2.jpg",
-        "range": "from kiran 171 to 362"
+        "range": "from kiran 171 to 362",
+        "startKiranIndex": 171,
+        "endKiranIndex": 362
     },
     {
         "id": "part3",
         "partNumber": 3,
         "displayname": "Part 3",
         "image": "assets/res/3.jpg",
-        "range": "from kiran 363 to 501"
+        "range": "from kiran 363 to 501",
+        "startKiranIndex": 363,
+        "endKiranIndex": 501
     },
     {
         "id": "part4",
-        "partNumber": 3,
+        "partNumber": 4,
         "displayname": "Part 4",
         "image": "assets/res/3.jpg",
-        "range": "from kiran 502 to 600"
+        "range": "from kiran 502 to 600",
+        "startKiranIndex": 502,
+        "endKiranIndex": 600
     },
     {
         "id": "part5",
-        "partNumber": 3,
+        "partNumber": 5,
         "displayname": "Part 5",
         "image": "assets/res/3.jpg",
-        "range": "from kiran 601 to 697"
+        "range": "from kiran 601 to 697",
+        "startKiranIndex": 601,
+        "endKiranIndex": 697
     }
 ]

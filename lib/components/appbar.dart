@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
-enum ActionOptions { info, settings, search }
+enum ActionOptions { info, settings, search, favorite, bookmark }
 
 AppBar buildAppBar(
   BuildContext context, {
   String title = '',
   List<ActionOptions>? actionItems,
+  List<Widget>? extraActions,
 }) {
   return AppBar(
     title: Text(
@@ -22,6 +23,7 @@ AppBar buildAppBar(
             Navigator.pushNamed(context, '/info');
           },
         ),
+      if (extraActions != null) ...extraActions,
       if (actionItems?.contains(ActionOptions.settings) ?? false)
         IconButton(
           icon: const Icon(Icons.settings),

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/customHtmlWidget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
-import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 

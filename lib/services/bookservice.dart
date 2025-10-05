@@ -17,6 +17,10 @@ class Bookservice {
   List<BookUserInfo>? _bookUserInfoList = [];
   List<BookUserInfo>? get bookUserInfoList => _bookUserInfoList;
 
+  set bookUserInfoList(List<BookUserInfo>? list) {
+    _bookUserInfoList = list;
+  }
+
   MeaningsModel? _meanings;
   MeaningsModel? get meanings => _meanings;
 
@@ -77,7 +81,17 @@ class Bookservice {
     final Locale locale = Localizations.localeOf(context);
     final String filename =
         'assets/book/${bookName}_${locale.languageCode}.json';
-    final jsondata = await rootBundle.loadString(filename);
+    String jsondata;
+    try {
+      jsondata = await rootBundle.loadString(filename);
+    } catch (e) {
+      debugPrint(
+        "Error loading localized book parts: $e. Falling back to English.",
+      );
+      // Fallback to English if localized file not found
+      final String fallbackFilename = 'assets/book/${bookName}_en.json';
+      jsondata = await rootBundle.loadString(fallbackFilename);
+    }
     final list = json.decode(jsondata) as List<dynamic>;
 
     List<Bookpartmodel> bookparts =
@@ -89,10 +103,25 @@ class Bookservice {
               (part) => BookUserInfo(
                 id: part.id,
                 partNumber: part.partNumber,
-                bookmarkKiranIndex: 1,
+                bookmarkKiranIndex: part.startKiranIndex,
               ),
             )
             .toList();
+
+    for (var part in bookparts) {
+      debugPrint(
+        "Initialized Bookpartmodel: partNumber=${part.partNumber}, "
+        "displayname=${part.displayname}, range=${part.range}, "
+        "startKiranIndex=${part.startKiranIndex}, endKiranIndex=${part.endKiranIndex}",
+      );
+    }
+
+    for (var info in _bookUserInfoList!) {
+      debugPrint(
+        "Initialized BookUserInfo: partNumber=${info.partNumber}, "
+        "bookmarkKiranIndex=${info.bookmarkKiranIndex}",
+      );
+    }
 
     return bookparts;
   }

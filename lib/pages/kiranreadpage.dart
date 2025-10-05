@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:saxatsavita_flutter/components/customHtmlWidget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 
 class KiranReadPage extends StatefulWidget {
   const KiranReadPage({
@@ -25,10 +27,31 @@ class KiranReadPage extends StatefulWidget {
 class _KiranReadPageState extends State<KiranReadPage> {
   late Future<Map<String, dynamic>> _futureKiranContent;
 
+  final Stopwatch _stopwatch = Stopwatch();
+  Timer? _timer;
+  String _elapsed = "00:00";
+
   @override
   void initState() {
     super.initState();
     _futureKiranContent = _loadKiranContent();
+    _stopwatch.start();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {
+        final seconds = _stopwatch.elapsed.inSeconds;
+        final minutes = seconds ~/ 60;
+        final secs = seconds % 60;
+        _elapsed =
+            "${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}";
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _stopwatch.stop();
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<Map<String, dynamic>> _loadKiranContent() async {
@@ -52,6 +75,40 @@ class _KiranReadPageState extends State<KiranReadPage> {
         title:
             '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}',
         actionItems: [ActionOptions.settings],
+        extraActions: [
+          IconButton(
+            icon: Icon(
+              widget.kiranUserInfo.isFavourite == 0
+                  ? Icons.favorite_border
+                  : Icons.favorite,
+              color: widget.kiranUserInfo.isFavourite == 0 ? null : Colors.pink,
+            ),
+            tooltip: AppLocalizations.of(context)!.information,
+            onPressed: () {
+              setState(() {
+                widget.kiranUserInfo.isFavourite =
+                    widget.kiranUserInfo.isFavourite == 0 ? 1 : 0;
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Utils.isBookmarked(widget.kiranUserInfo)
+                  ? Icons.bookmark
+                  : Icons.bookmark_border,
+              color:
+                  Utils.isBookmarked(widget.kiranUserInfo)
+                      ? Colors.amber
+                      : null,
+            ),
+            tooltip: AppLocalizations.of(context)!.bookmark,
+            onPressed: () {
+              setState(() {
+                Utils.setBookmark(widget.kiranUserInfo);
+              });
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(
@@ -62,6 +119,63 @@ class _KiranReadPageState extends State<KiranReadPage> {
         ),
         child: Column(
           children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainer.withOpacity(1.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  // Estimated reading time
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 2.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.timer, color: Colors.grey.withOpacity(0.3)),
+                        const SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.time_to_read(
+                            Utils.getEstimatedReadingTime(
+                              widget.kiranInfo.wordCount,
+                            ),
+                          ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall!.copyWith(fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Add timer display here
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.av_timer_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          _elapsed,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall!.copyWith(fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(

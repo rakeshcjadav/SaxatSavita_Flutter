@@ -1,7 +1,7 @@
 class BookUserInfo {
   final String id;
   final int partNumber;
-  final int bookmarkKiranIndex;
+  int bookmarkKiranIndex;
 
   BookUserInfo({
     required this.id,

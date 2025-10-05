@@ -13,9 +13,12 @@ class KiranList {
   factory KiranList.fromMap(Map<String, dynamic> map) {
     KiranList kiranList = KiranList(
       list:
-          (map['list'] as List).map((item) => KiranInfo.fromMap(item)).toList(),
-      name: map['name'],
-      part: map['part'],
+          (map['list'] as List?)
+              ?.map((item) => KiranInfo.fromMap(item))
+              .toList() ??
+          [],
+      name: map['name'] ?? '',
+      part: map['part'] ?? '',
     );
     kiranList.wordCount =
         kiranList.list

@@ -34,14 +34,17 @@ class KiranUserInfo {
 
   factory KiranUserInfo.fromJson(Map<String, dynamic> json) {
     return KiranUserInfo(
-      kiranIndex: json['kiranIndex'],
-      listIndex: json['listIndex'],
-      partNumber: json['partNumber'],
-      isFavourite: json['isFavourite'],
-      readCount: json['readCount'],
+      kiranIndex: json['kiranIndex'] ?? 0,
+      listIndex: json['listIndex'] ?? 0,
+      partNumber: json['partNumber'] ?? 0,
+      isFavourite: json['isFavourite'] ?? 0,
+      readCount: json['readCount'] ?? 0,
       note: json['note'],
-      progress: json['progress'],
-      updatedAt: json['updatedAt'],
+      progress: json['progress'] ?? 0,
+      updatedAt:
+          json['updatedAt'] != null
+              ? DateTime.tryParse(json['updatedAt'])
+              : null,
     );
   }
 

@@ -13,10 +13,10 @@ class KiranInfo {
 
   factory KiranInfo.fromMap(Map<String, dynamic> map) {
     return KiranInfo(
-      index: map['index'],
-      number: map['number'],
-      title: map['title'],
-      wordCount: map['word_count'],
+      index: map['index'] ?? 0,
+      number: map['number'] ?? '',
+      title: map['title'] ?? '',
+      wordCount: map['word_count'] ?? 0,
     );
   }
 

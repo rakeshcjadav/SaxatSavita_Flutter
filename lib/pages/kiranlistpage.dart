@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
-import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranlist_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
-import 'package:saxatsavita_flutter/pages/sliverkiranreadpage.dart';
-import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import '../models/bookpart_model.dart';
@@ -46,8 +43,11 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     super.dispose();
   }
 
-  void _navigateToKiranReadPage(KiranInfo kiran, KiranUserInfo kiranUserInfo) {
-    /*Navigator.push(
+  Future<void> _navigateToKiranReadPage(
+    KiranInfo kiran,
+    KiranUserInfo kiranUserInfo,
+  ) async {
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder:
@@ -57,8 +57,13 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               kiranUserInfo: kiranUserInfo,
             ),
       ),
-    );*/
-
+    );
+    if (result == true) {
+      setState(() {
+        // Refresh the state to reflect any changes made in KiranReadPage
+      });
+    }
+    /*
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -70,6 +75,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             ),
       ),
     );
+    */
   }
 
   @override
@@ -251,13 +257,6 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         ),
       ],
     );
-  }
-
-  bool isBookmarked(KiranUserInfo kiranUserInfo) {
-    BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
-      kiranUserInfo.partNumber,
-    );
-    return kiranUserInfo.kiranIndex == bookUserInfo.bookmarkKiranIndex;
   }
 
   String getLastUpdatedDate(KiranUserInfo kiranUserInfo) {

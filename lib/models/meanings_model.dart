@@ -6,9 +6,10 @@ class MeaningsModel {
   factory MeaningsModel.fromMap(Map<String, dynamic> map) {
     return MeaningsModel(
       list:
-          (map['list'] as List<dynamic>)
-              .map((item) => MeaningItem.fromMap(item))
-              .toList(),
+          (map['list'] as List<dynamic>?)
+              ?.map((item) => MeaningItem.fromMap(item))
+              .toList() ??
+          [],
     );
   }
 }
@@ -30,11 +31,15 @@ class MeaningItem {
 
   factory MeaningItem.fromMap(Map<String, dynamic> map) {
     return MeaningItem(
-      index: map['index'] as int,
-      word: map['word'] as String,
-      meaning: map['meaning'] as String,
-      count: map['count'] as int,
-      kirans: (map['kirans'] as List<dynamic>).map((e) => e as int).toList(),
+      index: (map['index'] as int?) ?? 0,
+      word: (map['word'] as String?) ?? '',
+      meaning: (map['meaning'] as String?) ?? '',
+      count: (map['count'] as int?) ?? 0,
+      kirans:
+          (map['kirans'] as List<dynamic>?)
+              ?.map((e) => (e as int?) ?? 0)
+              .toList() ??
+          [],
     );
   }
 }

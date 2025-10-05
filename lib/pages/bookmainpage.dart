@@ -24,6 +24,12 @@ class _BookmainpageState extends State<BookMainpage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    //Navigator.pop(context, true); // Notify parent of changes
+  }
+
   Future<List<Bookpartmodel>> get bookparts {
     return Bookservice().loadBook(context, 'saxatsavita');
   }
@@ -322,7 +328,15 @@ class _BookmainpageState extends State<BookMainpage> {
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     ElevatedButton.icon(
-                      label: Text(AppLocalizations.of(context)!.sakshatSavita),
+                      label: Text(
+                        getNameofBookMark(
+                          bookparts[index].partNumber,
+                          Bookservice()
+                              .getBookUserInfo(bookparts[index].partNumber)
+                              .bookmarkKiranIndex,
+                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                       onPressed: () {},
                       icon: const Icon(Icons.bookmark),
                       style: ButtonStyle(elevation: WidgetStatePropertyAll(0)),
@@ -335,5 +349,18 @@ class _BookmainpageState extends State<BookMainpage> {
         ),
       ),
     );
+  }
+
+  String getNameofBookMark(int partNumber, int kiranIndex) {
+    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    if (bookUserInfo.bookmarkKiranIndex == 0) {
+      return "";
+    } else {
+      var kiranInfo = KiranListService().getKiranInfo(
+        partNumber,
+        bookUserInfo.bookmarkKiranIndex,
+      );
+      return "${kiranInfo.number} ${kiranInfo.title}";
+    }
   }
 }
