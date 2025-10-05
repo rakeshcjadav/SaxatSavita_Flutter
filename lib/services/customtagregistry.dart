@@ -59,7 +59,7 @@ class CustomTagRegistry {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
         decoration: BoxDecoration(
-          color: fontColor.withOpacity(0.1),
+          color: fontColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(0),
         ),
         child: Row(
@@ -196,7 +196,7 @@ class CustomTagRegistry {
                       borderRadius: BorderRadius.circular(15),
                       color: Theme.of(
                         context,
-                      ).colorScheme.primary.withOpacity(0.1),
+                      ).colorScheme.primary.withValues(alpha: 0.1),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),

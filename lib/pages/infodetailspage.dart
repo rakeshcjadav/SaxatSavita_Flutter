@@ -30,9 +30,7 @@ class Infodetailspage extends StatelessWidget {
             Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainer.withOpacity(1.0),
+                color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.vertical(
                   bottom: Radius.circular(20.0),
                 ),

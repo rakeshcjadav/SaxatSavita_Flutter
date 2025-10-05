@@ -76,7 +76,7 @@ class _SliverKiranReadPageState extends State<SliverKiranReadPage> {
                       decoration: BoxDecoration(
                         color: Theme.of(
                           context,
-                        ).colorScheme.primary.withOpacity(0.8),
+                        ).colorScheme.primary.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Padding(

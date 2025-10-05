@@ -52,7 +52,7 @@ class HomePageState extends State<HomePage> {
                         Shadow(
                           offset: Offset(1.0, 1.0),
                           blurRadius: 3.0,
-                          color: Colors.black.withOpacity(0.8),
+                          color: Colors.black.withValues(alpha: 0.8),
                         ),
                       ],
                     ),
@@ -102,7 +102,7 @@ class HomePageState extends State<HomePage> {
                             Shadow(
                               offset: Offset(1.0, 1.0),
                               blurRadius: 3.0,
-                              color: Colors.black.withOpacity(0.8),
+                              color: Colors.black.withValues(alpha: 0.8),
                             ),
                           ],
                         ),

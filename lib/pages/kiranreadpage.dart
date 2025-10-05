@@ -331,14 +331,13 @@ class _KiranReadPageState extends State<KiranReadPage>
               displayExtraInfos(context),
               LinearProgressIndicator(
                 value: widget.kiranUserInfo.progress.toDouble() / 100.0,
-                //value: 100 / kiran.wordCount,
                 minHeight: 3,
                 borderRadius: BorderRadius.circular(3),
                 backgroundColor: Theme.of(
                   context,
-                ).primaryColor.withValues(alpha: 0.1),
+                ).colorScheme.primary.withValues(alpha: 0.1),
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
                 ),
               ),
               Container(
