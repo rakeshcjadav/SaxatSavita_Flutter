@@ -240,7 +240,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         const SizedBox(height: 8),
         // Progress bar (if relevant)
         LinearProgressIndicator(
-          value: kiranUserInfo.progress.toDouble(),
+          value: kiranUserInfo.progress.toDouble() / 100.0,
           //value: 100 / kiran.wordCount,
           minHeight: 3,
           borderRadius: BorderRadius.circular(3),

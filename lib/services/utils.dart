@@ -11,10 +11,15 @@ class Utils {
     return hsl.withHue(oppositeHue).toColor();
   }
 
-  static String getEstimatedReadingTime(int wordCount) {
+  static int getEstimatedReadingSeconds(int wordCount) {
     // readingSpeed: words per second
     double readingSpeed = appSettingsNotifier.value.readingSpeed / 60.0;
     final totalSeconds = (wordCount / readingSpeed).round();
+    return totalSeconds;
+  }
+
+  static String getEstimatedReadingTime(int wordCount) {
+    final totalSeconds = getEstimatedReadingSeconds(wordCount);
     final hours = totalSeconds ~/ 3600;
     final minutes = totalSeconds ~/ 60;
     final seconds = totalSeconds % 60;

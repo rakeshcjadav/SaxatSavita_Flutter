@@ -321,10 +321,6 @@ class _BookmainpageState extends State<BookMainpage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(
-                          "${AppLocalizations.of(context)!.bookmark}: ",
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
                         ElevatedButton.icon(
                           label: Text(
                             getNameofBookMark(
@@ -333,6 +329,7 @@ class _BookmainpageState extends State<BookMainpage> {
                                   .getBookUserInfo(bookparts[index].partNumber)
                                   .bookmarkKiranIndex,
                             ),
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           onPressed: () {

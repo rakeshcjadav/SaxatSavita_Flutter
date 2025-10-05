@@ -35,6 +35,13 @@ class _KiranReadPageState extends State<KiranReadPage>
   String _elapsed = "00:00";
   bool _isTimerPaused = false;
 
+  // Auto-scroll variables
+  bool _isAutoScrolling = false;
+  Timer? _autoScrollTimer;
+  double _contentHeight = 0;
+  int _estimatedReadingSeconds = 0;
+  bool _isInitialized = false;
+
   bool _hasDataChanged = false;
 
   @override
@@ -47,6 +54,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     WidgetsBinding.instance.addObserver(this);
 
     _startTimer();
+
+    // Note: Initial scroll position and listener will be set after content loads
 
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
@@ -65,6 +74,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     WidgetsBinding.instance.removeObserver(this);
     _stopwatch.stop();
     _timer?.cancel();
+    _autoScrollTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -104,6 +114,10 @@ class _KiranReadPageState extends State<KiranReadPage>
     if (!_isTimerPaused) {
       _stopwatch.stop();
       _isTimerPaused = true;
+      // Also pause auto-scroll when timer is paused
+      if (_isAutoScrolling) {
+        _stopAutoScroll();
+      }
       debugPrint("Timer paused");
     }
   }
@@ -122,6 +136,112 @@ class _KiranReadPageState extends State<KiranReadPage>
     final secs = seconds % 60;
     _elapsed =
         "${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}";
+  }
+
+  void _setInitialScrollPosition() {
+    if (_scrollController.hasClients && widget.kiranUserInfo.progress > 0) {
+      final maxScrollExtent = _scrollController.position.maxScrollExtent;
+      final targetPosition =
+          (widget.kiranUserInfo.progress / 100) * maxScrollExtent;
+
+      // Animate to the saved progress position
+      _scrollController.animateTo(
+        targetPosition,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _initializeAutoScroll() {
+    // Calculate estimated reading time in seconds
+    _estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
+      widget.kiranInfo.wordCount,
+    );
+
+    // Get content height and set up scroll listener
+    if (_scrollController.hasClients) {
+      _contentHeight = _scrollController.position.maxScrollExtent;
+
+      // Set up scroll listener to update progress during manual scrolling
+      _scrollController.addListener(() {
+        if (_scrollController.hasClients && _contentHeight > 0) {
+          final currentProgress =
+              ((_scrollController.position.pixels / _contentHeight) * 100)
+                  .round();
+          if (currentProgress != widget.kiranUserInfo.progress) {
+            widget.kiranUserInfo.progress = currentProgress;
+            widget.kiranUserInfo.updatedAt = DateTime.now();
+            // Update periodically, not on every scroll event for performance
+            if (currentProgress % 5 == 0) {
+              // Update every 5% progress
+              Utils.updateKiranUserInfo(widget.kiranUserInfo);
+              _hasDataChanged = true;
+            }
+          }
+        }
+      });
+    }
+  }
+
+  void _startAutoScroll() {
+    if (_contentHeight <= 0 || _estimatedReadingSeconds <= 0) return;
+
+    setState(() {
+      _isAutoScrolling = true;
+    });
+
+    // Calculate scroll speed (pixels per second)
+    final scrollSpeed = _contentHeight / _estimatedReadingSeconds;
+
+    _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 50), (
+      timer,
+    ) {
+      if (!_isAutoScrolling || !_scrollController.hasClients) {
+        timer.cancel();
+        return;
+      }
+
+      final currentPosition = _scrollController.position.pixels;
+      final newPosition =
+          currentPosition + (scrollSpeed * 0.05); // 50ms intervals
+
+      if (newPosition >= _contentHeight) {
+        // Reached the end
+        _scrollController.animateTo(
+          _contentHeight,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeOut,
+        );
+        _stopAutoScroll();
+      } else {
+        _scrollController.jumpTo(newPosition);
+      }
+    });
+  }
+
+  void _stopAutoScroll() {
+    setState(() {
+      _isAutoScrolling = false;
+      // Update progress based on current scroll position
+      if (_scrollController.hasClients && _contentHeight > 0) {
+        widget.kiranUserInfo.progress =
+            ((_scrollController.position.pixels / _contentHeight) * 100)
+                .round();
+        widget.kiranUserInfo.updatedAt = DateTime.now();
+        Utils.updateKiranUserInfo(widget.kiranUserInfo);
+        _hasDataChanged = true;
+      }
+    });
+    _autoScrollTimer?.cancel();
+  }
+
+  void _toggleAutoScroll() {
+    if (_isAutoScrolling) {
+      _stopAutoScroll();
+    } else {
+      _startAutoScroll();
+    }
   }
 
   Future<Map<String, dynamic>> _loadKiranContent() async {
@@ -208,81 +328,23 @@ class _KiranReadPageState extends State<KiranReadPage>
           ),
           child: Column(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainer.withOpacity(1.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4.0,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    // Estimated reading time
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 2.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.timer,
-                            color: Colors.grey.withOpacity(0.3),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            AppLocalizations.of(context)!.time_to_read(
-                              Utils.getEstimatedReadingTime(
-                                widget.kiranInfo.wordCount,
-                              ),
-                            ),
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall!.copyWith(fontSize: 13),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Add timer display here
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            _isTimerPaused
-                                ? Icons.pause_circle_outline
-                                : Icons.av_timer_outlined,
-                            size: 20,
-                            color: _isTimerPaused ? Colors.orange : null,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _elapsed,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall!.copyWith(
-                              fontSize: 13,
-                              color: _isTimerPaused ? Colors.orange : null,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+              displayExtraInfos(context),
+              LinearProgressIndicator(
+                value: widget.kiranUserInfo.progress.toDouble() / 100.0,
+                //value: 100 / kiran.wordCount,
+                minHeight: 3,
+                borderRadius: BorderRadius.circular(3),
+                backgroundColor: Theme.of(
+                  context,
+                ).primaryColor.withValues(alpha: 0.1),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                 ),
               ),
               Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainer.withOpacity(1.0),
+                  color: Theme.of(context).colorScheme.surfaceContainer,
                   borderRadius: BorderRadius.vertical(
                     bottom: Radius.circular(20.0),
                   ),
@@ -317,6 +379,15 @@ class _KiranReadPageState extends State<KiranReadPage>
                         return const Center(child: Text('No content found.'));
                       }
                       final contentData = snapshot.data!;
+
+                      // Initialize auto-scroll and set initial position after content is loaded (only once)
+                      if (!_isInitialized) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _initializeAutoScroll();
+                          _setInitialScrollPosition();
+                          _isInitialized = true;
+                        });
+                      }
                       return Scrollbar(
                         controller: _scrollController,
                         interactive: true,
@@ -339,6 +410,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                                       widget.kiranUserInfo,
                                     );
                                     _hasDataChanged = true;
+                                    _pauseTimer();
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -373,6 +445,88 @@ class _KiranReadPageState extends State<KiranReadPage>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Container displayExtraInfos(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        //borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4.0,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          // Estimated reading time
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 2.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.timer, color: Colors.grey.withValues(alpha: 0.3)),
+                  const SizedBox(width: 8),
+                  Text(
+                    AppLocalizations.of(context)!.time_to_read(
+                      Utils.getEstimatedReadingTime(widget.kiranInfo.wordCount),
+                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall!.copyWith(fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Auto-scroll play/pause button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: IconButton(
+              onPressed: _toggleAutoScroll,
+              icon: Icon(
+                _isAutoScrolling ? Icons.pause : Icons.play_arrow,
+                color: _isAutoScrolling ? Colors.amber : null,
+              ),
+              tooltip:
+                  _isAutoScrolling ? 'Pause Auto-scroll' : 'Start Auto-scroll',
+              iconSize: 28,
+            ),
+          ),
+          // Timer display
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _isTimerPaused
+                        ? Icons.pause_circle_outline
+                        : Icons.av_timer_outlined,
+                    size: 20,
+                    color: _isTimerPaused ? Colors.orange : null,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _elapsed,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontSize: 13,
+                      color: _isTimerPaused ? Colors.orange : null,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
