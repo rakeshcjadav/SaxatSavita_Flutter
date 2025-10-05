@@ -207,27 +207,31 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         // 2. All data from KiranUserInfo
         Row(
           children: [
-            Icon(
-              kiranUserInfo.isFavourite == 1
-                  ? Icons.favorite
-                  : Icons.favorite_border,
-              color:
-                  kiranUserInfo.isFavourite == 1
-                      ? Colors.pink.withValues(alpha: 0.3)
-                      : Colors.grey.withValues(alpha: 0.0),
-            ),
+            if (Utils.isBookmarked(kiranUserInfo)) ...[
+              Icon(
+                Utils.isBookmarked(kiranUserInfo)
+                    ? Icons.bookmark
+                    : Icons.bookmark_border,
+                color:
+                    Utils.isBookmarked(kiranUserInfo)
+                        ? Colors.amber
+                        : Colors.grey.withValues(alpha: 0.0),
+              ),
+              const Spacer(),
+            ],
+            if (kiranUserInfo.isFavourite == 1) ...[
+              Icon(
+                kiranUserInfo.isFavourite == 1
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+                color:
+                    kiranUserInfo.isFavourite == 1
+                        ? Colors.pink.withValues(alpha: 0.3)
+                        : Colors.grey.withValues(alpha: 0.0),
+              ),
+            ],
             const Spacer(),
-            Icon(
-              Utils.isBookmarked(kiranUserInfo)
-                  ? Icons.bookmark
-                  : Icons.bookmark_border,
-              color:
-                  Utils.isBookmarked(kiranUserInfo)
-                      ? Colors.amber
-                      : Colors.grey.withValues(alpha: 0.0),
-            ),
-            const Spacer(),
-            Icon(Icons.timer, color: Colors.grey.withOpacity(0.3)),
+            Icon(Icons.timer, color: Colors.grey.withValues(alpha: 0.3)),
             const SizedBox(width: 4),
             Text(
               AppLocalizations.of(
