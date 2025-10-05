@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
-import 'package:saxatsavita_flutter/components/customHtmlWidget.dart';
+import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
 import '../models/aashirvachan_model.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 

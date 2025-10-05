@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:saxatsavita_flutter/components/customHtmlWidget.dart';
+import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import '../models/infocontent_model.dart';
 import '../components/appbar.dart';
