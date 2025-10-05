@@ -57,25 +57,27 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Note: Initial scroll position and listener will be set after content loads
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() {
-        final seconds = _stopwatch.elapsed.inSeconds;
-        final minutes = seconds ~/ 60;
-        final secs = seconds % 60;
-        _elapsed =
-            "${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}";
-      });
-    });
+    // Timer is now handled in _startTimer() method
   }
 
   @override
   void dispose() {
     // Remove observer
     WidgetsBinding.instance.removeObserver(this);
+    
+    // Stop and cleanup timers
     _stopwatch.stop();
     _timer?.cancel();
+    _timer = null;
+    
+    // Stop auto-scroll and cleanup
+    _isAutoScrolling = false;
     _autoScrollTimer?.cancel();
+    _autoScrollTimer = null;
+    
+    // Dispose scroll controller
     _scrollController.dispose();
+    
     super.dispose();
   }
 
@@ -139,7 +141,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   void _setInitialScrollPosition() {
-    if (_scrollController.hasClients && widget.kiranUserInfo.progress > 0) {
+    if (mounted && _scrollController.hasClients && widget.kiranUserInfo.progress > 0) {
       final maxScrollExtent = _scrollController.position.maxScrollExtent;
       final targetPosition =
           (widget.kiranUserInfo.progress / 100) * maxScrollExtent;
@@ -165,7 +167,7 @@ class _KiranReadPageState extends State<KiranReadPage>
 
       // Set up scroll listener to update progress during manual scrolling
       _scrollController.addListener(() {
-        if (_scrollController.hasClients && _contentHeight > 0) {
+        if (mounted && _scrollController.hasClients && _contentHeight > 0) {
           final currentProgress =
               ((_scrollController.position.pixels / _contentHeight) * 100)
                   .round();
@@ -187,9 +189,11 @@ class _KiranReadPageState extends State<KiranReadPage>
   void _startAutoScroll() {
     if (_contentHeight <= 0 || _estimatedReadingSeconds <= 0) return;
 
-    setState(() {
-      _isAutoScrolling = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isAutoScrolling = true;
+      });
+    }
 
     // Calculate scroll speed (pixels per second)
     final scrollSpeed = _contentHeight / _estimatedReadingSeconds;
@@ -197,7 +201,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 50), (
       timer,
     ) {
-      if (!_isAutoScrolling || !_scrollController.hasClients) {
+      if (!mounted || !_isAutoScrolling || !_scrollController.hasClients) {
         timer.cancel();
         return;
       }
@@ -208,22 +212,40 @@ class _KiranReadPageState extends State<KiranReadPage>
 
       if (newPosition >= _contentHeight) {
         // Reached the end
-        _scrollController.animateTo(
-          _contentHeight,
-          duration: const Duration(milliseconds: 100),
-          curve: Curves.easeOut,
-        );
+        if (mounted && _scrollController.hasClients) {
+          _scrollController.animateTo(
+            _contentHeight,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeOut,
+          );
+        }
         _stopAutoScroll();
       } else {
-        _scrollController.jumpTo(newPosition);
+        if (mounted && _scrollController.hasClients) {
+          _scrollController.jumpTo(newPosition);
+        }
       }
     });
   }
 
   void _stopAutoScroll() {
-    setState(() {
-      _isAutoScrolling = false;
-      // Update progress based on current scroll position
+    _autoScrollTimer?.cancel();
+    _isAutoScrolling = false;
+    
+    if (mounted) {
+      setState(() {
+        // Update progress based on current scroll position
+        if (_scrollController.hasClients && _contentHeight > 0) {
+          widget.kiranUserInfo.progress =
+              ((_scrollController.position.pixels / _contentHeight) * 100)
+                  .round();
+          widget.kiranUserInfo.updatedAt = DateTime.now();
+          Utils.updateKiranUserInfo(widget.kiranUserInfo);
+          _hasDataChanged = true;
+        }
+      });
+    } else {
+      // Still update progress even if not mounted, just don't call setState
       if (_scrollController.hasClients && _contentHeight > 0) {
         widget.kiranUserInfo.progress =
             ((_scrollController.position.pixels / _contentHeight) * 100)
@@ -232,8 +254,7 @@ class _KiranReadPageState extends State<KiranReadPage>
         Utils.updateKiranUserInfo(widget.kiranUserInfo);
         _hasDataChanged = true;
       }
-    });
-    _autoScrollTimer?.cancel();
+    }
   }
 
   void _toggleAutoScroll() {
@@ -283,12 +304,14 @@ class _KiranReadPageState extends State<KiranReadPage>
               ),
               tooltip: AppLocalizations.of(context)!.information,
               onPressed: () {
-                setState(() {
-                  widget.kiranUserInfo.isFavourite =
-                      widget.kiranUserInfo.isFavourite == 0 ? 1 : 0;
-                  Utils.updateKiranUserInfo(widget.kiranUserInfo);
-                  _hasDataChanged = true;
-                });
+                if (mounted) {
+                  setState(() {
+                    widget.kiranUserInfo.isFavourite =
+                        widget.kiranUserInfo.isFavourite == 0 ? 1 : 0;
+                    Utils.updateKiranUserInfo(widget.kiranUserInfo);
+                    _hasDataChanged = true;
+                  });
+                }
               },
             ),
             IconButton(
@@ -303,10 +326,12 @@ class _KiranReadPageState extends State<KiranReadPage>
               ),
               tooltip: AppLocalizations.of(context)!.bookmark,
               onPressed: () {
-                setState(() {
-                  Utils.setBookmark(widget.kiranUserInfo);
-                  _hasDataChanged = true;
-                });
+                if (mounted) {
+                  setState(() {
+                    Utils.setBookmark(widget.kiranUserInfo);
+                    _hasDataChanged = true;
+                  });
+                }
               },
             ),
           ],
@@ -400,27 +425,31 @@ class _KiranReadPageState extends State<KiranReadPage>
                               const SizedBox(height: 8.0),
                               ElevatedButton.icon(
                                 onPressed: () {
-                                  setState(() {
-                                    widget.kiranUserInfo.progress = 100;
-                                    widget.kiranUserInfo.readCount += 1;
-                                    widget.kiranUserInfo.updatedAt =
-                                        DateTime.now();
-                                    Utils.updateKiranUserInfo(
-                                      widget.kiranUserInfo,
-                                    );
-                                    _hasDataChanged = true;
-                                    _pauseTimer();
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.kiran_read_finished,
+                                  if (mounted) {
+                                    setState(() {
+                                      widget.kiranUserInfo.progress = 100;
+                                      widget.kiranUserInfo.readCount += 1;
+                                      widget.kiranUserInfo.updatedAt =
+                                          DateTime.now();
+                                      Utils.updateKiranUserInfo(
+                                        widget.kiranUserInfo,
+                                      );
+                                      _hasDataChanged = true;
+                                      _pauseTimer();
+                                    });
+                                  }
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.kiran_read_finished,
+                                        ),
+                                        duration: const Duration(seconds: 2),
                                       ),
-                                      duration: const Duration(seconds: 2),
-                                    ),
-                                  );
+                                    );
+                                  }
                                 },
                                 icon: const Icon(Icons.check_box),
                                 label: Padding(

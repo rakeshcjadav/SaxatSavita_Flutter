@@ -310,37 +310,32 @@ class _BookmainpageState extends State<BookMainpage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Divider(),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Column(
+              if (isValidBookmark(bookparts[index].partNumber)) ...[
+                const SizedBox(height: 8),
+                Divider(),
+                const SizedBox(height: 8),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ElevatedButton.icon(
-                          label: Text(
-                            getNameofBookMark(
-                              bookparts[index].partNumber,
-                              Bookservice()
-                                  .getBookUserInfo(bookparts[index].partNumber)
-                                  .bookmarkKiranIndex,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodySmall,
+                    ElevatedButton.icon(
+                      label: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          getNameofBookMark(
+                            bookparts[index].partNumber,
+                            Bookservice()
+                                .getBookUserInfo(bookparts[index].partNumber)
+                                .bookmarkKiranIndex,
                           ),
-                          onPressed: () {
-                            navigateToBookMark(bookparts, index + 1);
-                          },
-                          icon: const Icon(Icons.bookmark, color: Colors.amber),
-                          style: ButtonStyle(
-                            elevation: WidgetStatePropertyAll(0),
-                          ),
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
-                      ],
+                      ),
+                      onPressed: () {
+                        navigateToBookMark(bookparts, index + 1);
+                      },
+                      icon: const Icon(Icons.bookmark, color: Colors.amber),
+                      style: ButtonStyle(elevation: WidgetStatePropertyAll(0)),
                     ),
                     if (Bookservice()
                             .getBookUserInfo(bookparts[index].partNumber)
@@ -371,12 +366,22 @@ class _BookmainpageState extends State<BookMainpage> {
                     ],
                   ],
                 ),
-              ),
+              ],
             ],
           ),
         ),
       ),
     );
+  }
+
+  bool isValidBookmark(int partNumber) {
+    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    if (bookUserInfo.bookmarkKiranIndex == 0) {
+      return false;
+    } else {
+      return bookUserInfo.bookmarkKiranIndex !=
+          Bookservice().bookparts![partNumber - 1].startKiranIndex;
+    }
   }
 
   void navigateToKiranList(List<Bookpartmodel> bookparts, int index) async {
