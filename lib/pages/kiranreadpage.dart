@@ -35,8 +35,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   String _elapsed = "00:00";
   bool _isTimerPaused = false;
 
-  bool _hasFavoriteChanged = false;
-  bool _hasBookmarkChanged = false;
+  bool _hasDataChanged = false;
 
   @override
   void initState() {
@@ -144,7 +143,7 @@ class _KiranReadPageState extends State<KiranReadPage>
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) {
         if (!didPop) {
-          Navigator.of(context).pop(_hasFavoriteChanged || _hasBookmarkChanged);
+          Navigator.of(context).pop(_hasDataChanged);
         }
       },
       child: Scaffold(
@@ -168,7 +167,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                   widget.kiranUserInfo.isFavourite =
                       widget.kiranUserInfo.isFavourite == 0 ? 1 : 0;
                   Utils.updateKiranUserInfo(widget.kiranUserInfo);
-                  _hasFavoriteChanged = true;
+                  _hasDataChanged = true;
                 });
               },
             ),
@@ -186,7 +185,7 @@ class _KiranReadPageState extends State<KiranReadPage>
               onPressed: () {
                 setState(() {
                   Utils.setBookmark(widget.kiranUserInfo);
-                  _hasBookmarkChanged = true;
+                  _hasDataChanged = true;
                 });
               },
             ),
@@ -328,6 +327,41 @@ class _KiranReadPageState extends State<KiranReadPage>
                               CustomHtmlWidget(
                                 htmlContent: getKiranContent(contentData),
                               ),
+                              const SizedBox(height: 8.0),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    widget.kiranUserInfo.progress = 100;
+                                    widget.kiranUserInfo.readCount += 1;
+                                    widget.kiranUserInfo.updatedAt =
+                                        DateTime.now();
+                                    Utils.updateKiranUserInfo(
+                                      widget.kiranUserInfo,
+                                    );
+                                    _hasDataChanged = true;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.kiran_read_finished,
+                                      ),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.check_box),
+                                label: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.kiran_read_finished,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16.0),
                             ],
                           ),
                         ),

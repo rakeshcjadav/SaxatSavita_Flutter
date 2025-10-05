@@ -116,6 +116,9 @@ class AppLocalizationsGu extends AppLocalizations {
   }
 
   @override
+  String get kiran_read_finished => 'કિરણ વાંચી લીધું';
+
+  @override
   String get not_yet_read => 'હજી વાંચ્યું નથી';
 
   @override

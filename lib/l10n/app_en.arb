@@ -36,6 +36,7 @@
     "reading_speed": "Reading Speed",
     "select_language": "Select Language",
     "reading_count": "Read {count} times",
+    "kiran_read_finished" : "Read the kiran",
     "@reading_count": {
         "description": "Indicates how many times the user has read a particular item.",
         "placeholders": {

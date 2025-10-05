@@ -116,6 +116,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get kiran_read_finished => 'Read the kiran';
+
+  @override
   String get not_yet_read => 'Not yet read';
 
   @override

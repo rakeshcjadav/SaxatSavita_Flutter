@@ -305,6 +305,12 @@ abstract class AppLocalizations {
   /// **'Read {count} times'**
   String reading_count(int count);
 
+  /// No description provided for @kiran_read_finished.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the kiran'**
+  String get kiran_read_finished;
+
   /// No description provided for @not_yet_read.
   ///
   /// In en, this message translates to:
