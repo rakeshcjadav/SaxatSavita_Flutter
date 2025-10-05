@@ -7,7 +7,7 @@ class KiranUserService {
 
   List<KiranUserInfo> _kiranUserInfoList = [];
 
-  KiranUserInfo? getKiranUserInfo(int kiranIndex) {
+  KiranUserInfo getKiranUserInfo(int kiranIndex) {
     if (_kiranUserInfoList.isEmpty) {
       _kiranUserInfoList = [];
       buildKiranUserInfoList();

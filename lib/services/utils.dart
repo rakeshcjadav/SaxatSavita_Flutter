@@ -45,6 +45,7 @@ class Utils {
     } else {
       // Set bookmark
       bookUserInfo.bookmarkKiranIndex = kiranUserInfo.kiranIndex;
+      bookUserInfo.updatedAt = DateTime.now();
     }
     Bookservice().bookUserInfoList = [
       ...?Bookservice().bookUserInfoList?.where(
@@ -57,5 +58,17 @@ class Utils {
     debugPrint(
       'Bookmark set to Kiran ${bookUserInfo.bookmarkKiranIndex} for Part ${bookUserInfo.partNumber}',
     );
+  }
+
+  static void updateKiranUserInfo(KiranUserInfo kiranUserInfo) {
+    BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
+      kiranUserInfo.partNumber,
+    );
+    Bookservice().bookUserInfoList = [
+      ...?Bookservice().bookUserInfoList?.where(
+        (info) => info.partNumber != bookUserInfo.partNumber,
+      ),
+      bookUserInfo,
+    ];
   }
 }

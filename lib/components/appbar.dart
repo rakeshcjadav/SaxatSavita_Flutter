@@ -8,6 +8,7 @@ AppBar buildAppBar(
   String title = '',
   List<ActionOptions>? actionItems,
   List<Widget>? extraActions,
+  VoidCallback? onSettingsPressed,
 }) {
   return AppBar(
     title: Text(
@@ -29,7 +30,9 @@ AppBar buildAppBar(
           icon: const Icon(Icons.settings),
           tooltip: AppLocalizations.of(context)!.settings,
           onPressed: () {
-            Navigator.pushNamed(context, '/settings');
+            onSettingsPressed != null
+                ? onSettingsPressed()
+                : Navigator.pushNamed(context, '/settings');
           },
         ),
     ],

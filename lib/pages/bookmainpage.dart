@@ -3,11 +3,14 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
+import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/aashirvachanlistpage.dart';
 import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
+import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'kiranlistpage.dart';
 
@@ -276,14 +279,7 @@ class _BookmainpageState extends State<BookMainpage> {
                     elevation: 2,
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                Kiranlistpage(bookPart: bookparts[index]),
-                      ),
-                    );
+                    navigateToKiranList(bookparts, index);
                   },
                   child: Text(
                     AppLocalizations.of(context)!.read,
@@ -320,27 +316,63 @@ class _BookmainpageState extends State<BookMainpage> {
               const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "${AppLocalizations.of(context)!.bookmark}: ",
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    ElevatedButton.icon(
-                      label: Text(
-                        getNameofBookMark(
-                          bookparts[index].partNumber,
-                          Bookservice()
-                              .getBookUserInfo(bookparts[index].partNumber)
-                              .bookmarkKiranIndex,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${AppLocalizations.of(context)!.bookmark}: ",
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      onPressed: () {},
-                      icon: const Icon(Icons.bookmark),
-                      style: ButtonStyle(elevation: WidgetStatePropertyAll(0)),
+                        ElevatedButton.icon(
+                          label: Text(
+                            getNameofBookMark(
+                              bookparts[index].partNumber,
+                              Bookservice()
+                                  .getBookUserInfo(bookparts[index].partNumber)
+                                  .bookmarkKiranIndex,
+                            ),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          onPressed: () {
+                            navigateToBookMark(bookparts, index + 1);
+                          },
+                          icon: const Icon(Icons.bookmark, color: Colors.amber),
+                          style: ButtonStyle(
+                            elevation: WidgetStatePropertyAll(0),
+                          ),
+                        ),
+                      ],
                     ),
+                    if (Bookservice()
+                            .getBookUserInfo(bookparts[index].partNumber)
+                            .updatedAt !=
+                        null) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.history,
+                            size: appSettingsNotifier.value.fontSize * 0.6,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.3),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            getUpdatedAt(bookparts[index].partNumber),
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall!.copyWith(
+                              fontSize:
+                                  appSettingsNotifier.value.fontSize * 0.6,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -349,6 +381,20 @@ class _BookmainpageState extends State<BookMainpage> {
         ),
       ),
     );
+  }
+
+  void navigateToKiranList(List<Bookpartmodel> bookparts, int index) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Kiranlistpage(bookPart: bookparts[index]),
+      ),
+    );
+    if (result == true) {
+      setState(() {
+        // Refresh the state to reflect any changes made in KiranReadPage
+      });
+    }
   }
 
   String getNameofBookMark(int partNumber, int kiranIndex) {
@@ -361,6 +407,44 @@ class _BookmainpageState extends State<BookMainpage> {
         bookUserInfo.bookmarkKiranIndex,
       );
       return "${kiranInfo.number} ${kiranInfo.title}";
+    }
+  }
+
+  String getUpdatedAt(int partNumber) {
+    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    if (bookUserInfo.updatedAt == null) {
+      return "";
+    } else {
+      return AppLocalizations.of(
+        context,
+      )!.last_read(bookUserInfo.updatedAt!, bookUserInfo.updatedAt!);
+    }
+  }
+
+  void navigateToBookMark(List<Bookpartmodel> bookparts, int partNumber) async {
+    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    var kiranInfo = KiranListService().getKiranInfo(
+      partNumber,
+      bookUserInfo.bookmarkKiranIndex,
+    );
+    var kiranUserInfo = KiranUserService().getKiranUserInfo(
+      bookUserInfo.bookmarkKiranIndex,
+    );
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => KiranReadPage(
+              partNumber: bookUserInfo.id,
+              kiranInfo: kiranInfo,
+              kiranUserInfo: kiranUserInfo,
+            ),
+      ),
+    );
+    if (result == true) {
+      setState(() {
+        // Refresh the state to reflect any changes made in KiranReadPage
+      });
     }
   }
 }
