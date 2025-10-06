@@ -734,21 +734,21 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 ],
               ),
               const SizedBox(height: 12),
-              Text(
-                '${result.kiranInfo.number} ${result.kiranInfo.title}',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              result.isContentMatch
+                  ? Text(
+                    '${result.kiranInfo.number} ${result.kiranInfo.title}',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                  : _buildHighlightedTitle(
+                    '${result.kiranInfo.number} ${result.kiranInfo.title}',
+                    result.snippet,
+                  ),
               const SizedBox(height: 8),
-              Text(
-                result.snippet.replaceAll('**', ''),
-                style: Theme.of(context).textTheme.bodyMedium,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
+              _buildHighlightedSnippet(result.snippet),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -768,6 +768,87 @@ class _KiransearchpageState extends State<Kiransearchpage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHighlightedSnippet(String snippet) {
+    final parts = snippet.split('**');
+    final spans = <TextSpan>[];
+
+    for (int i = 0; i < parts.length; i++) {
+      if (i % 2 == 0) {
+        // Normal text
+        if (parts[i].isNotEmpty) {
+          spans.add(
+            TextSpan(
+              text: parts[i],
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          );
+        }
+      } else {
+        // Highlighted text
+        if (parts[i].isNotEmpty) {
+          spans.add(
+            TextSpan(
+              text: parts[i],
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                backgroundColor: Colors.amberAccent.withValues(alpha: 0.6),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+      }
+    }
+
+    return RichText(
+      text: TextSpan(children: spans),
+      maxLines: 3,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget _buildHighlightedTitle(String title, String highlightedSnippet) {
+    // Extract the highlighted part from the snippet for title highlighting
+    final parts = highlightedSnippet.split('**');
+    final spans = <TextSpan>[];
+
+    for (int i = 0; i < parts.length; i++) {
+      if (i % 2 == 0) {
+        // Normal text
+        if (parts[i].isNotEmpty) {
+          spans.add(
+            TextSpan(
+              text: parts[i],
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          );
+        }
+      } else {
+        // Highlighted text
+        if (parts[i].isNotEmpty) {
+          spans.add(
+            TextSpan(
+              text: parts[i],
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              ),
+            ),
+          );
+        }
+      }
+    }
+
+    return RichText(
+      text: TextSpan(children: spans),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
