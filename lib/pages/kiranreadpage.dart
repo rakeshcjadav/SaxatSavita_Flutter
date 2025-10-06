@@ -49,6 +49,14 @@ class _KiranReadPageState extends State<KiranReadPage>
   bool _hasDataChanged = false;
   bool _isFinishButtonEnabled = false;
 
+  // Search functionality state
+  bool _isSearchMode = false;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  String _currentKiranContent = '';
+  List<int> _searchMatches = [];
+  int _currentMatchIndex = -1;
+
   @override
   void initState() {
     super.initState();
@@ -86,6 +94,10 @@ class _KiranReadPageState extends State<KiranReadPage>
     // Dispose ValueNotifiers
     _elapsedNotifier.dispose();
     _isFinishButtonEnabledNotifier.dispose();
+
+    // Dispose search controllers
+    _searchController.dispose();
+    _searchFocusNode.dispose();
 
     super.dispose();
   }
@@ -325,9 +337,15 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   String getKiranContent(Map<String, dynamic> contentData) {
-    return '<header>${AppLocalizations.of(context)!.kiran_start}</header>'
+    final content =
+        '<header>${AppLocalizations.of(context)!.kiran_start}</header>'
         '${contentData['main']['content'] ?? ''}'
         '<p><footer>${contentData['main']['footer'] ?? ''}</footer></p>';
+
+    // Cache the content for search functionality
+    _currentKiranContent = content;
+
+    return content;
   }
 
   @override
@@ -386,6 +404,25 @@ class _KiranReadPageState extends State<KiranReadPage>
                 }
               },
             ),
+            IconButton(
+              icon: Icon(_isSearchMode ? Icons.close : Icons.search),
+              tooltip: _isSearchMode ? 'Close Search' : 'Search in Kiran',
+              onPressed: () {
+                setState(() {
+                  _isSearchMode = !_isSearchMode;
+                  if (!_isSearchMode) {
+                    _searchController.clear();
+                    _searchMatches.clear();
+                    _currentMatchIndex = -1;
+                  } else {
+                    // Auto-focus search input when opening
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _searchFocusNode.requestFocus();
+                    });
+                  }
+                });
+              },
+            ),
           ],
           onSettingsPressed: () async {
             _pauseTimer();
@@ -406,6 +443,8 @@ class _KiranReadPageState extends State<KiranReadPage>
           child: Column(
             children: [
               displayExtraInfos(context),
+              // Search bar
+              if (_isSearchMode) _buildSearchBar(),
               LinearProgressIndicator(
                 value: widget.kiranUserInfo.progress.toDouble() / 100.0,
                 minHeight: 3,
@@ -472,7 +511,13 @@ class _KiranReadPageState extends State<KiranReadPage>
                           child: Column(
                             children: [
                               CustomHtmlWidget(
-                                htmlContent: getKiranContent(contentData),
+                                htmlContent:
+                                    _isSearchMode &&
+                                            _searchController.text.isNotEmpty
+                                        ? _getHighlightedContent(
+                                          getKiranContent(contentData),
+                                        )
+                                        : getKiranContent(contentData),
                               ),
                               const SizedBox(height: 8.0),
                               Tooltip(
@@ -557,6 +602,228 @@ class _KiranReadPageState extends State<KiranReadPage>
         ),
       ),
     );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4.0,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          TextField(
+            controller: _searchController,
+            focusNode: _searchFocusNode,
+            decoration: InputDecoration(
+              hintText: 'Search in this kiran... (Enter: search)',
+              prefixIcon: Icon(
+                Icons.search,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_searchController.text.isNotEmpty &&
+                      _searchMatches.isNotEmpty) ...[
+                    IconButton(
+                      icon: const Icon(Icons.keyboard_arrow_up),
+                      onPressed: _currentMatchIndex > 0 ? _previousMatch : null,
+                      tooltip: 'Previous match',
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      onPressed:
+                          _currentMatchIndex < _searchMatches.length - 1
+                              ? _nextMatch
+                              : null,
+                      tooltip: 'Next match',
+                    ),
+                  ],
+                  if (_searchController.text.isNotEmpty)
+                    IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                        _performSearch('');
+                      },
+                    ),
+                ],
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surface,
+            ),
+            onChanged: _performSearch,
+            textInputAction: TextInputAction.search,
+          ),
+          if (_searchController.text.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text(
+                  _searchMatches.isEmpty
+                      ? 'No matches found'
+                      : '${_currentMatchIndex + 1} of ${_searchMatches.length}',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _performSearch(String query) {
+    query = query.trim();
+    if (query.isEmpty) {
+      setState(() {
+        _searchMatches.clear();
+        _currentMatchIndex = -1;
+      });
+      return;
+    }
+
+    // Get the plain text content from the HTML
+    String plainContent = _currentKiranContent;
+    if (plainContent.isEmpty) {
+      // Extract from HTML if not already cached
+      plainContent = _getPlainTextFromHtml(_currentKiranContent);
+    }
+
+    final List<int> matches = [];
+    final lowerContent = plainContent.toLowerCase();
+    final lowerQuery = query.toLowerCase();
+
+    int index = lowerContent.indexOf(lowerQuery);
+    while (index != -1) {
+      matches.add(index);
+      index = lowerContent.indexOf(lowerQuery, index + 1);
+    }
+
+    setState(() {
+      _searchMatches = matches;
+      _currentMatchIndex = matches.isNotEmpty ? 0 : -1;
+    });
+  }
+
+  String _getPlainTextFromHtml(String html) {
+    // Simple HTML tag removal - could be improved with proper HTML parsing
+    return html.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+  }
+
+  String _getHighlightedContent(String content) {
+    if (_searchController.text.isEmpty || _searchMatches.isEmpty) {
+      return content;
+    }
+
+    String highlighted = content;
+    final query = _searchController.text.trim();
+    int matchCounter = 0;
+
+    // Use case-insensitive replacement with HTML highlighting
+    highlighted = highlighted.replaceAllMapped(
+      RegExp(RegExp.escape(query), caseSensitive: false),
+      (match) {
+        final isCurrentMatch = matchCounter == _currentMatchIndex;
+        final matchId = 'search-match-$matchCounter';
+        final highlightClass =
+            isCurrentMatch ? 'current-highlight' : 'search-highlight';
+        final backgroundColor = isCurrentMatch ? '#ff9800' : '#ffeb3b';
+
+        matchCounter++;
+
+        return '<span id="$matchId" class="$highlightClass" style="background-color: $backgroundColor; color: black; padding: 2px; border-radius: 2px;">${match.group(0)}</span>';
+      },
+    );
+
+    return highlighted;
+  }
+
+  void _previousMatch() {
+    if (_currentMatchIndex > 0) {
+      // Provide haptic feedback
+      HapticFeedback.selectionClick();
+
+      setState(() {
+        _currentMatchIndex--;
+      });
+      _scrollToMatch();
+    }
+  }
+
+  void _nextMatch() {
+    if (_currentMatchIndex < _searchMatches.length - 1) {
+      // Provide haptic feedback
+      HapticFeedback.selectionClick();
+
+      setState(() {
+        _currentMatchIndex++;
+      });
+      _scrollToMatch();
+    }
+  }
+
+  void _scrollToMatch() {
+    if (_searchMatches.isEmpty || _currentMatchIndex < 0) return;
+
+    // First trigger a rebuild to update highlighting immediately
+    setState(() {});
+
+    // Then handle scrolling after the widget rebuilds
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _performScrollToMatch();
+    });
+  }
+
+  void _performScrollToMatch() {
+    if (!_scrollController.hasClients ||
+        _searchMatches.isEmpty ||
+        _currentMatchIndex < 0) {
+      return;
+    }
+
+    try {
+      // Get the position of the current match in the text
+      final matchPosition = _searchMatches[_currentMatchIndex];
+      final plainText = _getPlainTextFromHtml(_currentKiranContent);
+
+      if (plainText.isEmpty || matchPosition >= plainText.length) return;
+
+      // Calculate approximate scroll position based on text position
+      final totalTextLength = plainText.length;
+      final matchRatio = matchPosition / totalTextLength;
+
+      // Get scroll constraints
+      final maxScrollExtent = _scrollController.position.maxScrollExtent;
+      final viewportHeight = _scrollController.position.viewportDimension;
+
+      // Calculate target position - aim to put the match in the upper third of the viewport
+      final targetScrollOffset =
+          (maxScrollExtent * matchRatio) - (viewportHeight * 0.2);
+      final clampedOffset = targetScrollOffset.clamp(0.0, maxScrollExtent);
+
+      // Animate to the position
+      _scrollController.animateTo(
+        clampedOffset,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOutCubic,
+      );
+    } catch (e) {
+      debugPrint('Error scrolling to match: $e');
+    }
   }
 
   Widget _showTimeWarning() {
