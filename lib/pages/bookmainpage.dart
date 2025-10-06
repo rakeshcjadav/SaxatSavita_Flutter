@@ -235,27 +235,32 @@ class _BookmainpageState extends State<BookMainpage> {
     return ValueListenableBuilder<AppSettings>(
       valueListenable: appSettingsNotifier,
       builder: (context, appSettings, child) {
-        return FutureBuilder(
-          future: bookparts,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-              return const Center(child: Text("No data found"));
-            } else if (snapshot.data != null) {
-              var bookparts = snapshot.data as List<Bookpartmodel>;
-              return ListView.builder(
-                itemCount: bookparts.length,
-                itemBuilder: (context, index) {
-                  return bookPartWidget(bookparts, index);
-                },
-              );
-            } else {
-              return const Center(child: Text("No data found"));
-            }
-          },
+        return Padding(
+          padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+          child: Scrollbar(
+            child: FutureBuilder(
+              future: bookparts,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+                  return const Center(child: Text("No data found"));
+                } else if (snapshot.data != null) {
+                  var bookparts = snapshot.data as List<Bookpartmodel>;
+                  return ListView.builder(
+                    itemCount: bookparts.length,
+                    itemBuilder: (context, index) {
+                      return bookPartWidget(bookparts, index);
+                    },
+                  );
+                } else {
+                  return const Center(child: Text("No data found"));
+                }
+              },
+            ),
+          ),
         );
       },
     );

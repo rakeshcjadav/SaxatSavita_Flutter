@@ -670,14 +670,18 @@ class _KiransearchpageState extends State<Kiransearchpage> {
           ),
         ),
         Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            itemCount: _filteredResults.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final result = _filteredResults[index];
-              return _buildSearchResultCard(result);
-            },
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Scrollbar(
+              child: ListView.separated(
+                itemCount: _filteredResults.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final result = _filteredResults[index];
+                  return _buildSearchResultCard(result);
+                },
+              ),
+            ),
           ),
         ),
       ],

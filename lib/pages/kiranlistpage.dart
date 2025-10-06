@@ -100,48 +100,53 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             Navigator.of(context).pop(_hasDataChanged);
           }
         },
-        child: FutureBuilder<KiranList>(
-          future: _futureKiranList,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
-              return const Center(child: Text('No kirans found.'));
-            }
-            final kirans = snapshot.data!.list;
-            return ListView.builder(
-              itemCount: kirans.length,
-              itemBuilder: (context, index) {
-                final kiran = kirans[index];
-                final kiranUserInfo = KiranUserService().getKiranUserInfo(
-                  kiran.index,
-                );
-                return Card(
-                  child: ExpansionTile(
-                    showTrailingIcon: true,
-                    key: Key(kiran.index.toString()),
-                    initiallyExpanded: _expandedIndex == index,
-                    onExpansionChanged: (expanded) {
-                      setState(() {
-                        _expandedIndex = expanded ? index : null;
-                      });
-                    },
-                    title: _buildKiranListItemWidget(
-                      kiran,
-                      kiranUserInfo,
-                      _expandedIndex == index,
-                    ),
-                    children: _buildKiranListItemExpandedWidget(
-                      kiran,
-                      kiranUserInfo,
-                    ),
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+          child: Scrollbar(
+            child: FutureBuilder<KiranList>(
+              future: _futureKiranList,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
+                  return const Center(child: Text('No kirans found.'));
+                }
+                final kirans = snapshot.data!.list;
+                return ListView.builder(
+                  itemCount: kirans.length,
+                  itemBuilder: (context, index) {
+                    final kiran = kirans[index];
+                    final kiranUserInfo = KiranUserService().getKiranUserInfo(
+                      kiran.index,
+                    );
+                    return Card(
+                      child: ExpansionTile(
+                        showTrailingIcon: true,
+                        key: Key(kiran.index.toString()),
+                        initiallyExpanded: _expandedIndex == index,
+                        onExpansionChanged: (expanded) {
+                          setState(() {
+                            _expandedIndex = expanded ? index : null;
+                          });
+                        },
+                        title: _buildKiranListItemWidget(
+                          kiran,
+                          kiranUserInfo,
+                          _expandedIndex == index,
+                        ),
+                        children: _buildKiranListItemExpandedWidget(
+                          kiran,
+                          kiranUserInfo,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
-            );
-          },
+            ),
+          ),
         ),
       ),
     );
