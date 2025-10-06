@@ -111,5 +111,12 @@
     "search_hint": "આ કિરણમાં શોધો... (Enter: શોધો)",
     "no_match_found": "કોઈ મેચ મળ્યો નથી",
     "search_in_kiran": "કિરણમાં શોધો",
-    "close_search": "શોધ બંધ કરો"
+    "close_search": "શોધ બંધ કરો",
+    "edit_notes": "નોંધ સંપાદિત કરો",
+    "save_notes": "નોંધ સેવ કરો",
+    "notes": "નોંધ",
+    "add_notes": "નોંધ ઉમેરો",
+    "notes_hint": "અહીં તમારી વ્યક્તિગત નોંધ ઉમેરો...",
+    "notes_saved": "નોંધ સફળતાપૂર્વક સેવ થઈ",
+    "cancel": "રદ કરો"
 }

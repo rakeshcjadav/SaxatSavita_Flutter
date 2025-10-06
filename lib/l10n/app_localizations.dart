@@ -472,6 +472,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close Search'**
   String get close_search;
+
+  /// No description provided for @edit_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Notes'**
+  String get edit_notes;
+
+  /// No description provided for @save_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Notes'**
+  String get save_notes;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @add_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Notes'**
+  String get add_notes;
+
+  /// No description provided for @notes_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your personal notes here...'**
+  String get notes_hint;
+
+  /// No description provided for @notes_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes saved successfully'**
+  String get notes_saved;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

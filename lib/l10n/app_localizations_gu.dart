@@ -211,4 +211,25 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get close_search => 'શોધ બંધ કરો';
+
+  @override
+  String get edit_notes => 'નોંધ સંપાદિત કરો';
+
+  @override
+  String get save_notes => 'નોંધ સેવ કરો';
+
+  @override
+  String get notes => 'નોંધ';
+
+  @override
+  String get add_notes => 'નોંધ ઉમેરો';
+
+  @override
+  String get notes_hint => 'અહીં તમારી વ્યક્તિગત નોંધ ઉમેરો...';
+
+  @override
+  String get notes_saved => 'નોંધ સફળતાપૂર્વક સેવ થઈ';
+
+  @override
+  String get cancel => 'રદ કરો';
 }

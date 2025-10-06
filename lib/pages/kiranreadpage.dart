@@ -8,6 +8,8 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/settingspage.dart';
+import 'package:saxatsavita_flutter/pages/simple_note_editor_page.dart';
+import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 
 class KiranReadPage extends StatefulWidget {
@@ -169,25 +171,6 @@ class _KiranReadPageState extends State<KiranReadPage>
           });
         }
       }
-    }
-  }
-
-  String _getTimeUntilButtonEnabled() {
-    if (_estimatedReadingSeconds <= 0) return '';
-
-    final requiredSeconds = (_estimatedReadingSeconds * 0.8).round();
-    final elapsedSeconds = _stopwatch.elapsed.inSeconds;
-    final remainingSeconds = requiredSeconds - elapsedSeconds;
-
-    if (remainingSeconds <= 0) return '';
-
-    final minutes = remainingSeconds ~/ 60;
-    final secs = remainingSeconds % 60;
-
-    if (minutes > 0) {
-      return 'Button available in ${minutes}m ${secs}s';
-    } else {
-      return 'Button available in ${secs}s';
     }
   }
 
@@ -429,6 +412,25 @@ class _KiranReadPageState extends State<KiranReadPage>
                     });
                   }
                 });
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.note_add,
+                color:
+                    (widget.kiranUserInfo.note != null &&
+                            widget.kiranUserInfo.note!.isNotEmpty)
+                        ? Colors.orange
+                        : null,
+              ),
+              tooltip:
+                  AppLocalizations.of(
+                    context,
+                  )!.menu_four, // Using existing "Notes" key
+              onPressed: () async {
+                _pauseTimer();
+                await _openNoteEditor();
+                _resumeTimer();
               },
             ),
           ],
@@ -834,28 +836,50 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
   }
 
-  Widget _showTimeWarning() {
-    // Show remaining time until button is enabled
-    if (!_isFinishButtonEnabled && _estimatedReadingSeconds > 0) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.timer_outlined, size: 16, color: Colors.orange),
-            const SizedBox(width: 4),
-            Text(
-              _getTimeUntilButtonEnabled(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.orange,
-                fontStyle: FontStyle.italic,
+  Future<void> _openNoteEditor() async {
+    try {
+      // Try to use the rich editor first
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => NoteEditorPage(
+                kiranUserInfo: widget.kiranUserInfo,
+                kiranTitle:
+                    '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}',
               ),
-            ),
-          ],
         ),
       );
+
+      // If notes were modified, update UI
+      if (result == true) {
+        setState(() {
+          _hasDataChanged = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error with rich editor, falling back to simple editor: $e');
+
+      // Fallback to simple editor
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => SimpleNoteEditorPage(
+                kiranUserInfo: widget.kiranUserInfo,
+                kiranTitle:
+                    '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}',
+              ),
+        ),
+      );
+
+      // If notes were modified, update UI
+      if (result == true) {
+        setState(() {
+          _hasDataChanged = true;
+        });
+      }
     }
-    return const SizedBox.shrink();
   }
 
   Container displayExtraInfos(BuildContext context) {

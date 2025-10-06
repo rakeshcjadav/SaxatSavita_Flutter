@@ -211,4 +211,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close_search => 'Close Search';
+
+  @override
+  String get edit_notes => 'Edit Notes';
+
+  @override
+  String get save_notes => 'Save Notes';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get add_notes => 'Add Notes';
+
+  @override
+  String get notes_hint => 'Add your personal notes here...';
+
+  @override
+  String get notes_saved => 'Notes saved successfully';
+
+  @override
+  String get cancel => 'Cancel';
 }

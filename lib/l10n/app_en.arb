@@ -111,5 +111,12 @@
     "search_hint": "Search in this kiran... (Enter: search)",
     "no_match_found": "No matches found",
     "search_in_kiran": "Search in Kiran",
-    "close_search": "Close Search"
+    "close_search": "Close Search",
+    "edit_notes": "Edit Notes",
+    "save_notes": "Save Notes",
+    "notes": "Notes",
+    "add_notes": "Add Notes",
+    "notes_hint": "Add your personal notes here...",
+    "notes_saved": "Notes saved successfully",
+    "cancel": "Cancel"
 }
