@@ -436,6 +436,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{filtered} of {total} results shown'**
   String results_filtered(int filtered, int total);
+
+  /// No description provided for @expand_filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand Filters'**
+  String get expand_filters;
+
+  /// No description provided for @collapse_filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse Filters'**
+  String get collapse_filters;
+
+  /// Indicates the part number of the book
+  ///
+  /// In en, this message translates to:
+  /// **'Part {partNumber}'**
+  String part_number(int partNumber);
+
+  /// No description provided for @part_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Part 1'**
+  String get part_1;
+
+  /// No description provided for @part_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Part 2'**
+  String get part_2;
+
+  /// No description provided for @part_3.
+  ///
+  /// In en, this message translates to:
+  /// **'Part 3'**
+  String get part_3;
+
+  /// No description provided for @part_4.
+  ///
+  /// In en, this message translates to:
+  /// **'Part 4'**
+  String get part_4;
+
+  /// No description provided for @part_5.
+  ///
+  /// In en, this message translates to:
+  /// **'Part 5'**
+  String get part_5;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

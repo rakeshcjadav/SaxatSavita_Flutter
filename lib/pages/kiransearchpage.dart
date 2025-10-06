@@ -48,6 +48,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
   Set<int> _selectedParts = {1, 2, 3, 4, 5}; // All parts selected by default
   bool _showTitleMatches = true;
   bool _showContentMatches = true;
+  bool _isFiltersExpanded = false; // Collapsible filter state
 
   @override
   void initState() {
@@ -203,6 +204,19 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     });
   }
 
+  int _getActiveFiltersCount() {
+    int count = 0;
+
+    // Count deselected parts
+    count += _availableParts.length - _selectedParts.length;
+
+    // Count disabled match type filters
+    if (!_showTitleMatches) count++;
+    if (!_showContentMatches) count++;
+
+    return count;
+  }
+
   Future<String> _searchInContent(
     int partNumber,
     int kiranIndex,
@@ -347,140 +361,191 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                     context,
                   ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
-
-                // Filters Section
-                if (_hasSearched && _searchResults.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  const Divider(height: 1),
-                  const SizedBox(height: 16),
-
-                  // Filter Header
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.filter_list,
-                        size: 20,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        AppLocalizations.of(context)!.filters,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _selectedParts = {1, 2, 3, 4, 5};
-                            _showTitleMatches = true;
-                            _showContentMatches = true;
-                            _applyFilters();
-                          });
-                        },
-                        child: Text(
-                          AppLocalizations.of(context)!.clear_all_filters,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Match Type Filters
-                  Row(
-                    children: [
-                      Text(
-                        '${AppLocalizations.of(context)!.match_type}:',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FilterChip(
-                          selected: _showTitleMatches,
-                          onSelected: (_) => _toggleMatchTypeFilter(false),
-                          label: Text(
-                            AppLocalizations.of(context)!.title_match,
-                          ),
-                          avatar:
-                              _showTitleMatches
-                                  ? Icon(Icons.check, size: 16)
-                                  : Icon(Icons.title, size: 16),
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surface,
-                          selectedColor:
-                              Theme.of(context).colorScheme.primaryContainer,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: FilterChip(
-                          selected: _showContentMatches,
-                          onSelected: (_) => _toggleMatchTypeFilter(true),
-                          label: Text(
-                            AppLocalizations.of(context)!.content_match,
-                          ),
-                          avatar:
-                              _showContentMatches
-                                  ? Icon(Icons.check, size: 16)
-                                  : Icon(Icons.article, size: 16),
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surface,
-                          selectedColor:
-                              Theme.of(context).colorScheme.primaryContainer,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Part Filters
-                  Row(
-                    children: [
-                      Text(
-                        '${AppLocalizations.of(context)!.book_parts}:',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children:
-                        _availableParts.map((partNumber) {
-                          final isSelected = _selectedParts.contains(
-                            partNumber,
-                          );
-                          return FilterChip(
-                            selected: isSelected,
-                            onSelected: (_) => _togglePartFilter(partNumber),
-                            label: Text(Bookservice().getPartTitle(partNumber)),
-                            avatar:
-                                isSelected
-                                    ? Icon(Icons.check, size: 16)
-                                    : Icon(Icons.book, size: 16),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            selectedColor:
-                                Theme.of(context).colorScheme.primaryContainer,
-                          );
-                        }).toList(),
-                  ),
-                ],
               ],
             ),
           ),
+
+          // Collapsible Filters Section
+          if (_hasSearched && _searchResults.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+            Theme(
+              data: Theme.of(
+                context,
+              ).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                initiallyExpanded: _isFiltersExpanded,
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    _isFiltersExpanded = expanded;
+                  });
+                },
+                leading: Icon(
+                  Icons.filter_list,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: Row(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.filters,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (_getActiveFiltersCount() > 0) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.error,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${_getActiveFiltersCount()}',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onError,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedParts = {1, 2, 3, 4, 5};
+                          _showTitleMatches = true;
+                          _showContentMatches = true;
+                          _applyFilters();
+                        });
+                      },
+                      child: Text(
+                        AppLocalizations.of(context)!.clear_all_filters,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      _isFiltersExpanded
+                          ? Icons.expand_less
+                          : Icons.expand_more,
+                    ),
+                  ],
+                ),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Match Type Filters
+                        Text(
+                          '${AppLocalizations.of(context)!.match_type}:',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: FilterChip(
+                                selected: _showTitleMatches,
+                                onSelected:
+                                    (_) => _toggleMatchTypeFilter(false),
+                                label: Text(
+                                  AppLocalizations.of(context)!.title_match,
+                                ),
+                                avatar:
+                                    _showTitleMatches
+                                        ? const Icon(Icons.check, size: 16)
+                                        : const Icon(Icons.title, size: 16),
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface,
+                                selectedColor:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.primaryContainer,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: FilterChip(
+                                selected: _showContentMatches,
+                                onSelected: (_) => _toggleMatchTypeFilter(true),
+                                label: Text(
+                                  AppLocalizations.of(context)!.content_match,
+                                ),
+                                avatar:
+                                    _showContentMatches
+                                        ? const Icon(Icons.check, size: 16)
+                                        : const Icon(Icons.article, size: 16),
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface,
+                                selectedColor:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.primaryContainer,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Part Filters
+                        Text(
+                          '${AppLocalizations.of(context)!.book_parts}:',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children:
+                              _availableParts.map((partNumber) {
+                                final isSelected = _selectedParts.contains(
+                                  partNumber,
+                                );
+                                return FilterChip(
+                                  selected: isSelected,
+                                  onSelected:
+                                      (_) => _togglePartFilter(partNumber),
+                                  label: Text(
+                                    Bookservice().getPartTitle(partNumber),
+                                  ),
+                                  avatar:
+                                      isSelected
+                                          ? const Icon(Icons.check, size: 16)
+                                          : const Icon(Icons.book, size: 16),
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  selectedColor:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.primaryContainer,
+                                );
+                              }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
           // Search Results
           Expanded(child: _buildSearchResults()),
         ],

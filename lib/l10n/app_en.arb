@@ -98,7 +98,7 @@
     "book_parts": "Book Parts",
     "no_filtered_results": "No results match current filters",
     "adjust_filters": "Try adjusting your filter settings",
-    "results_filtered": "{filtered} of {total} results shown",
+        "results_filtered": "{filtered} of {total} results shown",
     "@results_filtered": {
         "description": "Shows filtered vs total results",
         "placeholders": {
@@ -106,6 +106,8 @@
             "total": {"type": "int"}
         }
     },
+    "expand_filters": "Expand Filters",
+    "collapse_filters": "Collapse Filters",
     "part_number": "Part {partNumber}",
     "@part_number": {
         "description": "Indicates the part number of the book",

@@ -193,4 +193,30 @@ class AppLocalizationsGu extends AppLocalizations {
   String results_filtered(int filtered, int total) {
     return '$total માંથી $filtered પરિણામો દર્શાવવામાં આવ્યા છે';
   }
+
+  @override
+  String get expand_filters => 'ફિલ્ટર્સ વિસ્તૃત કરો';
+
+  @override
+  String get collapse_filters => 'ફિલ્ટર્સ સંકુચિત કરો';
+
+  @override
+  String part_number(int partNumber) {
+    return 'ભાગ $partNumber';
+  }
+
+  @override
+  String get part_1 => 'ભાગ ૧';
+
+  @override
+  String get part_2 => 'ભાગ ૨';
+
+  @override
+  String get part_3 => 'ભાગ ૩';
+
+  @override
+  String get part_4 => 'ભાગ ૪';
+
+  @override
+  String get part_5 => 'ભાગ ૫';
 }
