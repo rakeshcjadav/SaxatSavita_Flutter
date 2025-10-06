@@ -201,7 +201,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get collapse_filters => 'Collapse Filters';
 
   @override
-  String part_number(int partNumber) {
-    return 'Part $partNumber';
-  }
+  String get search_hint => 'Search in this kiran... (Enter: search)';
+
+  @override
+  String get no_match_found => 'No matches found';
+
+  @override
+  String get search_in_kiran => 'Search in Kiran';
+
+  @override
+  String get close_search => 'Close Search';
 }

@@ -201,7 +201,14 @@ class AppLocalizationsGu extends AppLocalizations {
   String get collapse_filters => 'ફિલ્ટર્સ સંકુચિત કરો';
 
   @override
-  String part_number(int partNumber) {
-    return 'ભાગ $partNumber';
-  }
+  String get search_hint => 'આ કિરણમાં શોધો... (Enter: શોધો)';
+
+  @override
+  String get no_match_found => 'કોઈ મેચ મળ્યો નથી';
+
+  @override
+  String get search_in_kiran => 'કિરણમાં શોધો';
+
+  @override
+  String get close_search => 'શોધ બંધ કરો';
 }

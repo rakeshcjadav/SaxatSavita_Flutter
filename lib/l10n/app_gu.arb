@@ -107,5 +107,9 @@
         }
     },
     "expand_filters": "ફિલ્ટર્સ વિસ્તૃત કરો",
-    "collapse_filters": "ફિલ્ટર્સ સંકુચિત કરો"
+    "collapse_filters": "ફિલ્ટર્સ સંકુચિત કરો",
+    "search_hint": "આ કિરણમાં શોધો... (Enter: શોધો)",
+    "no_match_found": "કોઈ મેચ મળ્યો નથી",
+    "search_in_kiran": "કિરણમાં શોધો",
+    "close_search": "શોધ બંધ કરો"
 }

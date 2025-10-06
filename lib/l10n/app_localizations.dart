@@ -449,11 +449,29 @@ abstract class AppLocalizations {
   /// **'Collapse Filters'**
   String get collapse_filters;
 
-  /// Indicates the part number of the book
+  /// No description provided for @search_hint.
   ///
   /// In en, this message translates to:
-  /// **'Part {partNumber}'**
-  String part_number(int partNumber);
+  /// **'Search in this kiran... (Enter: search)'**
+  String get search_hint;
+
+  /// No description provided for @no_match_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches found'**
+  String get no_match_found;
+
+  /// No description provided for @search_in_kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in Kiran'**
+  String get search_in_kiran;
+
+  /// No description provided for @close_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Search'**
+  String get close_search;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

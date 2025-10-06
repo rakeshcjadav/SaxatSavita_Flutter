@@ -107,5 +107,9 @@
         }
     },
     "expand_filters": "Expand Filters",
-    "collapse_filters": "Collapse Filters"
+    "collapse_filters": "Collapse Filters",
+    "search_hint": "Search in this kiran... (Enter: search)",
+    "no_match_found": "No matches found",
+    "search_in_kiran": "Search in Kiran",
+    "close_search": "Close Search"
 }

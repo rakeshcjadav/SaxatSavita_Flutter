@@ -67,10 +67,6 @@ class _KiranReadPageState extends State<KiranReadPage>
     WidgetsBinding.instance.addObserver(this);
 
     _startTimer();
-
-    // Note: Initial scroll position and listener will be set after content loads
-
-    // Timer is now handled in _startTimer() method
   }
 
   @override
@@ -406,7 +402,10 @@ class _KiranReadPageState extends State<KiranReadPage>
             ),
             IconButton(
               icon: Icon(_isSearchMode ? Icons.close : Icons.search),
-              tooltip: _isSearchMode ? 'Close Search' : 'Search in Kiran',
+              tooltip:
+                  _isSearchMode
+                      ? AppLocalizations.of(context)!.close_search
+                      : AppLocalizations.of(context)!.search_in_kiran,
               onPressed: () {
                 setState(() {
                   _isSearchMode = !_isSearchMode;
@@ -623,7 +622,7 @@ class _KiranReadPageState extends State<KiranReadPage>
             controller: _searchController,
             focusNode: _searchFocusNode,
             decoration: InputDecoration(
-              hintText: 'Search in this kiran... (Enter: search)',
+              hintText: AppLocalizations.of(context)!.search_hint,
               prefixIcon: Icon(
                 Icons.search,
                 color: Theme.of(context).colorScheme.primary,
@@ -672,7 +671,7 @@ class _KiranReadPageState extends State<KiranReadPage>
               children: [
                 Text(
                   _searchMatches.isEmpty
-                      ? 'No matches found'
+                      ? AppLocalizations.of(context)!.no_match_found
                       : '${_currentMatchIndex + 1} of ${_searchMatches.length}',
                   style: Theme.of(
                     context,
