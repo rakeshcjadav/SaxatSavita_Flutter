@@ -106,21 +106,6 @@
             "total": {"type": "int"}
         }
     },
-    "part_number": "ભાગ {partNumber}",
-    "@part_number": {
-        "description": "Indicates the part number of the book",
-        "placeholders": {
-            "partNumber": {
-                "type": "int",
-                "example": "1"
-            }
-        }
-    },
     "expand_filters": "ફિલ્ટર્સ વિસ્તૃત કરો",
-    "collapse_filters": "ફિલ્ટર્સ સંકુચિત કરો",
-    "part_1": "ભાગ ૧",
-    "part_2": "ભાગ ૨",
-    "part_3": "ભાગ ૩",
-    "part_4": "ભાગ ૪",
-    "part_5": "ભાગ ૫"
+    "collapse_filters": "ફિલ્ટર્સ સંકુચિત કરો"
 }

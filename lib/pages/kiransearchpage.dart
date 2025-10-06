@@ -301,7 +301,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         children: [
           // Search Box at the top
           Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceContainer,
               boxShadow: [
@@ -361,190 +361,188 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                     context,
                   ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
-              ],
-            ),
-          ),
-
-          // Collapsible Filters Section
-          if (_hasSearched && _searchResults.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            const Divider(height: 1),
-            Theme(
-              data: Theme.of(
-                context,
-              ).copyWith(dividerColor: Colors.transparent),
-              child: ExpansionTile(
-                initiallyExpanded: _isFiltersExpanded,
-                onExpansionChanged: (expanded) {
-                  setState(() {
-                    _isFiltersExpanded = expanded;
-                  });
-                },
-                leading: Icon(
-                  Icons.filter_list,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                title: Row(
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.filters,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                // Collapsible Filters Section
+                if (_hasSearched && _searchResults.isNotEmpty) ...[
+                  ExpansionTile(
+                    initiallyExpanded: _isFiltersExpanded,
+                    onExpansionChanged: (expanded) {
+                      setState(() {
+                        _isFiltersExpanded = expanded;
+                      });
+                    },
+                    leading: Icon(
+                      Icons.filter_list,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    if (_getActiveFiltersCount() > 0) ...[
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
+                    title: Row(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.filters,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.error,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '${_getActiveFiltersCount()}',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onError,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
+                        if (_getActiveFiltersCount() > 0) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.error,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${_getActiveFiltersCount()}',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onError,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedParts = {1, 2, 3, 4, 5};
+                              _showTitleMatches = true;
+                              _showContentMatches = true;
+                              _applyFilters();
+                            });
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.clear_all_filters,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ],
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedParts = {1, 2, 3, 4, 5};
-                          _showTitleMatches = true;
-                          _showContentMatches = true;
-                          _applyFilters();
-                        });
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!.clear_all_filters,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      _isFiltersExpanded
-                          ? Icons.expand_less
-                          : Icons.expand_more,
-                    ),
-                  ],
-                ),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Match Type Filters
-                        Text(
-                          '${AppLocalizations.of(context)!.match_type}:',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: FilterChip(
-                                selected: _showTitleMatches,
-                                onSelected:
-                                    (_) => _toggleMatchTypeFilter(false),
-                                label: Text(
-                                  AppLocalizations.of(context)!.title_match,
-                                ),
-                                avatar:
-                                    _showTitleMatches
-                                        ? const Icon(Icons.check, size: 16)
-                                        : const Icon(Icons.title, size: 16),
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface,
-                                selectedColor:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.primaryContainer,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: FilterChip(
-                                selected: _showContentMatches,
-                                onSelected: (_) => _toggleMatchTypeFilter(true),
-                                label: Text(
-                                  AppLocalizations.of(context)!.content_match,
-                                ),
-                                avatar:
-                                    _showContentMatches
-                                        ? const Icon(Icons.check, size: 16)
-                                        : const Icon(Icons.article, size: 16),
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface,
-                                selectedColor:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.primaryContainer,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Part Filters
-                        Text(
-                          '${AppLocalizations.of(context)!.book_parts}:',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children:
-                              _availableParts.map((partNumber) {
-                                final isSelected = _selectedParts.contains(
-                                  partNumber,
-                                );
-                                return FilterChip(
-                                  selected: isSelected,
-                                  onSelected:
-                                      (_) => _togglePartFilter(partNumber),
-                                  label: Text(
-                                    Bookservice().getPartTitle(partNumber),
-                                  ),
-                                  avatar:
-                                      isSelected
-                                          ? const Icon(Icons.check, size: 16)
-                                          : const Icon(Icons.book, size: 16),
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.surface,
-                                  selectedColor:
-                                      Theme.of(
-                                        context,
-                                      ).colorScheme.primaryContainer,
-                                );
-                              }).toList(),
+                        Icon(
+                          _isFiltersExpanded
+                              ? Icons.expand_less
+                              : Icons.expand_more,
                         ),
                       ],
                     ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Match Type Filters
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Text(
+                                  '${AppLocalizations.of(context)!.match_type} :',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                Expanded(
+                                  child: FilterChip(
+                                    selected: _showTitleMatches,
+                                    onSelected:
+                                        (_) => _toggleMatchTypeFilter(false),
+                                    label: Text(
+                                      AppLocalizations.of(context)!.title_match,
+                                    ),
+                                    labelStyle:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    avatar:
+                                        _showTitleMatches
+                                            ? const Icon(Icons.check)
+                                            : const Icon(Icons.title),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.surface,
+                                    selectedColor:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.primaryContainer,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: FilterChip(
+                                    selected: _showContentMatches,
+                                    onSelected:
+                                        (_) => _toggleMatchTypeFilter(true),
+                                    label: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.content_match,
+                                    ),
+                                    labelStyle:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    avatar:
+                                        _showContentMatches
+                                            ? const Icon(Icons.check)
+                                            : const Icon(Icons.article),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.surface,
+                                    selectedColor:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.primaryContainer,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Part Filters
+                            Text(
+                              '${AppLocalizations.of(context)!.book_parts}:',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children:
+                                  _availableParts.map((partNumber) {
+                                    final isSelected = _selectedParts.contains(
+                                      partNumber,
+                                    );
+                                    return FilterChip(
+                                      selected: isSelected,
+                                      onSelected:
+                                          (_) => _togglePartFilter(partNumber),
+                                      label: Text(
+                                        Bookservice().getPartTitle(partNumber),
+                                      ),
+                                      labelStyle:
+                                          Theme.of(context).textTheme.bodySmall,
+                                      avatar:
+                                          isSelected
+                                              ? const Icon(Icons.check)
+                                              : const Icon(Icons.book),
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.surface,
+                                      selectedColor:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.primaryContainer,
+                                    );
+                                  }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              ),
+              ],
             ),
-          ],
+          ),
 
           // Search Results
           Expanded(child: _buildSearchResults()),
@@ -604,6 +602,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(color: Colors.grey),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
@@ -611,6 +610,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -618,29 +618,34 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       } else {
         // Results exist but filtered out
         return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.filter_list_off,
-                size: 64,
-                color: Colors.grey.withValues(alpha: 0.5),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                AppLocalizations.of(context)!.no_filtered_results,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(color: Colors.grey),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                AppLocalizations.of(context)!.adjust_filters,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.filter_list_off,
+                  size: 64,
+                  color: Colors.grey.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  AppLocalizations.of(context)!.no_filtered_results,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.adjust_filters,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         );
       }
@@ -666,7 +671,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         ),
         Expanded(
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             itemCount: _filteredResults.length,
             separatorBuilder: (context, index) => const SizedBox(height: 8),
             itemBuilder: (context, index) {
@@ -704,7 +709,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Part ${result.partNumber}',
+                      Bookservice().getPartTitle(result.partNumber),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,

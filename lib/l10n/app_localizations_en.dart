@@ -204,19 +204,4 @@ class AppLocalizationsEn extends AppLocalizations {
   String part_number(int partNumber) {
     return 'Part $partNumber';
   }
-
-  @override
-  String get part_1 => 'Part 1';
-
-  @override
-  String get part_2 => 'Part 2';
-
-  @override
-  String get part_3 => 'Part 3';
-
-  @override
-  String get part_4 => 'Part 4';
-
-  @override
-  String get part_5 => 'Part 5';
 }
