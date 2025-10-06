@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
@@ -10,6 +11,149 @@ import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
+
+// Simple search history storage service
+class SearchHistoryService {
+  static final SearchHistoryService _instance =
+      SearchHistoryService._internal();
+  factory SearchHistoryService() => _instance;
+  SearchHistoryService._internal();
+
+  static const int _maxHistoryItems = 10;
+
+  List<Map<String, dynamic>> _searchHistory = [];
+
+  List<Map<String, dynamic>> get searchHistory =>
+      List.unmodifiable(_searchHistory);
+
+  Future<void> loadSearchHistory() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedHistoryJson = prefs.getString('search_history');
+
+      if (savedHistoryJson != null && savedHistoryJson.isNotEmpty) {
+        final List<dynamic> decodedData = jsonDecode(savedHistoryJson);
+        _searchHistory = decodedData.cast<Map<String, dynamic>>();
+
+        // Validate data integrity and remove any invalid entries
+        _searchHistory =
+            _searchHistory.where((item) {
+              return item.containsKey('query') &&
+                  item.containsKey('count') &&
+                  item.containsKey('lastUsed') &&
+                  item['query'] is String &&
+                  item['count'] is int &&
+                  item['lastUsed'] is int;
+            }).toList();
+
+        debugPrint(
+          'Search history loaded from storage: ${_searchHistory.length} items',
+        );
+      } else {
+        _searchHistory = [];
+        debugPrint('No saved search history found, starting fresh');
+      }
+    } catch (e) {
+      debugPrint('Error loading search history: $e');
+      _searchHistory = [];
+    }
+  }
+
+  Future<void> saveSearchHistory() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonData = jsonEncode(_searchHistory);
+      await prefs.setString('search_history', jsonData);
+
+      debugPrint(
+        'Search history saved to persistent storage: ${_searchHistory.length} items',
+      );
+    } catch (e) {
+      debugPrint('Error saving search history: $e');
+    }
+  }
+
+  void addSearchQuery(String query) {
+    if (query.trim().isEmpty) return;
+
+    final trimmedQuery = query.trim();
+    final lowerQuery = trimmedQuery.toLowerCase();
+
+    // Find if query already exists
+    int existingIndex = _searchHistory.indexWhere(
+      (item) => (item['query'] as String).toLowerCase() == lowerQuery,
+    );
+
+    if (existingIndex >= 0) {
+      // Update existing entry: increment count and move to top
+      final existingItem = _searchHistory.removeAt(existingIndex);
+      existingItem['count'] = (existingItem['count'] as int) + 1;
+      existingItem['lastUsed'] = DateTime.now().millisecondsSinceEpoch;
+      _searchHistory.insert(0, existingItem);
+    } else {
+      // Add new entry at the beginning
+      _searchHistory.insert(0, {
+        'query': trimmedQuery,
+        'count': 1,
+        'lastUsed': DateTime.now().millisecondsSinceEpoch,
+      });
+    }
+
+    // Keep only the latest items
+    if (_searchHistory.length > _maxHistoryItems) {
+      _searchHistory = _searchHistory.take(_maxHistoryItems).toList();
+    }
+
+    // Save to persistent storage
+    saveSearchHistory();
+
+    debugPrint(
+      'Search history updated: ${_searchHistory.map((item) => "${item['query']} (${item['count']}x)").toList()}',
+    );
+  }
+
+  void clearHistory() {
+    _searchHistory.clear();
+    saveSearchHistory();
+    debugPrint('Search history cleared');
+  }
+
+  Map<String, dynamic>? getQueryStats(String query) {
+    final lowerQuery = query.toLowerCase();
+    try {
+      return _searchHistory.firstWhere(
+        (item) => (item['query'] as String).toLowerCase() == lowerQuery,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  List<String> getMostSearchedQueries({int limit = 5}) {
+    final sortedHistory = List<Map<String, dynamic>>.from(_searchHistory);
+    sortedHistory.sort(
+      (a, b) => (b['count'] as int).compareTo(a['count'] as int),
+    );
+    return sortedHistory
+        .take(limit)
+        .map((item) => item['query'] as String)
+        .toList();
+  }
+
+  List<String> getRecentQueries({int limit = 5}) {
+    return _searchHistory
+        .take(limit)
+        .map((item) => item['query'] as String)
+        .toList();
+  }
+
+  int get totalSearches =>
+      _searchHistory.fold(0, (sum, item) => sum + (item['count'] as int));
+
+  bool hasSearched(String query) {
+    return getQueryStats(query) != null;
+  }
+}
 
 class SearchResult {
   final KiranInfo kiranInfo;
@@ -50,11 +194,33 @@ class _KiransearchpageState extends State<Kiransearchpage> {
   bool _showContentMatches = true;
   bool _isFiltersExpanded = false; // Collapsible filter state
 
+  // Search history state
+  final SearchHistoryService _searchHistoryService = SearchHistoryService();
+  bool _showSearchSuggestions = false;
+
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    _searchFocusNode.addListener(() {
+      setState(() {
+        _showSearchSuggestions =
+            _searchFocusNode.hasFocus &&
+            _searchController.text.isEmpty &&
+            _searchHistoryService.searchHistory.isNotEmpty;
+      });
+    });
     _loadAllParts();
+    _loadSearchHistory();
+  }
+
+  Future<void> _loadSearchHistory() async {
+    await _searchHistoryService.loadSearchHistory();
+    if (mounted) {
+      setState(() {
+        // Trigger rebuild after loading search history
+      });
+    }
   }
 
   @override
@@ -69,12 +235,19 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       if (_searchController.text.trim().length >= 2) {
+        setState(() {
+          _showSearchSuggestions = false;
+        });
         _performSearch(_searchController.text.trim());
       } else {
         setState(() {
           _searchResults.clear();
           _filteredResults.clear();
           _hasSearched = false;
+          _showSearchSuggestions =
+              _searchFocusNode.hasFocus &&
+              _searchController.text.isEmpty &&
+              _searchHistoryService.searchHistory.isNotEmpty;
         });
       }
     });
@@ -153,6 +326,15 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         _searchResults = results;
         _applyFilters();
         _isLoading = false;
+
+        // Add successful search query to history (if results found)
+        if (results.isNotEmpty) {
+          _searchHistoryService.addSearchQuery(query);
+          // Trigger rebuild to update any UI that depends on search history
+          if (mounted) {
+            setState(() {});
+          }
+        }
       });
     } catch (e) {
       setState(() {
@@ -180,6 +362,21 @@ class _KiransearchpageState extends State<Kiransearchpage> {
 
           return true;
         }).toList();
+  }
+
+  void _clearSearchHistory() {
+    _searchHistoryService.clearHistory();
+    setState(() {
+      // Trigger rebuild after clearing history
+    });
+  }
+
+  void _selectSearchSuggestion(String query) {
+    _searchController.text = query;
+    setState(() {
+      _showSearchSuggestions = false;
+    });
+    _performSearch(query);
   }
 
   void _togglePartFilter(int partNumber) {
@@ -328,6 +525,13 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                             icon: const Icon(Icons.clear),
                             onPressed: () {
                               _searchController.clear();
+                              setState(() {
+                                _showSearchSuggestions =
+                                    _searchHistoryService
+                                        .searchHistory
+                                        .isNotEmpty &&
+                                    _searchFocusNode.hasFocus;
+                              });
                             },
                           ),
                         if (_isLoading)
@@ -361,6 +565,145 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                     context,
                   ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
+
+                // Recent Search History Suggestions
+                if (_showSearchSuggestions &&
+                    _searchHistoryService.searchHistory.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withAlpha(100),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.history,
+                                size: 16,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Recent Searches',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              const Spacer(),
+                              TextButton(
+                                onPressed: _clearSearchHistory,
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  minimumSize: Size.zero,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: Text(
+                                  'Clear',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ...List.generate(
+                          _searchHistoryService.searchHistory.length,
+                          (index) {
+                            final historyItem =
+                                _searchHistoryService.searchHistory[index];
+                            final query = historyItem['query'] as String;
+                            final count = historyItem['count'] as int;
+                            return InkWell(
+                              onTap: () => _selectSearchSuggestion(query),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12.0,
+                                  vertical: 8.0,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.search,
+                                      size: 16,
+                                      color: Colors.grey,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        query,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                    if (count > 1) ...[
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.primaryContainer,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${count}x',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodySmall?.copyWith(
+                                            color:
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimaryContainer,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                    ],
+                                    Icon(
+                                      Icons.north_west,
+                                      size: 16,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                ],
+
                 // Collapsible Filters Section
                 if (_hasSearched && _searchResults.isNotEmpty) ...[
                   ExpansionTile(
@@ -554,29 +897,31 @@ class _KiransearchpageState extends State<Kiransearchpage> {
   Widget _buildSearchResults() {
     if (!_hasSearched) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search,
-              size: 64,
-              color: Colors.grey.withValues(alpha: 0.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              AppLocalizations.of(context)!.search_all_kiranas,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(color: Colors.grey),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.enter_keywords,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.search,
+                size: 64,
+                color: Colors.grey.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                AppLocalizations.of(context)!.search_all_kiranas,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context)!.enter_keywords,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -588,49 +933,18 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     if (_filteredResults.isEmpty) {
       if (_searchResults.isEmpty) {
         return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.search_off,
-                size: 64,
-                color: Colors.grey.withValues(alpha: 0.5),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                AppLocalizations.of(context)!.no_results_found,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                AppLocalizations.of(context)!.try_different_keywords,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        );
-      } else {
-        // Results exist but filtered out
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.filter_list_off,
+                  Icons.search_off,
                   size: 64,
                   color: Colors.grey.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  AppLocalizations.of(context)!.no_filtered_results,
+                  AppLocalizations.of(context)!.no_results_found,
                   style: Theme.of(
                     context,
                   ).textTheme.titleLarge?.copyWith(color: Colors.grey),
@@ -638,13 +952,48 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)!.adjust_filters,
+                  AppLocalizations.of(context)!.try_different_keywords,
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
               ],
+            ),
+          ),
+        );
+      } else {
+        // Results exist but filtered out
+        return Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.filter_list_off,
+                    size: 64,
+                    color: Colors.grey.withValues(alpha: 0.5),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.of(context)!.no_filtered_results,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context)!.adjust_filters,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ),
         );
