@@ -32,8 +32,12 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
-  String _elapsed = "00:00";
   bool _isTimerPaused = false;
+
+  // ValueNotifiers to prevent widget rebuilds during timer updates
+  final ValueNotifier<String> _elapsedNotifier = ValueNotifier<String>("00:00");
+  final ValueNotifier<bool> _isFinishButtonEnabledNotifier =
+      ValueNotifier<bool>(false);
 
   // Auto-scroll variables
   bool _isAutoScrolling = false;
@@ -79,6 +83,10 @@ class _KiranReadPageState extends State<KiranReadPage>
     // Dispose scroll controller
     _scrollController.dispose();
 
+    // Dispose ValueNotifiers
+    _elapsedNotifier.dispose();
+    _isFinishButtonEnabledNotifier.dispose();
+
     super.dispose();
   }
 
@@ -106,9 +114,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     _stopwatch.start();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!_isTimerPaused && mounted) {
-        setState(() {
-          _updateElapsedTime();
-        });
+        // Update timer without triggering setState to avoid rebuilding SelectionArea
+        _updateElapsedTime();
       }
     });
   }
@@ -137,16 +144,22 @@ class _KiranReadPageState extends State<KiranReadPage>
     final seconds = _stopwatch.elapsed.inSeconds;
     final minutes = seconds ~/ 60;
     final secs = seconds % 60;
-    _elapsed =
+    final timeString =
         "${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}";
 
+    _elapsedNotifier.value = timeString;
+
     // Check if 80% of estimated reading time has elapsed
-    if (_estimatedReadingSeconds > 0 && !_isFinishButtonEnabled) {
+    if (_estimatedReadingSeconds > 0 && !_isFinishButtonEnabledNotifier.value) {
       final requiredSeconds = (_estimatedReadingSeconds * 0.8).round();
       if (seconds >= requiredSeconds) {
-        setState(() {
-          _isFinishButtonEnabled = true;
-        });
+        _isFinishButtonEnabledNotifier.value = true;
+        // Only call setState when the button state actually changes
+        if (!_isFinishButtonEnabled) {
+          setState(() {
+            _isFinishButtonEnabled = true;
+          });
+        }
       }
     }
   }
@@ -636,12 +649,17 @@ class _KiranReadPageState extends State<KiranReadPage>
                     color: _isTimerPaused ? Colors.orange : null,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    _elapsed,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontSize: 13,
-                      color: _isTimerPaused ? Colors.orange : null,
-                    ),
+                  ValueListenableBuilder<String>(
+                    valueListenable: _elapsedNotifier,
+                    builder: (context, elapsed, child) {
+                      return Text(
+                        elapsed,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          fontSize: 13,
+                          color: _isTimerPaused ? Colors.orange : null,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

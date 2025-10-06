@@ -30,19 +30,26 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
     return ValueListenableBuilder<AppSettings>(
       valueListenable: appSettingsNotifier,
       builder: (context, settings, child) {
-        return Html(
-          data: htmlContent,
-          extensions: [...widget.customTagRegistry.buildExtensions(context)],
-          style: {
-            "body": Style(
-              color: fontColor,
-              fontSize: FontSize(
-                Theme.of(context).textTheme.bodyLarge!.fontSize!,
-              ),
-              textAlign: TextAlign.justify,
-              lineHeight: LineHeight(appSettingsNotifier.value.lineHeight),
-            ),
+        return SelectionArea(
+          selectionControls: MaterialTextSelectionControls(),
+          onSelectionChanged: (selection) {
+            // Optional: Add callback to parent widget to pause timer during selection
+            // This can be implemented if needed for extra safety
           },
+          child: Html(
+            data: htmlContent,
+            extensions: [...widget.customTagRegistry.buildExtensions(context)],
+            style: {
+              "body": Style(
+                color: fontColor,
+                fontSize: FontSize(
+                  Theme.of(context).textTheme.bodyLarge!.fontSize!,
+                ),
+                textAlign: TextAlign.justify,
+                lineHeight: LineHeight(appSettingsNotifier.value.lineHeight),
+              ),
+            },
+          ),
         );
       },
     );
