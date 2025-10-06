@@ -43,6 +43,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   bool _isInitialized = false;
 
   bool _hasDataChanged = false;
+  bool _isFinishButtonEnabled = false;
 
   @override
   void initState() {
@@ -64,20 +65,20 @@ class _KiranReadPageState extends State<KiranReadPage>
   void dispose() {
     // Remove observer
     WidgetsBinding.instance.removeObserver(this);
-    
+
     // Stop and cleanup timers
     _stopwatch.stop();
     _timer?.cancel();
     _timer = null;
-    
+
     // Stop auto-scroll and cleanup
     _isAutoScrolling = false;
     _autoScrollTimer?.cancel();
     _autoScrollTimer = null;
-    
+
     // Dispose scroll controller
     _scrollController.dispose();
-    
+
     super.dispose();
   }
 
@@ -138,10 +139,41 @@ class _KiranReadPageState extends State<KiranReadPage>
     final secs = seconds % 60;
     _elapsed =
         "${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}";
+
+    // Check if 80% of estimated reading time has elapsed
+    if (_estimatedReadingSeconds > 0 && !_isFinishButtonEnabled) {
+      final requiredSeconds = (_estimatedReadingSeconds * 0.8).round();
+      if (seconds >= requiredSeconds) {
+        setState(() {
+          _isFinishButtonEnabled = true;
+        });
+      }
+    }
+  }
+
+  String _getTimeUntilButtonEnabled() {
+    if (_estimatedReadingSeconds <= 0) return '';
+
+    final requiredSeconds = (_estimatedReadingSeconds * 0.8).round();
+    final elapsedSeconds = _stopwatch.elapsed.inSeconds;
+    final remainingSeconds = requiredSeconds - elapsedSeconds;
+
+    if (remainingSeconds <= 0) return '';
+
+    final minutes = remainingSeconds ~/ 60;
+    final secs = remainingSeconds % 60;
+
+    if (minutes > 0) {
+      return 'Button available in ${minutes}m ${secs}s';
+    } else {
+      return 'Button available in ${secs}s';
+    }
   }
 
   void _setInitialScrollPosition() {
-    if (mounted && _scrollController.hasClients && widget.kiranUserInfo.progress > 0) {
+    if (mounted &&
+        _scrollController.hasClients &&
+        widget.kiranUserInfo.progress > 0) {
       final maxScrollExtent = _scrollController.position.maxScrollExtent;
       final targetPosition =
           (widget.kiranUserInfo.progress / 100) * maxScrollExtent;
@@ -160,6 +192,13 @@ class _KiranReadPageState extends State<KiranReadPage>
     _estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
       widget.kiranInfo.wordCount,
     );
+
+    // Check if button should already be enabled (for cases where user has already spent time reading)
+    if (_estimatedReadingSeconds > 0 &&
+        _stopwatch.elapsed.inSeconds >=
+            (_estimatedReadingSeconds * 0.8).round()) {
+      _isFinishButtonEnabled = true;
+    }
 
     // Get content height and set up scroll listener
     if (_scrollController.hasClients) {
@@ -231,7 +270,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   void _stopAutoScroll() {
     _autoScrollTimer?.cancel();
     _isAutoScrolling = false;
-    
+
     if (mounted) {
       setState(() {
         // Update progress based on current scroll position
@@ -423,45 +462,75 @@ class _KiranReadPageState extends State<KiranReadPage>
                                 htmlContent: getKiranContent(contentData),
                               ),
                               const SizedBox(height: 8.0),
-                              ElevatedButton.icon(
-                                onPressed: () {
-                                  if (mounted) {
-                                    setState(() {
-                                      widget.kiranUserInfo.progress = 100;
-                                      widget.kiranUserInfo.readCount += 1;
-                                      widget.kiranUserInfo.updatedAt =
-                                          DateTime.now();
-                                      Utils.updateKiranUserInfo(
-                                        widget.kiranUserInfo,
-                                      );
-                                      _hasDataChanged = true;
-                                      _pauseTimer();
-                                    });
-                                  }
-                                  if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.kiran_read_finished,
-                                        ),
-                                        duration: const Duration(seconds: 2),
+                              Tooltip(
+                                message:
+                                    _isFinishButtonEnabled
+                                        ? AppLocalizations.of(
+                                          context,
+                                        )!.kiran_read_finished
+                                        : 'Complete 80% of estimated reading time to enable',
+                                child: ElevatedButton.icon(
+                                  onPressed:
+                                      _isFinishButtonEnabled
+                                          ? () {
+                                            if (mounted) {
+                                              setState(() {
+                                                widget.kiranUserInfo.progress =
+                                                    100;
+                                                widget
+                                                    .kiranUserInfo
+                                                    .readCount += 1;
+                                                widget.kiranUserInfo.updatedAt =
+                                                    DateTime.now();
+                                                Utils.updateKiranUserInfo(
+                                                  widget.kiranUserInfo,
+                                                );
+                                                _hasDataChanged = true;
+                                                _pauseTimer();
+                                              });
+                                            }
+                                            if (mounted) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    AppLocalizations.of(
+                                                      context,
+                                                    )!.kiran_read_finished,
+                                                  ),
+                                                  duration: const Duration(
+                                                    seconds: 2,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          }
+                                          : null,
+                                  icon: Icon(
+                                    Icons.check_box,
+                                    color:
+                                        _isFinishButtonEnabled
+                                            ? null
+                                            : Colors.grey,
+                                  ),
+                                  label: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.kiran_read_finished,
+                                      style: TextStyle(
+                                        color:
+                                            _isFinishButtonEnabled
+                                                ? null
+                                                : Colors.grey,
                                       ),
-                                    );
-                                  }
-                                },
-                                icon: const Icon(Icons.check_box),
-                                label: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    AppLocalizations.of(
-                                      context,
-                                    )!.kiran_read_finished,
+                                    ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 16.0),
+                              const SizedBox(height: 8.0),
                             ],
                           ),
                         ),
@@ -475,6 +544,30 @@ class _KiranReadPageState extends State<KiranReadPage>
         ),
       ),
     );
+  }
+
+  Widget _showTimeWarning() {
+    // Show remaining time until button is enabled
+    if (!_isFinishButtonEnabled && _estimatedReadingSeconds > 0) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.timer_outlined, size: 16, color: Colors.orange),
+            const SizedBox(width: 4),
+            Text(
+              _getTimeUntilButtonEnabled(),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Colors.orange,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Container displayExtraInfos(BuildContext context) {
