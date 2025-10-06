@@ -170,4 +170,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get title_match => 'Title';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get clear_all_filters => 'Clear All';
+
+  @override
+  String get match_type => 'Match Type';
+
+  @override
+  String get book_parts => 'Book Parts';
+
+  @override
+  String get no_filtered_results => 'No results match current filters';
+
+  @override
+  String get adjust_filters => 'Try adjusting your filter settings';
+
+  @override
+  String results_filtered(int filtered, int total) {
+    return '$filtered of $total results shown';
+  }
 }

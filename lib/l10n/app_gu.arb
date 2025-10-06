@@ -90,5 +90,35 @@
     },
     "search_min_chars": "શોધવા માટે ઓછામાં ઓછા 2 અક્ષરો દાખલ કરો",
     "content_match": "સામગ્રી",
-    "title_match": "શીર્ષક"
+    "title_match": "શીર્ષક",
+    
+    "filters": "ફિલ્ટર્સ",
+    "clear_all_filters": "બધા સાફ કરો",
+    "match_type": "મેચ પ્રકાર",
+    "book_parts": "પુસ્તક ભાગો",
+    "no_filtered_results": "વર્તમાન ફિલ્ટર્સ સાથે કોઈ પરિણામ મેળ ખાતા નથી",
+    "adjust_filters": "તમારી ફિલ્ટર સેટિંગ્સ એડજસ્ટ કરવાનો પ્રયાસ કરો",
+    "results_filtered": "{total} માંથી {filtered} પરિણામો દર્શાવવામાં આવ્યા છે",
+    "@results_filtered": {
+        "description": "Shows filtered vs total results",
+        "placeholders": {
+            "filtered": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "part_number": "ભાગ {partNumber}",
+    "@part_number": {
+        "description": "Indicates the part number of the book",
+        "placeholders": {
+            "partNumber": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "part_1": "ભાગ ૧",
+    "part_2": "ભાગ ૨",
+    "part_3": "ભાગ ૩",
+    "part_4": "ભાગ ૪",
+    "part_5": "ભાગ ૫"
 }

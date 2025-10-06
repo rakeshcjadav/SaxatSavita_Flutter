@@ -394,6 +394,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Title'**
   String get title_match;
+
+  /// No description provided for @filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// No description provided for @clear_all_filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clear_all_filters;
+
+  /// No description provided for @match_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Match Type'**
+  String get match_type;
+
+  /// No description provided for @book_parts.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Parts'**
+  String get book_parts;
+
+  /// No description provided for @no_filtered_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No results match current filters'**
+  String get no_filtered_results;
+
+  /// No description provided for @adjust_filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your filter settings'**
+  String get adjust_filters;
+
+  /// Shows filtered vs total results
+  ///
+  /// In en, this message translates to:
+  /// **'{filtered} of {total} results shown'**
+  String results_filtered(int filtered, int total);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

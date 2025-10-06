@@ -90,5 +90,35 @@
     },
     "search_min_chars": "Enter at least 2 characters to search",
     "content_match": "Content",
-    "title_match": "Title"
+    "title_match": "Title",
+    
+    "filters": "Filters",
+    "clear_all_filters": "Clear All",
+    "match_type": "Match Type",
+    "book_parts": "Book Parts",
+    "no_filtered_results": "No results match current filters",
+    "adjust_filters": "Try adjusting your filter settings",
+    "results_filtered": "{filtered} of {total} results shown",
+    "@results_filtered": {
+        "description": "Shows filtered vs total results",
+        "placeholders": {
+            "filtered": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "part_number": "Part {partNumber}",
+    "@part_number": {
+        "description": "Indicates the part number of the book",
+        "placeholders": {
+            "partNumber": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "part_1": "Part 1",
+    "part_2": "Part 2",
+    "part_3": "Part 3",
+    "part_4": "Part 4",
+    "part_5": "Part 5"
 }

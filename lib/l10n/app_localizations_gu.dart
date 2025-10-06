@@ -170,4 +170,27 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get title_match => 'શીર્ષક';
+
+  @override
+  String get filters => 'ફિલ્ટર્સ';
+
+  @override
+  String get clear_all_filters => 'બધા સાફ કરો';
+
+  @override
+  String get match_type => 'મેચ પ્રકાર';
+
+  @override
+  String get book_parts => 'પુસ્તક ભાગો';
+
+  @override
+  String get no_filtered_results => 'વર્તમાન ફિલ્ટર્સ સાથે કોઈ પરિણામ મેળ ખાતા નથી';
+
+  @override
+  String get adjust_filters => 'તમારી ફિલ્ટર સેટિંગ્સ એડજસ્ટ કરવાનો પ્રયાસ કરો';
+
+  @override
+  String results_filtered(int filtered, int total) {
+    return '$total માંથી $filtered પરિણામો દર્શાવવામાં આવ્યા છે';
+  }
 }

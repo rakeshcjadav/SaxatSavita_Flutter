@@ -27,7 +27,7 @@ AppBar buildAppBar(
       if (actionItems?.contains(ActionOptions.search) ?? false)
         IconButton(
           icon: const Icon(Icons.search),
-          tooltip: AppLocalizations.of(context)!.search_kiranas,
+          tooltip: AppLocalizations.of(context)!.search_all_kiranas,
           onPressed: () {
             Navigator.pushNamed(context, '/search');
           },

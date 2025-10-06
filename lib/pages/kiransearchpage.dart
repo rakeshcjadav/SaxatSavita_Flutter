@@ -7,6 +7,7 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
+import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 
@@ -35,12 +36,18 @@ class _KiransearchpageState extends State<Kiransearchpage> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   List<SearchResult> _searchResults = [];
+  List<SearchResult> _filteredResults = [];
   bool _isLoading = false;
   bool _hasSearched = false;
   Timer? _debounceTimer;
 
   final KiranListService _kiranListService = KiranListService();
   final List<int> _availableParts = [1, 2, 3, 4, 5];
+
+  // Filter state
+  Set<int> _selectedParts = {1, 2, 3, 4, 5}; // All parts selected by default
+  bool _showTitleMatches = true;
+  bool _showContentMatches = true;
 
   @override
   void initState() {
@@ -65,6 +72,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       } else {
         setState(() {
           _searchResults.clear();
+          _filteredResults.clear();
           _hasSearched = false;
         });
       }
@@ -142,6 +150,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
 
       setState(() {
         _searchResults = results;
+        _applyFilters();
         _isLoading = false;
       });
     } catch (e) {
@@ -150,6 +159,48 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       });
       debugPrint('Search error: $e');
     }
+  }
+
+  void _applyFilters() {
+    _filteredResults =
+        _searchResults.where((result) {
+          // Filter by part number
+          if (!_selectedParts.contains(result.partNumber)) {
+            return false;
+          }
+
+          // Filter by match type
+          if (result.isContentMatch && !_showContentMatches) {
+            return false;
+          }
+          if (!result.isContentMatch && !_showTitleMatches) {
+            return false;
+          }
+
+          return true;
+        }).toList();
+  }
+
+  void _togglePartFilter(int partNumber) {
+    setState(() {
+      if (_selectedParts.contains(partNumber)) {
+        _selectedParts.remove(partNumber);
+      } else {
+        _selectedParts.add(partNumber);
+      }
+      _applyFilters();
+    });
+  }
+
+  void _toggleMatchTypeFilter(bool isContentFilter) {
+    setState(() {
+      if (isContentFilter) {
+        _showContentMatches = !_showContentMatches;
+      } else {
+        _showTitleMatches = !_showTitleMatches;
+      }
+      _applyFilters();
+    });
   }
 
   Future<String> _searchInContent(
@@ -216,7 +267,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       MaterialPageRoute(
         builder:
             (_) => KiranReadPage(
-              partNumber: result.partNumber.toString(),
+              partNumber: "part${result.partNumber}",
               kiranInfo: result.kiranInfo,
               kiranUserInfo: kiranUserInfo,
             ),
@@ -296,10 +347,140 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                     context,
                   ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
+
+                // Filters Section
+                if (_hasSearched && _searchResults.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  const Divider(height: 1),
+                  const SizedBox(height: 16),
+
+                  // Filter Header
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.filter_list,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.filters,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedParts = {1, 2, 3, 4, 5};
+                            _showTitleMatches = true;
+                            _showContentMatches = true;
+                            _applyFilters();
+                          });
+                        },
+                        child: Text(
+                          AppLocalizations.of(context)!.clear_all_filters,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Match Type Filters
+                  Row(
+                    children: [
+                      Text(
+                        '${AppLocalizations.of(context)!.match_type}:',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FilterChip(
+                          selected: _showTitleMatches,
+                          onSelected: (_) => _toggleMatchTypeFilter(false),
+                          label: Text(
+                            AppLocalizations.of(context)!.title_match,
+                          ),
+                          avatar:
+                              _showTitleMatches
+                                  ? Icon(Icons.check, size: 16)
+                                  : Icon(Icons.title, size: 16),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
+                          selectedColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilterChip(
+                          selected: _showContentMatches,
+                          onSelected: (_) => _toggleMatchTypeFilter(true),
+                          label: Text(
+                            AppLocalizations.of(context)!.content_match,
+                          ),
+                          avatar:
+                              _showContentMatches
+                                  ? Icon(Icons.check, size: 16)
+                                  : Icon(Icons.article, size: 16),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
+                          selectedColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Part Filters
+                  Row(
+                    children: [
+                      Text(
+                        '${AppLocalizations.of(context)!.book_parts}:',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children:
+                        _availableParts.map((partNumber) {
+                          final isSelected = _selectedParts.contains(
+                            partNumber,
+                          );
+                          return FilterChip(
+                            selected: isSelected,
+                            onSelected: (_) => _togglePartFilter(partNumber),
+                            label: Text(Bookservice().getPartTitle(partNumber)),
+                            avatar:
+                                isSelected
+                                    ? Icon(Icons.check, size: 16)
+                                    : Icon(Icons.book, size: 16),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surface,
+                            selectedColor:
+                                Theme.of(context).colorScheme.primaryContainer,
+                          );
+                        }).toList(),
+                  ),
+                ],
               ],
             ),
           ),
-
           // Search Results
           Expanded(child: _buildSearchResults()),
         ],
@@ -341,33 +522,63 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_searchResults.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Colors.grey.withValues(alpha: 0.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              AppLocalizations.of(context)!.no_results_found,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(color: Colors.grey),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.try_different_keywords,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
-      );
+    if (_filteredResults.isEmpty) {
+      if (_searchResults.isEmpty) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.search_off,
+                size: 64,
+                color: Colors.grey.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                AppLocalizations.of(context)!.no_results_found,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context)!.try_different_keywords,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+              ),
+            ],
+          ),
+        );
+      } else {
+        // Results exist but filtered out
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.filter_list_off,
+                size: 64,
+                color: Colors.grey.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                AppLocalizations.of(context)!.no_filtered_results,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context)!.adjust_filters,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+              ),
+            ],
+          ),
+        );
+      }
     }
 
     return Column(
@@ -377,9 +588,10 @@ class _KiransearchpageState extends State<Kiransearchpage> {
           child: Row(
             children: [
               Text(
-                AppLocalizations.of(
-                  context,
-                )!.results_found(_searchResults.length),
+                AppLocalizations.of(context)!.results_filtered(
+                  _filteredResults.length,
+                  _searchResults.length,
+                ),
                 style: Theme.of(
                   context,
                 ).textTheme.bodySmall?.copyWith(color: Colors.grey),
@@ -390,10 +602,10 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         Expanded(
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemCount: _searchResults.length,
+            itemCount: _filteredResults.length,
             separatorBuilder: (context, index) => const SizedBox(height: 8),
             itemBuilder: (context, index) {
-              final result = _searchResults[index];
+              final result = _filteredResults[index];
               return _buildSearchResultCard(result);
             },
           ),

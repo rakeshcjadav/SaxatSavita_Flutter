@@ -54,6 +54,16 @@ class Bookservice {
     );
   }
 
+  String getPartTitle(int partNumber) {
+    try {
+      return _bookparts!
+          .firstWhere((part) => part.partNumber == partNumber)
+          .displayname;
+    } catch (e) {
+      return "Part $partNumber";
+    }
+  }
+
   Future<List<Bookpartmodel>> loadBook(
     BuildContext context,
     String bookName,
