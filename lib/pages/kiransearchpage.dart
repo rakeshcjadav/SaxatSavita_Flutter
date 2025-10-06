@@ -626,77 +626,87 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                             ],
                           ),
                         ),
-                        ...List.generate(
-                          _searchHistoryService.searchHistory.length,
-                          (index) {
-                            final historyItem =
-                                _searchHistoryService.searchHistory[index];
-                            final query = historyItem['query'] as String;
-                            final count = historyItem['count'] as int;
-                            return InkWell(
-                              onTap: () => _selectSearchSuggestion(query),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0,
-                                  vertical: 8.0,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.search,
-                                      size: 16,
-                                      color: Colors.grey,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        query,
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.bodyMedium,
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 200, // Limit height to prevent overflow
+                          ),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: List.generate(
+                                _searchHistoryService.searchHistory.length,
+                                (index) {
+                                  final historyItem =
+                                      _searchHistoryService
+                                          .searchHistory[index];
+                                  final query = historyItem['query'] as String;
+                                  final count = historyItem['count'] as int;
+                                  return InkWell(
+                                    onTap: () => _selectSearchSuggestion(query),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 8.0,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.search,
+                                            size: 16,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Text(
+                                              query,
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyMedium,
+                                            ),
+                                          ),
+                                          if (count > 1) ...[
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 2,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .primaryContainer,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Text(
+                                                '${count}x',
+                                                style: Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall?.copyWith(
+                                                  color:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimaryContainer,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                          ],
+                                          Icon(
+                                            Icons.north_west,
+                                            size: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    if (count > 1) ...[
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.primaryContainer,
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          '${count}x',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodySmall?.copyWith(
-                                            color:
-                                                Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimaryContainer,
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                    ],
-                                    Icon(
-                                      Icons.north_west,
-                                      size: 16,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
-                                ),
+                                  );
+                                },
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 8),
                       ],

@@ -152,6 +152,11 @@ class SakshatSavitaApp extends StatelessWidget {
               radius: const Radius.circular(6),
               thickness: WidgetStateProperty.all(3.0),
             ),
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: colorScheme.primary,
+              selectionColor: Colors.amber.withValues(alpha: 0.5),
+              selectionHandleColor: Colors.amber,
+            ),
           ),
           home: const SplashPage(),
           routes: {
