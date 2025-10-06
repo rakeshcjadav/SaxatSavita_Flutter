@@ -288,6 +288,15 @@ class _KiranReadPageState extends State<KiranReadPage>
     });
   }
 
+  void closeSearch() {
+    _isSearchMode = false;
+    if (!_isSearchMode) {
+      _searchController.clear();
+      _searchMatches.clear();
+      _currentMatchIndex = -1;
+    }
+  }
+
   void _stopAutoScroll() {
     _autoScrollTimer?.cancel();
     _isAutoScrolling = false;
@@ -890,7 +899,10 @@ class _KiranReadPageState extends State<KiranReadPage>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: IconButton(
-              onPressed: _toggleAutoScroll,
+              onPressed: () {
+                closeSearch();
+                _toggleAutoScroll();
+              },
               icon: Icon(
                 _isAutoScrolling ? Icons.pause : Icons.play_arrow,
                 color: _isAutoScrolling ? Colors.amber : null,
