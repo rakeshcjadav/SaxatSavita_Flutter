@@ -72,7 +72,7 @@ class _DrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.edit_document),
+            leading: const Icon(Icons.note),
             title: Text(AppLocalizations.of(context)!.menu_four),
             onTap: () {},
           ),
@@ -80,6 +80,14 @@ class _DrawerState extends State<MyDrawer> {
             leading: const Icon(Icons.history),
             title: Text(AppLocalizations.of(context)!.menu_six),
             onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.search),
+            title: Text(AppLocalizations.of(context)!.menu_five),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/search');
+            },
           ),
           ListTile(
             leading: const Icon(Icons.person),
