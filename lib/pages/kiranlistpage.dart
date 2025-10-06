@@ -87,7 +87,11 @@ class _KiranlistpageState extends State<Kiranlistpage> {
       appBar: buildAppBar(
         context,
         title: widget.bookPart.displayname,
-        actionItems: [ActionOptions.info, ActionOptions.settings],
+        actionItems: [
+          ActionOptions.info,
+          ActionOptions.search,
+          ActionOptions.settings,
+        ],
       ),
       body: PopScope(
         canPop: false,
@@ -195,10 +199,13 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             Text(kiran.number, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                kiran.title,
-                style: Theme.of(context).textTheme.titleMedium,
-                overflow: TextOverflow.ellipsis,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  kiran.title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
           ],
