@@ -340,6 +340,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।'**
   String get header_slok;
+
+  /// No description provided for @search_kiranas.
+  ///
+  /// In en, this message translates to:
+  /// **'Search kiranas by title or content...'**
+  String get search_kiranas;
+
+  /// No description provided for @search_all_kiranas.
+  ///
+  /// In en, this message translates to:
+  /// **'Search through all Kiranas'**
+  String get search_all_kiranas;
+
+  /// No description provided for @enter_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter keywords to find relevant content'**
+  String get enter_keywords;
+
+  /// No description provided for @no_results_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get no_results_found;
+
+  /// No description provided for @try_different_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Try different keywords or check spelling'**
+  String get try_different_keywords;
+
+  /// Number of search results
+  ///
+  /// In en, this message translates to:
+  /// **'{count} results found'**
+  String results_found(int count);
+
+  /// No description provided for @search_min_chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least 2 characters to search'**
+  String get search_min_chars;
+
+  /// No description provided for @content_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get content_match;
+
+  /// No description provided for @title_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get title_match;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

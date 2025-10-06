@@ -24,6 +24,14 @@ AppBar buildAppBar(
             Navigator.pushNamed(context, '/info');
           },
         ),
+      if (actionItems?.contains(ActionOptions.search) ?? false)
+        IconButton(
+          icon: const Icon(Icons.search),
+          tooltip: AppLocalizations.of(context)!.search_kiranas,
+          onPressed: () {
+            Navigator.pushNamed(context, '/search');
+          },
+        ),
       if (extraActions != null) ...extraActions,
       if (actionItems?.contains(ActionOptions.settings) ?? false)
         IconButton(

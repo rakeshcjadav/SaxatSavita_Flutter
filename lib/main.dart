@@ -5,6 +5,7 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
+import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -155,6 +156,7 @@ class SakshatSavitaApp extends StatelessWidget {
           home: const SplashPage(),
           routes: {
             '/info': (context) => const Infolistpage(),
+            '/search': (context) => const Kiransearchpage(),
             '/settings': (context) => const SettingsPage(),
             '/aashirvachan': (context) => const Aashirvachanpage(),
             '/home': (context) => const HomePage(),

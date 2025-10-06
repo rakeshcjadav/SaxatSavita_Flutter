@@ -141,4 +141,33 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get header_slok => '।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।';
+
+  @override
+  String get search_kiranas => 'શીર્ષક અથવા સામગ્રી દ્વારા કિરણો શોધો...';
+
+  @override
+  String get search_all_kiranas => 'તમામ કિરણો શોધો';
+
+  @override
+  String get enter_keywords => 'સંબંધિત સામગ્રી શોધવા માટે કીવર્ડ્સ દાખલ કરો';
+
+  @override
+  String get no_results_found => 'કોઈ પરિણામ મળ્યા નથી';
+
+  @override
+  String get try_different_keywords => 'અલગ કીવર્ડ્સ અજમાવો અથવા સ્પેલિંગ ચકાસો';
+
+  @override
+  String results_found(int count) {
+    return '$count પરિણામો મળ્યા';
+  }
+
+  @override
+  String get search_min_chars => 'શોધવા માટે ઓછામાં ઓછા 2 અક્ષરો દાખલ કરો';
+
+  @override
+  String get content_match => 'સામગ્રી';
+
+  @override
+  String get title_match => 'શીર્ષક';
 }

@@ -42,7 +42,11 @@ class _BookmainpageState extends State<BookMainpage> {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.sakshatSavita,
-        actionItems: [ActionOptions.info, ActionOptions.settings],
+        actionItems: [
+          ActionOptions.info,
+          ActionOptions.search,
+          ActionOptions.settings,
+        ],
       ),
       body: Column(
         children: [

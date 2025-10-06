@@ -141,4 +141,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get header_slok => '।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।';
+
+  @override
+  String get search_kiranas => 'Search kiranas by title or content...';
+
+  @override
+  String get search_all_kiranas => 'Search through all Kiranas';
+
+  @override
+  String get enter_keywords => 'Enter keywords to find relevant content';
+
+  @override
+  String get no_results_found => 'No results found';
+
+  @override
+  String get try_different_keywords => 'Try different keywords or check spelling';
+
+  @override
+  String results_found(int count) {
+    return '$count results found';
+  }
+
+  @override
+  String get search_min_chars => 'Enter at least 2 characters to search';
+
+  @override
+  String get content_match => 'Content';
+
+  @override
+  String get title_match => 'Title';
 }
