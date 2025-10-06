@@ -414,25 +414,6 @@ class _KiranReadPageState extends State<KiranReadPage>
                 });
               },
             ),
-            IconButton(
-              icon: Icon(
-                Icons.note_add,
-                color:
-                    (widget.kiranUserInfo.note != null &&
-                            widget.kiranUserInfo.note!.isNotEmpty)
-                        ? Colors.orange
-                        : null,
-              ),
-              tooltip:
-                  AppLocalizations.of(
-                    context,
-                  )!.menu_four, // Using existing "Notes" key
-              onPressed: () async {
-                _pauseTimer();
-                await _openNoteEditor();
-                _resumeTimer();
-              },
-            ),
           ],
           onSettingsPressed: () async {
             _pauseTimer();
@@ -609,6 +590,14 @@ class _KiranReadPageState extends State<KiranReadPage>
               ),
             ],
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            _pauseTimer();
+            await _openNoteEditor();
+            _resumeTimer();
+          },
+          child: Icon(Icons.note_add),
         ),
       ),
     );

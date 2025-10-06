@@ -23,11 +23,33 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   late QuillController _controller;
   final FocusNode _focusNode = FocusNode();
   bool _isModified = false;
+  late QuillToolbarToggleStyleButtonOptions buttonOptions;
 
   @override
   void initState() {
     super.initState();
     _initializeController();
+  }
+
+  void setToolbarTheme() {
+    buttonOptions = QuillToolbarToggleStyleButtonOptions(
+      iconTheme: QuillIconTheme(
+        iconButtonUnselectedData: IconButtonData(
+          style: IconButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+            disabledForegroundColor: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        iconButtonSelectedData: IconButtonData(
+          style: IconButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            disabledForegroundColor: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+      ),
+    );
   }
 
   void _initializeController() {
@@ -189,7 +211,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                   bottom: BorderSide(
                     color: Theme.of(
                       context,
-                    ).colorScheme.outline.withValues(alpha: 0.2),
+                    ).colorScheme.outline.withValues(alpha: 0.0),
                   ),
                 ),
               ),
@@ -218,15 +240,22 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
 
   Widget _buildToolbar() {
     try {
+      setToolbarTheme();
       return QuillSimpleToolbar(
         controller: _controller,
         config: QuillSimpleToolbarConfig(
-          color: Theme.of(context).colorScheme.surfaceContainer,
+          buttonOptions: QuillSimpleToolbarButtonOptions(
+            bold: buttonOptions,
+            italic: buttonOptions,
+            listBullets: buttonOptions,
+            listNumbers: buttonOptions,
+            quote: buttonOptions,
+          ),
           multiRowsDisplay: true,
           showSubscript: false,
           showSuperscript: false,
           showBackgroundColorButton: false,
-          showAlignmentButtons: true,
+          showAlignmentButtons: false,
           showBoldButton: true,
           showClearFormat: false,
           showColorButton: false,
