@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
-enum ActionOptions { info, settings, search, favorite, bookmark }
+enum ActionOptions { info, settings, notes, search, favorite, bookmark }
 
 AppBar buildAppBar(
   BuildContext context, {
@@ -22,6 +22,14 @@ AppBar buildAppBar(
           tooltip: AppLocalizations.of(context)!.information_section,
           onPressed: () {
             Navigator.pushNamed(context, '/info');
+          },
+        ),
+      if (actionItems?.contains(ActionOptions.notes) ?? false)
+        IconButton(
+          icon: const Icon(Icons.note),
+          tooltip: AppLocalizations.of(context)!.notes,
+          onPressed: () {
+            Navigator.pushNamed(context, '/notes');
           },
         ),
       if (actionItems?.contains(ActionOptions.search) ?? false)

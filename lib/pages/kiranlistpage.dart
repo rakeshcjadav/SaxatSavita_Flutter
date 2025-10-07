@@ -89,6 +89,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         title: widget.bookPart.displayname,
         actionItems: [
           ActionOptions.info,
+          ActionOptions.notes,
           ActionOptions.search,
           ActionOptions.settings,
         ],

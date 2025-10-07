@@ -72,6 +72,14 @@ class _DrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.info),
+            title: Text(AppLocalizations.of(context)!.information),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/info');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.note),
             title: Text(AppLocalizations.of(context)!.menu_four),
             onTap: () {

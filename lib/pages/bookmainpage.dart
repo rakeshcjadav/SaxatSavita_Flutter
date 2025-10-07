@@ -43,7 +43,7 @@ class _BookmainpageState extends State<BookMainpage> {
         context,
         title: AppLocalizations.of(context)!.sakshatSavita,
         actionItems: [
-          ActionOptions.info,
+          ActionOptions.notes,
           ActionOptions.search,
           ActionOptions.settings,
         ],
@@ -279,7 +279,33 @@ class _BookmainpageState extends State<BookMainpage> {
                   size: appSettingsNotifier.value.fontSize * 2.0,
                 ),
                 title: Text(bookparts[index].displayname.toString()),
-                subtitle: Text(bookparts[index].range),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(bookparts[index].range),
+                    const SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.timer,
+                          size: appSettingsNotifier.value.fontSize * 0.8,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          Utils.getEstimatedReadingTime(
+                            KiranListService()
+                                    .getKiranList(bookparts[index].id)
+                                    ?.totalWordCount ??
+                                0,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                      ],
+                    ),
+                  ],
+                ),
+
                 trailing: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
@@ -298,26 +324,6 @@ class _BookmainpageState extends State<BookMainpage> {
                 ),
                 titleTextStyle: Theme.of(context).textTheme.titleMedium,
                 subtitleTextStyle: Theme.of(context).textTheme.bodySmall,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(Icons.timer),
-                    const SizedBox(width: 5),
-                    Text(
-                      Utils.getEstimatedReadingTime(
-                        KiranListService()
-                                .getKiranList(bookparts[index].id)
-                                ?.totalWordCount ??
-                            0,
-                      ),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(width: 15),
-                  ],
-                ),
               ),
               if (isValidBookmark(bookparts[index].partNumber)) ...[
                 const SizedBox(height: 8),
