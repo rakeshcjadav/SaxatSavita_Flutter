@@ -623,6 +623,9 @@ class _KiranReadPageState extends State<KiranReadPage>
                                                 if (_isAutoScrolling) {
                                                   _stopAutoScroll();
                                                 }
+                                                Utils.applyBookmarkToNextKiran(
+                                                  widget.kiranUserInfo,
+                                                );
                                               });
 
                                               scaffoldMessenger.showSnackBar(

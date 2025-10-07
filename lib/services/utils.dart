@@ -76,4 +76,45 @@ class Utils {
       bookUserInfo,
     ];
   }
+
+  static void removeBookmark(KiranUserInfo kiranUserInfo) {}
+
+  static void applyBookmarkToNextKiran(KiranUserInfo kiranUserInfo) {
+    BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
+      kiranUserInfo.partNumber,
+    );
+    final nextKiranIndex = kiranUserInfo.kiranIndex + 1;
+    // Assuming you have a method to get total Kirans in the part
+    final endKiranIndex = Bookservice().getEndKiranIndex(
+      kiranUserInfo.partNumber,
+    );
+    if (nextKiranIndex <= endKiranIndex) {
+      bookUserInfo.bookmarkKiranIndex = nextKiranIndex;
+      bookUserInfo.updatedAt = DateTime.now();
+      Bookservice().bookUserInfoList = [
+        ...?Bookservice().bookUserInfoList?.where(
+          (info) => info.partNumber != bookUserInfo.partNumber,
+        ),
+        bookUserInfo,
+      ];
+      debugPrint(
+        'Bookmark moved to next Kiran ${bookUserInfo.bookmarkKiranIndex} for Part ${bookUserInfo.partNumber}',
+      );
+    } else {
+      // If it's the last Kiran, remove the bookmark
+      bookUserInfo.bookmarkKiranIndex = Bookservice().getStartKiranIndex(
+        kiranUserInfo.partNumber,
+      );
+      bookUserInfo.updatedAt = DateTime.now();
+      Bookservice().bookUserInfoList = [
+        ...?Bookservice().bookUserInfoList?.where(
+          (info) => info.partNumber != bookUserInfo.partNumber,
+        ),
+        bookUserInfo,
+      ];
+      debugPrint(
+        'Bookmark removed as it was the last Kiran in Part ${bookUserInfo.partNumber}',
+      );
+    }
+  }
 }

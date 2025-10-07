@@ -76,6 +76,16 @@ class Bookservice {
     }
   }
 
+  int getEndKiranIndex(int partNumber) {
+    try {
+      return _bookPartsByLanguage['en']!
+          .firstWhere((part) => part.partNumber == partNumber)
+          .endKiranIndex;
+    } catch (e) {
+      return 1;
+    }
+  }
+
   String getPartTitle(BuildContext context, int partNumber) {
     try {
       final locale = Localizations.localeOf(context);
