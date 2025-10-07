@@ -210,5 +210,22 @@
     "allCategories": "બધી શ્રેણીઓ",
     "clearFilters": "ફિલ્ટર સાફ કરો",
     "expandAll": "બધું વિસ્તાર કરો",
-    "collapseAll": "બધું સંકુચિત કરો"
+    "collapseAll": "બધું સંકુચિત કરો",
+    "filterByDate": "તારીખ દ્વારા ફિલ્ટર કરો",
+    "year": "વર્ષ",
+    "month": "મહિનો",
+    "allYears": "બધા વર્ષો",
+    "allMonths": "બધા મહિનાઓ",
+    "january": "જાન્યુઆરી",
+    "february": "ફેબ્રુઆરી",
+    "march": "માર્ચ",
+    "april": "એપ્રિલ",
+    "may": "મે",
+    "june": "જૂન",
+    "july": "જુલાઈ",
+    "august": "ઓગસ્ટ",
+    "september": "સપ્ટેમ્બર",
+    "october": "ઓક્ટોબર",
+    "november": "નવેમ્બર",
+    "december": "ડિસેમ્બર"
 }

@@ -380,4 +380,55 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get collapseAll => 'બધું સંકુચિત કરો';
+
+  @override
+  String get filterByDate => 'તારીખ દ્વારા ફિલ્ટર કરો';
+
+  @override
+  String get year => 'વર્ષ';
+
+  @override
+  String get month => 'મહિનો';
+
+  @override
+  String get allYears => 'બધા વર્ષો';
+
+  @override
+  String get allMonths => 'બધા મહિનાઓ';
+
+  @override
+  String get january => 'જાન્યુઆરી';
+
+  @override
+  String get february => 'ફેબ્રુઆરી';
+
+  @override
+  String get march => 'માર્ચ';
+
+  @override
+  String get april => 'એપ્રિલ';
+
+  @override
+  String get may => 'મે';
+
+  @override
+  String get june => 'જૂન';
+
+  @override
+  String get july => 'જુલાઈ';
+
+  @override
+  String get august => 'ઓગસ્ટ';
+
+  @override
+  String get september => 'સપ્ટેમ્બર';
+
+  @override
+  String get october => 'ઓક્ટોબર';
+
+  @override
+  String get november => 'નવેમ્બર';
+
+  @override
+  String get december => 'ડિસેમ્બર';
 }

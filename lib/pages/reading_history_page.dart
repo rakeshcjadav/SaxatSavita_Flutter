@@ -26,6 +26,12 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
   // Track expanded state for each date group
   final Map<String, bool> _expandedSections = {};
 
+  // Date filtering
+  int? _selectedYear;
+  int? _selectedMonth;
+  List<int> _availableYears = [];
+  List<int> _availableMonths = [];
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +44,10 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
     try {
       // TODO: Load reading history from your data source
       // For now, I'll create some sample data to demonstrate the UI
-      _allHistory = _generateSampleData();
+      //_allHistory = _generateSampleData();
+
+      // Extract available years and months
+      _extractAvailableDates();
 
       _applyFilters();
     } catch (e) {
@@ -53,45 +62,100 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
 
   // TODO: Replace with actual data loading
   List<ReadingHistory> _generateSampleData() {
+    final now = DateTime.now();
     return [
+      // Current month
       ReadingHistory(
         category: 'Daily Reading',
-        durationSeconds: 1820, // 30 minutes
+        durationSeconds: 1820,
         kiranIndex: 1,
         partNumber: 1,
-        createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+        createdAt: now.subtract(const Duration(hours: 2)),
       ),
       ReadingHistory(
         category: 'Daily Reading',
-        durationSeconds: 34, // 30 minutes
-        kiranIndex: 1,
+        durationSeconds: 34,
+        kiranIndex: 2,
         partNumber: 1,
-        createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+        createdAt: now.subtract(const Duration(hours: 3)),
       ),
       ReadingHistory(
         category: 'Daily Reading',
-        durationSeconds: 3600, // 1 hour
+        durationSeconds: 3600,
         kiranIndex: 175,
         partNumber: 2,
-        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        createdAt: now.subtract(const Duration(days: 1)),
       ),
+
+      // Previous month
       ReadingHistory(
         category: 'Morning Reading',
-        durationSeconds: 17, // 15 minutes
-        kiranIndex: 400,
+        durationSeconds: 900,
+        kiranIndex: 380,
         partNumber: 3,
-        createdAt: DateTime.now().subtract(const Duration(days: 10)),
+        createdAt: DateTime(now.year, now.month - 1, 15),
+      ),
+      ReadingHistory(
+        category: 'Evening Reading',
+        durationSeconds: 1200,
+        kiranIndex: 525,
+        partNumber: 4,
+        createdAt: DateTime(now.year, now.month - 1, 20),
+      ),
+
+      // Previous year
+      ReadingHistory(
+        category: 'Study Session',
+        durationSeconds: 2400,
+        kiranIndex: 175,
+        partNumber: 2,
+        createdAt: DateTime(now.year - 1, 12, 25),
+      ),
+      ReadingHistory(
+        category: 'Daily Reading',
+        durationSeconds: 600,
+        kiranIndex: 50,
+        partNumber: 1,
+        createdAt: DateTime(now.year - 1, 8, 10),
       ),
     ];
+  }
+
+  void _extractAvailableDates() {
+    final years = <int>{};
+    final months = <int>{};
+
+    for (final history in _allHistory) {
+      years.add(history.createdAt.year);
+      months.add(history.createdAt.month);
+    }
+
+    _availableYears =
+        years.toList()..sort((a, b) => b.compareTo(a)); // Newest first
+    _availableMonths = months.toList()..sort();
   }
 
   void _applyFilters() {
     _filteredHistory =
         _allHistory.where((history) {
+          // Category filter
           if (_selectedCategory != null &&
               history.category != _selectedCategory) {
             return false;
           }
+
+          // Year filter
+          if (_selectedYear != null &&
+              history.createdAt.year != _selectedYear) {
+            return false;
+          }
+
+          // Month filter
+          if (_selectedMonth != null &&
+              history.createdAt.month != _selectedMonth) {
+            return false;
+          }
+
           return true;
         }).toList();
 
@@ -170,8 +234,8 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
     return Scaffold(
       appBar: buildAppBar(
         context,
-        title: AppLocalizations.of(context)!.readingHistoryTitle,
-        actionItems: [],
+        title: AppLocalizations.of(context)!.reading_history,
+        actionItems: [ActionOptions.settings],
         extraActions: [
           if (_filteredHistory.isNotEmpty)
             IconButton(
@@ -193,6 +257,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                 child: Column(
                   children: [
                     _buildSummarySection(),
+                    _buildFilterSection(),
                     Expanded(child: _buildHistoryList()),
                   ],
                 ),
@@ -203,7 +268,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
   Widget _buildSummarySection() {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(8.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primaryContainer,
@@ -211,17 +276,18 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             AppLocalizations.of(context)!.totalReadingTime,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
           ),
           const SizedBox(height: 8.0),
           Text(
             _getTotalReadingTime(),
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color: Theme.of(context).colorScheme.onPrimaryContainer,
               fontWeight: FontWeight.bold,
             ),
@@ -229,11 +295,145 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
           const SizedBox(height: 8.0),
           Text(
             '${_filteredHistory.length} ${AppLocalizations.of(context)!.readingSessions}',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFilterSection() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.filterByDate,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                if (_selectedYear != null || _selectedMonth != null) ...[
+                  const SizedBox(height: 12.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.2),
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Row(
+                      children: [
+                        TextButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              _selectedYear = null;
+                              _selectedMonth = null;
+                              _applyFilters();
+                            });
+                          },
+                          icon: const Icon(Icons.clear),
+                          label: Text(
+                            AppLocalizations.of(context)!.clearFilters,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 12.0),
+            Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField<int>(
+                    initialValue: _selectedYear,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.year,
+                      border: const OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 8.0,
+                      ),
+                    ),
+                    items: [
+                      DropdownMenuItem<int>(
+                        value: null,
+                        child: Text(
+                          AppLocalizations.of(context)!.allYears,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                      ..._availableYears.map(
+                        (year) => DropdownMenuItem<int>(
+                          value: year,
+                          child: Text(
+                            year.toString(),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedYear = value;
+                        _applyFilters();
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: DropdownButtonFormField<int>(
+                    initialValue: _selectedMonth,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.month,
+                      border: const OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 8.0,
+                      ),
+                    ),
+                    items: [
+                      DropdownMenuItem<int>(
+                        value: null,
+                        child: Text(
+                          AppLocalizations.of(context)!.allMonths,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                      ..._availableMonths.map(
+                        (month) => DropdownMenuItem<int>(
+                          value: month,
+                          child: Text(
+                            _getMonthName(month),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedMonth = value;
+                        _applyFilters();
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -414,6 +614,39 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
         _expandedSections[key] = shouldExpand;
       }
     });
+  }
+
+  String _getMonthName(int month) {
+    final localizations = AppLocalizations.of(context)!;
+
+    switch (month) {
+      case 1:
+        return localizations.january;
+      case 2:
+        return localizations.february;
+      case 3:
+        return localizations.march;
+      case 4:
+        return localizations.april;
+      case 5:
+        return localizations.may;
+      case 6:
+        return localizations.june;
+      case 7:
+        return localizations.july;
+      case 8:
+        return localizations.august;
+      case 9:
+        return localizations.september;
+      case 10:
+        return localizations.october;
+      case 11:
+        return localizations.november;
+      case 12:
+        return localizations.december;
+      default:
+        return month.toString();
+    }
   }
 
   Widget _buildEmptyState() {
