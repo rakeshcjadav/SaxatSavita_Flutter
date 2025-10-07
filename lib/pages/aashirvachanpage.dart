@@ -75,6 +75,7 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
                         AppDataService().getValue(
                           widget.aashirvachan.content.text!,
                         )!,
+                    hasAddNoteButton: false,
                   ),
                 ],
               ],

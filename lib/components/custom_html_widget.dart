@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/services/customtagregistry.dart';
+import 'package:saxatsavita_flutter/components/custom_text_selection_controls.dart';
 
 class CustomHtmlWidget extends StatefulWidget {
-  CustomHtmlWidget({super.key, required this.htmlContent}) {
+  CustomHtmlWidget({
+    super.key,
+    required this.htmlContent,
+    this.onAddNote,
+    this.hasAddNoteButton = true,
+  }) {
     // Initialize the custom tag registry if needed
     // This can be used to register custom HTML tags for rendering
     // For example, you can register a custom tag for <slok> or <dq>
@@ -15,6 +21,8 @@ class CustomHtmlWidget extends StatefulWidget {
   }
 
   final String htmlContent;
+  final bool hasAddNoteButton;
+  final void Function(String)? onAddNote;
 
   final CustomTagRegistry customTagRegistry = CustomTagRegistry();
 
@@ -23,6 +31,16 @@ class CustomHtmlWidget extends StatefulWidget {
 }
 
 class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
+  String _selectedText = '';
+
+  void _handleAddNote(String selectedText) {
+    debugPrint('Add note for selected text: "$selectedText"');
+    widget.onAddNote?.call(selectedText);
+    // TODO: Implement your note functionality here
+    // For example, navigate to note editor or show a dialog
+    // Navigator.push(context, MaterialPageRoute(builder: (_) => NoteEditor(text: selectedText)));
+  }
+
   @override
   Widget build(BuildContext context) {
     Color fontColor = Theme.of(context).colorScheme.primary;
@@ -31,10 +49,21 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
       valueListenable: appSettingsNotifier,
       builder: (context, settings, child) {
         return SelectionArea(
-          selectionControls: MaterialTextSelectionControls(),
+          selectionControls: CustomTextSelectionControls(
+            hasAddNoteButton: widget.hasAddNoteButton,
+            onAddNote: () {
+              if (_selectedText.isNotEmpty) {
+                _handleAddNote(_selectedText);
+              }
+            },
+          ),
           onSelectionChanged: (selection) {
-            // Optional: Add callback to parent widget to pause timer during selection
-            // This can be implemented if needed for extra safety
+            if (selection != null) {
+              _selectedText = selection.plainText;
+              debugPrint('Selected text updated: "$_selectedText"');
+            } else {
+              _selectedText = '';
+            }
           },
           child: Html(
             data: htmlContent,

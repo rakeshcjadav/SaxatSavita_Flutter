@@ -11,7 +11,7 @@ class Bookservice {
   factory Bookservice() => _instance;
   Bookservice._internal();
 
-  Map<String, List<Bookpartmodel>> _bookPartsByLanguage = {};
+  final Map<String, List<Bookpartmodel>> _bookPartsByLanguage = {};
 
   List<BookUserInfo>? _bookUserInfoList = [];
   List<BookUserInfo>? get bookUserInfoList => _bookUserInfoList;

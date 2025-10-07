@@ -10,10 +10,12 @@ class NoteEditorPage extends StatefulWidget {
     super.key,
     required this.kiranUserInfo,
     required this.kiranTitle,
+    this.selectedText,
   });
 
   final KiranUserInfo kiranUserInfo;
   final String kiranTitle;
+  final String? selectedText;
 
   @override
   State<NoteEditorPage> createState() => _NoteEditorPageState();
@@ -73,6 +75,11 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           // If parsing fails, treat as plain text
           document = Document()..insert(0, widget.kiranUserInfo.note!);
         }
+      }
+
+      if (widget.selectedText != null && widget.selectedText!.isNotEmpty) {
+        // If there's selected text, insert it at the beginning
+        document.insert(0, '${widget.selectedText}\n');
       }
 
       _controller = QuillController(

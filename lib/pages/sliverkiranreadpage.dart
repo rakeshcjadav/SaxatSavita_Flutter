@@ -117,6 +117,7 @@ class _SliverKiranReadPageState extends State<SliverKiranReadPage> {
                       bottom: true,
                       child: CustomHtmlWidget(
                         htmlContent: getKiranContent(contentData),
+                        hasAddNoteButton: true,
                       ),
                     ),
                   ]),

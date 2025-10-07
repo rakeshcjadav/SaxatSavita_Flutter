@@ -574,6 +574,12 @@ class _KiranReadPageState extends State<KiranReadPage>
                                           getKiranContent(contentData),
                                         )
                                         : getKiranContent(contentData),
+
+                                onAddNote: (selectedText) {
+                                  _pauseTimer();
+                                  _openNoteEditor(selectedText: selectedText);
+                                  _resumeTimer();
+                                },
                               ),
                               const SizedBox(height: 8.0),
                               Tooltip(
@@ -902,7 +908,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
   }
 
-  Future<void> _openNoteEditor() async {
+  Future<void> _openNoteEditor({String? selectedText}) async {
+    debugPrint('Opening note editor with selected text: $selectedText');
     // Store context values before async operations
     final navigator = Navigator.of(context);
     final localizations = AppLocalizations.of(context)!;
@@ -917,6 +924,7 @@ class _KiranReadPageState extends State<KiranReadPage>
               (_) => NoteEditorPage(
                 kiranUserInfo: widget.kiranUserInfo,
                 kiranTitle: kiranTitle,
+                selectedText: selectedText,
               ),
         ),
       );

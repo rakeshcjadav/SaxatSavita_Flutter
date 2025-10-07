@@ -49,7 +49,7 @@ class _NoteListPageState extends State<NoteListPage> {
   String _searchQuery = '';
 
   // Filter states
-  Set<int> _selectedParts = {1, 2, 3, 4, 5};
+  final Set<int> _selectedParts = {1, 2, 3, 4, 5};
   bool _showFilters = false;
 
   SortOption _currentSort = SortOption.dateModified;
