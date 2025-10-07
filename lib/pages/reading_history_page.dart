@@ -20,9 +20,11 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
 
   List<ReadingHistory> _allHistory = [];
   List<ReadingHistory> _filteredHistory = [];
-  List<String> _availableCategories = [];
   String? _selectedCategory;
   bool _isLoading = true;
+
+  // Track expanded state for each date group
+  final Map<String, bool> _expandedSections = {};
 
   @override
   void initState() {
@@ -37,9 +39,6 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
       // TODO: Load reading history from your data source
       // For now, I'll create some sample data to demonstrate the UI
       _allHistory = _generateSampleData();
-
-      _availableCategories =
-          _allHistory.map((h) => h.category).toSet().toList()..sort();
 
       _applyFilters();
     } catch (e) {
@@ -98,6 +97,12 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
 
     // Sort by date (newest first)
     _filteredHistory.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    // Initialize expanded states for new date groups
+    final dateKeys = _filteredHistory.map((h) => h.formattedDate).toSet();
+    for (final key in dateKeys) {
+      _expandedSections.putIfAbsent(key, () => true); // Default to expanded
+    }
   }
 
   String _getTotalReadingTime() {
@@ -167,6 +172,19 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
         context,
         title: AppLocalizations.of(context)!.readingHistoryTitle,
         actionItems: [],
+        extraActions: [
+          if (_filteredHistory.isNotEmpty)
+            IconButton(
+              icon: Icon(
+                _areAllExpanded() ? Icons.unfold_less : Icons.unfold_more,
+              ),
+              onPressed: _toggleAllSections,
+              tooltip:
+                  _areAllExpanded()
+                      ? AppLocalizations.of(context)!.collapseAll
+                      : AppLocalizations.of(context)!.expandAll,
+            ),
+        ],
       ),
       body:
           _isLoading
@@ -233,20 +251,75 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
       itemBuilder: (context, index) {
         final dateKey = groupedHistory.keys.elementAt(index);
         final historyList = groupedHistory[dateKey]!;
+        final isExpanded = _expandedSections[dateKey] ?? true;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (index > 0) const SizedBox(height: 24.0),
-            Text(
-              dateKey,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.primary,
+            InkWell(
+              borderRadius: BorderRadius.circular(8.0),
+              onTap: () {
+                setState(() {
+                  _expandedSections[dateKey] = !isExpanded;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 4.0,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      isExpanded ? Icons.expand_less : Icons.expand_more,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      dateKey,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 12.0),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 2.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: Text(
+                        '${historyList.length}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 12.0),
-            ...historyList.map((history) => _buildHistoryCard(history)),
+            AnimatedCrossFade(
+              firstChild: const SizedBox.shrink(),
+              secondChild: Column(
+                children: [
+                  const SizedBox(height: 12.0),
+                  ...historyList.map((history) => _buildHistoryCard(history)),
+                ],
+              ),
+              crossFadeState:
+                  isExpanded
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 200),
+            ),
           ],
         );
       },
@@ -327,6 +400,20 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
     return '${kiranInfo.number} ${kiranInfo.title}';
     //final kiranUserInfo = KiranListService().getKiranList(history.partNumber).list. (history.kiranIndex);
     //return kiranUserInfo?.title ?? 'Kiran ${history.kiranIndex}';
+  }
+
+  bool _areAllExpanded() {
+    if (_expandedSections.isEmpty) return true;
+    return _expandedSections.values.every((expanded) => expanded);
+  }
+
+  void _toggleAllSections() {
+    setState(() {
+      final shouldExpand = !_areAllExpanded();
+      for (final key in _expandedSections.keys) {
+        _expandedSections[key] = shouldExpand;
+      }
+    });
   }
 
   Widget _buildEmptyState() {

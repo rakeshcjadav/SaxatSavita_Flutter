@@ -372,4 +372,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clearFilters => 'Clear Filters';
+
+  @override
+  String get expandAll => 'Expand All';
+
+  @override
+  String get collapseAll => 'Collapse All';
 }

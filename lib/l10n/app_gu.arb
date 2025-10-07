@@ -208,5 +208,7 @@
     "readingSession": "વાંચન સત્ર",
     "filterByCategory": "શ્રેણી દ્વારા ફિલ્ટર કરો",
     "allCategories": "બધી શ્રેણીઓ",
-    "clearFilters": "ફિલ્ટર સાફ કરો"
+    "clearFilters": "ફિલ્ટર સાફ કરો",
+    "expandAll": "બધું વિસ્તાર કરો",
+    "collapseAll": "બધું સંકુચિત કરો"
 }

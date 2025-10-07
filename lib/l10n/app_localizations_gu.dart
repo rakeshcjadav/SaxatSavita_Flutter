@@ -374,4 +374,10 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get clearFilters => 'ફિલ્ટર સાફ કરો';
+
+  @override
+  String get expandAll => 'બધું વિસ્તાર કરો';
+
+  @override
+  String get collapseAll => 'બધું સંકુચિત કરો';
 }

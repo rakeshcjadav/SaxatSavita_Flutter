@@ -208,5 +208,7 @@
     "readingSession": "Reading Session",
     "filterByCategory": "Filter by Category",
     "allCategories": "All Categories",
-    "clearFilters": "Clear Filters"
+    "clearFilters": "Clear Filters",
+    "expandAll": "Expand All",
+    "collapseAll": "Collapse All"
 }
