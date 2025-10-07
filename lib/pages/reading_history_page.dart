@@ -3,6 +3,7 @@ import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
@@ -42,9 +43,13 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
     setState(() => _isLoading = true);
 
     try {
-      // TODO: Load reading history from your data source
-      // For now, I'll create some sample data to demonstrate the UI
-      //_allHistory = _generateSampleData();
+      // Load reading history from SharedPreferences
+      _allHistory = await _loadReadingHistoryFromStorage();
+
+      // If no real data exists, add some sample data for demonstration
+      if (_allHistory.isEmpty) {
+        _allHistory = _generateSampleData();
+      }
 
       // Extract available years and months
       _extractAvailableDates();
@@ -58,6 +63,16 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
     }
 
     setState(() => _isLoading = false);
+  }
+
+  // Load actual reading history from SharedPreferences
+  Future<List<ReadingHistory>> _loadReadingHistoryFromStorage() async {
+    try {
+      return await ReadingHistoryService.loadReadingHistory();
+    } catch (e) {
+      debugPrint('Error loading reading history: $e');
+      return [];
+    }
   }
 
   // TODO: Replace with actual data loading
@@ -317,7 +332,9 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
               children: [
                 Text(
                   AppLocalizations.of(context)!.filterByDate,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall!.copyWith(fontSize: 18),
                 ),
                 if (_selectedYear != null || _selectedMonth != null) ...[
                   const SizedBox(height: 12.0),
@@ -343,7 +360,9 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                           icon: const Icon(Icons.clear),
                           label: Text(
                             AppLocalizations.of(context)!.clearFilters,
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall!.copyWith(fontSize: 18),
                           ),
                         ),
                       ],
@@ -365,13 +384,18 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                         horizontal: 12.0,
                         vertical: 8.0,
                       ),
+                      labelStyle: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                     ),
                     items: [
                       DropdownMenuItem<int>(
                         value: null,
                         child: Text(
                           AppLocalizations.of(context)!.allYears,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                         ),
                       ),
                       ..._availableYears.map(
@@ -379,7 +403,9 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                           value: year,
                           child: Text(
                             year.toString(),
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                           ),
                         ),
                       ),
@@ -403,13 +429,18 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                         horizontal: 12.0,
                         vertical: 8.0,
                       ),
+                      labelStyle: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                     ),
                     items: [
                       DropdownMenuItem<int>(
                         value: null,
                         child: Text(
                           AppLocalizations.of(context)!.allMonths,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                         ),
                       ),
                       ..._availableMonths.map(
@@ -417,7 +448,9 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                           value: month,
                           child: Text(
                             _getMonthName(month),
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                           ),
                         ),
                       ),

@@ -86,7 +86,7 @@ class ReadingHistory {
 
   @override
   String toString() {
-    return 'ReadingHistory(category: $category, duration: ${formattedDuration}, kiranIndex: $kiranIndex, partNumber: $partNumber, createdAt: $createdAt)';
+    return 'ReadingHistory(category: $category, duration: $formattedDuration, kiranIndex: $kiranIndex, partNumber: $partNumber, createdAt: $createdAt)';
   }
 
   @override

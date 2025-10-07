@@ -7,6 +7,8 @@ import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
+import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/pages/settingspage.dart';
 import 'package:saxatsavita_flutter/pages/simple_note_editor_page.dart';
 import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
@@ -51,6 +53,10 @@ class _KiranReadPageState extends State<KiranReadPage>
   bool _hasDataChanged = false;
   bool _isFinishButtonEnabled = false;
 
+  // Reading history tracking
+  DateTime? _sessionStartTime;
+  String _currentCategory = 'Reading Session';
+
   // Search functionality state
   bool _isSearchMode = false;
   final TextEditingController _searchController = TextEditingController();
@@ -65,6 +71,10 @@ class _KiranReadPageState extends State<KiranReadPage>
     _futureKiranContent = _loadKiranContent();
     _stopwatch.start();
 
+    // Initialize reading session
+    _sessionStartTime = DateTime.now();
+    _currentCategory = _getCategoryBasedOnTime();
+
     // Add observer to detect app lifecycle changes
     WidgetsBinding.instance.addObserver(this);
 
@@ -73,6 +83,9 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   @override
   void dispose() {
+    // Save reading history if session is long enough
+    _saveReadingHistory();
+
     // Remove observer
     WidgetsBinding.instance.removeObserver(this);
 
@@ -336,6 +349,58 @@ class _KiranReadPageState extends State<KiranReadPage>
     return content;
   }
 
+  String _getCategoryBasedOnTime() {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    if (hour >= 5 && hour < 12) {
+      return 'Morning Reading';
+    } else if (hour >= 12 && hour < 17) {
+      return 'Afternoon Reading';
+    } else if (hour >= 17 && hour < 21) {
+      return 'Evening Reading';
+    } else {
+      return 'Night Reading';
+    }
+  }
+
+  Future<void> _saveReadingHistory() async {
+    if (_sessionStartTime == null) return;
+
+    try {
+      final sessionEndTime = DateTime.now();
+      final durationSeconds =
+          sessionEndTime.difference(_sessionStartTime!).inSeconds;
+
+      // Only save if session was longer than 10 seconds
+      if (durationSeconds >= 10) {
+        final readingHistory = ReadingHistory(
+          category: _currentCategory,
+          durationSeconds: durationSeconds,
+          kiranIndex: widget.kiranInfo.index,
+          partNumber: int.parse(widget.partNumber.replaceAll('part', '')),
+          createdAt: _sessionStartTime!,
+        );
+
+        // Save to SharedPreferences or your preferred storage
+        await _saveReadingHistoryToStorage(readingHistory);
+
+        debugPrint('Reading history saved: ${readingHistory.toString()}');
+      }
+    } catch (e) {
+      debugPrint('Error saving reading history: $e');
+    }
+    _sessionStartTime = null;
+  }
+
+  Future<void> _saveReadingHistoryToStorage(ReadingHistory history) async {
+    try {
+      await ReadingHistoryService.saveReadingHistory(history);
+    } catch (e) {
+      debugPrint('Error saving to storage: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -521,7 +586,16 @@ class _KiranReadPageState extends State<KiranReadPage>
                                 child: ElevatedButton.icon(
                                   onPressed:
                                       _isFinishButtonEnabled
-                                          ? () {
+                                          ? () async {
+                                            // Store context before async operation
+                                            final scaffoldMessenger =
+                                                ScaffoldMessenger.of(context);
+                                            final localizations =
+                                                AppLocalizations.of(context)!;
+
+                                            // Save reading history before finishing
+                                            await _saveReadingHistory();
+
                                             if (mounted) {
                                               setState(() {
                                                 widget.kiranUserInfo.progress =
@@ -544,16 +618,12 @@ class _KiranReadPageState extends State<KiranReadPage>
                                                   _stopAutoScroll();
                                                 }
                                               });
-                                            }
-                                            if (mounted) {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
+
+                                              scaffoldMessenger.showSnackBar(
                                                 SnackBar(
                                                   content: Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    )!.kiran_read_finished,
+                                                    localizations
+                                                        .kiran_read_finished,
                                                   ),
                                                   duration: const Duration(
                                                     seconds: 2,
@@ -833,22 +903,26 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   Future<void> _openNoteEditor() async {
+    // Store context values before async operations
+    final navigator = Navigator.of(context);
+    final localizations = AppLocalizations.of(context)!;
+    final kiranTitle =
+        '${localizations.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}';
+
     try {
       // Try to use the rich editor first
-      final result = await Navigator.push(
-        context,
+      final result = await navigator.push(
         MaterialPageRoute(
           builder:
               (_) => NoteEditorPage(
                 kiranUserInfo: widget.kiranUserInfo,
-                kiranTitle:
-                    '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}',
+                kiranTitle: kiranTitle,
               ),
         ),
       );
 
       // If notes were modified, update UI
-      if (result == true) {
+      if (result == true && mounted) {
         setState(() {
           _hasDataChanged = true;
         });
@@ -857,14 +931,12 @@ class _KiranReadPageState extends State<KiranReadPage>
       debugPrint('Error with rich editor, falling back to simple editor: $e');
 
       // Fallback to simple editor
-      final result = await Navigator.push(
-        context,
+      final result = await navigator.push(
         MaterialPageRoute(
           builder:
               (_) => SimpleNoteEditorPage(
                 kiranUserInfo: widget.kiranUserInfo,
-                kiranTitle:
-                    '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}',
+                kiranTitle: kiranTitle,
               ),
         ),
       );
