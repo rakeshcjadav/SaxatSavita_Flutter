@@ -328,4 +328,50 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get favoriteKiranSuccess => 'કિરણ સફળતાપૂર્વક ફેવરિટ કરવામાં આવ્યું.';
+
+  @override
+  String get readingHistoryTitle => 'વાંચન ઇતિહાસ';
+
+  @override
+  String get totalReadingTime => 'કુલ વાંચન સમય';
+
+  @override
+  String get readingSessions => 'વાંચન સત્રો';
+
+  @override
+  String get noReadingHistory => 'કોઈ વાંચન ઇતિહાસ નથી';
+
+  @override
+  String get startReadingMessage =>
+      'તમારી પ્રગતિ ટ્રેક કરવા માટે કિરણો વાંચવાનું શરૂ કરો';
+
+  @override
+  String get today => 'આજ';
+
+  @override
+  String get yesterday => 'ગઈકાલે';
+
+  @override
+  String get thisWeek => 'આ અઠવાડિયે';
+
+  @override
+  String get thisMonth => 'આ મહિને';
+
+  @override
+  String get older => 'જૂના';
+
+  @override
+  String get duration => 'સમયગાળો';
+
+  @override
+  String get readingSession => 'વાંચન સત્ર';
+
+  @override
+  String get filterByCategory => 'શ્રેણી દ્વારા ફિલ્ટર કરો';
+
+  @override
+  String get allCategories => 'બધી શ્રેણીઓ';
+
+  @override
+  String get clearFilters => 'ફિલ્ટર સાફ કરો';
 }

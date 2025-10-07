@@ -326,4 +326,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get favoriteKiranSuccess => 'Kiran favorited successfully';
+
+  @override
+  String get readingHistoryTitle => 'Reading History';
+
+  @override
+  String get totalReadingTime => 'Total Reading Time';
+
+  @override
+  String get readingSessions => 'Reading Sessions';
+
+  @override
+  String get noReadingHistory => 'No Reading History';
+
+  @override
+  String get startReadingMessage =>
+      'Start reading Kiranas to track your progress';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get thisWeek => 'This Week';
+
+  @override
+  String get thisMonth => 'This Month';
+
+  @override
+  String get older => 'Older';
+
+  @override
+  String get duration => 'Duration';
+
+  @override
+  String get readingSession => 'Reading Session';
+
+  @override
+  String get filterByCategory => 'Filter by Category';
+
+  @override
+  String get allCategories => 'All Categories';
+
+  @override
+  String get clearFilters => 'Clear Filters';
 }

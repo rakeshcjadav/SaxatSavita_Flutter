@@ -679,6 +679,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Kiran favorited successfully'**
   String get favoriteKiranSuccess;
+
+  /// No description provided for @readingHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading History'**
+  String get readingHistoryTitle;
+
+  /// No description provided for @totalReadingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Reading Time'**
+  String get totalReadingTime;
+
+  /// No description provided for @readingSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Sessions'**
+  String get readingSessions;
+
+  /// No description provided for @noReadingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No Reading History'**
+  String get noReadingHistory;
+
+  /// No description provided for @startReadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Start reading Kiranas to track your progress'**
+  String get startReadingMessage;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @thisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get thisWeek;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get thisMonth;
+
+  /// No description provided for @older.
+  ///
+  /// In en, this message translates to:
+  /// **'Older'**
+  String get older;
+
+  /// No description provided for @duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get duration;
+
+  /// No description provided for @readingSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Session'**
+  String get readingSession;
+
+  /// No description provided for @filterByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Category'**
+  String get filterByCategory;
+
+  /// No description provided for @allCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'All Categories'**
+  String get allCategories;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filters'**
+  String get clearFilters;
 }
 
 class _AppLocalizationsDelegate

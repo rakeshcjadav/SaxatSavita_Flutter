@@ -193,5 +193,20 @@
     "noteLength": "નોટની લંબાઈ",
     "bookParts": "પુસ્તક ભાગો:",
     "favorite": "ફેવરિટ",
-    "favoriteKiranSuccess": "કિરણ સફળતાપૂર્વક ફેવરિટ કરવામાં આવ્યું."
+    "favoriteKiranSuccess": "કિરણ સફળતાપૂર્વક ફેવરિટ કરવામાં આવ્યું.",
+    "readingHistoryTitle": "વાંચન ઇતિહાસ",
+    "totalReadingTime": "કુલ વાંચન સમય",
+    "readingSessions": "વાંચન સત્રો",
+    "noReadingHistory": "કોઈ વાંચન ઇતિહાસ નથી",
+    "startReadingMessage": "તમારી પ્રગતિ ટ્રેક કરવા માટે કિરણો વાંચવાનું શરૂ કરો",
+    "today": "આજ",
+    "yesterday": "ગઈકાલે",
+    "thisWeek": "આ અઠવાડિયે",
+    "thisMonth": "આ મહિને",
+    "older": "જૂના",
+    "duration": "સમયગાળો",
+    "readingSession": "વાંચન સત્ર",
+    "filterByCategory": "શ્રેણી દ્વારા ફિલ્ટર કરો",
+    "allCategories": "બધી શ્રેણીઓ",
+    "clearFilters": "ફિલ્ટર સાફ કરો"
 }

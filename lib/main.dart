@@ -8,6 +8,7 @@ import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
+import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -164,6 +165,7 @@ class SakshatSavitaApp extends StatelessWidget {
             '/aashirvachan': (context) => const Aashirvachanpage(),
             '/home': (context) => const HomePage(),
             '/notes': (context) => const NoteListPage(),
+            '/readinghistory': (context) => const ReadingHistoryPage(),
           },
         );
       },

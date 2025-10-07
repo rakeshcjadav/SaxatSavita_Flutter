@@ -193,5 +193,20 @@
     "noteLength": "Note Length",
     "bookParts": "Book Parts:",
     "favorite": "Favorite",
-    "favoriteKiranSuccess": "Kiran favorited successfully"
+    "favoriteKiranSuccess": "Kiran favorited successfully",
+    "readingHistoryTitle": "Reading History",
+    "totalReadingTime": "Total Reading Time",
+    "readingSessions": "Reading Sessions", 
+    "noReadingHistory": "No Reading History",
+    "startReadingMessage": "Start reading Kiranas to track your progress",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "older": "Older",
+    "duration": "Duration",
+    "readingSession": "Reading Session",
+    "filterByCategory": "Filter by Category",
+    "allCategories": "All Categories",
+    "clearFilters": "Clear Filters"
 }
