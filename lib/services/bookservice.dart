@@ -94,12 +94,12 @@ class Bookservice {
       return;
     } else {
       String jsondata = await readBook(bookName);
-      List<Bookpartmodel>? _bookparts = await readBookparts(jsondata, 'en');
-      _bookPartsByLanguage['en'] = _bookparts!;
-      _bookparts = await readBookparts(jsondata, 'gu');
-      _bookPartsByLanguage['gu'] = _bookparts!;
-      _bookUserInfoList =
-          _bookparts!
+      List<Bookpartmodel>? bookparts = await readBookparts(jsondata, 'en');
+      _bookPartsByLanguage['en'] = bookparts;
+      bookparts = await readBookparts(jsondata, 'gu');
+      _bookPartsByLanguage['gu'] = bookparts;
+      bookUserInfoList =
+          bookparts
               .map(
                 (part) => BookUserInfo(
                   id: part.id,
@@ -109,9 +109,9 @@ class Bookservice {
               )
               .toList();
 
-      if (_bookparts.isNotEmpty) {
-        for (int i = 0; i < _bookparts.length; i++) {
-          KiranListService().loadPart('saxatsavita', _bookparts[i].id);
+      if (bookparts.isNotEmpty) {
+        for (int i = 0; i < bookparts.length; i++) {
+          KiranListService().loadPart('saxatsavita', bookparts[i].id);
         }
       }
       _meanings = await loadMeanings(bookName);
@@ -169,7 +169,7 @@ class Bookservice {
 
   Future<String> readBook(String bookName) async {
     debugPrint("Loading book parts for $bookName");
-    final String filename = 'assets/book/${bookName}.json';
+    final String filename = 'assets/book/$bookName.json';
 
     String jsondata;
     try {
