@@ -503,17 +503,167 @@ abstract class AppLocalizations {
   /// **'Add your personal notes here...'**
   String get notes_hint;
 
-  /// No description provided for @notes_saved.
+  /// No description provided for @notesSaved.
   ///
   /// In en, this message translates to:
   /// **'Notes saved successfully'**
-  String get notes_saved;
+  String get notesSaved;
 
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @deleteNoteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this note?'**
+  String get deleteNoteConfirm;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @noteDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Note deleted successfully'**
+  String get noteDeletedSuccess;
+
+  /// No description provided for @errorDeletingNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting note: {error}'**
+  String errorDeletingNote(String error);
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ago'**
+  String daysAgo(int days);
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours ago'**
+  String hoursAgo(int hours);
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes ago'**
+  String minutesAgo(int minutes);
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// No description provided for @lastModified.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Modified'**
+  String get lastModified;
+
+  /// No description provided for @searchNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search notes and titles...'**
+  String get searchNotesHint;
+
+  /// No description provided for @notesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{filtered} of {total} notes'**
+  String notesCount(int filtered, int total);
+
+  /// No description provided for @sortedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorted by {sortName} {direction}'**
+  String sortedBy(String sortName, String direction);
+
+  /// No description provided for @noNotesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Notes Found'**
+  String get noNotesFound;
+
+  /// No description provided for @startTakingNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Start taking notes while reading Kiranas'**
+  String get startTakingNotes;
+
+  /// No description provided for @noMatchingNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching notes'**
+  String get noMatchingNotes;
+
+  /// No description provided for @characters.
+  ///
+  /// In en, this message translates to:
+  /// **'characters'**
+  String get characters;
+
+  /// No description provided for @tapToEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to edit'**
+  String get tapToEdit;
+
+  /// No description provided for @adjustSearchFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your search or filters'**
+  String get adjustSearchFilters;
+
+  /// No description provided for @editNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Note'**
+  String get editNote;
+
+  /// No description provided for @viewKiran.
+  ///
+  /// In en, this message translates to:
+  /// **'View Kiran'**
+  String get viewKiran;
+
+  /// No description provided for @deleteNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Note'**
+  String get deleteNote;
+
+  /// No description provided for @bookPart.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Part'**
+  String get bookPart;
+
+  /// No description provided for @noteLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Note Length'**
+  String get noteLength;
+
+  /// No description provided for @bookParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Parts:'**
+  String get bookParts;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

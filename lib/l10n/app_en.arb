@@ -117,6 +117,79 @@
     "notes": "Notes",
     "add_notes": "Add Notes",
     "notes_hint": "Add your personal notes here...",
-    "notes_saved": "Notes saved successfully",
-    "cancel": "Cancel"
+    "notesSaved": "Notes saved successfully",
+    "cancel": "Cancel",
+    "deleteNoteConfirm": "Are you sure you want to delete this note?",
+    "delete": "Delete",
+    "noteDeletedSuccess": "Note deleted successfully",
+    "errorDeletingNote": "Error deleting note: {error}",
+    "@errorDeletingNote": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "daysAgo": "{days} days ago",
+    "@daysAgo": {
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "hoursAgo": "{hours} hours ago",
+    "@hoursAgo": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "minutesAgo": "{minutes} minutes ago",
+    "@minutesAgo": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "justNow": "Just now",
+    "sortBy": "Sort by",
+    "lastModified": "Last Modified",
+    "searchNotesHint": "Search notes and titles...",
+    "notesCount": "{filtered} of {total} notes",
+    "@notesCount": {
+        "placeholders": {
+            "filtered": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "sortedBy": "Sorted by {sortName} {direction}",
+    "@sortedBy": {
+        "placeholders": {
+            "sortName": {
+                "type": "String"
+            },
+            "direction": {
+                "type": "String"
+            }
+        }
+    },
+    "noNotesFound": "No Notes Found",
+    "startTakingNotes": "Start taking notes while reading Kiranas",
+    "noMatchingNotes": "No matching notes",
+    "characters": "characters",
+    "tapToEdit": "Tap to edit",
+    "adjustSearchFilters": "Try adjusting your search or filters",
+    "editNote": "Edit Note",
+    "viewKiran": "View Kiran",
+    "deleteNote": "Delete Note",
+    "bookPart": "Book Part",
+    "noteLength": "Note Length",
+    "bookParts": "Book Parts:"
 }

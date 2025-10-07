@@ -228,8 +228,95 @@ class AppLocalizationsGu extends AppLocalizations {
   String get notes_hint => 'અહીં તમારી વ્યક્તિગત નોંધ ઉમેરો...';
 
   @override
-  String get notes_saved => 'નોંધ સફળતાપૂર્વક સેવ થઈ';
+  String get notesSaved => 'નોંધ સફળતાપૂર્વક સેવ થઈ';
 
   @override
   String get cancel => 'રદ કરો';
+
+  @override
+  String get deleteNoteConfirm => 'શું તમે ખરેખર આ નોટ મિટાવવા માંગો છો?';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get noteDeletedSuccess => 'નોટ સફળતાપૂર્વક મિટાવ્યું';
+
+  @override
+  String errorDeletingNote(String error) {
+    return 'નોટ મિટાવવામાં ભૂલ: $error';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return '$days દિવસ પહેલાં';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return '$hours કલાક પહેલાં';
+  }
+
+  @override
+  String minutesAgo(int minutes) {
+    return '$minutes મિનિટ પહેલાં';
+  }
+
+  @override
+  String get justNow => 'હમણાં';
+
+  @override
+  String get sortBy => 'આ પ્રમાણે ક્રમાંકિત કરો';
+
+  @override
+  String get lastModified => 'છેલ્લે બદલાયેલ';
+
+  @override
+  String get searchNotesHint => 'નોટ્સ અને શીર્ષકો શોધો...';
+
+  @override
+  String notesCount(int filtered, int total) {
+    return 'કુલ $total માંથી $filtered નોટ્સ';
+  }
+
+  @override
+  String sortedBy(String sortName, String direction) {
+    return '$direction $sortName દ્વારા ક્રમાંકિત';
+  }
+
+  @override
+  String get noNotesFound => 'કોઈ નોટ મળ્યા નથી';
+
+  @override
+  String get startTakingNotes => 'કીરણો વાંચતી વખતે નોટ્સ લેવાનું શરૂ કરો';
+
+  @override
+  String get noMatchingNotes => 'મેળ ખાતા નોટ્સ નથી';
+
+  @override
+  String get characters => 'અક્ષરો';
+
+  @override
+  String get tapToEdit => 'સંપાદિત કરવા માટે ટેપ કરો';
+
+  @override
+  String get adjustSearchFilters => 'તમારી શોધ અથવા ફિલ્ટર એડજસ્ટ કરવાનો પ્રયાસ કરો';
+
+  @override
+  String get editNote => 'નોટ સંપાદિત કરો';
+
+  @override
+  String get viewKiran => 'કીરણ જુઓ';
+
+  @override
+  String get deleteNote => 'નોટ મિટાવો';
+
+  @override
+  String get bookPart => 'પુસ્તક ભાગ';
+
+  @override
+  String get noteLength => 'નોટની લંબાઈ';
+
+  @override
+  String get bookParts => 'પુસ્તક ભાગો:';
 }

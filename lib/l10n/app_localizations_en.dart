@@ -228,8 +228,95 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notes_hint => 'Add your personal notes here...';
 
   @override
-  String get notes_saved => 'Notes saved successfully';
+  String get notesSaved => 'Notes saved successfully';
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get deleteNoteConfirm => 'Are you sure you want to delete this note?';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get noteDeletedSuccess => 'Note deleted successfully';
+
+  @override
+  String errorDeletingNote(String error) {
+    return 'Error deleting note: $error';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return '$days days ago';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return '$hours hours ago';
+  }
+
+  @override
+  String minutesAgo(int minutes) {
+    return '$minutes minutes ago';
+  }
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get lastModified => 'Last Modified';
+
+  @override
+  String get searchNotesHint => 'Search notes and titles...';
+
+  @override
+  String notesCount(int filtered, int total) {
+    return '$filtered of $total notes';
+  }
+
+  @override
+  String sortedBy(String sortName, String direction) {
+    return 'Sorted by $sortName $direction';
+  }
+
+  @override
+  String get noNotesFound => 'No Notes Found';
+
+  @override
+  String get startTakingNotes => 'Start taking notes while reading Kiranas';
+
+  @override
+  String get noMatchingNotes => 'No matching notes';
+
+  @override
+  String get characters => 'characters';
+
+  @override
+  String get tapToEdit => 'Tap to edit';
+
+  @override
+  String get adjustSearchFilters => 'Try adjusting your search or filters';
+
+  @override
+  String get editNote => 'Edit Note';
+
+  @override
+  String get viewKiran => 'View Kiran';
+
+  @override
+  String get deleteNote => 'Delete Note';
+
+  @override
+  String get bookPart => 'Book Part';
+
+  @override
+  String get noteLength => 'Note Length';
+
+  @override
+  String get bookParts => 'Book Parts:';
 }

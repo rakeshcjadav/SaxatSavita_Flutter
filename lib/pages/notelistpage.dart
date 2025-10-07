@@ -70,7 +70,7 @@ class _NoteListPageState extends State<NoteListPage> {
 
   void _onSearchChanged() {
     setState(() {
-      _searchQuery = _searchController.text.toLowerCase();
+      _searchQuery = _searchController.text.trim().toLowerCase();
       _applyFiltersAndSort();
     });
   }
@@ -265,7 +265,7 @@ class _NoteListPageState extends State<NoteListPage> {
       builder:
           (context) => AlertDialog(
             title: Text(AppLocalizations.of(context)!.notes),
-            content: Text('Are you sure you want to delete this note?'),
+            content: Text(AppLocalizations.of(context)!.deleteNoteConfirm),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -276,7 +276,7 @@ class _NoteListPageState extends State<NoteListPage> {
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.error,
                 ),
-                child: Text('Delete'),
+                child: Text(AppLocalizations.of(context)!.delete),
               ),
             ],
           ),
@@ -301,15 +301,21 @@ class _NoteListPageState extends State<NoteListPage> {
         _loadAllNotes();
 
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Note deleted successfully')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.noteDeletedSuccess),
+            ),
+          );
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Error deleting note: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.errorDeletingNote(e.toString()),
+              ),
+            ),
+          );
         }
       }
     }
@@ -320,13 +326,13 @@ class _NoteListPageState extends State<NoteListPage> {
     final difference = now.difference(dateTime);
 
     if (difference.inDays > 0) {
-      return '${difference.inDays} days ago';
+      return AppLocalizations.of(context)!.daysAgo(difference.inDays);
     } else if (difference.inHours > 0) {
-      return '${difference.inHours} hours ago';
+      return AppLocalizations.of(context)!.hoursAgo(difference.inHours);
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} minutes ago';
+      return AppLocalizations.of(context)!.minutesAgo(difference.inMinutes);
     } else {
-      return 'Just now';
+      return AppLocalizations.of(context)!.justNow;
     }
   }
 
@@ -347,11 +353,11 @@ class _NoteListPageState extends State<NoteListPage> {
                 _showFilters = !_showFilters;
               });
             },
-            tooltip: 'Filters',
+            tooltip: AppLocalizations.of(context)!.filters,
           ),
           PopupMenuButton<SortOption>(
             icon: Icon(Icons.sort),
-            tooltip: 'Sort by',
+            tooltip: AppLocalizations.of(context)!.sortBy,
             onSelected: _changeSortOption,
             itemBuilder:
                 (context) => [
@@ -361,7 +367,7 @@ class _NoteListPageState extends State<NoteListPage> {
                       children: [
                         Icon(Icons.access_time, size: 20),
                         SizedBox(width: 8),
-                        Text('Last Modified'),
+                        Text(AppLocalizations.of(context)!.lastModified),
                         if (_currentSort == SortOption.dateModified) ...[
                           Spacer(),
                           Icon(
@@ -379,7 +385,7 @@ class _NoteListPageState extends State<NoteListPage> {
                       children: [
                         Icon(Icons.book, size: 20),
                         SizedBox(width: 8),
-                        Text('Book Part'),
+                        Text(AppLocalizations.of(context)!.bookPart),
                         if (_currentSort == SortOption.partNumber) ...[
                           Spacer(),
                           Icon(
@@ -397,7 +403,7 @@ class _NoteListPageState extends State<NoteListPage> {
                       children: [
                         Icon(Icons.short_text, size: 20),
                         SizedBox(width: 8),
-                        Text('Note Length'),
+                        Text(AppLocalizations.of(context)!.noteLength),
                         if (_currentSort == SortOption.noteLength) ...[
                           Spacer(),
                           Icon(
@@ -418,10 +424,11 @@ class _NoteListPageState extends State<NoteListPage> {
           // Search Bar
           Container(
             padding: const EdgeInsets.all(16.0),
+            color: Theme.of(context).colorScheme.surfaceContainer,
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search notes and titles...',
+                hintText: AppLocalizations.of(context)!.searchNotesHint,
                 prefixIcon: Icon(Icons.search),
                 suffixIcon:
                     _searchController.text.isNotEmpty
@@ -467,7 +474,7 @@ class _NoteListPageState extends State<NoteListPage> {
                       Icon(Icons.book, size: 16),
                       SizedBox(width: 8),
                       Text(
-                        'Book Parts:',
+                        AppLocalizations.of(context)!.bookParts,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -512,7 +519,9 @@ class _NoteListPageState extends State<NoteListPage> {
               child: Row(
                 children: [
                   Text(
-                    '${_filteredNotes.length} of ${_allNotes.length} notes',
+                    AppLocalizations.of(
+                      context,
+                    )!.notesCount(_filteredNotes.length, _allNotes.length),
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: Colors.grey),
@@ -542,13 +551,13 @@ class _NoteListPageState extends State<NoteListPage> {
     String sortName = '';
     switch (_currentSort) {
       case SortOption.dateModified:
-        sortName = 'Last Modified';
+        sortName = AppLocalizations.of(context)!.lastModified;
         break;
       case SortOption.partNumber:
-        sortName = 'Book Part';
+        sortName = AppLocalizations.of(context)!.bookPart;
         break;
       case SortOption.noteLength:
-        sortName = 'Note Length';
+        sortName = AppLocalizations.of(context)!.noteLength;
         break;
     }
 
@@ -572,14 +581,14 @@ class _NoteListPageState extends State<NoteListPage> {
             ),
             SizedBox(height: 16),
             Text(
-              'No Notes Found',
+              AppLocalizations.of(context)!.noNotesFound,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(color: Colors.grey),
             ),
             SizedBox(height: 8),
             Text(
-              'Start taking notes while reading Kiranas',
+              AppLocalizations.of(context)!.startTakingNotes,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
@@ -602,14 +611,14 @@ class _NoteListPageState extends State<NoteListPage> {
             ),
             SizedBox(height: 16),
             Text(
-              'No matching notes',
+              AppLocalizations.of(context)!.noMatchingNotes,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(color: Colors.grey),
             ),
             SizedBox(height: 8),
             Text(
-              'Try adjusting your search or filters',
+              AppLocalizations.of(context)!.adjustSearchFilters,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
@@ -707,7 +716,7 @@ class _NoteListPageState extends State<NoteListPage> {
                             children: [
                               Icon(Icons.edit, size: 20),
                               SizedBox(width: 8),
-                              Text('Edit Note'),
+                              Text(AppLocalizations.of(context)!.editNote),
                             ],
                           ),
                         ),
@@ -717,7 +726,7 @@ class _NoteListPageState extends State<NoteListPage> {
                             children: [
                               Icon(Icons.book_online, size: 20),
                               SizedBox(width: 8),
-                              Text('View Kiran'),
+                              Text(AppLocalizations.of(context)!.viewKiran),
                             ],
                           ),
                         ),
@@ -728,7 +737,7 @@ class _NoteListPageState extends State<NoteListPage> {
                               Icon(Icons.delete, size: 20, color: Colors.red),
                               SizedBox(width: 8),
                               Text(
-                                'Delete Note',
+                                AppLocalizations.of(context)!.deleteNote,
                                 style: TextStyle(color: Colors.red),
                               ),
                             ],
@@ -774,7 +783,7 @@ class _NoteListPageState extends State<NoteListPage> {
                       Icon(Icons.short_text, size: 16, color: Colors.grey),
                       SizedBox(width: 4),
                       Text(
-                        '${noteItem.plainTextPreview.length} characters',
+                        '${noteItem.plainTextPreview.length} ${AppLocalizations.of(context)!.characters}',
                         style: Theme.of(
                           context,
                         ).textTheme.bodySmall?.copyWith(color: Colors.grey),
