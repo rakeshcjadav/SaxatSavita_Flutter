@@ -62,7 +62,8 @@ import 'app_localizations_gu.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('gu')
+    Locale('gu'),
   ];
 
   /// No description provided for @sampRakhjo.
@@ -143,11 +146,11 @@ abstract class AppLocalizations {
   /// **'Search'**
   String get menu_five;
 
-  /// No description provided for @menu_six.
+  /// No description provided for @reading_history.
   ///
   /// In en, this message translates to:
-  /// **'Previous Readings'**
-  String get menu_six;
+  /// **'Reading History'**
+  String get reading_history;
 
   /// No description provided for @loginWithGoogle.
   ///
@@ -350,7 +353,7 @@ abstract class AppLocalizations {
   /// No description provided for @search_all_kiranas.
   ///
   /// In en, this message translates to:
-  /// **'Search through all Kiranas'**
+  /// **'Search through all Kirans'**
   String get search_all_kiranas;
 
   /// No description provided for @enter_keywords.
@@ -664,9 +667,22 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Book Parts:'**
   String get bookParts;
+
+  /// No description provided for @favorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite'**
+  String get favorite;
+
+  /// No description provided for @favoriteKiranSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran favorited successfully'**
+  String get favoriteKiranSuccess;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -675,25 +691,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'gu'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'gu'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'gu': return AppLocalizationsGu();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'gu':
+      return AppLocalizationsGu();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

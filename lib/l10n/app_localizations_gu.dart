@@ -33,7 +33,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get menu_five => 'શોધો';
 
   @override
-  String get menu_six => 'પૂર્વ વાંચન';
+  String get reading_history => 'પૂર્વ વાંચન';
 
   @override
   String get loginWithGoogle => 'Sign in with Google';
@@ -155,7 +155,8 @@ class AppLocalizationsGu extends AppLocalizations {
   String get no_results_found => 'કોઈ પરિણામ મળ્યા નથી';
 
   @override
-  String get try_different_keywords => 'અલગ કીવર્ડ્સ અજમાવો અથવા સ્પેલિંગ ચકાસો';
+  String get try_different_keywords =>
+      'અલગ કીવર્ડ્સ અજમાવો અથવા સ્પેલિંગ ચકાસો';
 
   @override
   String results_found(int count) {
@@ -184,7 +185,8 @@ class AppLocalizationsGu extends AppLocalizations {
   String get book_parts => 'પુસ્તક ભાગો';
 
   @override
-  String get no_filtered_results => 'વર્તમાન ફિલ્ટર્સ સાથે કોઈ પરિણામ મેળ ખાતા નથી';
+  String get no_filtered_results =>
+      'વર્તમાન ફિલ્ટર્સ સાથે કોઈ પરિણામ મેળ ખાતા નથી';
 
   @override
   String get adjust_filters => 'તમારી ફિલ્ટર સેટિંગ્સ એડજસ્ટ કરવાનો પ્રયાસ કરો';
@@ -228,23 +230,23 @@ class AppLocalizationsGu extends AppLocalizations {
   String get notes_hint => 'અહીં તમારી વ્યક્તિગત નોંધ ઉમેરો...';
 
   @override
-  String get notesSaved => 'નોંધ સફળતાપૂર્વક સેવ થઈ';
+  String get notesSaved => 'નોંધ સફળતાપૂર્વક સેવ થઈ...';
 
   @override
   String get cancel => 'રદ કરો';
 
   @override
-  String get deleteNoteConfirm => 'શું તમે ખરેખર આ નોટ મિટાવવા માંગો છો?';
+  String get deleteNoteConfirm => 'શું તમે ખરેખર આ નોટ ડિલીટ કરવા માંગો છો?';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'ડિલિટ';
 
   @override
-  String get noteDeletedSuccess => 'નોટ સફળતાપૂર્વક મિટાવ્યું';
+  String get noteDeletedSuccess => 'નોંધ સફળતાપૂર્વક ડિલીટ થઈ...';
 
   @override
   String errorDeletingNote(String error) {
-    return 'નોટ મિટાવવામાં ભૂલ: $error';
+    return 'નોંધ ડિલીટ કરવામાં ભૂલ: $error';
   }
 
   @override
@@ -272,7 +274,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get lastModified => 'છેલ્લે બદલાયેલ';
 
   @override
-  String get searchNotesHint => 'નોટ્સ અને શીર્ષકો શોધો...';
+  String get searchNotesHint => 'નોંધ અને શીર્ષકો શોધો...';
 
   @override
   String notesCount(int filtered, int total) {
@@ -288,7 +290,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get noNotesFound => 'કોઈ નોટ મળ્યા નથી';
 
   @override
-  String get startTakingNotes => 'કીરણો વાંચતી વખતે નોટ્સ લેવાનું શરૂ કરો';
+  String get startTakingNotes => 'કિરણો વાંચતી વખતે નોટ્સ લેવાનું શરૂ કરો';
 
   @override
   String get noMatchingNotes => 'મેળ ખાતા નોટ્સ નથી';
@@ -300,13 +302,14 @@ class AppLocalizationsGu extends AppLocalizations {
   String get tapToEdit => 'સંપાદિત કરવા માટે ટેપ કરો';
 
   @override
-  String get adjustSearchFilters => 'તમારી શોધ અથવા ફિલ્ટર એડજસ્ટ કરવાનો પ્રયાસ કરો';
+  String get adjustSearchFilters =>
+      'તમારી શોધ અથવા ફિલ્ટર એડજસ્ટ કરવાનો પ્રયાસ કરો';
 
   @override
   String get editNote => 'નોટ સંપાદિત કરો';
 
   @override
-  String get viewKiran => 'કીરણ જુઓ';
+  String get viewKiran => 'કિરણ જુઓ';
 
   @override
   String get deleteNote => 'નોટ મિટાવો';
@@ -319,4 +322,10 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get bookParts => 'પુસ્તક ભાગો:';
+
+  @override
+  String get favorite => 'ફેવરિટ';
+
+  @override
+  String get favoriteKiranSuccess => 'કિરણ સફળતાપૂર્વક ફેવરિટ કરવામાં આવ્યું.';
 }

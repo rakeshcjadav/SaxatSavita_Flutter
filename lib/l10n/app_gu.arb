@@ -9,7 +9,7 @@
     "information_section": "માહિતી વિભાગ",
     "menu_four": "નોંધ",
     "menu_five": "શોધો",
-    "menu_six": "પૂર્વ વાંચન",
+    "reading_history": "પૂર્વ વાંચન",
     "loginWithGoogle": "Sign in with Google",
     "logout": "Logout",
     "profile": "પ્રોફાઇલ",
@@ -117,11 +117,12 @@
     "notes": "નોંધ",
     "add_notes": "નોંધ ઉમેરો",
     "notes_hint": "અહીં તમારી વ્યક્તિગત નોંધ ઉમેરો...",
-    "notesSaved": "નોંધ સફળતાપૂર્વક સેવ થઈ",
+    "notesSaved": "નોંધ સફળતાપૂર્વક સેવ થઈ...",
     "cancel": "રદ કરો",
-    "deleteNoteConfirm": "શું તમે ખરેખર આ નોટ મિટાવવા માંગો છો?",
-    "noteDeletedSuccess": "નોટ સફળતાપૂર્વક મિટાવ્યું",
-    "errorDeletingNote": "નોટ મિટાવવામાં ભૂલ: {error}",
+    "deleteNoteConfirm": "શું તમે ખરેખર આ નોટ ડિલીટ કરવા માંગો છો?",
+    "delete": "ડિલિટ",
+    "noteDeletedSuccess": "નોંધ સફળતાપૂર્વક ડિલીટ થઈ...",
+    "errorDeletingNote": "નોંધ ડિલીટ કરવામાં ભૂલ: {error}",
     "@errorDeletingNote": {
         "placeholders": {
             "error": {
@@ -156,7 +157,7 @@
     "justNow": "હમણાં",
     "sortBy": "આ પ્રમાણે ક્રમાંકિત કરો",
     "lastModified": "છેલ્લે બદલાયેલ",
-    "searchNotesHint": "નોટ્સ અને શીર્ષકો શોધો...",
+    "searchNotesHint": "નોંધ અને શીર્ષકો શોધો...",
     "notesCount": "કુલ {total} માંથી {filtered} નોટ્સ",
     "@notesCount": {
         "placeholders": {
@@ -180,15 +181,17 @@
         }
     },
     "noNotesFound": "કોઈ નોટ મળ્યા નથી",
-    "startTakingNotes": "કીરણો વાંચતી વખતે નોટ્સ લેવાનું શરૂ કરો",
+    "startTakingNotes": "કિરણો વાંચતી વખતે નોટ્સ લેવાનું શરૂ કરો",
     "noMatchingNotes": "મેળ ખાતા નોટ્સ નથી",
     "characters": "અક્ષરો",
     "tapToEdit": "સંપાદિત કરવા માટે ટેપ કરો",
     "adjustSearchFilters": "તમારી શોધ અથવા ફિલ્ટર એડજસ્ટ કરવાનો પ્રયાસ કરો",
     "editNote": "નોટ સંપાદિત કરો",
-    "viewKiran": "કીરણ જુઓ",
+    "viewKiran": "કિરણ જુઓ",
     "deleteNote": "નોટ મિટાવો",
     "bookPart": "પુસ્તક ભાગ",
     "noteLength": "નોટની લંબાઈ",
-    "bookParts": "પુસ્તક ભાગો:"
+    "bookParts": "પુસ્તક ભાગો:",
+    "favorite": "ફેવરિટ",
+    "favoriteKiranSuccess": "કિરણ સફળતાપૂર્વક ફેવરિટ કરવામાં આવ્યું."
 }

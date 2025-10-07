@@ -525,7 +525,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                                             if (mounted) {
                                               setState(() {
                                                 widget.kiranUserInfo.progress =
-                                                    100;
+                                                    0;
                                                 widget
                                                     .kiranUserInfo
                                                     .readCount += 1;
@@ -536,6 +536,13 @@ class _KiranReadPageState extends State<KiranReadPage>
                                                 );
                                                 _hasDataChanged = true;
                                                 _pauseTimer();
+                                                _isFinishButtonEnabled = false;
+                                                _isFinishButtonEnabledNotifier
+                                                    .value = false;
+                                                // Stop auto-scroll if active
+                                                if (_isAutoScrolling) {
+                                                  _stopAutoScroll();
+                                                }
                                               });
                                             }
                                             if (mounted) {

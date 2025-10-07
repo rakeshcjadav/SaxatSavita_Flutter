@@ -28,7 +28,7 @@ class NavigationbarState extends State<Navigationbar> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.history),
-          label: AppLocalizations.of(context)!.menu_six,
+          label: AppLocalizations.of(context)!.reading_history,
         ),
       ],
       currentIndex: _selectedIndex,

@@ -97,7 +97,7 @@ class _DrawerState extends State<MyDrawer> {
           ),
           ListTile(
             leading: const Icon(Icons.history),
-            title: Text(AppLocalizations.of(context)!.menu_six),
+            title: Text(AppLocalizations.of(context)!.reading_history),
             onTap: () {},
           ),
           ListTile(

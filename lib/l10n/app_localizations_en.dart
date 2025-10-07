@@ -33,7 +33,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_five => 'Search';
 
   @override
-  String get menu_six => 'Previous Readings';
+  String get reading_history => 'Reading History';
 
   @override
   String get loginWithGoogle => 'Sign in with Google';
@@ -146,7 +146,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_kiranas => 'Search kiranas by title or content...';
 
   @override
-  String get search_all_kiranas => 'Search through all Kiranas';
+  String get search_all_kiranas => 'Search through all Kirans';
 
   @override
   String get enter_keywords => 'Enter keywords to find relevant content';
@@ -155,7 +155,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_results_found => 'No results found';
 
   @override
-  String get try_different_keywords => 'Try different keywords or check spelling';
+  String get try_different_keywords =>
+      'Try different keywords or check spelling';
 
   @override
   String results_found(int count) {
@@ -319,4 +320,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookParts => 'Book Parts:';
+
+  @override
+  String get favorite => 'Favorite';
+
+  @override
+  String get favoriteKiranSuccess => 'Kiran favorited successfully';
 }

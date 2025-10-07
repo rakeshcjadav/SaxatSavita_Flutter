@@ -6,6 +6,7 @@ import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranlist_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
+import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import '../models/bookpart_model.dart';
@@ -160,25 +161,76 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     return [
       ListTile(
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  kiranUserInfo.toggleFavourite();
-                });
-              },
-              iconSize: appSettingsNotifier.value.fontSize * 2.0,
-              icon: Icon(
-                kiranUserInfo.isFavourite == 1
-                    ? Icons.favorite
-                    : Icons.favorite_border,
-                color:
-                    kiranUserInfo.isFavourite == 1
-                        ? Colors.pink
-                        : Theme.of(context).iconTheme.color,
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        kiranUserInfo.toggleFavourite();
+                      });
+                    },
+                    iconSize: appSettingsNotifier.value.fontSize,
+                    icon: Icon(
+                      kiranUserInfo.isFavourite == 1
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color:
+                          kiranUserInfo.isFavourite == 1
+                              ? Colors.pink
+                              : Theme.of(context).iconTheme.color,
+                    ),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.favorite,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 8),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => NoteEditorPage(
+                                kiranUserInfo: kiranUserInfo,
+                                kiranTitle:
+                                    '${AppLocalizations.of(context)!.kiran} ${kiran.number.replaceAll(".", "")}',
+                              ),
+                        ),
+                      );
+                    },
+                    iconSize: appSettingsNotifier.value.fontSize,
+                    icon: Icon(Icons.note),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.notes,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
         trailing: ElevatedButton(

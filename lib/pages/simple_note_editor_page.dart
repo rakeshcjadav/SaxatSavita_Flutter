@@ -93,7 +93,7 @@ class _SimpleNoteEditorPageState extends State<SimpleNoteEditorPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Notes saved successfully'),
+            content: Text(AppLocalizations.of(context)!.notesSaved),
             duration: const Duration(seconds: 2),
           ),
         );

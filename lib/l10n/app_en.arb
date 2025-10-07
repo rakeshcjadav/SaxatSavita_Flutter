@@ -9,7 +9,7 @@
     "information_section": "Information Section",
     "menu_four": "Notes",
     "menu_five": "Search",
-    "menu_six": "Previous Readings",
+    "reading_history": "Reading History",
     "loginWithGoogle": "Sign in with Google",
     "logout": "Logout",
     "profile": "Profile",
@@ -75,7 +75,7 @@
     "header_slok": "।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।",
     
     "search_kiranas": "Search kiranas by title or content...",
-    "search_all_kiranas": "Search through all Kiranas",
+    "search_all_kiranas": "Search through all Kirans",
     "enter_keywords": "Enter keywords to find relevant content",
     "no_results_found": "No results found",
     "try_different_keywords": "Try different keywords or check spelling",
@@ -191,5 +191,7 @@
     "deleteNote": "Delete Note",
     "bookPart": "Book Part",
     "noteLength": "Note Length",
-    "bookParts": "Book Parts:"
+    "bookParts": "Book Parts:",
+    "favorite": "Favorite",
+    "favoriteKiranSuccess": "Kiran favorited successfully"
 }
