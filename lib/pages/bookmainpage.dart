@@ -77,12 +77,9 @@ class _BookmainpageState extends State<BookMainpage> {
                         ),
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        AppLocalizations.of(context)!.aashirvachan,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
+                    child: Text(
+                      AppLocalizations.of(context)!.aashirvachan,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                   ElevatedButton(
@@ -107,12 +104,9 @@ class _BookmainpageState extends State<BookMainpage> {
                         ),
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        AppLocalizations.of(context)!.preface,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
+                    child: Text(
+                      AppLocalizations.of(context)!.preface,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                 ],
@@ -220,17 +214,6 @@ class _BookmainpageState extends State<BookMainpage> {
   }
   */
 
-  /*************  ✨ Windsurf Command ⭐  *************/
-  /// A widget that shows a list of book parts.
-  ///
-  /// It shows a CircularProgressIndicator while loading data.
-  ///
-  /// If there is an error while loading the data, it shows the error message.
-  ///
-  /// If the data is empty, it shows the text "No data found".
-  ///
-  /// Otherwise, it shows the list of book parts.
-  /// *****  b6267d94-c980-431f-8075-38044a3ebe49  ******
   Widget bookPartsWidget() {
     return ValueListenableBuilder<AppSettings>(
       valueListenable: appSettingsNotifier,
@@ -311,6 +294,9 @@ class _BookmainpageState extends State<BookMainpage> {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
                   ),
                   onPressed: () {
                     navigateToKiranList(bookparts, index);
@@ -333,6 +319,12 @@ class _BookmainpageState extends State<BookMainpage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
                       label: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Text(
@@ -350,7 +342,6 @@ class _BookmainpageState extends State<BookMainpage> {
                         navigateToBookMark(bookparts, index + 1);
                       },
                       icon: const Icon(Icons.bookmark, color: Colors.amber),
-                      style: ButtonStyle(elevation: WidgetStatePropertyAll(0)),
                     ),
                     if (Bookservice()
                             .getBookUserInfo(bookparts[index].partNumber)

@@ -234,6 +234,13 @@ class _KiranlistpageState extends State<Kiranlistpage> {
           ],
         ),
         trailing: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          ),
           onPressed: () {
             _navigateToKiranReadPage(kiran, kiranUserInfo);
           },
