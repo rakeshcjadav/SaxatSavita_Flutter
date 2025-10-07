@@ -57,7 +57,7 @@ class _BookmainpageState extends State<BookMainpage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: () async {
                       await Navigator.push(
                         context,
@@ -77,12 +77,13 @@ class _BookmainpageState extends State<BookMainpage> {
                         ),
                       ),
                     ),
-                    child: Text(
+                    icon: const Icon(Icons.topic),
+                    label: Text(
                       AppLocalizations.of(context)!.aashirvachan,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: () async {
                       final infoItem = AppDataService().getInfoValue("preface");
                       Navigator.push(
@@ -104,7 +105,8 @@ class _BookmainpageState extends State<BookMainpage> {
                         ),
                       ),
                     ),
-                    child: Text(
+                    icon: const Icon(Icons.article),
+                    label: Text(
                       AppLocalizations.of(context)!.preface,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
