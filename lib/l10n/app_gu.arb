@@ -32,7 +32,7 @@
     "theme_color": "થિમનો રંગ",
     "theme_variant": "થિમનો પ્રકાર",
     "theme_mode": "થિમનો મોડ",
-    "theme_contrast": "થિમનો વિસંગતિ",
+    "theme_contrast": "થિમનો કોન્ટ્રાસ્ટ",
     "reading_speed": "વાંચવાની ગતિ",
     "select_language": "ભાષા પસંદ કરો",
     "reading_count": "{count} વખત વાંચ્યું",
@@ -129,7 +129,7 @@
     "notes_hint": "અહીં તમારી વ્યક્તિગત નોંધ ઉમેરો...",
     "notesSaved": "નોંધ સફળતાપૂર્વક સેવ થઈ...",
     "cancel": "રદ કરો",
-    "deleteNoteConfirm": "શું તમે ખરેખર આ નોટ ડિલીટ કરવા માંગો છો?",
+    "deleteNoteConfirm": "શું તમે ખરેખર આ નોંધ ડિલીટ કરવા માંગો છો?",
     "delete": "ડિલિટ",
     "noteDeletedSuccess": "નોંધ સફળતાપૂર્વક ડિલીટ થઈ...",
     "errorDeletingNote": "નોંધ ડિલીટ કરવામાં ભૂલ: {error}",
@@ -168,7 +168,7 @@
     "sortBy": "આ પ્રમાણે ક્રમાંકિત કરો",
     "lastModified": "છેલ્લે બદલાયેલ",
     "searchNotesHint": "નોંધ અને શીર્ષકો શોધો...",
-    "notesCount": "કુલ {total} માંથી {filtered} નોટ્સ",
+    "notesCount": "કુલ {total} માંથી {filtered} નોંધ",
     "@notesCount": {
         "placeholders": {
             "filtered": {
