@@ -295,13 +295,13 @@ class AppLocalizationsGu extends AppLocalizations {
   }
 
   @override
-  String get noNotesFound => 'કોઈ નોટ મળ્યા નથી';
+  String get noNotesFound => 'કોઈ નોંધ મળી નથી';
 
   @override
-  String get startTakingNotes => 'કિરણો વાંચતી વખતે નોટ્સ લેવાનું શરૂ કરો';
+  String get startTakingNotes => 'કિરણો વાંચતી વખતે નોંધ લેવાનું શરૂ કરો';
 
   @override
-  String get noMatchingNotes => 'મેળ ખાતા નોટ્સ નથી';
+  String get noMatchingNotes => 'મેળ થતી નોંધ નથી';
 
   @override
   String get characters => 'અક્ષરો';
@@ -314,19 +314,19 @@ class AppLocalizationsGu extends AppLocalizations {
       'તમારી શોધ અથવા ફિલ્ટર એડજસ્ટ કરવાનો પ્રયાસ કરો';
 
   @override
-  String get editNote => 'નોટ સંપાદિત કરો';
+  String get editNote => 'નોંધ સંપાદિત કરો';
 
   @override
   String get viewKiran => 'કિરણ જુઓ';
 
   @override
-  String get deleteNote => 'નોટ મિટાવો';
+  String get deleteNote => 'નોંધ મિટાવો';
 
   @override
   String get bookPart => 'પુસ્તક ભાગ';
 
   @override
-  String get noteLength => 'નોટની લંબાઈ';
+  String get noteLength => 'નોંધની લંબાઈ';
 
   @override
   String get bookParts => 'પુસ્તક ભાગો:';

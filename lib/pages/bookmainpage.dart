@@ -57,7 +57,7 @@ class _BookmainpageState extends State<BookMainpage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton.icon(
+                  ElevatedButton(
                     onPressed: () async {
                       await Navigator.push(
                         context,
@@ -77,13 +77,13 @@ class _BookmainpageState extends State<BookMainpage> {
                         ),
                       ),
                     ),
-                    icon: const Icon(Icons.topic),
-                    label: Text(
+                    //icon: const Icon(Icons.topic),
+                    child: Text(
                       AppLocalizations.of(context)!.aashirvachan,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
-                  ElevatedButton.icon(
+                  ElevatedButton(
                     onPressed: () async {
                       final infoItem = AppDataService().getInfoValue("preface");
                       Navigator.push(
@@ -105,8 +105,8 @@ class _BookmainpageState extends State<BookMainpage> {
                         ),
                       ),
                     ),
-                    icon: const Icon(Icons.article),
-                    label: Text(
+                    //icon: const Icon(Icons.article),
+                    child: Text(
                       AppLocalizations.of(context)!.preface,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
@@ -127,94 +127,6 @@ class _BookmainpageState extends State<BookMainpage> {
       ),
     );
   }
-
-  /*
-  Padding _carouselSlider(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          CarouselSlider(
-            items: [
-              Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: const ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  child: Image(
-                    image: AssetImage(
-                      'assets/res/z_ashirvachan_jogiswami_image.webp',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: const ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  child: Image(
-                    image: AssetImage(
-                      'assets/res/z_ashirvachan_swami_shree_image.webp',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
-            options: CarouselOptions(
-              height: 150,
-              aspectRatio: 16 / 9,
-              viewportFraction: 0.8,
-              initialPage: 0,
-              enableInfiniteScroll: false,
-              reverse: false,
-              autoPlay: false,
-              autoPlayInterval: const Duration(seconds: 3),
-              autoPlayAnimationDuration: const Duration(milliseconds: 800),
-              autoPlayCurve: Curves.fastOutSlowIn,
-              enlargeCenterPage: true,
-              scrollDirection: Axis.horizontal,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(2, (index) {
-                return Container(
-                  width: _currentIndex == index ? 24 : 8,
-                  height: 8,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color:
-                        _currentIndex == index
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(
-                              context,
-                            ).colorScheme.primary.withOpacity(0.3),
-                  ),
-                );
-              }),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  */
 
   Widget bookPartsWidget() {
     return ValueListenableBuilder<AppSettings>(
@@ -259,10 +171,6 @@ class _BookmainpageState extends State<BookMainpage> {
           child: Column(
             children: [
               ListTile(
-                leading: Icon(
-                  Icons.book,
-                  size: appSettingsNotifier.value.fontSize * 2.0,
-                ),
                 title: Text(bookparts[index].displayname.toString()),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,20 +185,21 @@ class _BookmainpageState extends State<BookMainpage> {
                           size: appSettingsNotifier.value.fontSize * 0.8,
                         ),
                         const SizedBox(width: 5),
-                        Text(
-                          Utils.getEstimatedReadingTime(
-                            KiranListService()
-                                    .getKiranList(bookparts[index].id)
-                                    ?.totalWordCount ??
-                                0,
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                            Utils.getEstimatedReadingTime(
+                              KiranListService()
+                                      .getKiranList(bookparts[index].id)
+                                      ?.totalWordCount ??
+                                  0,
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 15),
                       ],
                     ),
                   ],
                 ),
-
                 trailing: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
@@ -352,6 +261,7 @@ class _BookmainpageState extends State<BookMainpage> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
+                          const SizedBox(width: 18),
                           Icon(
                             Icons.history,
                             size: appSettingsNotifier.value.fontSize * 0.6,

@@ -61,6 +61,16 @@
             }
         }
     },
+    "time_format": "{time}",
+    "@time_format": {
+        "description": "Indicates the format for displaying time.",
+        "placeholders": {
+            "time": {
+                "type": "DateTime",
+                "format": "jm"
+            }
+        }
+    },
     "time_to_read": "{time}",
     "@time_to_read": {
         "description": "Indicates the estimated time to read a particular item.",
@@ -180,17 +190,17 @@
             }
         }
     },
-    "noNotesFound": "કોઈ નોટ મળ્યા નથી",
-    "startTakingNotes": "કિરણો વાંચતી વખતે નોટ્સ લેવાનું શરૂ કરો",
-    "noMatchingNotes": "મેળ ખાતા નોટ્સ નથી",
+    "noNotesFound": "કોઈ નોંધ મળી નથી",
+    "startTakingNotes": "કિરણો વાંચતી વખતે નોંધ લેવાનું શરૂ કરો",
+    "noMatchingNotes": "મેળ થતી નોંધ નથી",
     "characters": "અક્ષરો",
     "tapToEdit": "સંપાદિત કરવા માટે ટેપ કરો",
     "adjustSearchFilters": "તમારી શોધ અથવા ફિલ્ટર એડજસ્ટ કરવાનો પ્રયાસ કરો",
-    "editNote": "નોટ સંપાદિત કરો",
+    "editNote": "નોંધ સંપાદિત કરો",
     "viewKiran": "કિરણ જુઓ",
-    "deleteNote": "નોટ મિટાવો",
+    "deleteNote": "નોંધ મિટાવો",
     "bookPart": "પુસ્તક ભાગ",
-    "noteLength": "નોટની લંબાઈ",
+    "noteLength": "નોંધની લંબાઈ",
     "bookParts": "પુસ્તક ભાગો:",
     "favorite": "ફેવરિટ",
     "favoriteKiranSuccess": "કિરણ સફળતાપૂર્વક ફેવરિટ કરવામાં આવ્યું.",
