@@ -158,6 +158,17 @@ class SakshatSavitaApp extends StatelessWidget {
               radius: const Radius.circular(6),
               thickness: WidgetStateProperty.all(3.0),
             ),
+            popupMenuTheme: PopupMenuThemeData(
+              color: colorScheme.primaryContainer,
+              textStyle: TextStyle(
+                fontSize: settings.fontSize - 2,
+                color: colorScheme.primary,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              elevation: 10,
+            ),
           ),
           home: const SplashPage(),
           routes: {

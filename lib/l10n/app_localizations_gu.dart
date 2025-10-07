@@ -102,7 +102,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get theme_mode => 'થિમનો મોડ';
 
   @override
-  String get theme_contrast => 'થિમનો વિસંગતિ';
+  String get theme_contrast => 'થિમનો કોન્ટ્રાસ્ટ';
 
   @override
   String get reading_speed => 'વાંચવાની ગતિ';
@@ -244,7 +244,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get cancel => 'રદ કરો';
 
   @override
-  String get deleteNoteConfirm => 'શું તમે ખરેખર આ નોટ ડિલીટ કરવા માંગો છો?';
+  String get deleteNoteConfirm => 'શું તમે ખરેખર આ નોંધ ડિલીટ કરવા માંગો છો?';
 
   @override
   String get delete => 'ડિલિટ';
@@ -286,7 +286,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String notesCount(int filtered, int total) {
-    return 'કુલ $total માંથી $filtered નોટ્સ';
+    return 'કુલ $total માંથી $filtered નોંધ';
   }
 
   @override

@@ -23,7 +23,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   late QuillController _controller;
   final FocusNode _focusNode = FocusNode();
   bool _isModified = false;
-  late QuillToolbarToggleStyleButtonOptions buttonOptions;
+  late QuillToolbarToggleStyleButtonOptions toggleStyleButtonOptions;
 
   @override
   void initState() {
@@ -32,11 +32,11 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   }
 
   void setToolbarTheme() {
-    buttonOptions = QuillToolbarToggleStyleButtonOptions(
+    toggleStyleButtonOptions = QuillToolbarToggleStyleButtonOptions(
       iconTheme: QuillIconTheme(
         iconButtonUnselectedData: IconButtonData(
           style: IconButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.onSurface,
+            foregroundColor: Theme.of(context).colorScheme.primary,
             backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
             disabledForegroundColor: Theme.of(context).colorScheme.onSurface,
           ),
@@ -245,11 +245,32 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         controller: _controller,
         config: QuillSimpleToolbarConfig(
           buttonOptions: QuillSimpleToolbarButtonOptions(
-            bold: buttonOptions,
-            italic: buttonOptions,
-            listBullets: buttonOptions,
-            listNumbers: buttonOptions,
-            quote: buttonOptions,
+            bold: toggleStyleButtonOptions,
+            italic: toggleStyleButtonOptions,
+            listBullets: toggleStyleButtonOptions,
+            listNumbers: toggleStyleButtonOptions,
+            quote: toggleStyleButtonOptions,
+            toggleCheckList: QuillToolbarToggleCheckListButtonOptions(
+              iconTheme: QuillIconTheme(
+                iconButtonSelectedData: IconButtonData(
+                  style: IconButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    disabledForegroundColor:
+                        Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                iconButtonUnselectedData: IconButtonData(
+                  style: IconButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.surfaceContainer,
+                    disabledForegroundColor:
+                        Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ),
+            ),
           ),
           multiRowsDisplay: true,
           showSubscript: false,

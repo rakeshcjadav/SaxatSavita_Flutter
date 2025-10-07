@@ -365,9 +365,19 @@ class _NoteListPageState extends State<NoteListPage> {
                     value: SortOption.dateModified,
                     child: Row(
                       children: [
-                        Icon(Icons.access_time, size: 20),
+                        Icon(Icons.access_time, size: 18),
                         SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.lastModified),
+                        Text(
+                          AppLocalizations.of(context)!.lastModified,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall!.copyWith(
+                            color:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                          ),
+                        ),
                         if (_currentSort == SortOption.dateModified) ...[
                           Spacer(),
                           Icon(
@@ -383,9 +393,19 @@ class _NoteListPageState extends State<NoteListPage> {
                     value: SortOption.partNumber,
                     child: Row(
                       children: [
-                        Icon(Icons.book, size: 20),
+                        Icon(Icons.book, size: 18),
                         SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.bookPart),
+                        Text(
+                          AppLocalizations.of(context)!.bookPart,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall!.copyWith(
+                            color:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                          ),
+                        ),
                         if (_currentSort == SortOption.partNumber) ...[
                           Spacer(),
                           Icon(
@@ -401,9 +421,19 @@ class _NoteListPageState extends State<NoteListPage> {
                     value: SortOption.noteLength,
                     child: Row(
                       children: [
-                        Icon(Icons.short_text, size: 20),
+                        Icon(Icons.short_text, size: 18),
                         SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.noteLength),
+                        Text(
+                          AppLocalizations.of(context)!.noteLength,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall!.copyWith(
+                            color:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                          ),
+                        ),
                         if (_currentSort == SortOption.noteLength) ...[
                           Spacer(),
                           Icon(
