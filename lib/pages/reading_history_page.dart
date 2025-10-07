@@ -605,7 +605,9 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                   ),
                   const SizedBox(width: 4.0),
                   Text(
-                    '${history.createdAt.hour.toString().padLeft(2, '0')}:${history.createdAt.minute.toString().padLeft(2, '0')}',
+                    AppLocalizations.of(
+                      context,
+                    )!.time_format(history.createdAt),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),

@@ -326,6 +326,12 @@ abstract class AppLocalizations {
   /// **'{time},{date}'**
   String last_read(DateTime time, DateTime date);
 
+  /// Indicates the format for displaying time.
+  ///
+  /// In en, this message translates to:
+  /// **'{time}'**
+  String time_format(DateTime time);
+
   /// Indicates the estimated time to read a particular item.
   ///
   /// In en, this message translates to:

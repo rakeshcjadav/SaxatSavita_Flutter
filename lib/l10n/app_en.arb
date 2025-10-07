@@ -61,6 +61,16 @@
             }
         }
     },
+    "time_format": "{time}",
+    "@time_format": {
+        "description": "Indicates the format for displaying time.",
+        "placeholders": {
+            "time": {
+                "type": "DateTime",
+                "format": "jm"
+            }
+        }
+    },
     "time_to_read": "{time}",
     "@time_to_read": {
         "description": "Indicates the estimated time to read a particular item.",

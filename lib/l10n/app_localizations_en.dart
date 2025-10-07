@@ -132,6 +132,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String time_format(DateTime time) {
+    final intl.DateFormat timeDateFormat = intl.DateFormat.jm(localeName);
+    final String timeString = timeDateFormat.format(time);
+
+    return '$timeString';
+  }
+
+  @override
   String time_to_read(String time) {
     return '$time';
   }
