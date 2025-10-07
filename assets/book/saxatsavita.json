@@ -1,0 +1,77 @@
+[
+    {
+        "id": "part1",
+        "partNumber": 1,
+        "displayname": {
+            "en": "Part 1",
+            "gu": "ભાગ ૧"
+        },
+        "image": "assets/res/1.jpg",
+        "range": {
+            "en": "from kiran 1 to 170",
+            "gu": "કિરણ ૧ થી ૧૭૦ સુધી"
+        },
+        "startKiranIndex": 1,
+        "endKiranIndex": 170
+    },
+    {
+        "id": "part2",
+        "partNumber": 2,
+        "displayname": {
+            "en": "Part 2",
+            "gu": "ભાગ ૨"
+        },
+        "image": "assets/res/2.jpg",
+        "range": {
+            "en": "from kiran 171 to 362",
+            "gu": "કિરણ ૧૭૧ થી ૩૬૨ સુધી"
+        },
+        "startKiranIndex": 171,
+        "endKiranIndex": 362
+    },
+    {
+        "id": "part3",
+        "partNumber": 3,
+        "displayname": {
+            "en": "Part 3",
+            "gu": "ભાગ ૩"
+        },
+        "image": "assets/res/3.jpg",
+        "range": {
+            "en": "from kiran 363 to 501",
+            "gu": "કિરણ ૩૬૩ થી ૫૦૧ સુધી"
+        },
+        "startKiranIndex": 363,
+        "endKiranIndex": 501
+    },
+    {
+        "id": "part4",
+        "partNumber": 4,
+        "displayname": {
+            "en": "Part 4",
+            "gu": "ભાગ ૪"
+        },
+        "image": "assets/res/3.jpg",
+        "range": {
+            "en": "from kiran 502 to 600",
+            "gu": "કિરણ ૫૦૨ થી ૬૦૦ સુધી"
+        },
+        "startKiranIndex": 502,
+        "endKiranIndex": 600
+    },
+    {
+        "id": "part5",
+        "partNumber": 5,
+        "displayname": {
+            "en": "Part 5",
+            "gu": "ભાગ ૫"
+        },
+        "image": "assets/res/3.jpg",
+        "range": {
+            "en": "from kiran 601 to 697",
+            "gu": "કિરણ ૬૦૧ થી ૬૯૭ સુધી"
+        },
+        "startKiranIndex": 601,
+        "endKiranIndex": 697
+    }
+]

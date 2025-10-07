@@ -9,6 +9,7 @@ import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
+import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -22,6 +23,7 @@ void main() async {
   // Load JSON data
   await AppDataService().loadData('assets/jsons/data.json');
   await AppDataService().loadInfoContent('assets/jsons/infodata.json');
+  Bookservice().loadBook('saxatsavita');
   runApp(const SakshatSavitaApp());
 }
 

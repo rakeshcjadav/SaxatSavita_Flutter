@@ -860,7 +860,10 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                                       onSelected:
                                           (_) => _togglePartFilter(partNumber),
                                       label: Text(
-                                        Bookservice().getPartTitle(partNumber),
+                                        Bookservice().getPartTitle(
+                                          context,
+                                          partNumber,
+                                        ),
                                       ),
                                       labelStyle:
                                           Theme.of(context).textTheme.bodySmall,
@@ -1062,7 +1065,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      Bookservice().getPartTitle(result.partNumber),
+                      Bookservice().getPartTitle(context, result.partNumber),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,

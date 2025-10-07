@@ -32,8 +32,8 @@ class _BookmainpageState extends State<BookMainpage> {
     //Navigator.pop(context, true); // Notify parent of changes
   }
 
-  Future<List<Bookpartmodel>> get bookparts {
-    return Bookservice().loadBook(context, 'saxatsavita');
+  Future<List<Bookpartmodel>>? get bookparts {
+    return Bookservice().getBookParts(context);
   }
 
   @override
@@ -386,7 +386,7 @@ class _BookmainpageState extends State<BookMainpage> {
       return false;
     } else {
       return bookUserInfo.bookmarkKiranIndex !=
-          Bookservice().bookparts![partNumber - 1].startKiranIndex;
+          Bookservice().getStartKiranIndex(partNumber);
     }
   }
 

@@ -493,7 +493,9 @@ class _NoteListPageState extends State<NoteListPage> {
                           return FilterChip(
                             selected: isSelected,
                             onSelected: (_) => _togglePartFilter(partNumber),
-                            label: Text(Bookservice().getPartTitle(partNumber)),
+                            label: Text(
+                              Bookservice().getPartTitle(context, partNumber),
+                            ),
                             labelStyle: Theme.of(context).textTheme.bodySmall,
                             avatar:
                                 isSelected
@@ -677,7 +679,7 @@ class _NoteListPageState extends State<NoteListPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    Bookservice().getPartTitle(noteItem.partNumber),
+                    Bookservice().getPartTitle(context, noteItem.partNumber),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.bold,

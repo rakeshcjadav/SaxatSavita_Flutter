@@ -574,7 +574,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    Bookservice().getPartTitle(history.partNumber),
+                    Bookservice().getPartTitle(context, history.partNumber),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
