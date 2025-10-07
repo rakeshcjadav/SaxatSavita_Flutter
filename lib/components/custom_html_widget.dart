@@ -36,9 +36,6 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
   void _handleAddNote(String selectedText) {
     debugPrint('Add note for selected text: "$selectedText"');
     widget.onAddNote?.call(selectedText);
-    // TODO: Implement your note functionality here
-    // For example, navigate to note editor or show a dialog
-    // Navigator.push(context, MaterialPageRoute(builder: (_) => NoteEditor(text: selectedText)));
   }
 
   @override
