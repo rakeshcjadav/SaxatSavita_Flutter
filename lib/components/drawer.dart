@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -121,6 +120,10 @@ class _DrawerState extends State<MyDrawer> {
             leading: const Icon(Icons.logout),
             title: Text(AppLocalizations.of(context)!.logout),
             onTap: () async {
+              // Store context-dependent values before async operations
+              final navigator = Navigator.of(context);
+              final scaffoldMessenger = ScaffoldMessenger.of(context);
+
               try {
                 // Show loading indicator
                 showDialog(
@@ -138,10 +141,9 @@ class _DrawerState extends State<MyDrawer> {
 
                 if (mounted) {
                   // Pop the loading indicator
-                  Navigator.pop(context);
+                  navigator.pop();
                   // Navigate to sign in page
-                  Navigator.pushReplacement(
-                    context,
+                  navigator.pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => const GoogleSignInPage(),
                     ),
@@ -150,9 +152,9 @@ class _DrawerState extends State<MyDrawer> {
               } catch (e) {
                 // Pop the loading indicator
                 if (mounted) {
-                  Navigator.pop(context);
+                  navigator.pop();
                   // Show error
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  scaffoldMessenger.showSnackBar(
                     SnackBar(
                       content: Text('Error signing out: ${e.toString()}'),
                       backgroundColor: Colors.red,

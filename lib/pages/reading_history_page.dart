@@ -76,67 +76,6 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
     }
   }
 
-  // TODO: Replace with actual data loading
-  List<ReadingHistory> _generateSampleData() {
-    final now = DateTime.now();
-    return [
-      // Current month
-      ReadingHistory(
-        category: 'Daily Reading',
-        durationSeconds: 1820,
-        kiranIndex: 1,
-        partNumber: 1,
-        createdAt: now.subtract(const Duration(hours: 2)),
-      ),
-      ReadingHistory(
-        category: 'Daily Reading',
-        durationSeconds: 34,
-        kiranIndex: 2,
-        partNumber: 1,
-        createdAt: now.subtract(const Duration(hours: 3)),
-      ),
-      ReadingHistory(
-        category: 'Daily Reading',
-        durationSeconds: 3600,
-        kiranIndex: 175,
-        partNumber: 2,
-        createdAt: now.subtract(const Duration(days: 1)),
-      ),
-
-      // Previous month
-      ReadingHistory(
-        category: 'Morning Reading',
-        durationSeconds: 900,
-        kiranIndex: 380,
-        partNumber: 3,
-        createdAt: DateTime(now.year, now.month - 1, 15),
-      ),
-      ReadingHistory(
-        category: 'Evening Reading',
-        durationSeconds: 1200,
-        kiranIndex: 525,
-        partNumber: 4,
-        createdAt: DateTime(now.year, now.month - 1, 20),
-      ),
-
-      // Previous year
-      ReadingHistory(
-        category: 'Study Session',
-        durationSeconds: 2400,
-        kiranIndex: 175,
-        partNumber: 2,
-        createdAt: DateTime(now.year - 1, 12, 25),
-      ),
-      ReadingHistory(
-        category: 'Daily Reading',
-        durationSeconds: 600,
-        kiranIndex: 50,
-        partNumber: 1,
-        createdAt: DateTime(now.year - 1, 8, 10),
-      ),
-    ];
-  }
-
   void _extractAvailableDates() {
     final years = <int>{};
     final months = <int>{};
