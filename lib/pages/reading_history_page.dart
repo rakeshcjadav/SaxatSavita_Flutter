@@ -46,10 +46,11 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
       // Load reading history from SharedPreferences
       _allHistory = await _loadReadingHistoryFromStorage();
 
+      /*
       // If no real data exists, add some sample data for demonstration
       if (_allHistory.isEmpty) {
         _allHistory = _generateSampleData();
-      }
+      }*/
 
       // Extract available years and months
       _extractAvailableDates();
