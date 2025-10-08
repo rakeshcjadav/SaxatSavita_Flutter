@@ -5,6 +5,7 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
+import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 
 class Utils {
   static Color oppositeColor(Color color) {
@@ -68,6 +69,21 @@ class Utils {
   }
 
   static void updateKiranUserInfo(KiranUserInfo kiranUserInfo) {
+    // Update the KiranUserInfo in the service
+    final kiranService = KiranUserService();
+    final kiranList = kiranService.kiranUserInfoList;
+    final index = kiranList.indexWhere(
+      (k) => k.kiranIndex == kiranUserInfo.kiranIndex,
+    );
+    if (index >= 0) {
+      kiranList[index] = kiranUserInfo;
+      debugPrint('Updated KiranUserInfo for kiran ${kiranUserInfo.kiranIndex}');
+
+      // Sync to Firebase
+      KiranUserService().syncSingleToFirebase(kiranUserInfo);
+    }
+
+    // Also update BookUserInfo as before
     BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
       kiranUserInfo.partNumber,
     );

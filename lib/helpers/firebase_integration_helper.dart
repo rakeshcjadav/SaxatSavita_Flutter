@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
+import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 
 /// Integration helper for Firebase sync
 /// This shows how to integrate the Firebase sync service with your existing services
@@ -42,6 +44,19 @@ class FirebaseIntegrationHelper {
     await _firebaseSync.syncBookUserInfo(bookUserInfo);
   }
 
+  /// Auto-sync when kiran user info changes
+  Future<void> onKiranUserInfoChanged() async {
+    debugPrint('Kiran user info changed, syncing to Firebase...');
+    final kiranUserInfo = KiranUserService().kiranUserInfoList;
+    await _firebaseSync.syncKiranUserInfo(kiranUserInfo);
+  }
+
+  /// Auto-sync single kiran user info change (for efficiency)
+  Future<void> onSingleKiranUserInfoChanged(KiranUserInfo kiranUserInfo) async {
+    debugPrint('Single kiran user info changed, syncing to Firebase...');
+    await _firebaseSync.syncSingleKiranUserInfo(kiranUserInfo);
+  }
+
   /// Sync all data manually (e.g., on app start or login)
   Future<void> syncAllData() async {
     if (!_firebaseSync.isAuthenticated) {
@@ -58,6 +73,9 @@ class FirebaseIntegrationHelper {
       // Get current book user info
       final bookUserInfo = Bookservice().bookUserInfoList ?? [];
 
+      // Get current kiran user info
+      final kiranUserInfo = KiranUserService().kiranUserInfoList;
+
       // Get current reading history
       final readingHistory = await ReadingHistoryService.loadReadingHistory();
 
@@ -65,6 +83,7 @@ class FirebaseIntegrationHelper {
       await _firebaseSync.syncAllUserData(
         appSettings: currentSettings,
         bookUserInfo: bookUserInfo,
+        kiranUserInfo: kiranUserInfo,
         readingHistory: readingHistory,
       );
 
@@ -102,6 +121,15 @@ class FirebaseIntegrationHelper {
         debugPrint('Book user info loaded from Firebase');
       }
 
+      // Update kiran user info if available
+      if (data['kiranUserInfo'] != null &&
+          data['kiranUserInfo'] is List &&
+          data['kiranUserInfo'].isNotEmpty) {
+        final kiranUserInfoList = data['kiranUserInfo'] as List;
+        KiranUserService().insertKiranUserInfoList(kiranUserInfoList.cast());
+        debugPrint('Kiran user info loaded from Firebase');
+      }
+
       // Update reading history if available
       if (data['readingHistory'] != null) {
         final readingHistoryList = data['readingHistory'] as List;
@@ -132,5 +160,17 @@ class FirebaseIntegrationHelper {
 extension FirebaseSyncExtensions on Bookservice {
   Future<void> syncToFirebase() async {
     await FirebaseIntegrationHelper().onBookUserInfoChanged();
+  }
+}
+
+extension KiranFirebaseSyncExtensions on KiranUserService {
+  Future<void> syncToFirebase() async {
+    await FirebaseIntegrationHelper().onKiranUserInfoChanged();
+  }
+
+  Future<void> syncSingleToFirebase(KiranUserInfo kiranUserInfo) async {
+    await FirebaseIntegrationHelper().onSingleKiranUserInfoChanged(
+      kiranUserInfo,
+    );
   }
 }

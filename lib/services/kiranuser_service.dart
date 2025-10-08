@@ -7,6 +7,39 @@ class KiranUserService {
 
   List<KiranUserInfo> _kiranUserInfoList = [];
 
+  List<KiranUserInfo> get kiranUserInfoList {
+    if (_kiranUserInfoList.isEmpty) {
+      buildKiranUserInfoList();
+    }
+    return _kiranUserInfoList;
+  }
+
+  set kiranUserInfoList(List<KiranUserInfo> list) {
+    _kiranUserInfoList = list;
+  }
+
+  void insertKiranUserInfoList(List<KiranUserInfo> list) {
+    if (_kiranUserInfoList.isEmpty) {
+      _kiranUserInfoList = [];
+      buildKiranUserInfoList();
+    }
+    if (_kiranUserInfoList.isNotEmpty) {
+      // list is subset of existing list, so update existing entries
+      for (var newInfo in list) {
+        final index = _kiranUserInfoList.indexWhere(
+          (k) => k.kiranIndex == newInfo.kiranIndex,
+        );
+        if (index >= 0) {
+          _kiranUserInfoList[index] = newInfo;
+        } else {
+          _kiranUserInfoList.add(newInfo);
+        }
+      }
+    } else {
+      _kiranUserInfoList = list;
+    }
+  }
+
   KiranUserInfo getKiranUserInfo(int kiranIndex) {
     if (_kiranUserInfoList.isEmpty) {
       _kiranUserInfoList = [];
