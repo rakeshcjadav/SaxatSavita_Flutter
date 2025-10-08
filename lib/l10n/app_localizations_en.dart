@@ -440,4 +440,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get december => 'December';
+
+  @override
+  String get settings_saved => 'ettings saved successfully';
+
+  @override
+  String get changes_discarded => 'Changes discarded';
+
+  @override
+  String get unsaved_changes => 'Unsaved Changes';
+
+  @override
+  String get unsaved_changes_message =>
+      'You have unsaved changes. What would you like to do?';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get you_have_unsaved_changes => 'You have unsaved changes';
+
+  @override
+  String get discard_changes => 'Discard Changes';
+
+  @override
+  String get save_settings => 'Save Settings';
 }

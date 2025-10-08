@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -130,6 +131,7 @@ class _DrawerState extends State<MyDrawer> {
                           const Center(child: CircularProgressIndicator()),
                 );
 
+                await FirebaseIntegrationHelper().syncAllData();
                 // Sign out from Google
                 await GoogleSignIn.instance.signOut();
                 // Sign out from Firebase

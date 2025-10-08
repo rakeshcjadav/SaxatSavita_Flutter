@@ -895,6 +895,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'December'**
   String get december;
+
+  /// No description provided for @settings_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'ettings saved successfully'**
+  String get settings_saved;
+
+  /// No description provided for @changes_discarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes discarded'**
+  String get changes_discarded;
+
+  /// No description provided for @unsaved_changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved Changes'**
+  String get unsaved_changes;
+
+  /// No description provided for @unsaved_changes_message.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes. What would you like to do?'**
+  String get unsaved_changes_message;
+
+  /// No description provided for @discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discard;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @you_have_unsaved_changes.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes'**
+  String get you_have_unsaved_changes;
+
+  /// No description provided for @discard_changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes'**
+  String get discard_changes;
+
+  /// No description provided for @save_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get save_settings;
 }
 
 class _AppLocalizationsDelegate

@@ -238,5 +238,14 @@
     "september": "September",
     "october": "October",
     "november": "November",
-    "december": "December"
+    "december": "December",
+    "settings_saved": "ettings saved successfully",
+    "changes_discarded": "Changes discarded",
+    "unsaved_changes": "Unsaved Changes",
+    "unsaved_changes_message": "You have unsaved changes. What would you like to do?",
+    "discard": "Discard",
+    "save": "Save",
+    "you_have_unsaved_changes": "You have unsaved changes",
+    "discard_changes": "Discard Changes",
+    "save_settings": "Save Settings"
 }

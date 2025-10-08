@@ -1,29 +1,24 @@
 import 'dart:convert';
+import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 
 class ReadingHistoryService {
+  static final ReadingHistoryService _instance =
+      ReadingHistoryService._internal();
+  factory ReadingHistoryService() => _instance;
+  ReadingHistoryService._internal();
+
+  List<ReadingHistory> readingHistoryList = [];
+
   static const String _storageKey = 'reading_history';
   static const int _maxEntries = 1000;
 
   /// Save a reading history entry to SharedPreferences
   static Future<void> saveReadingHistory(ReadingHistory history) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final existingHistoryJson = prefs.getStringList(_storageKey) ?? [];
-
-      // Add new history entry
-      existingHistoryJson.add(jsonEncode(history.toJson()));
-
-      // Keep only last entries to prevent excessive storage usage
-      if (existingHistoryJson.length > _maxEntries) {
-        existingHistoryJson.removeRange(
-          0,
-          existingHistoryJson.length - _maxEntries,
-        );
-      }
-
-      await prefs.setStringList(_storageKey, existingHistoryJson);
+      ReadingHistoryService().readingHistoryList.add(history);
+      await FirebaseIntegrationHelper().onNewReadingHistoryAdded(history);
     } catch (e) {
       throw Exception('Error saving reading history: $e');
     }
@@ -32,36 +27,9 @@ class ReadingHistoryService {
   /// Load all reading history from SharedPreferences
   static Future<List<ReadingHistory>> loadReadingHistory() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final historyJsonList = prefs.getStringList(_storageKey) ?? [];
-
-      final history = <ReadingHistory>[];
-      for (final jsonString in historyJsonList) {
-        try {
-          final json = jsonDecode(jsonString) as Map<String, dynamic>;
-          history.add(ReadingHistory.fromJson(json));
-        } catch (e) {
-          // Skip invalid entries but don't fail the entire operation
-          continue;
-        }
-      }
-
-      // Sort by creation date (newest first)
-      history.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
-      return history;
+      return ReadingHistoryService().readingHistoryList;
     } catch (e) {
       throw Exception('Error loading reading history: $e');
-    }
-  }
-
-  /// Clear all reading history
-  static Future<void> clearReadingHistory() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_storageKey);
-    } catch (e) {
-      throw Exception('Error clearing reading history: $e');
     }
   }
 

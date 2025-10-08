@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 
 class GoogleSignInPage extends StatefulWidget {
   const GoogleSignInPage({super.key});
@@ -92,6 +93,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
 
         debugPrint('_handleAuthenticationEvent : Rounte : HomePage()');
 
+        Utils.loadUserdatafromFirebase();
         // Navigate after state is updated
         Navigator.pushReplacement(
           context,

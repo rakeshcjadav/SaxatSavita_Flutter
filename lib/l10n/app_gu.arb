@@ -238,5 +238,14 @@
     "september": "સપ્ટેમ્બર",
     "october": "ઓક્ટોબર",
     "november": "નવેમ્બર",
-    "december": "ડિસેમ્બર"
+    "december": "ડિસેમ્બર",
+    "settings_saved": "સેટિંગ્સ સફળતાપૂર્વક સેવ થયા.",
+    "changes_discarded": "બદલાવ રદ કરવામાં આવ્યા",
+    "unsaved_changes": "સેવ ન કરેલા બદલાવ",
+    "unsaved_changes_message": "તમારા પાસે સેવ ન કરેલા બદલાવ છે. તમે શું કરવા માંગો છો?",
+    "discard": "રદ કરો",
+    "save": "સેવ કરો",
+    "you_have_unsaved_changes": "તમારા પાસે સેવ ન કરેલા બદલાવ છે",
+    "discard_changes": "બદલાવ રદ કરો",
+    "save_settings": "સેટિંગ્સ સેવ કરો"
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -20,7 +21,7 @@ class _MyWidgetState extends State<SplashPage> {
   Future<void> _checkAuthAndNavigate() async {
     try {
       // Wait for a minimum splash display time
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 0));
 
       if (!mounted) return;
 
@@ -32,6 +33,8 @@ class _MyWidgetState extends State<SplashPage> {
         debugPrint("Photo URL: ${user.photoURL}");
 
         if (!mounted) return;
+
+        Utils.loadUserdatafromFirebase();
 
         await Navigator.pushReplacement(
           context,

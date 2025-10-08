@@ -442,4 +442,32 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get december => 'ડિસેમ્બર';
+
+  @override
+  String get settings_saved => 'સેટિંગ્સ સફળતાપૂર્વક સેવ થયા.';
+
+  @override
+  String get changes_discarded => 'બદલાવ રદ કરવામાં આવ્યા';
+
+  @override
+  String get unsaved_changes => 'સેવ ન કરેલા બદલાવ';
+
+  @override
+  String get unsaved_changes_message =>
+      'તમારા પાસે સેવ ન કરેલા બદલાવ છે. તમે શું કરવા માંગો છો?';
+
+  @override
+  String get discard => 'રદ કરો';
+
+  @override
+  String get save => 'સેવ કરો';
+
+  @override
+  String get you_have_unsaved_changes => 'તમારા પાસે સેવ ન કરેલા બદલાવ છે';
+
+  @override
+  String get discard_changes => 'બદલાવ રદ કરો';
+
+  @override
+  String get save_settings => 'સેટિંગ્સ સેવ કરો';
 }

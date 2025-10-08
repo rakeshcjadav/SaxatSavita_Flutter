@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
@@ -115,6 +117,17 @@ class Utils {
       debugPrint(
         'Bookmark removed as it was the last Kiran in Part ${bookUserInfo.partNumber}',
       );
+    }
+  }
+
+  static void loadUserdatafromFirebase() async {
+    // Check if user is already logged in
+    if (FirebaseAuth.instance.currentUser != null) {
+      // Load data from Firebase
+      await FirebaseIntegrationHelper().loadDataFromFirebase();
+
+      // Setup auto-sync
+      FirebaseIntegrationHelper().setupAutoSync();
     }
   }
 }
