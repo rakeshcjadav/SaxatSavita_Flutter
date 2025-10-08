@@ -47,23 +47,55 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
               width: double.infinity,
             ),
           ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 1.0),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.0),
+                ],
+              ),
+            ),
+            height: 200,
+            width: double.infinity,
+          ),
           SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    AppLocalizations.of(context)!.header_slok,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
-                      shadows: [
-                        Shadow(
-                          offset: Offset(1.0, 1.0),
-                          blurRadius: 3.0,
-                          color: Colors.black.withValues(alpha: 0.8),
-                        ),
+                  padding: EdgeInsets.only(bottom: 100),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 1.0),
+                        Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.0),
                       ],
+                    ),
+                  ),
+                  //color: Theme.of(
+                  //  context,
+                  //).colorScheme.primary.withValues(alpha: 1.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Center(
+                      child: Text(
+                        AppLocalizations.of(context)!.header_slok,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -106,14 +138,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         style: Theme.of(
                           context,
                         ).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.surfaceContainer,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(1.0, 1.0),
-                              blurRadius: 3.0,
-                              color: Colors.black.withValues(alpha: 0.8),
-                            ),
-                          ],
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
                     ),

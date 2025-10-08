@@ -50,22 +50,22 @@ class AppSettings {
 
   static DynamicSchemeVariant _parseThemeVariant(String? variant) {
     switch (variant) {
-      case 'content':
-        return DynamicSchemeVariant.content;
-      case 'monochrome':
-        return DynamicSchemeVariant.monochrome;
-      case 'neutral':
-        return DynamicSchemeVariant.neutral;
-      case 'tonalSpot':
-        return DynamicSchemeVariant.tonalSpot;
-      case 'vibrant':
-        return DynamicSchemeVariant.vibrant;
-      case 'expressive':
-        return DynamicSchemeVariant.expressive;
-      case 'fidelity':
-        return DynamicSchemeVariant.fidelity;
+      case 'fruitSalad':
+        return DynamicSchemeVariant.fruitSalad;
       case 'rainbow':
         return DynamicSchemeVariant.rainbow;
+      case 'content':
+        return DynamicSchemeVariant.content;
+      case 'expressive':
+        return DynamicSchemeVariant.expressive;
+      case 'vibrant':
+        return DynamicSchemeVariant.vibrant;
+      case 'neutral':
+        return DynamicSchemeVariant.neutral;
+      case 'monochrome':
+        return DynamicSchemeVariant.monochrome;
+      case 'fidelity':
+        return DynamicSchemeVariant.fidelity;
       default:
         return DynamicSchemeVariant.tonalSpot;
     }
