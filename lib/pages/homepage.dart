@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
-import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
