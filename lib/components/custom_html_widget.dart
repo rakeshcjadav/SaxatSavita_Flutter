@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/services/customtagregistry.dart';
-import 'package:saxatsavita_flutter/components/custom_text_selection_controls.dart';
 
 class CustomHtmlWidget extends StatefulWidget {
   CustomHtmlWidget({
@@ -46,14 +46,6 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
       valueListenable: appSettingsNotifier,
       builder: (context, settings, child) {
         return SelectionArea(
-          selectionControls: CustomTextSelectionControls(
-            hasAddNoteButton: widget.hasAddNoteButton,
-            onAddNote: () {
-              if (_selectedText.isNotEmpty) {
-                _handleAddNote(_selectedText);
-              }
-            },
-          ),
           onSelectionChanged: (selection) {
             if (selection != null) {
               _selectedText = selection.plainText;
@@ -61,6 +53,26 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
             } else {
               _selectedText = '';
             }
+          },
+          contextMenuBuilder: (
+            context,
+            SelectableRegionState selectableRegionState,
+          ) {
+            return AdaptiveTextSelectionToolbar.buttonItems(
+              anchors: selectableRegionState.contextMenuAnchors,
+              buttonItems: [
+                if (widget.hasAddNoteButton)
+                  ContextMenuButtonItem(
+                    onPressed: () {
+                      if (_selectedText.isNotEmpty) {
+                        _handleAddNote(_selectedText);
+                      }
+                    },
+                    label: AppLocalizations.of(context)!.add_notes,
+                  ),
+                ...selectableRegionState.contextMenuButtonItems,
+              ],
+            );
           },
           child: Html(
             data: htmlContent,

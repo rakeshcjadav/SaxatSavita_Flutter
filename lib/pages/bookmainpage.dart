@@ -122,6 +122,10 @@ class _BookmainpageState extends State<BookMainpage> {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
+          Text(
+            AppLocalizations.of(context)!.tag_line,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           Expanded(child: bookPartsWidget()),
         ],
       ),

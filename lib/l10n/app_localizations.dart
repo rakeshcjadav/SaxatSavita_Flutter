@@ -248,6 +248,12 @@ abstract class AppLocalizations {
   /// **'।। સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ।।'**
   String get kiran_start;
 
+  /// No description provided for @tag_line.
+  ///
+  /// In en, this message translates to:
+  /// **'।। વિચાર કરો તો ખબર પડે ।।'**
+  String get tag_line;
+
   /// No description provided for @kiran.
   ///
   /// In en, this message translates to:

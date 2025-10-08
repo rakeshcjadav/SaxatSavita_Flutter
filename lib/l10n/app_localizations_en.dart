@@ -84,6 +84,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kiran_start => '।। સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ।।';
 
   @override
+  String get tag_line => '।। વિચાર કરો તો ખબર પડે ।।';
+
+  @override
   String get kiran => 'Kiran';
 
   @override
