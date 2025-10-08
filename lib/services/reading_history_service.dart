@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 
 class ReadingHistoryService {
@@ -10,9 +8,6 @@ class ReadingHistoryService {
   ReadingHistoryService._internal();
 
   List<ReadingHistory> readingHistoryList = [];
-
-  static const String _storageKey = 'reading_history';
-  static const int _maxEntries = 1000;
 
   /// Save a reading history entry to SharedPreferences
   static Future<void> saveReadingHistory(ReadingHistory history) async {
