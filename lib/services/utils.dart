@@ -54,6 +54,8 @@ class Utils {
       // Set bookmark
       bookUserInfo.bookmarkKiranIndex = kiranUserInfo.kiranIndex;
       bookUserInfo.updatedAt = DateTime.now();
+
+      FirebaseIntegrationHelper().onBookUserInfoChanged(bookUserInfo);
     }
     Bookservice().bookUserInfoList = [
       ...?Bookservice().bookUserInfoList?.where(
@@ -109,6 +111,7 @@ class Utils {
     if (nextKiranIndex <= endKiranIndex) {
       bookUserInfo.bookmarkKiranIndex = nextKiranIndex;
       bookUserInfo.updatedAt = DateTime.now();
+      FirebaseIntegrationHelper().onBookUserInfoChanged(bookUserInfo);
       Bookservice().bookUserInfoList = [
         ...?Bookservice().bookUserInfoList?.where(
           (info) => info.partNumber != bookUserInfo.partNumber,
@@ -143,7 +146,7 @@ class Utils {
       await FirebaseIntegrationHelper().loadDataFromFirebase();
 
       // Setup auto-sync
-      FirebaseIntegrationHelper().setupAutoSync();
+      //FirebaseIntegrationHelper().setupAutoSync();
     }
   }
 }

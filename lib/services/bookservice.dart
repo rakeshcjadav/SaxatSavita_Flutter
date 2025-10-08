@@ -178,7 +178,7 @@ class Bookservice {
   }
 
   Future<String> readBook(String bookName) async {
-    debugPrint("Loading book parts for $bookName");
+    //debugPrint("Loading book parts for $bookName");
     final String filename = 'assets/book/$bookName.json';
 
     String jsondata;
@@ -201,6 +201,20 @@ class Bookservice {
     } catch (e) {
       debugPrint("Error loading meanings: $e");
       return null;
+    }
+  }
+
+  void insertBookUserInfoList(List<BookUserInfo> list) {
+    // list is subset of existing list, so update existing entries
+    for (var newInfo in list) {
+      var index = _bookUserInfoList!.indexWhere(
+        (info) => info.partNumber == newInfo.partNumber,
+      );
+      if (index != -1) {
+        _bookUserInfoList![index] = newInfo;
+      } else {
+        _bookUserInfoList!.add(newInfo);
+      }
     }
   }
 }

@@ -131,7 +131,6 @@ class _DrawerState extends State<MyDrawer> {
                           const Center(child: CircularProgressIndicator()),
                 );
 
-                await FirebaseIntegrationHelper().syncAllData();
                 // Sign out from Google
                 await GoogleSignIn.instance.signOut();
                 // Sign out from Firebase

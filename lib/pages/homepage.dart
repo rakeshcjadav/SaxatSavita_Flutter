@@ -27,13 +27,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) {
-      await FirebaseIntegrationHelper().syncAllData();
-    }
-  }
+  void didChangeAppLifecycleState(AppLifecycleState state) async {}
 
   @override
   Widget build(BuildContext context) {

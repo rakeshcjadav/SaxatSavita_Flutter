@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
@@ -37,11 +38,9 @@ class FirebaseIntegrationHelper {
     await _firebaseSync.addReadingHistory(history);
   }
 
-  /// Auto-sync when book user info changes
-  Future<void> onBookUserInfoChanged() async {
+  Future<void> onBookUserInfoChanged(BookUserInfo bookUserInfo) async {
     debugPrint('Book user info changed, syncing to Firebase...');
-    final bookUserInfo = Bookservice().bookUserInfoList ?? [];
-    await _firebaseSync.syncBookUserInfo(bookUserInfo);
+    await _firebaseSync.syncBookUserInfo([bookUserInfo]);
   }
 
   /// Auto-sync when kiran user info changes
@@ -117,7 +116,7 @@ class FirebaseIntegrationHelper {
           data['bookUserInfo'] is List &&
           data['bookUserInfo'].isNotEmpty) {
         final bookUserInfoList = data['bookUserInfo'] as List;
-        Bookservice().bookUserInfoList = bookUserInfoList.cast();
+        Bookservice().insertBookUserInfoList(bookUserInfoList.cast());
         debugPrint('Book user info loaded from Firebase');
       }
 
@@ -148,21 +147,15 @@ class FirebaseIntegrationHelper {
     debugPrint('Setting up automatic sync listeners...');
 
     // Listen to app settings changes
-    appSettingsNotifier.addListener(() {
-      onAppSettingsChanged(appSettingsNotifier.value);
-    });
+    // appSettingsNotifier.addListener(() {
+    //  onAppSettingsChanged(appSettingsNotifier.value);
+    //});
 
     debugPrint('Auto-sync listeners configured');
   }
 }
 
 /// Extension methods to add Firebase sync to existing services
-extension FirebaseSyncExtensions on Bookservice {
-  Future<void> syncToFirebase() async {
-    await FirebaseIntegrationHelper().onBookUserInfoChanged();
-  }
-}
-
 extension KiranFirebaseSyncExtensions on KiranUserService {
   Future<void> syncToFirebase() async {
     await FirebaseIntegrationHelper().onKiranUserInfoChanged();

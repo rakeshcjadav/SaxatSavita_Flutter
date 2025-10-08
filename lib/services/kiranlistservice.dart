@@ -33,7 +33,7 @@ class KiranListService {
   }
 
   Future<KiranList> loadKiranList(String bookName, String partNumber) async {
-    debugPrint("Loading book parts for $bookName - $partNumber");
+    //debugPrint("Loading book parts for $bookName - $partNumber");
     final String jsonString = await rootBundle.loadString(
       "assets/book/$bookName/$partNumber/_kirans_.json",
     );
