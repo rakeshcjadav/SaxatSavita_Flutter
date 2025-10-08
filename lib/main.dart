@@ -169,6 +169,11 @@ class SakshatSavitaApp extends StatelessWidget {
               ),
               elevation: 10,
             ),
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: colorScheme.primary,
+              selectionColor: Colors.amber.withValues(alpha: 0.5),
+              selectionHandleColor: Colors.amber,
+            ),
           ),
           home: const SplashPage(),
           routes: {

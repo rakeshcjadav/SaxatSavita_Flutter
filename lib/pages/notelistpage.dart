@@ -746,9 +746,26 @@ class _NoteListPageState extends State<NoteListPage> {
                           value: 'edit',
                           child: Row(
                             children: [
-                              Icon(Icons.edit, size: 20),
+                              Icon(
+                                Icons.edit,
+                                size: 18,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
+                              ),
                               SizedBox(width: 8),
-                              Text(AppLocalizations.of(context)!.editNote),
+                              Text(
+                                AppLocalizations.of(context)!.editNote,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleSmall!.copyWith(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimaryContainer,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -756,9 +773,26 @@ class _NoteListPageState extends State<NoteListPage> {
                           value: 'view_kiran',
                           child: Row(
                             children: [
-                              Icon(Icons.book_online, size: 20),
+                              Icon(
+                                Icons.book_online,
+                                size: 18,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
+                              ),
                               SizedBox(width: 8),
-                              Text(AppLocalizations.of(context)!.viewKiran),
+                              Text(
+                                AppLocalizations.of(context)!.viewKiran,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleSmall!.copyWith(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimaryContainer,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -766,11 +800,15 @@ class _NoteListPageState extends State<NoteListPage> {
                           value: 'delete',
                           child: Row(
                             children: [
-                              Icon(Icons.delete, size: 20, color: Colors.red),
+                              Icon(
+                                Icons.delete,
+                                size: 18,
+                                color: Colors.red.shade300,
+                              ),
                               SizedBox(width: 8),
                               Text(
                                 AppLocalizations.of(context)!.deleteNote,
-                                style: TextStyle(color: Colors.red),
+                                style: TextStyle(color: Colors.red.shade300),
                               ),
                             ],
                           ),
