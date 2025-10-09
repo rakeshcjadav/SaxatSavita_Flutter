@@ -1231,6 +1231,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} Kirans'**
   String kirans_target(int count);
+
+  /// No description provided for @create_plan_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Reading Plan'**
+  String get create_plan_title;
+
+  /// No description provided for @edit_plan_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Reading Plan'**
+  String get edit_plan_title;
+
+  /// No description provided for @basic_information.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Information'**
+  String get basic_information;
+
+  /// No description provided for @plan_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Title'**
+  String get plan_title;
+
+  /// No description provided for @plan_title_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Morning Spiritual Reading'**
+  String get plan_title_hint;
+
+  /// No description provided for @plan_title_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a title for your reading plan'**
+  String get plan_title_error;
+
+  /// No description provided for @description_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (Optional)'**
+  String get description_optional;
+
+  /// No description provided for @description_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief description of your reading plan'**
+  String get description_hint;
+
+  /// No description provided for @daily_goals.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Goals'**
+  String get daily_goals;
+
+  /// No description provided for @reading_time_goal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Time Goal'**
+  String get reading_time_goal;
+
+  /// No description provided for @create_plan_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get create_plan_minutes;
+
+  /// No description provided for @kirans_to_complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Kirans to Complete'**
+  String get kirans_to_complete;
+
+  /// No description provided for @daily_goals_recommendation.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended: Start with shorter goals and gradually increase'**
+  String get daily_goals_recommendation;
+
+  /// No description provided for @create_plan_reminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get create_plan_reminders;
+
+  /// No description provided for @enable_daily_reminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Daily Reminders'**
+  String get enable_daily_reminders;
+
+  /// No description provided for @reminder_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder Time'**
+  String get reminder_time;
+
+  /// Shows when daily reminder is set
+  ///
+  /// In en, this message translates to:
+  /// **'Daily reminder at {time}'**
+  String daily_reminder_at(String time);
+
+  /// No description provided for @plan_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Preview'**
+  String get plan_preview;
+
+  /// No description provided for @daily_reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Reading'**
+  String get daily_reading;
+
+  /// No description provided for @preview_kirans.
+  ///
+  /// In en, this message translates to:
+  /// **'Kirans'**
+  String get preview_kirans;
+
+  /// No description provided for @reminders_on.
+  ///
+  /// In en, this message translates to:
+  /// **'ON'**
+  String get reminders_on;
+
+  /// No description provided for @reminders_off.
+  ///
+  /// In en, this message translates to:
+  /// **'OFF'**
+  String get reminders_off;
+
+  /// Format for displaying minutes
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes'**
+  String minutes_format(int minutes);
+
+  /// No description provided for @create_plan_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get create_plan_cancel;
+
+  /// No description provided for @update_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Plan'**
+  String get update_plan;
+
+  /// No description provided for @create_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Plan'**
+  String get create_plan;
+
+  /// No description provided for @select_reminder_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Reminder Time'**
+  String get select_reminder_time;
+
+  /// No description provided for @time_picker_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get time_picker_cancel;
+
+  /// No description provided for @time_picker_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get time_picker_save;
+
+  /// No description provided for @plan_updated_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading plan updated successfully!'**
+  String get plan_updated_success;
+
+  /// No description provided for @plan_created_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading plan created successfully!'**
+  String get plan_created_success;
+
+  /// Error message when saving plan fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving plan: {error}'**
+  String plan_save_error(String error);
+
+  /// No description provided for @reminders_enabled_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified to maintain your reading habit'**
+  String get reminders_enabled_subtitle;
+
+  /// No description provided for @reminders_disabled_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No reminders will be sent'**
+  String get reminders_disabled_subtitle;
 }
 
 class _AppLocalizationsDelegate

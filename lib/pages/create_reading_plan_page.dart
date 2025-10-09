@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
@@ -65,24 +66,27 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
     return Scaffold(
       appBar: buildAppBar(
         context,
-        title: isEditing ? 'Edit Reading Plan' : 'Create Reading Plan',
+        title:
+            isEditing
+                ? AppLocalizations.of(context)!.edit_plan_title
+                : AppLocalizations.of(context)!.create_plan_title,
       ),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildBasicInfoSection(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
                 _buildGoalsSection(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
                 _buildRemindersSection(),
-                const SizedBox(height: 32),
+                const SizedBox(height: 8),
                 _buildPreviewSection(),
-                const SizedBox(height: 32),
+                const SizedBox(height: 8),
                 _buildActionButtons(isEditing),
               ],
             ),
@@ -100,22 +104,22 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Basic Information',
-              style: Theme.of(context).textTheme.titleLarge,
+              AppLocalizations.of(context)!.basic_information,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
 
             // Plan Title
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Plan Title',
-                hintText: 'e.g., Morning Spiritual Reading',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.plan_title,
+                hintText: AppLocalizations.of(context)!.plan_title_hint,
+                border: const OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Please enter a title for your reading plan';
+                  return AppLocalizations.of(context)!.plan_title_error;
                 }
                 return null;
               },
@@ -126,10 +130,10 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
             TextFormField(
               controller: _descriptionController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Description (Optional)',
-                hintText: 'Describe your reading goals and motivation...',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.description_optional,
+                hintText: AppLocalizations.of(context)!.description_hint,
+                border: const OutlineInputBorder(),
               ),
             ),
           ],
@@ -145,7 +149,10 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Daily Goals', style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              AppLocalizations.of(context)!.daily_goals,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 16),
 
             // Target Minutes
@@ -153,7 +160,7 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
               children: [
                 Expanded(
                   child: Text(
-                    'Reading Time Goal',
+                    AppLocalizations.of(context)!.reading_time_goal,
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
@@ -172,7 +179,6 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
                       icon: const Icon(Icons.remove),
                     ),
                     Container(
-                      width: 80,
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 12,
@@ -182,7 +188,7 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '${_targetSeconds ~/ 60} mins',
+                        '${_targetSeconds ~/ 60} ${AppLocalizations.of(context)!.create_plan_minutes}',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
@@ -210,7 +216,7 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
               children: [
                 Expanded(
                   child: Text(
-                    'Kirans to Complete',
+                    AppLocalizations.of(context)!.kirans_to_complete,
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
@@ -231,7 +237,6 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
                       icon: const Icon(Icons.remove),
                     ),
                     Container(
-                      width: 60,
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 12,
@@ -267,7 +272,7 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
 
             const SizedBox(height: 16),
             Text(
-              'Recommended: Start with shorter goals and gradually increase as you build the habit.',
+              AppLocalizations.of(context)!.daily_goals_recommendation,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey[600],
                 fontStyle: FontStyle.italic,
@@ -286,16 +291,19 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Reminders', style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              AppLocalizations.of(context)!.create_plan_reminders,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 16),
 
             // Enable Reminders Toggle
             SwitchListTile(
-              title: const Text('Enable Daily Reminders'),
+              title: Text(AppLocalizations.of(context)!.enable_daily_reminders),
               subtitle: Text(
                 _enableReminders
-                    ? 'Get notified to maintain your reading habit'
-                    : 'No reminders will be sent',
+                    ? AppLocalizations.of(context)!.reminders_enabled_subtitle
+                    : AppLocalizations.of(context)!.reminders_disabled_subtitle,
               ),
               value: _enableReminders,
               onChanged: (value) {
@@ -310,8 +318,12 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
 
               // Reminder Time
               ListTile(
-                title: const Text('Reminder Time'),
-                subtitle: Text('Daily reminder at ${_formatReminderTime()}'),
+                title: Text(AppLocalizations.of(context)!.reminder_time),
+                subtitle: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.daily_reminder_at(_formatReminderTime()),
+                ),
                 leading: const Icon(Icons.access_time),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: _selectReminderTime,
@@ -336,8 +348,8 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
                 Icon(Icons.visibility, color: Theme.of(context).primaryColor),
                 const SizedBox(width: 8),
                 Text(
-                  'Plan Preview',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  AppLocalizations.of(context)!.plan_preview,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
@@ -350,18 +362,23 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
               children: [
                 _buildPreviewItem(
                   icon: Icons.timer,
-                  value: '${_targetSeconds ~/ 60} minutes',
-                  label: 'Daily Reading',
+                  value: AppLocalizations.of(
+                    context,
+                  )!.minutes_format(_targetSeconds ~/ 60),
+                  label: AppLocalizations.of(context)!.daily_reading,
                 ),
                 _buildPreviewItem(
                   icon: Icons.book,
                   value: '$_targetKirans',
-                  label: 'Kirans',
+                  label: AppLocalizations.of(context)!.preview_kirans,
                 ),
                 _buildPreviewItem(
                   icon: Icons.notifications,
-                  value: _enableReminders ? 'ON' : 'OFF',
-                  label: 'Reminders',
+                  value:
+                      _enableReminders
+                          ? AppLocalizations.of(context)!.reminders_on
+                          : AppLocalizations.of(context)!.reminders_off,
+                  label: AppLocalizations.of(context)!.create_plan_reminders,
                 ),
               ],
             ),
@@ -373,7 +390,9 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
                   Icon(Icons.schedule, size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 8),
                   Text(
-                    'Daily reminder at ${_formatReminderTime()}',
+                    AppLocalizations.of(
+                      context,
+                    )!.daily_reminder_at(_formatReminderTime()),
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
@@ -414,7 +433,7 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
         Expanded(
           child: OutlinedButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.create_plan_cancel),
           ),
         ),
         const SizedBox(width: 16),
@@ -428,7 +447,11 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                    : Text(isEditing ? 'Update Plan' : 'Create Plan'),
+                    : Text(
+                      isEditing
+                          ? AppLocalizations.of(context)!.update_plan
+                          : AppLocalizations.of(context)!.create_plan,
+                    ),
           ),
         ),
       ],
@@ -447,9 +470,9 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay(hour: _reminderHour, minute: _reminderMinutes),
-      helpText: 'Select Reminder Time',
-      cancelText: 'Cancel',
-      confirmText: 'Save',
+      helpText: AppLocalizations.of(context)!.select_reminder_time,
+      cancelText: AppLocalizations.of(context)!.time_picker_cancel,
+      confirmText: AppLocalizations.of(context)!.time_picker_save,
     );
 
     if (picked != null) {
@@ -516,8 +539,8 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
           SnackBar(
             content: Text(
               widget.editingPlan != null
-                  ? 'Reading plan updated successfully!'
-                  : 'Reading plan created successfully!',
+                  ? AppLocalizations.of(context)!.plan_updated_success
+                  : AppLocalizations.of(context)!.plan_created_success,
             ),
           ),
         );
@@ -527,7 +550,9 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error saving plan: ${e.toString()}'),
+            content: Text(
+              AppLocalizations.of(context)!.plan_save_error(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );

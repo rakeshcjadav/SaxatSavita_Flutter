@@ -625,4 +625,114 @@ class AppLocalizationsEn extends AppLocalizations {
   String kirans_target(int count) {
     return '$count Kirans';
   }
+
+  @override
+  String get create_plan_title => 'Create Reading Plan';
+
+  @override
+  String get edit_plan_title => 'Edit Reading Plan';
+
+  @override
+  String get basic_information => 'Basic Information';
+
+  @override
+  String get plan_title => 'Plan Title';
+
+  @override
+  String get plan_title_hint => 'e.g., Morning Spiritual Reading';
+
+  @override
+  String get plan_title_error => 'Please enter a title for your reading plan';
+
+  @override
+  String get description_optional => 'Description (Optional)';
+
+  @override
+  String get description_hint => 'Brief description of your reading plan';
+
+  @override
+  String get daily_goals => 'Daily Goals';
+
+  @override
+  String get reading_time_goal => 'Reading Time Goal';
+
+  @override
+  String get create_plan_minutes => 'minutes';
+
+  @override
+  String get kirans_to_complete => 'Kirans to Complete';
+
+  @override
+  String get daily_goals_recommendation =>
+      'Recommended: Start with shorter goals and gradually increase';
+
+  @override
+  String get create_plan_reminders => 'Reminders';
+
+  @override
+  String get enable_daily_reminders => 'Enable Daily Reminders';
+
+  @override
+  String get reminder_time => 'Reminder Time';
+
+  @override
+  String daily_reminder_at(String time) {
+    return 'Daily reminder at $time';
+  }
+
+  @override
+  String get plan_preview => 'Plan Preview';
+
+  @override
+  String get daily_reading => 'Daily Reading';
+
+  @override
+  String get preview_kirans => 'Kirans';
+
+  @override
+  String get reminders_on => 'ON';
+
+  @override
+  String get reminders_off => 'OFF';
+
+  @override
+  String minutes_format(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String get create_plan_cancel => 'Cancel';
+
+  @override
+  String get update_plan => 'Update Plan';
+
+  @override
+  String get create_plan => 'Create Plan';
+
+  @override
+  String get select_reminder_time => 'Select Reminder Time';
+
+  @override
+  String get time_picker_cancel => 'Cancel';
+
+  @override
+  String get time_picker_save => 'Save';
+
+  @override
+  String get plan_updated_success => 'Reading plan updated successfully!';
+
+  @override
+  String get plan_created_success => 'Reading plan created successfully!';
+
+  @override
+  String plan_save_error(String error) {
+    return 'Error saving plan: $error';
+  }
+
+  @override
+  String get reminders_enabled_subtitle =>
+      'Get notified to maintain your reading habit';
+
+  @override
+  String get reminders_disabled_subtitle => 'No reminders will be sent';
 }

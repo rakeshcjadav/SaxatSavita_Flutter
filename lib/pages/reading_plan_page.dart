@@ -217,7 +217,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                 const SizedBox(width: 8),
                 Text(
                   AppLocalizations.of(context)!.quick_actions,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
@@ -304,7 +304,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                 const SizedBox(width: 8),
                 Text(
                   AppLocalizations.of(context)!.your_statistics,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
@@ -504,7 +504,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
           children: [
             Text(
               AppLocalizations.of(context)!.last_30_days_progress,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
             Container(
@@ -550,7 +550,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
           children: [
             Text(
               AppLocalizations.of(context)!.progress_calendar,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
             GridView.builder(

@@ -251,7 +251,7 @@
     
     "reading_plans": "વાંચન યોજનાઓ",
     "reading_plans_today": "આજે",
-    "reading_plans_my_plans": "મારી યોજનાઓ",
+    "reading_plans_my_plans": "યોજનાઓ",
     "reading_plans_progress": "પ્રગતિ",
     "today_goal_achieved": "આજનું લક્ષ્ય પૂર્ણ થયું!",
     "today_progress": "આજની પ્રગતિ",
@@ -343,5 +343,63 @@
                 "type": "int"
             }
         }
-    }
+    },
+    "create_plan_title": "વાંચન યોજના બનાવો",
+    "edit_plan_title": "વાંચન યોજના સંપાદિત કરો",
+    "basic_information": "મૂળભૂત માહિતી",
+    "plan_title": "યોજનાનું શીર્ષક",
+    "plan_title_hint": "જેમ કે, સવારનું આધ્યાત્મિક વાંચન",
+    "plan_title_error": "કૃપા કરીને તમારી યોજના માટે એક શીર્ષક દાખલ કરો",
+    "description_optional": "વર્ણન (વૈકલ્પિક)",
+    "description_hint": "તમારી વાંચન યોજનાનું ટૂંકું વર્ણન",
+    "daily_goals": "દૈનિક લક્ષ્યો",
+    "reading_time_goal": "વાંચન સમયનું લક્ષ્ય",
+    "create_plan_minutes": "મિનિટ",
+    "kirans_to_complete": "પૂર્ણ કરવાના કિરણો",
+    "daily_goals_recommendation": "ભલામણ: ટૂંકા લક્ષ્યોથી શરૂ કરો અને ધીમે ધીમે વધારો",
+    "create_plan_reminders": "રિમાઇન્ડર",
+    "enable_daily_reminders": "દૈનિક રિમાઇન્ડર ચાલુ/બંધ કરો",
+    "reminder_time": "રિમાઇન્ડર સમય",
+    "daily_reminder_at": "દરરોજ {time} વાગ્યે રિમાઇન્ડર",
+    "@daily_reminder_at": {
+        "description": "Shows when daily reminder is set",
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "plan_preview": "યોજનાનું પૂર્વાવલોકન",
+    "daily_reading": "દૈનિક વાંચન",
+    "preview_kirans": "કિરણો",
+    "reminders_on": "ચાલુ",
+    "reminders_off": "બંધ",
+    "minutes_format": "{minutes} મિનિટ",
+    "@minutes_format": {
+        "description": "Format for displaying minutes",
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "create_plan_cancel": "રદ કરો",
+    "update_plan": "યોજના અપડેટ કરો",
+    "create_plan": "યોજના બનાવો",
+    "select_reminder_time": "રિમાઇન્ડર સમય પસંદ કરો",
+    "time_picker_cancel": "રદ કરો",
+    "time_picker_save": "સેવ કરો",
+    "plan_updated_success": "વાંચન યોજના સફળતાપૂર્વક અપડેટ કરવામાં આવી!",
+    "plan_created_success": "વાંચન યોજના સફળતાપૂર્વક બનાવવામાં આવી!",
+    "plan_save_error": "યોજના સેવ કરવામાં ભૂલ: {error}",
+    "@plan_save_error": {
+        "description": "Error message when saving plan fails",
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "reminders_enabled_subtitle": "તમારી વાંચનની આદત જાળવવા માટે નોટિફિકેશન મેળવો",
+    "reminders_disabled_subtitle": "કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં"
 }

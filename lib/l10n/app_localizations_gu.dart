@@ -478,7 +478,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get reading_plans_today => 'આજે';
 
   @override
-  String get reading_plans_my_plans => 'મારી યોજનાઓ';
+  String get reading_plans_my_plans => 'યોજનાઓ';
 
   @override
   String get reading_plans_progress => 'પ્રગતિ';
@@ -628,4 +628,116 @@ class AppLocalizationsGu extends AppLocalizations {
   String kirans_target(int count) {
     return '$count કિરણો';
   }
+
+  @override
+  String get create_plan_title => 'વાંચન યોજના બનાવો';
+
+  @override
+  String get edit_plan_title => 'વાંચન યોજના સંપાદિત કરો';
+
+  @override
+  String get basic_information => 'મૂળભૂત માહિતી';
+
+  @override
+  String get plan_title => 'યોજનાનું શીર્ષક';
+
+  @override
+  String get plan_title_hint => 'જેમ કે, સવારનું આધ્યાત્મિક વાંચન';
+
+  @override
+  String get plan_title_error =>
+      'કૃપા કરીને તમારી યોજના માટે એક શીર્ષક દાખલ કરો';
+
+  @override
+  String get description_optional => 'વર્ણન (વૈકલ્પિક)';
+
+  @override
+  String get description_hint => 'તમારી વાંચન યોજનાનું ટૂંકું વર્ણન';
+
+  @override
+  String get daily_goals => 'દૈનિક લક્ષ્યો';
+
+  @override
+  String get reading_time_goal => 'વાંચન સમયનું લક્ષ્ય';
+
+  @override
+  String get create_plan_minutes => 'મિનિટ';
+
+  @override
+  String get kirans_to_complete => 'પૂર્ણ કરવાના કિરણો';
+
+  @override
+  String get daily_goals_recommendation =>
+      'ભલામણ: ટૂંકા લક્ષ્યોથી શરૂ કરો અને ધીમે ધીમે વધારો';
+
+  @override
+  String get create_plan_reminders => 'રિમાઇન્ડર';
+
+  @override
+  String get enable_daily_reminders => 'દૈનિક રિમાઇન્ડર ચાલુ/બંધ કરો';
+
+  @override
+  String get reminder_time => 'રિમાઇન્ડર સમય';
+
+  @override
+  String daily_reminder_at(String time) {
+    return 'દરરોજ $time વાગ્યે રિમાઇન્ડર';
+  }
+
+  @override
+  String get plan_preview => 'યોજનાનું પૂર્વાવલોકન';
+
+  @override
+  String get daily_reading => 'દૈનિક વાંચન';
+
+  @override
+  String get preview_kirans => 'કિરણો';
+
+  @override
+  String get reminders_on => 'ચાલુ';
+
+  @override
+  String get reminders_off => 'બંધ';
+
+  @override
+  String minutes_format(int minutes) {
+    return '$minutes મિનિટ';
+  }
+
+  @override
+  String get create_plan_cancel => 'રદ કરો';
+
+  @override
+  String get update_plan => 'યોજના અપડેટ કરો';
+
+  @override
+  String get create_plan => 'યોજના બનાવો';
+
+  @override
+  String get select_reminder_time => 'રિમાઇન્ડર સમય પસંદ કરો';
+
+  @override
+  String get time_picker_cancel => 'રદ કરો';
+
+  @override
+  String get time_picker_save => 'સેવ કરો';
+
+  @override
+  String get plan_updated_success =>
+      'વાંચન યોજના સફળતાપૂર્વક અપડેટ કરવામાં આવી!';
+
+  @override
+  String get plan_created_success => 'વાંચન યોજના સફળતાપૂર્વક બનાવવામાં આવી!';
+
+  @override
+  String plan_save_error(String error) {
+    return 'યોજના સેવ કરવામાં ભૂલ: $error';
+  }
+
+  @override
+  String get reminders_enabled_subtitle =>
+      'તમારી વાંચનની આદત જાળવવા માટે નોટિફિકેશન મેળવો';
+
+  @override
+  String get reminders_disabled_subtitle => 'કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં';
 }

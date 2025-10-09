@@ -343,5 +343,63 @@
                 "type": "int"
             }
         }
-    }
+    },
+    "create_plan_title": "Create Reading Plan",
+    "edit_plan_title": "Edit Reading Plan",
+    "basic_information": "Basic Information",
+    "plan_title": "Plan Title",
+    "plan_title_hint": "e.g., Morning Spiritual Reading",
+    "plan_title_error": "Please enter a title for your reading plan",
+    "description_optional": "Description (Optional)",
+    "description_hint": "Brief description of your reading plan",
+    "daily_goals": "Daily Goals",
+    "reading_time_goal": "Reading Time Goal",
+    "create_plan_minutes": "minutes",
+    "kirans_to_complete": "Kirans to Complete",
+    "daily_goals_recommendation": "Recommended: Start with shorter goals and gradually increase",
+    "create_plan_reminders": "Reminders",
+    "enable_daily_reminders": "Enable Daily Reminders",
+    "reminder_time": "Reminder Time",
+    "daily_reminder_at": "Daily reminder at {time}",
+    "@daily_reminder_at": {
+        "description": "Shows when daily reminder is set",
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "plan_preview": "Plan Preview",
+    "daily_reading": "Daily Reading",
+    "preview_kirans": "Kirans",
+    "reminders_on": "ON",
+    "reminders_off": "OFF",
+    "minutes_format": "{minutes} minutes",
+    "@minutes_format": {
+        "description": "Format for displaying minutes",
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "create_plan_cancel": "Cancel",
+    "update_plan": "Update Plan",
+    "create_plan": "Create Plan",
+    "select_reminder_time": "Select Reminder Time",
+    "time_picker_cancel": "Cancel",
+    "time_picker_save": "Save",
+    "plan_updated_success": "Reading plan updated successfully!",
+    "plan_created_success": "Reading plan created successfully!",
+    "plan_save_error": "Error saving plan: {error}",
+    "@plan_save_error": {
+        "description": "Error message when saving plan fails",
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "reminders_enabled_subtitle": "Get notified to maintain your reading habit",
+    "reminders_disabled_subtitle": "No reminders will be sent"
 }
