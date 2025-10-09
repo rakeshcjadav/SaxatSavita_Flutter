@@ -170,7 +170,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${plan.todayProgress ~/ 60}m:${plan.todayProgress % 60}s/${plan.targetSeconds ~/ 60} minutes',
+                      '${plan.todayProgress ~/ 60}m:${plan.todayProgress % 60}s/${plan.targetSeconds ~/ 60} ${AppLocalizations.of(context)!.minutes}',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Text(
@@ -183,7 +183,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '${plan.todayKirans.length}/${plan.targetKirans} Kirans',
+                      '${plan.todayKirans.length}/${plan.targetKirans} ${AppLocalizations.of(context)!.kirans}',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Text(
@@ -438,7 +438,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
             Text(plan.description),
             const SizedBox(height: 4),
             Text(
-              '${plan.targetSeconds ~/ 60} min/day • ${plan.targetKirans} Kirans • ${plan.streakDays} day streak',
+              '• ${AppLocalizations.of(context)!.min_per_day(plan.targetSeconds ~/ 60)}\n• ${plan.targetKirans} ${AppLocalizations.of(context)!.kirans}\n• ${AppLocalizations.of(context)!.day_streak(plan.streakDays)}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -449,21 +449,37 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
               (context) => [
                 PopupMenuItem(
                   value: 'activate',
+                  enabled: !isActive,
                   child: Text(
                     isActive
                         ? AppLocalizations.of(context)!.already_active
                         : AppLocalizations.of(context)!.set_as_active,
+                    style:
+                        isActive
+                            ? TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onPrimary.withValues(alpha: 0.5),
+                            )
+                            : TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
                   ),
-                  enabled: !isActive,
                 ),
                 PopupMenuItem(
                   value: 'edit',
-                  child: Text(AppLocalizations.of(context)!.reading_plans_edit),
+                  child: Text(
+                    AppLocalizations.of(context)!.reading_plans_edit,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
                 ),
                 PopupMenuItem(
                   value: 'delete',
                   child: Text(
                     AppLocalizations.of(context)!.reading_plans_delete,
+                    style: TextStyle(color: Colors.red.shade300),
                   ),
                 ),
               ],
@@ -779,9 +795,68 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
   }
 
   void _testReminder() async {
+    // Show both test notifications - one regular and one with sound test
+    await _notificationService.testNotificationSound();
     await _notificationService.showReadingSuggestion();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.test_reminder_sent)),
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.test_reminder_sent),
+          action: SnackBarAction(
+            label: 'Check Sound',
+            onPressed: () => _showSoundTroubleshootingDialog(),
+          ),
+        ),
+      );
+    }
+  }
+
+  void _showSoundTroubleshootingDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('🔊 Notification Sound Troubleshooting'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('If you can\'t hear notification sounds, try:'),
+                const SizedBox(height: 12),
+                const Text(
+                  '• Check if your device is not in silent/vibrate mode',
+                ),
+                const Text('• Increase notification volume in system settings'),
+                const Text(
+                  '• Go to Android Settings > Apps > Saxat Savita > Notifications',
+                ),
+                const Text(
+                  '• Ensure "Reading Reminders" channel has sound enabled',
+                ),
+                const Text(
+                  '• Check "Do Not Disturb" mode is not blocking notifications',
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'The app just sent test notifications with sound enabled.',
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Got it'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await _notificationService.testNotificationSound();
+                },
+                child: const Text('Test Again'),
+              ),
+            ],
+          ),
     );
   }
 }

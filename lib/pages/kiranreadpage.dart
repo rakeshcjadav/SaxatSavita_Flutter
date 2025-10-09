@@ -470,11 +470,14 @@ class _KiranReadPageState extends State<KiranReadPage>
                     _searchController.clear();
                     _searchMatches.clear();
                     _currentMatchIndex = -1;
+                    _resumeTimer();
                   } else {
                     // Auto-focus search input when opening
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       _searchFocusNode.requestFocus();
                     });
+                    _pauseTimer();
+                    _stopAutoScroll();
                   }
                 });
               },

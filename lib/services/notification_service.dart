@@ -1,9 +1,20 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+
+/// NotificationService handles all notification functionality including sound playback
+///
+/// For Android notification sounds to work properly, ensure:
+/// 1. AndroidManifest.xml has required permissions (POST_NOTIFICATIONS, VIBRATE, etc.)
+/// 2. Notification channels are created with playSound: true
+/// 3. Individual notifications have playSound: true in AndroidNotificationDetails
+/// 4. Device is not in silent/DND mode
+/// 5. App has notification permissions granted
+/// 6. Notification volume is not muted in system settings
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -26,6 +37,7 @@ class NotificationService {
     try {
       // Initialize timezone data
       tz.initializeTimeZones();
+      debugPrint('📍 Timezone initialized');
 
       // Android initialization
       const AndroidInitializationSettings initializationSettingsAndroid =
@@ -45,23 +57,31 @@ class NotificationService {
             iOS: initializationSettingsIOS,
           );
 
-      await _flutterLocalNotificationsPlugin.initialize(
+      final initialized = await _flutterLocalNotificationsPlugin.initialize(
         initializationSettings,
         onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
       );
+      debugPrint('📍 Flutter notifications initialized: $initialized');
 
       // Create notification channels for Android
       if (Platform.isAndroid) {
         await _createNotificationChannels();
+        debugPrint('📍 Android notification channels created');
       }
 
       // Request permissions
-      await _requestPermissions();
+      final hasPermissions = await _requestPermissions();
+      debugPrint('📍 Permissions granted: $hasPermissions');
+
+      // Check current notification status
+      final enabled = await areNotificationsEnabled();
+      debugPrint('📍 Notifications enabled: $enabled');
 
       _isInitialized = true;
-      debugPrint('✅ Notification service initialized');
-    } catch (e) {
+      debugPrint('✅ Notification service initialized successfully');
+    } catch (e, stackTrace) {
       debugPrint('❌ Failed to initialize notifications: $e');
+      debugPrint('❌ Stack trace: $stackTrace');
     }
   }
 
@@ -76,50 +96,61 @@ class NotificationService {
     if (androidPlugin != null) {
       // Reading reminder channel
       await androidPlugin.createNotificationChannel(
-        const AndroidNotificationChannel(
+        AndroidNotificationChannel(
           _readingReminderChannelId,
           'Reading Reminders',
           description: 'Daily reading plan reminders',
           importance: Importance.high,
           enableVibration: true,
           playSound: true,
+          showBadge: true,
+          enableLights: true,
+          ledColor: Colors.blue,
         ),
       );
 
       // Goal achieved channel
       await androidPlugin.createNotificationChannel(
-        const AndroidNotificationChannel(
+        AndroidNotificationChannel(
           _goalAchievedChannelId,
           'Goal Achievements',
           description: 'Notifications for achieved reading goals',
           importance: Importance.high,
           enableVibration: true,
           playSound: true,
+          showBadge: true,
+          enableLights: true,
+          ledColor: Colors.green,
         ),
       );
 
       // Motivation channel
       await androidPlugin.createNotificationChannel(
-        const AndroidNotificationChannel(
+        AndroidNotificationChannel(
           _motivationChannelId,
           'Motivation',
           description: 'Motivational reading messages',
           importance: Importance.defaultImportance,
-          enableVibration: false,
-          playSound: false,
+          enableVibration: true,
+          playSound: true,
+          showBadge: false,
+          enableLights: true,
+          ledColor: Colors.orange,
         ),
       );
     }
   }
 
   /// Request notification permissions
-  Future<void> _requestPermissions() async {
+  Future<bool> _requestPermissions() async {
     if (Platform.isIOS || Platform.isMacOS) {
-      await _flutterLocalNotificationsPlugin
+      final result = await _flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin
           >()
           ?.requestPermissions(alert: true, badge: true, sound: true);
+      debugPrint('📱 iOS notification permissions: $result');
+      return result ?? false;
     } else if (Platform.isAndroid) {
       final androidImplementation =
           _flutterLocalNotificationsPlugin
@@ -127,9 +158,32 @@ class NotificationService {
                 AndroidFlutterLocalNotificationsPlugin
               >();
 
-      await androidImplementation?.requestExactAlarmsPermission();
-      await androidImplementation?.requestNotificationsPermission();
+      // Request notification permission (Android 13+)
+      final notificationResult =
+          await androidImplementation?.requestNotificationsPermission();
+      debugPrint('📱 Android notification permission: $notificationResult');
+
+      // Request exact alarms permission
+      final alarmResult =
+          await androidImplementation?.requestExactAlarmsPermission();
+      debugPrint('📱 Android exact alarms permission: $alarmResult');
+
+      return notificationResult ?? false;
     }
+    return true;
+  }
+
+  /// Check if notifications are enabled
+  Future<bool> areNotificationsEnabled() async {
+    if (Platform.isAndroid) {
+      final androidImplementation =
+          _flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
+      return await androidImplementation?.areNotificationsEnabled() ?? false;
+    }
+    return true;
   }
 
   /// Schedule reading plan reminder notifications
@@ -189,6 +243,16 @@ class NotificationService {
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
           largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+          ledColor: Colors.blue,
+          ledOnMs: 1000,
+          ledOffMs: 500,
+          showWhen: true,
+          when: DateTime.now().millisecondsSinceEpoch,
+          usesChronometer: false,
+          fullScreenIntent: true,
           actions: [
             const AndroidNotificationAction(
               'read_now',
@@ -267,7 +331,17 @@ class NotificationService {
             largeIcon: const DrawableResourceAndroidBitmap(
               '@mipmap/ic_launcher',
             ),
-            styleInformation: const BigTextStyleInformation(''),
+            styleInformation: BigTextStyleInformation(
+              body,
+              contentTitle: title,
+            ),
+            playSound: true,
+            enableVibration: true,
+            enableLights: true,
+            ledColor: Colors.green,
+            ledOnMs: 1000,
+            ledOffMs: 500,
+            showWhen: true,
           ),
           iOS: const DarwinNotificationDetails(
             presentAlert: true,
@@ -339,9 +413,15 @@ class NotificationService {
             _motivationChannelId,
             'Motivation',
             channelDescription: 'Motivational reading messages',
-            importance: Importance.defaultImportance,
-            priority: Priority.defaultPriority,
+            importance: Importance.high,
+            priority: Priority.high,
             icon: '@mipmap/ic_launcher',
+            playSound: true,
+            enableVibration: true,
+            enableLights: true,
+            ledColor: Colors.orange,
+            ledOnMs: 500,
+            ledOffMs: 500,
           ),
           iOS: const DarwinNotificationDetails(
             presentAlert: true,
@@ -368,6 +448,44 @@ class NotificationService {
     }
   }
 
+  /// Test notification with sound (for debugging)
+  Future<void> testNotificationSound() async {
+    if (!_isInitialized) await initialize();
+
+    await _flutterLocalNotificationsPlugin.show(
+      99999, // Test notification ID
+      "🔊 Test Notification Sound",
+      "If you can hear this notification sound, audio is working correctly!",
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _readingReminderChannelId,
+          'Reading Reminders',
+          channelDescription: 'Test notification sound',
+          importance: Importance.max,
+          priority: Priority.max,
+          icon: '@mipmap/ic_launcher',
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+          ledColor: Colors.red,
+          ledOnMs: 1000,
+          ledOffMs: 500,
+          showWhen: true,
+          ticker: 'Test notification sound',
+          autoCancel: true,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          interruptionLevel: InterruptionLevel.critical,
+        ),
+      ),
+    );
+
+    debugPrint('🔊 Test notification with sound sent');
+  }
+
   /// Show immediate reading suggestion notification
   Future<void> showReadingSuggestion() async {
     if (!_isInitialized) await initialize();
@@ -392,14 +510,20 @@ class NotificationService {
           _motivationChannelId,
           'Motivation',
           channelDescription: 'Motivational reading messages',
-          importance: Importance.low,
-          priority: Priority.low,
+          importance: Importance.high,
+          priority: Priority.high,
           icon: '@mipmap/ic_launcher',
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+          ledColor: Colors.orange,
+          ledOnMs: 500,
+          ledOffMs: 500,
         ),
         iOS: const DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: false,
-          presentSound: false,
+          presentSound: true,
         ),
       ),
     );
@@ -459,18 +583,5 @@ class NotificationService {
     debugPrint(
       '⏰ Scheduled remind later notification for ${remindTime.toString()}',
     );
-  }
-
-  /// Check if notifications are enabled
-  Future<bool> areNotificationsEnabled() async {
-    if (Platform.isAndroid) {
-      final androidImplementation =
-          _flutterLocalNotificationsPlugin
-              .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin
-              >();
-      return await androidImplementation?.areNotificationsEnabled() ?? false;
-    }
-    return true; // iOS permissions are handled differently
   }
 }
