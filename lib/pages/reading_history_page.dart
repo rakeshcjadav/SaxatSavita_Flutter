@@ -69,7 +69,28 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
   // Load actual reading history from SharedPreferences
   Future<List<ReadingHistory>> _loadReadingHistoryFromStorage() async {
     try {
-      return await ReadingHistoryService.loadReadingHistory();
+      final history = await ReadingHistoryService.loadReadingHistory();
+
+      // Debug: Print date information for timezone troubleshooting
+      if (history.isNotEmpty) {
+        debugPrint('📅 Loading ${history.length} history items');
+        for (int i = 0; i < history.length && i < 3; i++) {
+          final item = history[i];
+          debugPrint(
+            '📅 Item $i: createdAt=${item.createdAt}, formattedDate="${item.formattedDate}"',
+          );
+        }
+
+        // Check for grouping
+        final grouped = <String, int>{};
+        for (final item in history) {
+          final key = item.formattedDate;
+          grouped[key] = (grouped[key] ?? 0) + 1;
+        }
+        debugPrint('📅 Grouped by date: $grouped');
+      }
+
+      return history;
     } catch (e) {
       debugPrint('Error loading reading history: $e');
       return [];
@@ -147,12 +168,21 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
   Map<String, List<ReadingHistory>> _groupHistoryByDate() {
     final Map<String, List<ReadingHistory>> grouped = {};
 
-    for (final history in _filteredHistory) {
+    // Sort history by date (newest first)
+    final sortedHistory = List<ReadingHistory>.from(_filteredHistory)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    for (final history in sortedHistory) {
       final key = history.formattedDate;
       if (!grouped.containsKey(key)) {
         grouped[key] = [];
       }
       grouped[key]!.add(history);
+    }
+
+    // Sort each group by time (newest first within each day)
+    for (final key in grouped.keys) {
+      grouped[key]!.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     }
 
     return grouped;

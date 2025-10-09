@@ -233,7 +233,7 @@ class _KiranReadPageState extends State<KiranReadPage>
             // Update periodically, not on every scroll event for performance
             if (currentProgress % 5 == 0) {
               // Update every 5% progress
-              Utils.updateKiranUserInfo(widget.kiranUserInfo);
+              //Utils.updateKiranUserInfo(widget.kiranUserInfo);
               _hasDataChanged = true;
             }
           }

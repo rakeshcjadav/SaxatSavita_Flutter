@@ -449,132 +449,135 @@ class _NoteListPageState extends State<NoteListPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Search Bar
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            color: Theme.of(context).colorScheme.surfaceContainer,
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.searchNotesHint,
-                prefixIcon: Icon(Icons.search),
-                suffixIcon:
-                    _searchController.text.isNotEmpty
-                        ? IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                          },
-                        )
-                        : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surface,
-              ),
-            ),
-          ),
-
-          // Filters Section
-          if (_showFilters) ...[
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Search Bar
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainer,
-                border: Border(
-                  bottom: BorderSide(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.outline.withValues(alpha: 0.2),
-                  ),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.book, size: 16),
-                      SizedBox(width: 8),
-                      Text(
-                        AppLocalizations.of(context)!.bookParts,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children:
-                        [1, 2, 3, 4, 5].map((partNumber) {
-                          final isSelected = _selectedParts.contains(
-                            partNumber,
-                          );
-                          return FilterChip(
-                            selected: isSelected,
-                            onSelected: (_) => _togglePartFilter(partNumber),
-                            label: Text(
-                              Bookservice().getPartTitle(context, partNumber),
-                            ),
-                            labelStyle: Theme.of(context).textTheme.bodySmall,
-                            avatar:
-                                isSelected
-                                    ? Icon(Icons.check, size: 16)
-                                    : Icon(Icons.book, size: 16),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            selectedColor:
-                                Theme.of(context).colorScheme.primaryContainer,
-                          );
-                        }).toList(),
-                  ),
-                ],
-              ),
-            ),
-          ],
-
-          // Notes Count Header
-          if (!_isLoading) ...[
-            Container(
-              width: double.infinity,
               padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Text(
-                    AppLocalizations.of(
-                      context,
-                    )!.notesCount(_filteredNotes.length, _allNotes.length),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.searchNotesHint,
+                  prefixIcon: Icon(Icons.search),
+                  suffixIcon:
+                      _searchController.text.isNotEmpty
+                          ? IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                            },
+                          )
+                          : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
-                  Spacer(),
-                  if (_filteredNotes.isNotEmpty) ...[
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                ),
+              ),
+            ),
+
+            // Filters Section
+            if (_showFilters) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outline.withValues(alpha: 0.2),
+                    ),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.book, size: 16),
+                        SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.bookParts,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children:
+                          [1, 2, 3, 4, 5].map((partNumber) {
+                            final isSelected = _selectedParts.contains(
+                              partNumber,
+                            );
+                            return FilterChip(
+                              selected: isSelected,
+                              onSelected: (_) => _togglePartFilter(partNumber),
+                              label: Text(
+                                Bookservice().getPartTitle(context, partNumber),
+                              ),
+                              labelStyle: Theme.of(context).textTheme.bodySmall,
+                              avatar:
+                                  isSelected
+                                      ? Icon(Icons.check, size: 16)
+                                      : Icon(Icons.book, size: 16),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.surface,
+                              selectedColor:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer,
+                            );
+                          }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            // Notes Count Header
+            if (!_isLoading) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
                     Text(
-                      _getSortDescription(),
+                      AppLocalizations.of(
+                        context,
+                      )!.notesCount(_filteredNotes.length, _allNotes.length),
                       style: Theme.of(
                         context,
                       ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                     ),
+                    Spacer(),
+                    if (_filteredNotes.isNotEmpty) ...[
+                      Text(
+                        _getSortDescription(),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
 
-          // Notes List
-          Expanded(child: _buildNotesList()),
-        ],
+            // Notes List
+            Expanded(child: _buildNotesList()),
+          ],
+        ),
       ),
     );
   }

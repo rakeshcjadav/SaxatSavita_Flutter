@@ -112,11 +112,6 @@ class _DrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person),
-            title: Text(AppLocalizations.of(context)!.profile),
-            onTap: () {},
-          ),
-          ListTile(
             leading: const Icon(Icons.settings),
             title: Text(AppLocalizations.of(context)!.settings),
             onTap: () {

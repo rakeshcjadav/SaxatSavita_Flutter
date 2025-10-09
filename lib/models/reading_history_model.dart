@@ -71,14 +71,23 @@ class ReadingHistory {
   // Helper method for getting formatted date
   String get formattedDate {
     final now = DateTime.now();
-    final difference = now.difference(createdAt);
 
-    if (difference.inDays == 0) {
+    // Convert both dates to local date only (ignore time) for proper comparison
+    final nowDate = DateTime(now.year, now.month, now.day);
+    final createdDate = DateTime(
+      createdAt.year,
+      createdAt.month,
+      createdAt.day,
+    );
+
+    final difference = nowDate.difference(createdDate).inDays;
+
+    if (difference == 0) {
       return 'Today';
-    } else if (difference.inDays == 1) {
+    } else if (difference == 1) {
       return 'Yesterday';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays} days ago';
+    } else if (difference < 7) {
+      return '$difference days ago';
     } else {
       return '${createdAt.day}/${createdAt.month}/${createdAt.year}';
     }

@@ -125,6 +125,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           textStyle: WidgetStatePropertyAll(
                             Theme.of(context).textTheme.titleMedium,
                           ),
+                          elevation: WidgetStatePropertyAll(10),
                         ),
                         label: Text(
                           "  ${AppLocalizations.of(context)!.sakshatSavita}",
