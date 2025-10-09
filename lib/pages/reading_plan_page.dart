@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
@@ -49,8 +50,10 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.reading_plans),
+      appBar: buildAppBar(
+        context,
+        title: AppLocalizations.of(context)!.reading_plans,
+        actionItems: [ActionOptions.settings],
         bottom: TabBar(
           controller: _tabController,
           tabs: [

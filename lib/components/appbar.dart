@@ -8,6 +8,7 @@ AppBar buildAppBar(
   String title = '',
   List<ActionOptions>? actionItems,
   List<Widget>? extraActions,
+  PreferredSizeWidget? bottom,
   VoidCallback? onSettingsPressed,
 }) {
   return AppBar(
@@ -52,5 +53,6 @@ AppBar buildAppBar(
           },
         ),
     ],
+    bottom: bottom,
   );
 }
