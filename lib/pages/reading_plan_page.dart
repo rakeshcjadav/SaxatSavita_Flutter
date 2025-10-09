@@ -459,6 +459,13 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
               '• ${AppLocalizations.of(context)!.min_per_day(plan.targetSeconds ~/ 60)}\n• ${plan.targetKirans} ${AppLocalizations.of(context)!.kirans}\n• ${AppLocalizations.of(context)!.day_streak(plan.streakDays)}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
+            const SizedBox(height: 4),
+            Text(
+              plan.reminderTimes.isNotEmpty
+                  ? '• ${AppLocalizations.of(context)!.daily_reminder_at(plan.reminderTimes[0].format12Hour())}'
+                  : "• ${AppLocalizations.of(context)!.no_reminders_set}",
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ],
         ),
         trailing: PopupMenuButton<String>(
@@ -741,14 +748,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     }
   }
 
-  void _viewPlanDetails(ReadingPlan plan) async {
-    // TODO: Implement plan details page
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.plan_details_coming_soon),
-      ),
-    );
-  }
+  void _viewPlanDetails(ReadingPlan plan) async {}
 
   void _handlePlanAction(ReadingPlan plan, String action) async {
     switch (action) {

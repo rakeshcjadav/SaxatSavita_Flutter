@@ -369,6 +369,7 @@
             }
         }
     },
+    "no_reminders_set": "No reminders set",
     "plan_preview": "Plan Preview",
     "daily_reading": "Daily Reading",
     "preview_kirans": "Kirans",

@@ -681,6 +681,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get no_reminders_set => 'No reminders set';
+
+  @override
   String get plan_preview => 'Plan Preview';
 
   @override

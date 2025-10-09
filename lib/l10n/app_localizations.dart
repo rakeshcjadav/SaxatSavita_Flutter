@@ -1334,6 +1334,12 @@ abstract class AppLocalizations {
   /// **'Daily reminder at {time}'**
   String daily_reminder_at(String time);
 
+  /// No description provided for @no_reminders_set.
+  ///
+  /// In en, this message translates to:
+  /// **'No reminders set'**
+  String get no_reminders_set;
+
   /// No description provided for @plan_preview.
   ///
   /// In en, this message translates to:

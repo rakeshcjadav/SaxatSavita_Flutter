@@ -685,6 +685,9 @@ class AppLocalizationsGu extends AppLocalizations {
   }
 
   @override
+  String get no_reminders_set => 'કોઈ રિમાઇન્ડર સેટ નથી';
+
+  @override
   String get plan_preview => 'યોજનાનું પૂર્વાવલોકન';
 
   @override

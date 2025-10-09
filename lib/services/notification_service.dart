@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
-import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
-import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
