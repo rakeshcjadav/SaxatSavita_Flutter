@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
 import 'package:saxatsavita_flutter/services/notification_service.dart';
@@ -49,13 +50,22 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reading Plans'),
+        title: Text(AppLocalizations.of(context)!.reading_plans),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.today), text: 'Today'),
-            Tab(icon: Icon(Icons.list), text: 'My Plans'),
-            Tab(icon: Icon(Icons.bar_chart), text: 'Progress'),
+          tabs: [
+            Tab(
+              icon: const Icon(Icons.today),
+              text: AppLocalizations.of(context)!.reading_plans_today,
+            ),
+            Tab(
+              icon: const Icon(Icons.list),
+              text: AppLocalizations.of(context)!.reading_plans_my_plans,
+            ),
+            Tab(
+              icon: const Icon(Icons.bar_chart),
+              text: AppLocalizations.of(context)!.reading_plans_progress,
+            ),
           ],
         ),
       ),
@@ -133,8 +143,8 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                 Expanded(
                   child: Text(
                     isGoalAchieved
-                        ? "Today's Goal Achieved!"
-                        : "Today's Progress",
+                        ? AppLocalizations.of(context)!.today_goal_achieved
+                        : AppLocalizations.of(context)!.today_progress,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
@@ -164,7 +174,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Text(
-                      'Reading Time',
+                      AppLocalizations.of(context)!.reading_time,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -177,7 +187,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Text(
-                      'Completed',
+                      AppLocalizations.of(context)!.completed,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -197,27 +207,38 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Quick Actions',
-              style: Theme.of(context).textTheme.titleLarge,
+            Row(
+              children: [
+                Icon(
+                  Icons.flash_on,
+                  color: Theme.of(context).primaryColor,
+                  size: 25,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  AppLocalizations.of(context)!.quick_actions,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildActionButton(
                   icon: Icons.play_arrow,
-                  label: 'Start Reading',
+                  label: AppLocalizations.of(context)!.start_reading,
                   onTap: () => _startReading(),
                 ),
                 _buildActionButton(
                   icon: Icons.edit,
-                  label: 'Edit Plan',
+                  label: AppLocalizations.of(context)!.edit_plan,
                   onTap: () => _editPlan(plan),
                 ),
                 _buildActionButton(
                   icon: Icons.notifications,
-                  label: 'Test Reminder',
+                  label: AppLocalizations.of(context)!.test_reminder,
                   onTap: () => _testReminder(),
                 ),
               ],
@@ -233,6 +254,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     required String label,
     required VoidCallback onTap,
   }) {
+    /*
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -242,14 +264,24 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.grey[300]!),
         ),
-        child: Column(
+        child: Row(
           children: [
-            Icon(icon, size: 20, color: Theme.of(context).primaryColor),
-            const SizedBox(height: 8),
+            Icon(icon, size: 32, color: Theme.of(context).primaryColor),
+            const SizedBox(width: 8),
             Text(label, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ),
+    );*/
+    return ElevatedButton.icon(
+      onPressed: onTap,
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        ),
+      ),
+      icon: Icon(icon, size: 32, color: Theme.of(context).primaryColor),
+      label: Text(label, style: Theme.of(context).textTheme.bodySmall),
     );
   }
 
@@ -262,18 +294,34 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Your Statistics',
-              style: Theme.of(context).textTheme.titleLarge,
+            Row(
+              children: [
+                Icon(
+                  Icons.bar_chart,
+                  size: 25,
+                  color: Theme.of(context).primaryColor,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  AppLocalizations.of(context)!.your_statistics,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatItem('Streak', '${plan.streakDays} days'),
-                _buildStatItem('This Week', '${stats['goalsAchieved']} goals'),
                 _buildStatItem(
-                  'Total Time',
+                  AppLocalizations.of(context)!.streak,
+                  AppLocalizations.of(context)!.day_streak(plan.streakDays),
+                ),
+                _buildStatItem(
+                  AppLocalizations.of(context)!.this_week,
+                  '${stats['goalsAchieved']} ${AppLocalizations.of(context)!.goals}',
+                ),
+                _buildStatItem(
+                  AppLocalizations.of(context)!.total_time,
                   '${stats['totalSeconds'] ~/ 60}m:${stats['totalSeconds'] % 60}s',
                 ),
               ],
@@ -289,7 +337,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: Theme.of(context).primaryColor,
           ),
@@ -306,22 +354,19 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     Color color;
 
     if (plan.todayGoalAchieved) {
-      message =
-          "Excellent work today! You're building a powerful spiritual habit. 🌟";
+      message = AppLocalizations.of(context)!.excellent_work_today;
       icon = Icons.celebration;
       color = Colors.green;
     } else if (streak > 7) {
-      message =
-          "You're on fire! ${streak} days streak. Keep the momentum going! 🔥";
+      message = AppLocalizations.of(context)!.on_fire_streak(streak);
       icon = Icons.local_fire_department;
       color = Colors.orange;
     } else if (plan.todayProgress > 0) {
-      message = "Great start! Every minute of spiritual reading counts. 📚";
+      message = AppLocalizations.of(context)!.great_start;
       icon = Icons.trending_up;
       color = Colors.blue;
     } else {
-      message =
-          "Ready to start today's spiritual journey? Your wisdom awaits! ✨";
+      message = AppLocalizations.of(context)!.ready_to_start;
       icon = Icons.auto_awesome;
       color = Colors.purple;
     }
@@ -404,11 +449,23 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
               (context) => [
                 PopupMenuItem(
                   value: 'activate',
-                  child: Text(isActive ? 'Already Active' : 'Set as Active'),
+                  child: Text(
+                    isActive
+                        ? AppLocalizations.of(context)!.already_active
+                        : AppLocalizations.of(context)!.set_as_active,
+                  ),
                   enabled: !isActive,
                 ),
-                const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Text(AppLocalizations.of(context)!.reading_plans_edit),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Text(
+                    AppLocalizations.of(context)!.reading_plans_delete,
+                  ),
+                ),
               ],
         ),
         onTap: () => _viewPlanDetails(plan),
@@ -446,7 +503,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Last 30 Days Progress',
+              AppLocalizations.of(context)!.last_30_days_progress,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
@@ -492,7 +549,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Progress Calendar',
+              AppLocalizations.of(context)!.progress_calendar,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
@@ -548,10 +605,22 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildLegendItem(Colors.green, 'Goal Achieved'),
-                _buildLegendItem(Colors.orange, 'Partial'),
-                _buildLegendItem(Colors.blue.withOpacity(0.5), 'Started'),
-                _buildLegendItem(Colors.grey[300]!, 'No Activity'),
+                _buildLegendItem(
+                  Colors.green,
+                  AppLocalizations.of(context)!.goal_achieved,
+                ),
+                _buildLegendItem(
+                  Colors.orange,
+                  AppLocalizations.of(context)!.partial,
+                ),
+                _buildLegendItem(
+                  Colors.blue.withOpacity(0.5),
+                  AppLocalizations.of(context)!.started,
+                ),
+                _buildLegendItem(
+                  Colors.grey[300]!,
+                  AppLocalizations.of(context)!.no_activity,
+                ),
               ],
             ),
           ],
@@ -588,12 +657,12 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
             Icon(Icons.book_outlined, size: 80, color: Colors.grey[400]),
             const SizedBox(height: 24),
             Text(
-              'No Reading Plan',
+              AppLocalizations.of(context)!.no_reading_plan,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 12),
             Text(
-              'Create your first reading plan to start building a consistent spiritual reading habit.',
+              AppLocalizations.of(context)!.create_first_reading_plan,
               textAlign: TextAlign.center,
               style: Theme.of(
                 context,
@@ -603,7 +672,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
             ElevatedButton.icon(
               onPressed: () => _navigateToCreatePlan(),
               icon: const Icon(Icons.add),
-              label: const Text('Create Reading Plan'),
+              label: Text(AppLocalizations.of(context)!.create_reading_plan),
             ),
           ],
         ),
@@ -641,7 +710,9 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
   void _viewPlanDetails(ReadingPlan plan) async {
     // TODO: Implement plan details page
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Plan details page coming soon!')),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.plan_details_coming_soon),
+      ),
     );
   }
 
@@ -651,7 +722,11 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
         await _readingPlanService.setActivePlan(plan.id);
         setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${plan.title} is now your active plan')),
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.plan_now_active(plan.title),
+            ),
+          ),
         );
         break;
       case 'edit':
@@ -668,14 +743,14 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Delete Reading Plan'),
+            title: Text(AppLocalizations.of(context)!.delete_reading_plan),
             content: Text(
-              'Are you sure you want to delete "${plan.title}"? This cannot be undone.',
+              AppLocalizations.of(context)!.confirm_delete_plan(plan.title),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+                child: Text(AppLocalizations.of(context)!.reading_plans_cancel),
               ),
               TextButton(
                 onPressed: () async {
@@ -683,10 +758,14 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                   await _readingPlanService.deleteReadingPlan(plan.id);
                   setState(() {});
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Reading plan deleted')),
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)!.reading_plan_deleted,
+                      ),
+                    ),
                   );
                 },
-                child: const Text('Delete'),
+                child: Text(AppLocalizations.of(context)!.reading_plans_delete),
               ),
             ],
           ),
@@ -701,8 +780,8 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
 
   void _testReminder() async {
     await _notificationService.showReadingSuggestion();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Test reminder sent!')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.test_reminder_sent)),
+    );
   }
 }

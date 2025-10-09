@@ -470,4 +470,162 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get save_settings => 'સેટિંગ્સ સેવ કરો';
+
+  @override
+  String get reading_plans => 'વાંચન યોજનાઓ';
+
+  @override
+  String get reading_plans_today => 'આજે';
+
+  @override
+  String get reading_plans_my_plans => 'મારી યોજનાઓ';
+
+  @override
+  String get reading_plans_progress => 'પ્રગતિ';
+
+  @override
+  String get today_goal_achieved => 'આજનું લક્ષ્ય પૂર્ણ થયું!';
+
+  @override
+  String get today_progress => 'આજની પ્રગતિ';
+
+  @override
+  String get reading_time => 'વાંચન સમય';
+
+  @override
+  String get completed => 'પૂર્ણ થયું';
+
+  @override
+  String get kirans => 'કિરણો';
+
+  @override
+  String get quick_actions => 'ઝડપી ક્રિયાઓ';
+
+  @override
+  String get start_reading => 'વાંચન શરૂ કરો';
+
+  @override
+  String get edit_plan => 'યોજના સંપાદિત કરો';
+
+  @override
+  String get test_reminder => 'રિમાઇન્ડર ચકાસો';
+
+  @override
+  String get your_statistics => 'તમારા આંકડા';
+
+  @override
+  String get streak => 'સતત દિવસો';
+
+  @override
+  String get days => 'દિવસો';
+
+  @override
+  String get this_week => 'આ અઠવાડિયે';
+
+  @override
+  String get goals => 'લક્ષ્યો';
+
+  @override
+  String get total_time => 'કુલ સમય';
+
+  @override
+  String get minutes => 'મિનિટ';
+
+  @override
+  String get excellent_work_today =>
+      'આજે ઉત્કૃષ્ટ કાર્ય! તમે એક શક્તિશાળી આધ્યાત્મિક આદત બનાવી રહ્યા છો. 🌟';
+
+  @override
+  String on_fire_streak(int streak) {
+    return 'તમે આગમાં છો! $streak દિવસની શ્રેણી. ગતિ જાળવી રાખો! 🔥';
+  }
+
+  @override
+  String get great_start =>
+      'શાનદાર શરૂઆત! આધ્યાત્મિક વાંચનની દરેક મિનિટ મહત્વની છે. 📚';
+
+  @override
+  String get ready_to_start =>
+      'આજની આધ્યાત્મિક યાત્રા શરૂ કરવા તૈયાર છો? તમારું જ્ઞાન રાહ જોઈ રહ્યું છે! ✨';
+
+  @override
+  String get already_active => 'પહેલેથી સક્રિય';
+
+  @override
+  String get set_as_active => 'સક્રિય તરીકે સેટ કરો';
+
+  @override
+  String get reading_plans_edit => 'સંપાદિત કરો';
+
+  @override
+  String get reading_plans_delete => 'ડિલીટ કરો';
+
+  @override
+  String get last_30_days_progress => 'છેલ્લા ૩૦ દિવસની પ્રગતિ';
+
+  @override
+  String get progress_calendar => 'પ્રગતિ કૅલેન્ડર';
+
+  @override
+  String get goal_achieved => 'લક્ષ્ય પૂર્ણ';
+
+  @override
+  String get partial => 'આંશિક';
+
+  @override
+  String get started => 'શરૂ થયું';
+
+  @override
+  String get no_activity => 'કોઈ પ્રવૃત્તિ નથી';
+
+  @override
+  String get no_reading_plan => 'કોઈ વાંચન યોજના નથી';
+
+  @override
+  String get create_first_reading_plan =>
+      'સતત આધ્યાત્મિક વાંચનની આદત બનાવવા માટે તમારી પ્રથમ વાંચન યોજના બનાવો.';
+
+  @override
+  String get create_reading_plan => 'વાંચન યોજના બનાવો';
+
+  @override
+  String get plan_details_coming_soon =>
+      'યોજનાની વિગતો પૃષ્ઠ ટૂંક સમયમાં આવી રહ્યું છે!';
+
+  @override
+  String plan_now_active(String title) {
+    return '$title હવે તમારી સક્રિય યોજના છે';
+  }
+
+  @override
+  String get delete_reading_plan => 'વાંચન યોજના ડિલીટ કરો';
+
+  @override
+  String confirm_delete_plan(String title) {
+    return 'શું તમે ખરેખર \"$title\" ને ડિલીટ કરવા માંગો છો? આ પૂર્વવત્ કરી શકાતું નથી.';
+  }
+
+  @override
+  String get reading_plans_cancel => 'રદ કરો';
+
+  @override
+  String get reading_plan_deleted => 'વાંચન યોજના ડિલીટ કરવામાં આવી';
+
+  @override
+  String get test_reminder_sent => 'ટેસ્ટ રિમાઇન્ડર મોકલવામાં આવ્યું!';
+
+  @override
+  String day_streak(int days) {
+    return '$days દિવસની શ્રેણી';
+  }
+
+  @override
+  String min_per_day(int minutes) {
+    return '$minutes મિનિટ/દિવસ';
+  }
+
+  @override
+  String kirans_target(int count) {
+    return '$count કિરણો';
+  }
 }

@@ -247,5 +247,101 @@
     "save": "Save",
     "you_have_unsaved_changes": "You have unsaved changes",
     "discard_changes": "Discard Changes",
-    "save_settings": "Save Settings"
+    "save_settings": "Save Settings",
+    
+    "reading_plans": "Reading Plans",
+    "reading_plans_today": "Today",
+    "reading_plans_my_plans": "My Plans",
+    "reading_plans_progress": "Progress",
+    "today_goal_achieved": "Today's Goal Achieved!",
+    "today_progress": "Today's Progress",
+    "reading_time": "Reading Time",
+    "completed": "Completed",
+    "kirans": "Kirans",
+    "quick_actions": "Quick Actions",
+    "start_reading": "Start Reading",
+    "edit_plan": "Edit Plan",
+    "test_reminder": "Test Reminder",
+    "your_statistics": "Your Statistics",
+    "streak": "Streak",
+    "days": "days",
+    "this_week": "This Week",
+    "goals": "goals",
+    "total_time": "Total Time",
+    "minutes": "minutes",
+    "excellent_work_today": "Excellent work today! You're building a powerful spiritual habit. 🌟",
+    "on_fire_streak": "You're on fire! {streak} days streak. Keep the momentum going! 🔥",
+    "@on_fire_streak": {
+        "description": "Message when user has a long streak",
+        "placeholders": {
+            "streak": {
+                "type": "int"
+            }
+        }
+    },
+    "great_start": "Great start! Every minute of spiritual reading counts. 📚",
+    "ready_to_start": "Ready to start today's spiritual journey? Your wisdom awaits! ✨",
+    "already_active": "Already Active",
+    "set_as_active": "Set as Active",
+    "reading_plans_edit": "Edit",
+    "reading_plans_delete": "Delete",
+    "last_30_days_progress": "Last 30 Days Progress",
+    "progress_calendar": "Progress Calendar",
+    "goal_achieved": "Goal Achieved",
+    "partial": "Partial",
+    "started": "Started",
+    "no_activity": "No Activity",
+    "no_reading_plan": "No Reading Plan",
+    "create_first_reading_plan": "Create your first reading plan to start building a consistent spiritual reading habit.",
+    "create_reading_plan": "Create Reading Plan",
+    "plan_details_coming_soon": "Plan details page coming soon!",
+    "plan_now_active": "{title} is now your active plan",
+    "@plan_now_active": {
+        "description": "Message when a plan is set as active",
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "delete_reading_plan": "Delete Reading Plan",
+    "confirm_delete_plan": "Are you sure you want to delete \"{title}\"? This cannot be undone.",
+    "@confirm_delete_plan": {
+        "description": "Confirmation message for deleting a plan",
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "reading_plans_cancel": "Cancel",
+    "reading_plan_deleted": "Reading plan deleted",
+    "test_reminder_sent": "Test reminder sent!",
+    "day_streak": "{days} day streak",
+    "@day_streak": {
+        "description": "Display streak in days",
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "min_per_day": "{minutes} min/day",
+    "@min_per_day": {
+        "description": "Minutes per day target",
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "kirans_target": "{count} Kirans",
+    "@kirans_target": {
+        "description": "Number of Kirans target",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    }
 }

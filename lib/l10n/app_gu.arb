@@ -247,5 +247,101 @@
     "save": "સેવ કરો",
     "you_have_unsaved_changes": "તમારા પાસે સેવ ન કરેલા બદલાવ છે",
     "discard_changes": "બદલાવ રદ કરો",
-    "save_settings": "સેટિંગ્સ સેવ કરો"
+    "save_settings": "સેટિંગ્સ સેવ કરો",
+    
+    "reading_plans": "વાંચન યોજનાઓ",
+    "reading_plans_today": "આજે",
+    "reading_plans_my_plans": "મારી યોજનાઓ",
+    "reading_plans_progress": "પ્રગતિ",
+    "today_goal_achieved": "આજનું લક્ષ્ય પૂર્ણ થયું!",
+    "today_progress": "આજની પ્રગતિ",
+    "reading_time": "વાંચન સમય",
+    "completed": "પૂર્ણ થયું",
+    "kirans": "કિરણો",
+    "quick_actions": "ઝડપી ક્રિયાઓ",
+    "start_reading": "વાંચન શરૂ કરો",
+    "edit_plan": "યોજના સંપાદિત કરો",
+    "test_reminder": "રિમાઇન્ડર ચકાસો",
+    "your_statistics": "તમારા આંકડા",
+    "streak": "સતત દિવસો",
+    "days": "દિવસો",
+    "this_week": "આ અઠવાડિયે",
+    "goals": "લક્ષ્યો",
+    "total_time": "કુલ સમય",
+    "minutes": "મિનિટ",
+    "excellent_work_today": "આજે ઉત્કૃષ્ટ કાર્ય! તમે એક શક્તિશાળી આધ્યાત્મિક આદત બનાવી રહ્યા છો. 🌟",
+    "on_fire_streak": "તમે આગમાં છો! {streak} દિવસની શ્રેણી. ગતિ જાળવી રાખો! 🔥",
+    "@on_fire_streak": {
+        "description": "Message when user has a long streak",
+        "placeholders": {
+            "streak": {
+                "type": "int"
+            }
+        }
+    },
+    "great_start": "શાનદાર શરૂઆત! આધ્યાત્મિક વાંચનની દરેક મિનિટ મહત્વની છે. 📚",
+    "ready_to_start": "આજની આધ્યાત્મિક યાત્રા શરૂ કરવા તૈયાર છો? તમારું જ્ઞાન રાહ જોઈ રહ્યું છે! ✨",
+    "already_active": "પહેલેથી સક્રિય",
+    "set_as_active": "સક્રિય તરીકે સેટ કરો",
+    "reading_plans_edit": "સંપાદિત કરો",
+    "reading_plans_delete": "ડિલીટ કરો",
+    "last_30_days_progress": "છેલ્લા ૩૦ દિવસની પ્રગતિ",
+    "progress_calendar": "પ્રગતિ કૅલેન્ડર",
+    "goal_achieved": "લક્ષ્ય પૂર્ણ",
+    "partial": "આંશિક",
+    "started": "શરૂ થયું",
+    "no_activity": "કોઈ પ્રવૃત્તિ નથી",
+    "no_reading_plan": "કોઈ વાંચન યોજના નથી",
+    "create_first_reading_plan": "સતત આધ્યાત્મિક વાંચનની આદત બનાવવા માટે તમારી પ્રથમ વાંચન યોજના બનાવો.",
+    "create_reading_plan": "વાંચન યોજના બનાવો",
+    "plan_details_coming_soon": "યોજનાની વિગતો પૃષ્ઠ ટૂંક સમયમાં આવી રહ્યું છે!",
+    "plan_now_active": "{title} હવે તમારી સક્રિય યોજના છે",
+    "@plan_now_active": {
+        "description": "Message when a plan is set as active",
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "delete_reading_plan": "વાંચન યોજના ડિલીટ કરો",
+    "confirm_delete_plan": "શું તમે ખરેખર \"{title}\" ને ડિલીટ કરવા માંગો છો? આ પૂર્વવત્ કરી શકાતું નથી.",
+    "@confirm_delete_plan": {
+        "description": "Confirmation message for deleting a plan",
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "reading_plans_cancel": "રદ કરો",
+    "reading_plan_deleted": "વાંચન યોજના ડિલીટ કરવામાં આવી",
+    "test_reminder_sent": "ટેસ્ટ રિમાઇન્ડર મોકલવામાં આવ્યું!",
+    "day_streak": "{days} દિવસની શ્રેણી",
+    "@day_streak": {
+        "description": "Display streak in days",
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "min_per_day": "{minutes} મિનિટ/દિવસ",
+    "@min_per_day": {
+        "description": "Minutes per day target",
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "kirans_target": "{count} કિરણો",
+    "@kirans_target": {
+        "description": "Number of Kirans target",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    }
 }

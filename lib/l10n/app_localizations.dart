@@ -949,6 +949,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Settings'**
   String get save_settings;
+
+  /// No description provided for @reading_plans.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Plans'**
+  String get reading_plans;
+
+  /// No description provided for @reading_plans_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get reading_plans_today;
+
+  /// No description provided for @reading_plans_my_plans.
+  ///
+  /// In en, this message translates to:
+  /// **'My Plans'**
+  String get reading_plans_my_plans;
+
+  /// No description provided for @reading_plans_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get reading_plans_progress;
+
+  /// No description provided for @today_goal_achieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Goal Achieved!'**
+  String get today_goal_achieved;
+
+  /// No description provided for @today_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Progress'**
+  String get today_progress;
+
+  /// No description provided for @reading_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Time'**
+  String get reading_time;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @kirans.
+  ///
+  /// In en, this message translates to:
+  /// **'Kirans'**
+  String get kirans;
+
+  /// No description provided for @quick_actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quick_actions;
+
+  /// No description provided for @start_reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Reading'**
+  String get start_reading;
+
+  /// No description provided for @edit_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Plan'**
+  String get edit_plan;
+
+  /// No description provided for @test_reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Reminder'**
+  String get test_reminder;
+
+  /// No description provided for @your_statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Statistics'**
+  String get your_statistics;
+
+  /// No description provided for @streak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get streak;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
+
+  /// No description provided for @this_week.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get this_week;
+
+  /// No description provided for @goals.
+  ///
+  /// In en, this message translates to:
+  /// **'goals'**
+  String get goals;
+
+  /// No description provided for @total_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Time'**
+  String get total_time;
+
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
+  /// No description provided for @excellent_work_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent work today! You\'re building a powerful spiritual habit. 🌟'**
+  String get excellent_work_today;
+
+  /// Message when user has a long streak
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re on fire! {streak} days streak. Keep the momentum going! 🔥'**
+  String on_fire_streak(int streak);
+
+  /// No description provided for @great_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Great start! Every minute of spiritual reading counts. 📚'**
+  String get great_start;
+
+  /// No description provided for @ready_to_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to start today\'s spiritual journey? Your wisdom awaits! ✨'**
+  String get ready_to_start;
+
+  /// No description provided for @already_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Already Active'**
+  String get already_active;
+
+  /// No description provided for @set_as_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as Active'**
+  String get set_as_active;
+
+  /// No description provided for @reading_plans_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get reading_plans_edit;
+
+  /// No description provided for @reading_plans_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get reading_plans_delete;
+
+  /// No description provided for @last_30_days_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 Days Progress'**
+  String get last_30_days_progress;
+
+  /// No description provided for @progress_calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress Calendar'**
+  String get progress_calendar;
+
+  /// No description provided for @goal_achieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal Achieved'**
+  String get goal_achieved;
+
+  /// No description provided for @partial.
+  ///
+  /// In en, this message translates to:
+  /// **'Partial'**
+  String get partial;
+
+  /// No description provided for @started.
+  ///
+  /// In en, this message translates to:
+  /// **'Started'**
+  String get started;
+
+  /// No description provided for @no_activity.
+  ///
+  /// In en, this message translates to:
+  /// **'No Activity'**
+  String get no_activity;
+
+  /// No description provided for @no_reading_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'No Reading Plan'**
+  String get no_reading_plan;
+
+  /// No description provided for @create_first_reading_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first reading plan to start building a consistent spiritual reading habit.'**
+  String get create_first_reading_plan;
+
+  /// No description provided for @create_reading_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Reading Plan'**
+  String get create_reading_plan;
+
+  /// No description provided for @plan_details_coming_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan details page coming soon!'**
+  String get plan_details_coming_soon;
+
+  /// Message when a plan is set as active
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is now your active plan'**
+  String plan_now_active(String title);
+
+  /// No description provided for @delete_reading_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Reading Plan'**
+  String get delete_reading_plan;
+
+  /// Confirmation message for deleting a plan
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{title}\"? This cannot be undone.'**
+  String confirm_delete_plan(String title);
+
+  /// No description provided for @reading_plans_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get reading_plans_cancel;
+
+  /// No description provided for @reading_plan_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading plan deleted'**
+  String get reading_plan_deleted;
+
+  /// No description provided for @test_reminder_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Test reminder sent!'**
+  String get test_reminder_sent;
+
+  /// Display streak in days
+  ///
+  /// In en, this message translates to:
+  /// **'{days} day streak'**
+  String day_streak(int days);
+
+  /// Minutes per day target
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min/day'**
+  String min_per_day(int minutes);
+
+  /// Number of Kirans target
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Kirans'**
+  String kirans_target(int count);
 }
 
 class _AppLocalizationsDelegate

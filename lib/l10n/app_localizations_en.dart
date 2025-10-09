@@ -468,4 +468,161 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get save_settings => 'Save Settings';
+
+  @override
+  String get reading_plans => 'Reading Plans';
+
+  @override
+  String get reading_plans_today => 'Today';
+
+  @override
+  String get reading_plans_my_plans => 'My Plans';
+
+  @override
+  String get reading_plans_progress => 'Progress';
+
+  @override
+  String get today_goal_achieved => 'Today\'s Goal Achieved!';
+
+  @override
+  String get today_progress => 'Today\'s Progress';
+
+  @override
+  String get reading_time => 'Reading Time';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get kirans => 'Kirans';
+
+  @override
+  String get quick_actions => 'Quick Actions';
+
+  @override
+  String get start_reading => 'Start Reading';
+
+  @override
+  String get edit_plan => 'Edit Plan';
+
+  @override
+  String get test_reminder => 'Test Reminder';
+
+  @override
+  String get your_statistics => 'Your Statistics';
+
+  @override
+  String get streak => 'Streak';
+
+  @override
+  String get days => 'days';
+
+  @override
+  String get this_week => 'This Week';
+
+  @override
+  String get goals => 'goals';
+
+  @override
+  String get total_time => 'Total Time';
+
+  @override
+  String get minutes => 'minutes';
+
+  @override
+  String get excellent_work_today =>
+      'Excellent work today! You\'re building a powerful spiritual habit. 🌟';
+
+  @override
+  String on_fire_streak(int streak) {
+    return 'You\'re on fire! $streak days streak. Keep the momentum going! 🔥';
+  }
+
+  @override
+  String get great_start =>
+      'Great start! Every minute of spiritual reading counts. 📚';
+
+  @override
+  String get ready_to_start =>
+      'Ready to start today\'s spiritual journey? Your wisdom awaits! ✨';
+
+  @override
+  String get already_active => 'Already Active';
+
+  @override
+  String get set_as_active => 'Set as Active';
+
+  @override
+  String get reading_plans_edit => 'Edit';
+
+  @override
+  String get reading_plans_delete => 'Delete';
+
+  @override
+  String get last_30_days_progress => 'Last 30 Days Progress';
+
+  @override
+  String get progress_calendar => 'Progress Calendar';
+
+  @override
+  String get goal_achieved => 'Goal Achieved';
+
+  @override
+  String get partial => 'Partial';
+
+  @override
+  String get started => 'Started';
+
+  @override
+  String get no_activity => 'No Activity';
+
+  @override
+  String get no_reading_plan => 'No Reading Plan';
+
+  @override
+  String get create_first_reading_plan =>
+      'Create your first reading plan to start building a consistent spiritual reading habit.';
+
+  @override
+  String get create_reading_plan => 'Create Reading Plan';
+
+  @override
+  String get plan_details_coming_soon => 'Plan details page coming soon!';
+
+  @override
+  String plan_now_active(String title) {
+    return '$title is now your active plan';
+  }
+
+  @override
+  String get delete_reading_plan => 'Delete Reading Plan';
+
+  @override
+  String confirm_delete_plan(String title) {
+    return 'Are you sure you want to delete \"$title\"? This cannot be undone.';
+  }
+
+  @override
+  String get reading_plans_cancel => 'Cancel';
+
+  @override
+  String get reading_plan_deleted => 'Reading plan deleted';
+
+  @override
+  String get test_reminder_sent => 'Test reminder sent!';
+
+  @override
+  String day_streak(int days) {
+    return '$days day streak';
+  }
+
+  @override
+  String min_per_day(int minutes) {
+    return '$minutes min/day';
+  }
+
+  @override
+  String kirans_target(int count) {
+    return '$count Kirans';
+  }
 }
