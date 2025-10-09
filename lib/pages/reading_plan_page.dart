@@ -419,17 +419,29 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
 
   Widget _buildPlanCard(ReadingPlan plan) {
     final isActive = plan.id == _readingPlanService.activePlan?.id;
-
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final localizations = AppLocalizations.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16.0),
-        leading: CircleAvatar(
-          backgroundColor:
-              isActive ? Theme.of(context).primaryColor : Colors.grey,
-          child: Icon(
-            isActive ? Icons.play_arrow : Icons.pause,
-            color: Colors.white,
+        leading: InkWell(
+          onTap: () async {
+            await _readingPlanService.setActivePlan(plan.id);
+            setState(() {});
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text(localizations!.plan_now_active(plan.title)),
+              ),
+            );
+          },
+          child: CircleAvatar(
+            backgroundColor:
+                isActive ? Theme.of(context).primaryColor : Colors.grey,
+            child: Icon(
+              isActive ? Icons.play_arrow : Icons.pause,
+              color: Colors.white,
+            ),
           ),
         ),
         title: Text(
@@ -855,7 +867,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
               ElevatedButton(
                 onPressed: () async {
                   Navigator.pop(context);
-                  await _notificationService.testNotificationSound();
+                  //await _notificationService.testNotificationSound();
                 },
                 child: const Text('Test Again'),
               ),

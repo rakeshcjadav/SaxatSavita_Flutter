@@ -295,7 +295,7 @@
     "create_first_reading_plan": "સતત આધ્યાત્મિક વાંચનની આદત બનાવવા માટે તમારી પ્રથમ વાંચન યોજના બનાવો.",
     "create_reading_plan": "વાંચન યોજના બનાવો",
     "plan_details_coming_soon": "યોજનાની વિગતો પૃષ્ઠ ટૂંક સમયમાં આવી રહ્યું છે!",
-    "plan_now_active": "{title} હવે તમારી સક્રિય યોજના છે",
+    "plan_now_active": "હવે તમારી યોજના \"{title}\" સક્રિય છે",
     "@plan_now_active": {
         "description": "Message when a plan is set as active",
         "placeholders": {

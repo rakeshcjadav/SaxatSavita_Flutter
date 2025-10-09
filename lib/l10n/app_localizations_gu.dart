@@ -594,7 +594,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String plan_now_active(String title) {
-    return '$title હવે તમારી સક્રિય યોજના છે';
+    return 'હવે તમારી યોજના \"$title\" સક્રિય છે';
   }
 
   @override
