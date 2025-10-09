@@ -82,9 +82,15 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                   ],
                 ),
               ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToCreatePlan(),
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: "add",
+            onPressed: () => _navigateToCreatePlan(),
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
