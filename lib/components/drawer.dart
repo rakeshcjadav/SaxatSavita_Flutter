@@ -96,6 +96,14 @@ class _DrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.schedule),
+            title: const Text('Reading Plans'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/reading_plans');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.history),
             title: Text(AppLocalizations.of(context)!.reading_history),
             onTap: () {

@@ -1,5 +1,6 @@
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
 
 class ReadingHistoryService {
   static final ReadingHistoryService _instance =
@@ -12,6 +13,10 @@ class ReadingHistoryService {
   /// Save a reading history entry to SharedPreferences
   static Future<void> saveReadingHistory(ReadingHistory history) async {
     try {
+      await ReadingPlanService().recordReadingProgress(
+        secondsRead: history.durationSeconds,
+        kiransRead: [history.kiranIndex],
+      );
       ReadingHistoryService().readingHistoryList.add(history);
       await FirebaseIntegrationHelper().onNewReadingHistoryAdded(history);
     } catch (e) {

@@ -4,11 +4,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
+import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
@@ -174,6 +176,18 @@ class SakshatSavitaApp extends StatelessWidget {
               selectionColor: Colors.amber.withValues(alpha: 0.5),
               selectionHandleColor: Colors.amber,
             ),
+            tabBarTheme: TabBarThemeData(
+              labelColor: colorScheme.onPrimary,
+              unselectedLabelColor: colorScheme.onPrimary.withValues(
+                alpha: 0.5,
+              ),
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(
+                  color: colorScheme.onPrimary,
+                  width: 4.0,
+                ),
+              ),
+            ),
           ),
           home: const SplashPage(),
           routes: {
@@ -182,8 +196,10 @@ class SakshatSavitaApp extends StatelessWidget {
             '/settings': (context) => const SettingsPage(),
             '/aashirvachan': (context) => const Aashirvachanpage(),
             '/home': (context) => const HomePage(),
+            '/bookmainpage': (context) => const BookMainpage(),
             '/notes': (context) => const NoteListPage(),
             '/readinghistory': (context) => const ReadingHistoryPage(),
+            '/reading_plans': (context) => const ReadingPlanPage(),
           },
         );
       },
