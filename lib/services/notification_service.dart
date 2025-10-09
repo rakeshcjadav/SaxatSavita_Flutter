@@ -3,6 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
+import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
+import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -211,14 +214,29 @@ class NotificationService {
     ReadingPlan plan,
     ReminderTime reminderTime,
   ) async {
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduledDate = tz.TZDateTime(
-      tz.local,
+    final now = DateTime.now();
+    var scheduledDateLocal = DateTime(
       now.year,
       now.month,
       now.day,
       reminderTime.hour,
       reminderTime.minute,
+    );
+
+    final tz.Location localLocation = tz.local;
+
+    tz.TZDateTime scheduledDate = tz.TZDateTime.from(
+      scheduledDateLocal,
+      localLocation,
+    );
+
+    debugPrint('Now (Local): $now');
+    debugPrint('scheduledDateLocal (local): $scheduledDateLocal');
+    debugPrint('Now (TZ): ${tz.TZDateTime.from(now, localLocation)}');
+    debugPrint('scheduledDateLocal (TZ): $scheduledDate');
+
+    debugPrint(
+      '🕐 Scheduling reminder for plan "${plan.title}" at: $scheduledDate',
     );
 
     // If the time has already passed today, schedule for tomorrow
@@ -275,6 +293,8 @@ class NotificationService {
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
+      payload:
+          'reading_reminder:${plan.id}:${reminderTime.hour}:${reminderTime.minute}', // Add payload
     );
   }
 
@@ -448,6 +468,112 @@ class NotificationService {
     }
   }
 
+  // Add this helper method at the top of the NotificationService class
+  /// Get LED settings compatible with all Android versions
+  AndroidNotificationDetails _getAndroidNotificationDetails({
+    required String channelId,
+    required String channelName,
+    String? channelDescription,
+    required Importance importance,
+    required Priority priority,
+    required Color ledColor,
+    bool playSound = true,
+    bool enableVibration = true,
+    bool enableLights = true,
+    String? icon,
+    DrawableResourceAndroidBitmap? largeIcon,
+    StyleInformation? styleInformation,
+    List<AndroidNotificationAction>? actions,
+    bool fullScreenIntent = true,
+    bool showWhen = true,
+    int when = 0,
+    bool usesChronometer = false,
+    String ticker = '',
+    bool autoCancel = true,
+  }) {
+    return AndroidNotificationDetails(
+      channelId,
+      channelName,
+      channelDescription: channelDescription,
+      importance: importance,
+      priority: priority,
+      icon: icon ?? '@mipmap/ic_launcher',
+      largeIcon: largeIcon,
+      styleInformation: styleInformation,
+      playSound: playSound,
+      enableVibration: enableVibration,
+      enableLights: enableLights,
+      // Fix LED settings for older Android versions
+      ledColor: enableLights ? ledColor : null,
+      ledOnMs: enableLights ? 1000 : null, // Always provide non-zero value
+      ledOffMs: enableLights ? 500 : null, // Always provide non-zero value
+      showWhen: showWhen,
+      when: when,
+      usesChronometer: usesChronometer,
+      ticker: ticker,
+      autoCancel: autoCancel,
+      fullScreenIntent: fullScreenIntent,
+      actions: actions,
+    );
+  }
+
+  /// Test scheduled notification for 10 seconds from now
+  Future<void> testScheduledNotification() async {
+    if (!_isInitialized) await initialize();
+
+    final now = tz.TZDateTime.now(tz.local);
+    final scheduledTime = now.add(const Duration(seconds: 10));
+
+    debugPrint('🕐 Scheduling test notification:');
+    debugPrint('   - Current time: ${now.toString()}');
+    debugPrint('   - Scheduled for: ${scheduledTime.toString()}');
+    debugPrint('   - In 10 seconds...');
+
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+      99997, // Test scheduled notification ID
+      "⏰ Scheduled Test",
+      "This notification was scheduled 10 seconds ago! Time: ${scheduledTime.toString()}",
+      scheduledTime,
+      NotificationDetails(
+        android: _getAndroidNotificationDetails(
+          channelId: _readingReminderChannelId,
+          channelName: 'Reading Reminders',
+          channelDescription: 'Test scheduled notification',
+          importance: Importance.max,
+          priority: Priority.max,
+          ledColor: Colors.purple,
+          ticker: 'Scheduled test notification',
+          autoCancel: true,
+          showWhen: true,
+          when: DateTime.now().millisecondsSinceEpoch,
+          usesChronometer: false,
+          fullScreenIntent: true,
+          actions: [
+            const AndroidNotificationAction(
+              'read_now',
+              'Read Now',
+              icon: DrawableResourceAndroidBitmap('@drawable/ic_read'),
+            ),
+            const AndroidNotificationAction(
+              'remind_later',
+              'Remind Later',
+              icon: DrawableResourceAndroidBitmap('@drawable/ic_reminder'),
+            ),
+          ],
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          interruptionLevel: InterruptionLevel.critical,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+
+    debugPrint('⏰ Test notification scheduled for 10 seconds from now');
+  }
+
   /// Test notification with sound (for debugging)
   Future<void> testNotificationSound() async {
     if (!_isInitialized) await initialize();
@@ -473,6 +599,18 @@ class NotificationService {
           showWhen: true,
           ticker: 'Test notification sound',
           autoCancel: true,
+          actions: [
+            const AndroidNotificationAction(
+              'read_now',
+              'Read Now',
+              icon: DrawableResourceAndroidBitmap('@drawable/ic_read'),
+            ),
+            const AndroidNotificationAction(
+              'remind_later',
+              'Remind Later',
+              icon: DrawableResourceAndroidBitmap('@drawable/ic_reminder'),
+            ),
+          ],
         ),
         iOS: const DarwinNotificationDetails(
           presentAlert: true,
@@ -519,6 +657,18 @@ class NotificationService {
           ledColor: Colors.orange,
           ledOnMs: 500,
           ledOffMs: 500,
+          actions: [
+            const AndroidNotificationAction(
+              'read_now',
+              'Read Now',
+              icon: DrawableResourceAndroidBitmap('@drawable/ic_read'),
+            ),
+            const AndroidNotificationAction(
+              'remind_later',
+              'Remind Later',
+              icon: DrawableResourceAndroidBitmap('@drawable/ic_reminder'),
+            ),
+          ],
         ),
         iOS: const DarwinNotificationDetails(
           presentAlert: true,
@@ -530,21 +680,61 @@ class NotificationService {
   }
 
   /// Handle notification tap
+  @pragma('vm:entry-point')
   static void onDidReceiveNotificationResponse(NotificationResponse response) {
-    debugPrint('📱 Notification tapped: ${response.actionId}');
+    debugPrint('📱 Notification response received:');
+    debugPrint('   - ID: ${response.id}');
+    debugPrint('   - Action ID: ${response.actionId}');
+    debugPrint('   - Notification Type: ${response.notificationResponseType}');
+    debugPrint('   - Payload: ${response.payload}');
 
-    switch (response.actionId) {
-      case 'read_now':
+    try {
+      switch (response.actionId) {
+        case 'read_now':
+          debugPrint('📚 User chose to read now');
+          _handleReadNowAction();
+          break;
+        case 'remind_later':
+          debugPrint('⏰ User chose remind later');
+          NotificationService()._scheduleRemindLater();
+          break;
+        default:
+          debugPrint('📱 Default notification tap - opening app');
+          _handleDefaultTap();
+          break;
+      }
+    } catch (e) {
+      debugPrint('❌ Error handling notification response: $e');
+    }
+  }
+
+  /// Handle the "Read Now" action
+  static void _handleReadNowAction() {
+    try {
+      final context = NavigationService.navigatorKey.currentContext;
+      if (context != null) {
         // Navigate to reading page
-        // This would be handled by the main app navigation
-        break;
-      case 'remind_later':
-        // Schedule reminder for 30 minutes later
-        NotificationService()._scheduleRemindLater();
-        break;
-      default:
-        // Default tap action - open app
-        break;
+        Navigator.of(context).pushNamed('/bookmainpage');
+      } else {
+        debugPrint('⚠️ No navigation context available');
+      }
+    } catch (e) {
+      debugPrint('❌ Error navigating to reading page: $e');
+    }
+  }
+
+  /// Handle default notification tap
+  static void _handleDefaultTap() {
+    try {
+      final context = NavigationService.navigatorKey.currentContext;
+      if (context != null) {
+        // Navigate to home page or reading plans
+        Navigator.of(context).pushNamed('/readinghistory');
+      } else {
+        debugPrint('⚠️ No navigation context available');
+      }
+    } catch (e) {
+      debugPrint('❌ Error handling default tap: $e');
     }
   }
 

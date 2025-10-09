@@ -12,6 +12,7 @@ import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
+import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -45,6 +46,7 @@ class SakshatSavitaApp extends StatelessWidget {
           dynamicSchemeVariant: settings.themeVariant,
         );
         return MaterialApp(
+          navigatorKey: NavigationService.navigatorKey, // Assign the key here
           debugShowCheckedModeBanner: false,
           locale: Locale(settings.language, 'IN'),
           localizationsDelegates: [

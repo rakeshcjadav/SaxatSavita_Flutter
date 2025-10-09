@@ -795,8 +795,6 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
   }
 
   void _testReminder() async {
-    // Show both test notifications - one regular and one with sound test
-    await _notificationService.testNotificationSound();
     await _notificationService.showReadingSuggestion();
 
     if (mounted) {
