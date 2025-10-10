@@ -327,7 +327,7 @@ class NotificationService {
       final streak = plan.streakDays;
       final title =
           streak > 1
-              ? "🎉 Goal Achieved! ${streak} Day Streak!"
+              ? "🎉 Goal Achieved! $streak Day Streak!"
               : "🎉 Daily Goal Achieved!";
 
       final body =
@@ -415,9 +415,9 @@ class NotificationService {
           break;
         default:
           if (streakDays % 10 == 0) {
-            title = "🎯 ${streakDays} Day Streak!";
+            title = "🎯 $streakDays Day Streak!";
             body =
-                "Incredible! ${streakDays} consecutive days of spiritual reading. You're unstoppable!";
+                "Incredible! $streakDays consecutive days of spiritual reading. You're unstoppable!";
           } else {
             return; // Don't show notification
           }

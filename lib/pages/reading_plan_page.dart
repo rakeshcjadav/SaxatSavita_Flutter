@@ -285,7 +285,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     return ElevatedButton.icon(
       onPressed: onTap,
       style: ButtonStyle(
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
       ),
@@ -551,7 +551,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            Container(
+            SizedBox(
               height: 200,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,

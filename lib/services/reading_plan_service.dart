@@ -301,8 +301,9 @@ class ReadingPlanService {
     final currentHour = now.hour;
 
     // Check if current hour matches any reminder time
-    if (!activePlan!.reminderTimes.any((rt) => rt.hour == currentHour))
+    if (!activePlan!.reminderTimes.any((rt) => rt.hour == currentHour)) {
       return false;
+    }
 
     // Check if today's goal is already achieved
     if (activePlan!.todayGoalAchieved) return false;
