@@ -10,6 +10,7 @@ import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
+import 'package:gal/gal.dart';
 
 class QuotesImageGeneratorPage extends StatefulWidget {
   const QuotesImageGeneratorPage({super.key, required this.quote});
@@ -145,12 +146,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
             onPressed: _shareImage,
             tooltip: 'Share Image',
           ),
-          /*
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _saveImage,
             tooltip: 'Save Image',
-          ),*/
+          ),
         ],
       ),
       body: SafeArea(
@@ -680,23 +680,26 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
     try {
       final imageBytes = await _captureImage();
       if (imageBytes != null) {
-        final directory = await getApplicationDocumentsDirectory();
-        final imagePath =
-            '${directory.path}/quote_${DateTime.now().millisecondsSinceEpoch}.png';
-        final imageFile = File(imagePath);
-        await imageFile.writeAsBytes(imageBytes);
+        // Save directly to the device gallery
+        await Gal.putImageBytes(imageBytes, album: 'Sakshat Savita Quotes');
 
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Image saved to: $imagePath')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.image_saved),
+              backgroundColor: Colors.green,
+            ),
+          );
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error saving image: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error saving image: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }

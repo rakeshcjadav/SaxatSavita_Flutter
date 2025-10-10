@@ -48,6 +48,7 @@ dependencies:
   flutter_quill: ^11.0.0
   flutter_local_notifications: ^19.4.2
   share_plus: ^10.1.4
+  gal: ^2.3.0
 
 dev_dependencies:
   flutter_test:

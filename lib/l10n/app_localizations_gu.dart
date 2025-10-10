@@ -748,16 +748,16 @@ class AppLocalizationsGu extends AppLocalizations {
   String get quotes_image_generator => 'સુવિચાર બનાવો';
 
   @override
-  String get inspirational_quotes => 'પ્રેરણાદાયક અવતરણ';
+  String get inspirational_quotes => 'પ્રેરણાદાયક સુવિચાર';
 
   @override
-  String get create_share_quotes => 'સુંદર અવતરણ છબીઓ બનાવો અને શેર કરો';
+  String get create_share_quotes => 'સુંદર સુવિચાર છબીઓ બનાવો અને શેર કરો';
 
   @override
-  String get quote_text => 'અવતરણ લખાણ';
+  String get quote_text => 'સુવિચાર લખાણ';
 
   @override
-  String get enter_quote => 'તમારું પ્રેરણાદાયક અવતરણ દાખલ કરો';
+  String get enter_quote => 'તમારું પ્રેરણાદાયક સુવિચાર દાખલ કરો';
 
   @override
   String get quote_font_size => 'ફોન્ટ સાઇઝ';
@@ -790,20 +790,20 @@ class AppLocalizationsGu extends AppLocalizations {
   String get modern => 'આધુનિક';
 
   @override
-  String get share_quote => 'અવતરણ શેર કરો';
+  String get share_quote => 'સુવિચાર શેર કરો';
 
   @override
-  String get save_quote => 'અવતરણ સેવ કરો';
+  String get save_quote => 'સુવિચાર સેવ કરો';
 
   @override
-  String get random_quote => 'રેન્ડમ અવતરણ';
+  String get random_quote => 'રેન્ડમ સુવિચાર';
 
   @override
-  String get image_saved => 'ગેલરીમાં ઇમેજ સેવ થયું';
+  String get image_saved => 'ગેલરીમાં સુવિચાર સેવ થયો.';
 
   @override
   String error_saving_image(String error) {
-    return 'ઇમેજ સેવ કરવામાં ભૂલ: $error';
+    return 'સુવિચાર સેવ કરવામાં ભૂલ: $error';
   }
 
   @override
