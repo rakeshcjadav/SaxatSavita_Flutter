@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/notification_service.dart';
@@ -19,26 +21,36 @@ class ReadingPlanService {
   ReadingPlan? get activePlan =>
       _readingPlans.where((p) => p.id == _activePlanId).firstOrNull;
 
-  /// Load reading plans from storage
-  Future<void> loadReadingPlans() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final plansJson = prefs.getString(_storageKey);
-      final activePlanId = prefs.getString(_activeplanKey);
+  void setReadingPlans(List<ReadingPlan> plans) {
+    _readingPlans = plans;
+  }
 
-      if (plansJson != null) {
-        final List<dynamic> plansList = json.decode(plansJson);
-        _readingPlans =
-            plansList
-                .map((planJson) => ReadingPlan.fromJson(planJson))
-                .toList();
+  /// Load reading plans from storage
+  Future<List<ReadingPlan>> loadReadingPlans() async {
+    try {
+      //final prefs = await SharedPreferences.getInstance();
+      //final activePlanId = prefs.getString(_activeplanKey);
+      //_activePlanId = activePlanId;
+
+      if (_readingPlans.isNotEmpty) {
+        // Search through all plans to find the active one
+        for (final plan in _readingPlans) {
+          if (plan.isActive) {
+            _activePlanId = plan.id;
+            debugPrint('✅ Active reading plan found: ${plan.title}');
+            break;
+          }
+        }
+
+        return _readingPlans;
       }
 
-      _activePlanId = activePlanId;
       debugPrint('📚 Loaded ${_readingPlans.length} reading plans');
+
+      return _readingPlans;
     } catch (e) {
       debugPrint('❌ Error loading reading plans: $e');
-      _readingPlans = [];
+      return [];
     }
   }
 
@@ -91,7 +103,10 @@ class ReadingPlanService {
     );
 
     _readingPlans.add(plan);
-    await _saveReadingPlans();
+    //await _saveReadingPlans();
+
+    // Auto-sync to Firebase
+    await FirebaseIntegrationHelper().onNewReadingPlanAdded(plan);
 
     // Schedule notifications for this plan
     await NotificationService().scheduleReadingPlanReminders(plan);
@@ -122,7 +137,7 @@ class ReadingPlanService {
         updateReadingPlan(deactivatedPlan);
       }
 
-      await _saveReadingPlans();
+      //await _saveReadingPlans();
 
       // Schedule notifications for active plan
       await NotificationService().scheduleReadingPlanReminders(updatedPlan);
@@ -136,7 +151,10 @@ class ReadingPlanService {
     final index = _readingPlans.indexWhere((p) => p.id == updatedPlan.id);
     if (index != -1) {
       _readingPlans[index] = updatedPlan.copyWith(updatedAt: DateTime.now());
-      await _saveReadingPlans();
+      //await _saveReadingPlans();
+
+      // Auto-sync to Firebase
+      await FirebaseIntegrationHelper().onReadingPlanUpdated(updatedPlan);
 
       // Update notifications if this is the active plan
       if (updatedPlan.id == _activePlanId) {
@@ -154,7 +172,9 @@ class ReadingPlanService {
       await NotificationService().cancelReadingPlanReminders();
     }
 
-    await _saveReadingPlans();
+    // Auto-sync to Firebase
+    await FirebaseIntegrationHelper().onReadingPlanDeleted(planId);
+
     debugPrint('🗑️ Deleted reading plan: $planId');
   }
 

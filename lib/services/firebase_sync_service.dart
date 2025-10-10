@@ -5,6 +5,7 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 
 class FirebaseSyncService {
   static final FirebaseSyncService _instance = FirebaseSyncService._internal();
@@ -257,6 +258,24 @@ class FirebaseSyncService {
     }
   }
 
+  // Load ReadingPlans from Firebase
+  Future<List<ReadingPlan>> loadReadingPlans() async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot load ReadingPlans');
+      return [];
+    }
+
+    try {
+      final snapshot = await userDoc!.collection('readingPlans').get();
+      return snapshot.docs
+          .map((doc) => ReadingPlan.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      debugPrint('Error loading ReadingPlans from Firebase: $e');
+      return [];
+    }
+  }
+
   /// Sync single ReadingHistory entry to Firebase
   Future<void> syncSingleReadingHistory(ReadingHistory history) async {
     if (!isAuthenticated) return;
@@ -269,6 +288,135 @@ class FirebaseSyncService {
       });
     } catch (e) {
       debugPrint('Error syncing single ReadingHistory: $e');
+    }
+  }
+
+  // =================== READING PLAN ===================
+
+  /// Test Firestore connectivity and data serialization
+  Future<bool> testFirestoreConnection() async {
+    if (!isAuthenticated) {
+      debugPrint('❌ User not authenticated for test');
+      return false;
+    }
+
+    try {
+      debugPrint('🧪 Testing Firestore connectivity...');
+
+      // Simple test write
+      await userDoc!
+          .collection('_test')
+          .doc('connectivity')
+          .set({'timestamp': FieldValue.serverTimestamp(), 'test': true})
+          .timeout(const Duration(seconds: 5));
+
+      debugPrint('✅ Firestore connectivity test passed');
+
+      // Clean up test document
+      await userDoc!.collection('_test').doc('connectivity').delete();
+      return true;
+    } catch (e) {
+      debugPrint('❌ Firestore connectivity test failed: $e');
+      return false;
+    }
+  }
+
+  /// Test ReadingPlan serialization without Firebase
+  bool testReadingPlanSerialization(ReadingPlan plan) {
+    try {
+      debugPrint('🧪 Testing ReadingPlan serialization...');
+      final json = plan.toJson();
+      debugPrint('📋 Serialized JSON: $json');
+
+      // Check for common problematic values
+      for (final entry in json.entries) {
+        if (entry.value == null) {
+          debugPrint('⚠️ Found null value for key: ${entry.key}');
+        }
+      }
+
+      debugPrint('✅ ReadingPlan serialization test passed');
+      return true;
+    } catch (e) {
+      debugPrint('❌ ReadingPlan serialization failed: $e');
+      return false;
+    }
+  }
+
+  Future<void> addReadingPlan(ReadingPlan plan) async {
+    if (!isAuthenticated) {
+      debugPrint('❌ User not authenticated, cannot sync ReadingPlan');
+      return;
+    }
+
+    try {
+      debugPrint('🔄 Starting to add ReadingPlan to Firebase...');
+      debugPrint('📝 Plan ID: ${plan.id}');
+      debugPrint('👤 User ID: $currentUserId');
+
+      // Test serialization first
+      if (!testReadingPlanSerialization(plan)) {
+        throw Exception('ReadingPlan serialization failed');
+      }
+
+      // Test Firestore connectivity
+      final connectivityOk = await testFirestoreConnection();
+      if (!connectivityOk) {
+        throw Exception('Firestore connectivity test failed');
+      }
+
+      debugPrint('🚀 All tests passed, proceeding with Firebase write...');
+
+      // Add timeout to prevent indefinite hanging
+      await userDoc!
+          .collection('readingPlans')
+          .doc(plan.id)
+          .set({...plan.toJson(), 'lastUpdated': FieldValue.serverTimestamp()})
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              debugPrint('❌ Firebase operation timed out after 15 seconds');
+              throw Exception('Firebase operation timed out');
+            },
+          );
+
+      debugPrint('✅ ReadingPlan added to Firebase successfully');
+    } catch (e) {
+      debugPrint('❌ Error adding ReadingPlan to Firebase: $e');
+      debugPrint('📋 Stack trace: ${StackTrace.current}');
+      rethrow; // Re-throw to let caller handle the error
+    }
+  }
+
+  // Update existing ReadingPlan
+  Future<void> updateReadingPlan(ReadingPlan plan) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot update ReadingPlan');
+      return;
+    }
+
+    try {
+      await userDoc!.collection('readingPlans').doc(plan.id).set({
+        ...plan.toJson(),
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      debugPrint('ReadingPlan updated in Firebase successfully');
+    } catch (e) {
+      debugPrint('Error updating ReadingPlan in Firebase: $e');
+    }
+  }
+
+  Future<void> deleteReadingPlan(String planId) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot delete ReadingPlan');
+      return;
+    }
+
+    try {
+      await userDoc!.collection('readingPlans').doc(planId).delete();
+      debugPrint('ReadingPlan deleted from Firebase successfully');
+    } catch (e) {
+      debugPrint('Error deleting ReadingPlan from Firebase: $e');
     }
   }
 
@@ -331,6 +479,7 @@ class FirebaseSyncService {
         loadBookUserInfo(),
         loadKiranUserInfo(),
         loadReadingHistory(),
+        loadReadingPlans(),
       ]);
 
       final data = {
@@ -338,6 +487,7 @@ class FirebaseSyncService {
         'bookUserInfo': results[1],
         'kiranUserInfo': results[2],
         'readingHistory': results[3],
+        'readingPlans': results[4],
       };
 
       debugPrint('All user data loaded from Firebase successfully');
@@ -384,6 +534,76 @@ class FirebaseSyncService {
   }
 
   // =================== UTILITY METHODS ===================
+
+  /// Debug method to test ReadingPlan Firebase operations
+  Future<void> debugReadingPlanOperation(ReadingPlan plan) async {
+    debugPrint('🔍 === DEBUG READING PLAN OPERATION ===');
+
+    // 1. Check authentication
+    debugPrint('🔐 Authentication check: $isAuthenticated');
+    debugPrint('👤 Current user ID: $currentUserId');
+
+    if (!isAuthenticated) {
+      debugPrint('❌ User not authenticated - stopping debug');
+      return;
+    }
+
+    // 2. Test serialization
+    debugPrint('📝 Testing serialization...');
+    try {
+      final json = plan.toJson();
+      debugPrint('✅ Serialization successful. Keys: ${json.keys.join(', ')}');
+    } catch (e) {
+      debugPrint('❌ Serialization failed: $e');
+      return;
+    }
+
+    // 3. Test simple Firebase write
+    debugPrint('🔥 Testing simple Firebase write...');
+    try {
+      await userDoc!
+          .collection('_debug')
+          .doc('test')
+          .set({
+            'timestamp': DateTime.now().toIso8601String(),
+            'message': 'Debug test',
+          })
+          .timeout(const Duration(seconds: 5));
+      debugPrint('✅ Simple Firebase write successful');
+
+      // Clean up
+      await userDoc!.collection('_debug').doc('test').delete();
+    } catch (e) {
+      debugPrint('❌ Simple Firebase write failed: $e');
+      return;
+    }
+
+    // 4. Test ReadingPlan write
+    debugPrint('📚 Testing ReadingPlan write...');
+    try {
+      await userDoc!
+          .collection('readingPlans')
+          .doc('debug_${plan.id}')
+          .set({
+            ...plan.toJson(),
+            'lastUpdated': FieldValue.serverTimestamp(),
+            'debugMode': true,
+          })
+          .timeout(const Duration(seconds: 10));
+      debugPrint('✅ ReadingPlan write successful');
+
+      // Clean up debug document
+      await userDoc!
+          .collection('readingPlans')
+          .doc('debug_${plan.id}')
+          .delete();
+      debugPrint('🧹 Debug document cleaned up');
+    } catch (e) {
+      debugPrint('❌ ReadingPlan write failed: $e');
+    }
+
+    debugPrint('🔍 === DEBUG COMPLETE ===');
+  }
 
   /// Clear all user data from Firebase (useful for logout)
   Future<void> clearAllUserData() async {

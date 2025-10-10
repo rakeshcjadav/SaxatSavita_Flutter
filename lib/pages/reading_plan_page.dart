@@ -40,6 +40,9 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     try {
       await _notificationService.initialize();
       await _readingPlanService.loadReadingPlans();
+      await _readingPlanService.setActivePlan(
+        _readingPlanService.activePlan?.id ?? '',
+      );
     } catch (e) {
       debugPrint('Error initializing services: $e');
     }
@@ -422,29 +425,19 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
 
   Widget _buildPlanCard(ReadingPlan plan) {
     final isActive = plan.id == _readingPlanService.activePlan?.id;
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final localizations = AppLocalizations.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16.0),
-        leading: InkWell(
-          onTap: () async {
-            await _readingPlanService.setActivePlan(plan.id);
-            setState(() {});
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Text(localizations!.plan_now_active(plan.title)),
-              ),
-            );
-          },
-          child: CircleAvatar(
-            backgroundColor:
-                isActive ? Theme.of(context).primaryColor : Colors.grey,
-            child: Icon(
-              isActive ? Icons.play_arrow : Icons.pause,
-              color: Colors.white,
-            ),
+        leading: CircleAvatar(
+          backgroundColor:
+              isActive ? Theme.of(context).colorScheme.primary : Colors.grey,
+          child: Icon(
+            isActive ? Icons.play_arrow : Icons.pause,
+            color:
+                isActive
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Colors.black54,
           ),
         ),
         title: Text(

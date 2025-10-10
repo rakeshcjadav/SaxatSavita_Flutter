@@ -3,10 +3,12 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
+import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
+import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
 
 /// Integration helper for Firebase sync
 /// This shows how to integrate the Firebase sync service with your existing services
@@ -54,6 +56,24 @@ class FirebaseIntegrationHelper {
   Future<void> onSingleKiranUserInfoChanged(KiranUserInfo kiranUserInfo) async {
     debugPrint('Single kiran user info changed, syncing to Firebase...');
     await _firebaseSync.syncSingleKiranUserInfo(kiranUserInfo);
+  }
+
+  /// Auto-sync when reading plan is added
+  Future<void> onNewReadingPlanAdded(ReadingPlan plan) async {
+    debugPrint('Reading plan added, syncing to Firebase...$plan');
+    await _firebaseSync.addReadingPlan(plan);
+  }
+
+  /// Auto-sync when reading plan is updated
+  Future<void> onReadingPlanUpdated(ReadingPlan plan) async {
+    debugPrint('Reading plan updated, syncing to Firebase...$plan');
+    await _firebaseSync.updateReadingPlan(plan);
+  }
+
+  /// Auto-sync when reading plan is deleted
+  Future<void> onReadingPlanDeleted(String planId) async {
+    debugPrint('Reading plan deleted, syncing to Firebase...$planId');
+    await _firebaseSync.deleteReadingPlan(planId);
   }
 
   /// Sync all data manually (e.g., on app start or login)
@@ -134,6 +154,15 @@ class FirebaseIntegrationHelper {
         final readingHistoryList = data['readingHistory'] as List;
         ReadingHistoryService().readingHistoryList = readingHistoryList.cast();
         debugPrint('Reading history loaded from Firebase');
+      }
+
+      // Update reading plans if available
+      if (data['readingPlans'] != null &&
+          data['readingPlans'] is List &&
+          data['readingPlans'].isNotEmpty) {
+        final readingPlanList = data['readingPlans'] as List;
+        ReadingPlanService().setReadingPlans(readingPlanList.cast());
+        debugPrint('Reading plans loaded from Firebase');
       }
 
       debugPrint('Data loading from Firebase completed');
