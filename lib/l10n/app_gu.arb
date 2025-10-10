@@ -432,5 +432,12 @@
             }
         }
     },
-    "create_quote_image": "સુવિચાર બનાવો"
+    "create_quote_image": "સુવિચાર બનાવો",
+    "quote_content": "સુવિચાર સામગ્રી",
+    "author": "લેખક",
+    "quote_author_hint": "સુવિચારનો લેખક અથવા સ્ત્રોત",
+    "enter_author": "લેખક અથવા સ્ત્રોત દાખલ કરો",
+    "customization": "કસ્ટમાઇઝેશન",
+    "template_style": "ટેમ્પલેટ શૈલી",
+    "background": "પૃષ્ઠભૂમિ"
 }

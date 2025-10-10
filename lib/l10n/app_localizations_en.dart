@@ -803,4 +803,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get create_quote_image => 'Create Quote';
+
+  @override
+  String get quote_content => 'Quote Content';
+
+  @override
+  String get author => 'Author';
+
+  @override
+  String get quote_author_hint => 'Quote author or source';
+
+  @override
+  String get enter_author => 'Enter author or source';
+
+  @override
+  String get customization => 'Customization';
+
+  @override
+  String get template_style => 'Template Style';
+
+  @override
+  String get background => 'Background';
 }

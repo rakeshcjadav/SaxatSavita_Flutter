@@ -1567,6 +1567,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create Quote'**
   String get create_quote_image;
+
+  /// No description provided for @quote_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote Content'**
+  String get quote_content;
+
+  /// No description provided for @author.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get author;
+
+  /// No description provided for @quote_author_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote author or source'**
+  String get quote_author_hint;
+
+  /// No description provided for @enter_author.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter author or source'**
+  String get enter_author;
+
+  /// No description provided for @customization.
+  ///
+  /// In en, this message translates to:
+  /// **'Customization'**
+  String get customization;
+
+  /// No description provided for @template_style.
+  ///
+  /// In en, this message translates to:
+  /// **'Template Style'**
+  String get template_style;
+
+  /// No description provided for @background.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get background;
 }
 
 class _AppLocalizationsDelegate

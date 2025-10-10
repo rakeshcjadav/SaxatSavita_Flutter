@@ -808,4 +808,25 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get create_quote_image => 'સુવિચાર બનાવો';
+
+  @override
+  String get quote_content => 'સુવિચાર સામગ્રી';
+
+  @override
+  String get author => 'લેખક';
+
+  @override
+  String get quote_author_hint => 'સુવિચારનો લેખક અથવા સ્ત્રોત';
+
+  @override
+  String get enter_author => 'લેખક અથવા સ્ત્રોત દાખલ કરો';
+
+  @override
+  String get customization => 'કસ્ટમાઇઝેશન';
+
+  @override
+  String get template_style => 'ટેમ્પલેટ શૈલી';
+
+  @override
+  String get background => 'પૃષ્ઠભૂમિ';
 }

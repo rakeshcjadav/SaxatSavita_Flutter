@@ -111,11 +111,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
       final random =
           DateTime.now().millisecondsSinceEpoch % _predefinedQuotes.length;
       InspirationalQuote randomQuote = _predefinedQuotes[random];
-      randomQuote.setAuthor =
-          FirebaseAuth.instance.currentUser?.displayName ?? '';
+      String author = _authorController.text;
       _currentSelectedQuote = randomQuote;
+      _currentSelectedQuote!.setAuthor =
+          author.isEmpty
+              ? (FirebaseAuth.instance.currentUser?.displayName ?? '')
+              : author;
       _quoteController.text = randomQuote.quote;
-      _authorController.text = randomQuote.author;
+      _authorController.text = _currentSelectedQuote!.author;
       setState(() {});
     }
   }
@@ -138,18 +141,18 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
             IconButton(
               icon: const Icon(Icons.shuffle),
               onPressed: _getRandomQuote,
-              tooltip: 'Random Quote',
+              tooltip: AppLocalizations.of(context)!.random_quote,
             ),
           ],
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: _shareImage,
-            tooltip: 'Share Image',
+            tooltip: AppLocalizations.of(context)!.share_quote,
           ),
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _saveImage,
-            tooltip: 'Save Image',
+            tooltip: AppLocalizations.of(context)!.save_quote,
           ),
         ],
       ),
@@ -264,7 +267,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
                     child: Text(
                       _quoteController.text.isNotEmpty
                           ? _quoteController.text
-                          : 'Enter your inspirational quote here...',
+                          : '${AppLocalizations.of(context)!.enter_quote}...',
                       style: TextStyle(
                         color: _textColor,
                         fontSize: _fontSize,
@@ -400,7 +403,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Quote Content',
+              AppLocalizations.of(context)!.quote_content,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
@@ -409,10 +412,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
               enabled: hasEnableEditing,
               controller: _quoteController,
               maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Quote Text',
-                hintText: 'Enter your inspirational quote...',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.quote_text,
+                hintText: AppLocalizations.of(context)!.enter_quote,
+                border: const OutlineInputBorder(),
               ),
               onChanged: (value) {
                 // Clear current selected quote when manually editing
@@ -425,10 +428,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
             TextField(
               enabled: hasEnableEditing,
               controller: _authorController,
-              decoration: const InputDecoration(
-                labelText: 'Author',
-                hintText: 'Quote author or source...',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.author,
+                hintText: AppLocalizations.of(context)!.quote_author_hint,
+                border: const OutlineInputBorder(),
               ),
               onChanged: (value) {
                 // Clear current selected quote when manually editing
@@ -450,14 +453,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Customization',
+              AppLocalizations.of(context)!.customization,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
 
             // Template selection
             Text(
-              'Template Style:',
+              '${AppLocalizations.of(context)!.template_style}:',
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -474,7 +477,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
 
             // Color gradient selection
             Text(
-              'Background Gradient:',
+              AppLocalizations.of(context)!.background,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -637,9 +640,18 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
                     trailing: IconButton(
                       icon: const Icon(Icons.arrow_forward),
                       onPressed: () {
+                        String author = _authorController.text;
                         _currentSelectedQuote = quote;
+                        _currentSelectedQuote!.setAuthor =
+                            author.isEmpty
+                                ? (FirebaseAuth
+                                        .instance
+                                        .currentUser
+                                        ?.displayName ??
+                                    '')
+                                : author;
                         _quoteController.text = quote.quote;
-                        _authorController.text = quote.author;
+                        _authorController.text = _currentSelectedQuote!.author;
                         setState(() {});
                       },
                     ),
