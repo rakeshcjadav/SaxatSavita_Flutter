@@ -1441,6 +1441,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No reminders will be sent'**
   String get reminders_disabled_subtitle;
+
+  /// No description provided for @quotes_image_generator.
+  ///
+  /// In en, this message translates to:
+  /// **'Quotes Image Generator'**
+  String get quotes_image_generator;
+
+  /// No description provided for @inspirational_quotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspirational Quotes'**
+  String get inspirational_quotes;
+
+  /// No description provided for @create_share_quotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and share beautiful quote images'**
+  String get create_share_quotes;
+
+  /// No description provided for @quote_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote Text'**
+  String get quote_text;
+
+  /// No description provided for @enter_quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your inspirational quote'**
+  String get enter_quote;
+
+  /// No description provided for @quote_font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Font Size'**
+  String get quote_font_size;
+
+  /// No description provided for @background_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Color'**
+  String get background_color;
+
+  /// No description provided for @text_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Text Color'**
+  String get text_color;
+
+  /// No description provided for @template.
+  ///
+  /// In en, this message translates to:
+  /// **'Template'**
+  String get template;
+
+  /// No description provided for @gradient.
+  ///
+  /// In en, this message translates to:
+  /// **'Gradient'**
+  String get gradient;
+
+  /// No description provided for @solid.
+  ///
+  /// In en, this message translates to:
+  /// **'Solid'**
+  String get solid;
+
+  /// No description provided for @geometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Geometric'**
+  String get geometric;
+
+  /// No description provided for @simple.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple'**
+  String get simple;
+
+  /// No description provided for @elegant.
+  ///
+  /// In en, this message translates to:
+  /// **'Elegant'**
+  String get elegant;
+
+  /// No description provided for @modern.
+  ///
+  /// In en, this message translates to:
+  /// **'Modern'**
+  String get modern;
+
+  /// No description provided for @share_quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Quote'**
+  String get share_quote;
+
+  /// No description provided for @save_quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Quote'**
+  String get save_quote;
+
+  /// No description provided for @random_quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Random Quote'**
+  String get random_quote;
+
+  /// No description provided for @image_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Image saved to gallery'**
+  String get image_saved;
+
+  /// Error message when saving image fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving image: {error}'**
+  String error_saving_image(String error);
 }
 
 class _AppLocalizationsDelegate

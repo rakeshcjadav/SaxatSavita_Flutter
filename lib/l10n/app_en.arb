@@ -402,5 +402,34 @@
         }
     },
     "reminders_enabled_subtitle": "Get notified to maintain your reading habit",
-    "reminders_disabled_subtitle": "No reminders will be sent"
+    "reminders_disabled_subtitle": "No reminders will be sent",
+    
+    "quotes_image_generator": "Quotes Image Generator",
+    "inspirational_quotes": "Inspirational Quotes",
+    "create_share_quotes": "Create and share beautiful quote images",
+    "quote_text": "Quote Text",
+    "enter_quote": "Enter your inspirational quote",
+    "quote_font_size": "Font Size",
+    "background_color": "Background Color",
+    "text_color": "Text Color",
+    "template": "Template",
+    "gradient": "Gradient",
+    "solid": "Solid",
+    "geometric": "Geometric",
+    "simple": "Simple",
+    "elegant": "Elegant",
+    "modern": "Modern",
+    "share_quote": "Share Quote",
+    "save_quote": "Save Quote",
+    "random_quote": "Random Quote",
+    "image_saved": "Image saved to gallery",
+    "error_saving_image": "Error saving image: {error}",
+    "@error_saving_image": {
+        "description": "Error message when saving image fails",
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    }
 }

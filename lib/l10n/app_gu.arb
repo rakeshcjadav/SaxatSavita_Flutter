@@ -402,5 +402,34 @@
         }
     },
     "reminders_enabled_subtitle": "તમારી વાંચનની આદત જાળવવા માટે નોટિફિકેશન મેળવો",
-    "reminders_disabled_subtitle": "કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં"
+    "reminders_disabled_subtitle": "કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં",
+    
+    "quotes_image_generator": "કોટ્સ ઇમેજ જેનરેટર",
+    "inspirational_quotes": "પ્રેરણાદાયક અવતરણ",
+    "create_share_quotes": "સુંદર અવતરણ છબીઓ બનાવો અને શેર કરો",
+    "quote_text": "અવતરણ લખાણ",
+    "enter_quote": "તમારું પ્રેરણાદાયક અવતરણ દાખલ કરો",
+    "quote_font_size": "ફોન્ટ સાઇઝ",
+    "background_color": "પૃષ્ઠભૂમિ રંગ",
+    "text_color": "લખાણ રંગ",
+    "template": "ટેમ્પલેટ",
+    "gradient": "ગ્રેડિઅન્ટ",
+    "solid": "સોલિડ",
+    "geometric": "ભૌમિતિક",
+    "simple": "સરળ",
+    "elegant": "ભવ્ય",
+    "modern": "આધુનિક",
+    "share_quote": "અવતરણ શેર કરો",
+    "save_quote": "અવતરણ સેવ કરો",
+    "random_quote": "રેન્ડમ અવતરણ",
+    "image_saved": "ગેલરીમાં ઇમેજ સેવ થયું",
+    "error_saving_image": "ઇમેજ સેવ કરવામાં ભૂલ: {error}",
+    "@error_saving_image": {
+        "description": "Error message when saving image fails",
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    }
 }

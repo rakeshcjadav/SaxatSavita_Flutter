@@ -50,4 +50,9 @@ class KiranListService {
       orElse: () => KiranInfo(index: 0, number: '', title: '', wordCount: 0),
     );
   }
+
+  String getKiranTitle(int partNumber, int kiranIndex) {
+    KiranInfo kiranInfo = getKiranInfo(partNumber, kiranIndex);
+    return '${kiranInfo.number} ${kiranInfo.title}';
+  }
 }

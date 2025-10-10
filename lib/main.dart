@@ -11,6 +11,7 @@ import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
+import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'pages/splashpage.dart';
@@ -202,6 +203,7 @@ class SakshatSavitaApp extends StatelessWidget {
             '/notes': (context) => const NoteListPage(),
             '/readinghistory': (context) => const ReadingHistoryPage(),
             '/reading_plans': (context) => const ReadingPlanPage(),
+            '/quotes_generator': (context) => const QuotesImageGeneratorPage(),
           },
         );
       },

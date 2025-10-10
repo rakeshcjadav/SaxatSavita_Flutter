@@ -112,6 +112,14 @@ class _DrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.format_quote),
+            title: Text(AppLocalizations.of(context)!.quotes_image_generator),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/quotes_generator');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.settings),
             title: Text(AppLocalizations.of(context)!.settings),
             onTap: () {

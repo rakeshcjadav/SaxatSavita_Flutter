@@ -738,4 +738,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reminders_disabled_subtitle => 'No reminders will be sent';
+
+  @override
+  String get quotes_image_generator => 'Quotes Image Generator';
+
+  @override
+  String get inspirational_quotes => 'Inspirational Quotes';
+
+  @override
+  String get create_share_quotes => 'Create and share beautiful quote images';
+
+  @override
+  String get quote_text => 'Quote Text';
+
+  @override
+  String get enter_quote => 'Enter your inspirational quote';
+
+  @override
+  String get quote_font_size => 'Font Size';
+
+  @override
+  String get background_color => 'Background Color';
+
+  @override
+  String get text_color => 'Text Color';
+
+  @override
+  String get template => 'Template';
+
+  @override
+  String get gradient => 'Gradient';
+
+  @override
+  String get solid => 'Solid';
+
+  @override
+  String get geometric => 'Geometric';
+
+  @override
+  String get simple => 'Simple';
+
+  @override
+  String get elegant => 'Elegant';
+
+  @override
+  String get modern => 'Modern';
+
+  @override
+  String get share_quote => 'Share Quote';
+
+  @override
+  String get save_quote => 'Save Quote';
+
+  @override
+  String get random_quote => 'Random Quote';
+
+  @override
+  String get image_saved => 'Image saved to gallery';
+
+  @override
+  String error_saving_image(String error) {
+    return 'Error saving image: $error';
+  }
 }

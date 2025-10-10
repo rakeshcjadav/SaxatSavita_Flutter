@@ -743,4 +743,66 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get reminders_disabled_subtitle => 'કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં';
+
+  @override
+  String get quotes_image_generator => 'કોટ્સ ઇમેજ જેનરેટર';
+
+  @override
+  String get inspirational_quotes => 'પ્રેરણાદાયક અવતરણ';
+
+  @override
+  String get create_share_quotes => 'સુંદર અવતરણ છબીઓ બનાવો અને શેર કરો';
+
+  @override
+  String get quote_text => 'અવતરણ લખાણ';
+
+  @override
+  String get enter_quote => 'તમારું પ્રેરણાદાયક અવતરણ દાખલ કરો';
+
+  @override
+  String get quote_font_size => 'ફોન્ટ સાઇઝ';
+
+  @override
+  String get background_color => 'પૃષ્ઠભૂમિ રંગ';
+
+  @override
+  String get text_color => 'લખાણ રંગ';
+
+  @override
+  String get template => 'ટેમ્પલેટ';
+
+  @override
+  String get gradient => 'ગ્રેડિઅન્ટ';
+
+  @override
+  String get solid => 'સોલિડ';
+
+  @override
+  String get geometric => 'ભૌમિતિક';
+
+  @override
+  String get simple => 'સરળ';
+
+  @override
+  String get elegant => 'ભવ્ય';
+
+  @override
+  String get modern => 'આધુનિક';
+
+  @override
+  String get share_quote => 'અવતરણ શેર કરો';
+
+  @override
+  String get save_quote => 'અવતરણ સેવ કરો';
+
+  @override
+  String get random_quote => 'રેન્ડમ અવતરણ';
+
+  @override
+  String get image_saved => 'ગેલરીમાં ઇમેજ સેવ થયું';
+
+  @override
+  String error_saving_image(String error) {
+    return 'ઇમેજ સેવ કરવામાં ભૂલ: $error';
+  }
 }
