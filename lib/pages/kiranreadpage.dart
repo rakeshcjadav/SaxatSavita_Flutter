@@ -975,9 +975,6 @@ class _KiranReadPageState extends State<KiranReadPage>
     debugPrint('Opening quote editor with selected text: $selectedText');
     // Store context values before async operations
     final navigator = Navigator.of(context);
-    final localizations = AppLocalizations.of(context)!;
-    final kiranTitle =
-        '${localizations.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}';
 
     try {
       final InspirationalQuote quote = InspirationalQuote(

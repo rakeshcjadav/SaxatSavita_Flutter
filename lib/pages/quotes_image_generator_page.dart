@@ -145,11 +145,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
             onPressed: _shareImage,
             tooltip: 'Share Image',
           ),
+          /*
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _saveImage,
             tooltip: 'Save Image',
-          ),
+          ),*/
         ],
       ),
       body: SafeArea(
