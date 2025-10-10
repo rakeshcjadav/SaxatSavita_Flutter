@@ -745,7 +745,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get reminders_disabled_subtitle => 'કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં';
 
   @override
-  String get quotes_image_generator => 'કોટ્સ ઇમેજ જેનરેટર';
+  String get quotes_image_generator => 'સુવિચાર બનાવો';
 
   @override
   String get inspirational_quotes => 'પ્રેરણાદાયક અવતરણ';
@@ -805,4 +805,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String error_saving_image(String error) {
     return 'ઇમેજ સેવ કરવામાં ભૂલ: $error';
   }
+
+  @override
+  String get create_quote_image => 'સુવિચાર બનાવો';
 }

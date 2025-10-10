@@ -404,7 +404,7 @@
     "reminders_enabled_subtitle": "Get notified to maintain your reading habit",
     "reminders_disabled_subtitle": "No reminders will be sent",
     
-    "quotes_image_generator": "Quotes Image Generator",
+    "quotes_image_generator": "Quotes Generator",
     "inspirational_quotes": "Inspirational Quotes",
     "create_share_quotes": "Create and share beautiful quote images",
     "quote_text": "Quote Text",
@@ -431,5 +431,6 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "create_quote_image": "Create Quote"
 }

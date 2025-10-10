@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,9 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
 
 class QuotesImageGeneratorPage extends StatefulWidget {
-  const QuotesImageGeneratorPage({super.key});
+  const QuotesImageGeneratorPage({super.key, required this.quote});
+
+  final InspirationalQuote? quote;
 
   @override
   State<QuotesImageGeneratorPage> createState() =>
@@ -36,38 +39,39 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
   // Current quote reference
   InspirationalQuote? _currentSelectedQuote;
 
+  bool hasEnableEditing = false;
+
   // Predefined inspirational quotes
   final List<InspirationalQuote> _predefinedQuotes = [
     InspirationalQuote(
-      quote:
-          '🙏 આત્મા સાથે જોડાવું એ જીવનની સૌથી મોટી સિદ્ધિ છે.આત્મા સાથે જોડાવું એ જીવનની સૌથી મોટી સિદ્ધિ છે.',
-      author: 'પ.પૂ. સદ્. શ્રી જોગીસ્વામી',
-      partNumber: 1,
-      kiranIndex: 2,
+      quote: '🙏 આત્મા સાથે જોડાવું એ જીવનની સૌથી મોટી સિદ્ધિ છે.',
+      author: '',
+      partNumber: -1,
+      kiranIndex: -1,
     ),
     InspirationalQuote(
       quote: '📖 દરરોજ અધ્યાત્મિક વાંચન તમારા જીવનમાં પ્રકાશ લાવે છે.',
-      author: 'પ.પૂ. સદ્. શ્રી જોગીસ્વામી',
-      partNumber: 1,
-      kiranIndex: 5,
+      author: '',
+      partNumber: -1,
+      kiranIndex: -1,
     ),
     InspirationalQuote(
       quote: '✨ શાંતિ બહારથી નહીં, અંદરથી આવે છે.',
-      author: 'સક્ષાત્ સવિતા',
-      partNumber: 2,
-      kiranIndex: 3,
+      author: '',
+      partNumber: -1,
+      kiranIndex: -1,
     ),
     InspirationalQuote(
       quote: '🌅 દરેક નવો દિવસ આત્મિક વૃદ્ધિની તક છે.',
-      author: 'સક્ષાત્ સવિતા',
-      partNumber: 2,
-      kiranIndex: 8,
+      author: '',
+      partNumber: -1,
+      kiranIndex: -1,
     ),
     InspirationalQuote(
       quote: '💫 સત્ય, પ્રેમ અને કરુણા - આ ત્રણે જીવનના આધાર છે.',
-      author: 'સક્ષાત્ સવિતા',
-      partNumber: 3,
-      kiranIndex: 2,
+      author: '',
+      partNumber: -1,
+      kiranIndex: -1,
     ),
   ];
 
@@ -85,18 +89,29 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
   void initState() {
     super.initState();
     // Set first predefined quote as default
-    if (_predefinedQuotes.isNotEmpty) {
+    if (widget.quote != null) {
+      _currentSelectedQuote = widget.quote;
+      _quoteController.text = widget.quote!.quote;
+      _authorController.text = widget.quote!.author;
+      hasEnableEditing = false;
+    } else {
+      hasEnableEditing = true;
+      _getRandomQuote();
+    }
+    /*if (_predefinedQuotes.isNotEmpty) {
       _currentSelectedQuote = _predefinedQuotes[0];
       _quoteController.text = _predefinedQuotes[0].quote;
       _authorController.text = _predefinedQuotes[0].author;
-    }
+    }*/
   }
 
   void _getRandomQuote() {
     if (_predefinedQuotes.isNotEmpty) {
       final random =
           DateTime.now().millisecondsSinceEpoch % _predefinedQuotes.length;
-      final randomQuote = _predefinedQuotes[random];
+      InspirationalQuote randomQuote = _predefinedQuotes[random];
+      randomQuote.setAuthor =
+          FirebaseAuth.instance.currentUser?.displayName ?? '';
       _currentSelectedQuote = randomQuote;
       _quoteController.text = randomQuote.quote;
       _authorController.text = randomQuote.author;
@@ -118,11 +133,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
         title: Text(AppLocalizations.of(context)!.quotes_image_generator),
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.shuffle),
-            onPressed: _getRandomQuote,
-            tooltip: 'Random Quote',
-          ),
+          if (hasEnableEditing) ...[
+            IconButton(
+              icon: const Icon(Icons.shuffle),
+              onPressed: _getRandomQuote,
+              tooltip: 'Random Quote',
+            ),
+          ],
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: _shareImage,
@@ -135,26 +152,30 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(0.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Customization Section
-            _buildCustomizationSection(),
-            const SizedBox(height: 12),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(0.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Customization Section
+              _buildCustomizationSection(),
+              const SizedBox(height: 12),
 
-            // Preview Section
-            _buildPreviewSection(),
-            const SizedBox(height: 12),
+              // Preview Section
+              _buildPreviewSection(),
+              const SizedBox(height: 12),
 
-            // Text Input Section
-            _buildTextInputSection(),
-            const SizedBox(height: 12),
+              if (hasEnableEditing) ...[
+                // Text Input Section
+                _buildTextInputSection(),
+                const SizedBox(height: 12),
 
-            // Predefined Quotes Section
-            _buildPredefinedQuotesSection(),
-          ],
+                // Predefined Quotes Section
+                _buildPredefinedQuotesSection(),
+              ],
+            ],
+          ),
         ),
       ),
     );
@@ -224,7 +245,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
                 Row(
                   children: [
                     Transform.flip(
-                      flipY: true,
+                      flipY: false,
                       flipX: true,
                       child: Icon(
                         Icons.format_quote,
@@ -284,7 +305,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
                   ),
 
                 // Source reference (Part and Kiran info)
-                if (_currentSelectedQuote != null) ...[
+                if (_currentSelectedQuote != null &&
+                    _currentSelectedQuote!.partNumber != -1 &&
+                    _currentSelectedQuote!.kiranIndex != -1) ...[
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -312,7 +335,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
                   ),
                 ],
 
-                if (_currentSelectedQuote != null) ...[
+                if (_currentSelectedQuote != null &&
+                    _currentSelectedQuote!.partNumber != -1) ...[
                   const SizedBox(height: 12),
                   // App branding
                   Row(
@@ -381,6 +405,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
             const SizedBox(height: 16),
 
             TextField(
+              enabled: hasEnableEditing,
               controller: _quoteController,
               maxLines: 4,
               decoration: const InputDecoration(
@@ -397,6 +422,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
             const SizedBox(height: 16),
 
             TextField(
+              enabled: hasEnableEditing,
               controller: _authorController,
               decoration: const InputDecoration(
                 labelText: 'Author',

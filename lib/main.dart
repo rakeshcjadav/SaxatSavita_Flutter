@@ -203,7 +203,8 @@ class SakshatSavitaApp extends StatelessWidget {
             '/notes': (context) => const NoteListPage(),
             '/readinghistory': (context) => const ReadingHistoryPage(),
             '/reading_plans': (context) => const ReadingPlanPage(),
-            '/quotes_generator': (context) => const QuotesImageGeneratorPage(),
+            '/quotes_generator':
+                (context) => const QuotesImageGeneratorPage(quote: null),
           },
         );
       },

@@ -116,7 +116,11 @@ class _DrawerState extends State<MyDrawer> {
             title: Text(AppLocalizations.of(context)!.quotes_image_generator),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/quotes_generator');
+              Navigator.pushNamed(
+                context,
+                '/quotes_generator',
+                arguments: {null},
+              );
             },
           ),
           ListTile(

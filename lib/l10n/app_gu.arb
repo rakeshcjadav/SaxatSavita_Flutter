@@ -404,7 +404,7 @@
     "reminders_enabled_subtitle": "તમારી વાંચનની આદત જાળવવા માટે નોટિફિકેશન મેળવો",
     "reminders_disabled_subtitle": "કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં",
     
-    "quotes_image_generator": "કોટ્સ ઇમેજ જેનરેટર",
+    "quotes_image_generator": "સુવિચાર બનાવો",
     "inspirational_quotes": "પ્રેરણાદાયક અવતરણ",
     "create_share_quotes": "સુંદર અવતરણ છબીઓ બનાવો અને શેર કરો",
     "quote_text": "અવતરણ લખાણ",
@@ -431,5 +431,6 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "create_quote_image": "સુવિચાર બનાવો"
 }

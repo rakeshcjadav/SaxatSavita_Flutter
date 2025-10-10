@@ -1445,7 +1445,7 @@ abstract class AppLocalizations {
   /// No description provided for @quotes_image_generator.
   ///
   /// In en, this message translates to:
-  /// **'Quotes Image Generator'**
+  /// **'Quotes Generator'**
   String get quotes_image_generator;
 
   /// No description provided for @inspirational_quotes.
@@ -1561,6 +1561,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error saving image: {error}'**
   String error_saving_image(String error);
+
+  /// No description provided for @create_quote_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Quote'**
+  String get create_quote_image;
 }
 
 class _AppLocalizationsDelegate

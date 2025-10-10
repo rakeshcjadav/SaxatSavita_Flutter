@@ -9,7 +9,7 @@ class CustomHtmlWidget extends StatefulWidget {
     super.key,
     required this.htmlContent,
     this.onAddNote,
-    this.hasAddNoteButton = true,
+    this.onCreateQuoteImage,
   }) {
     // Initialize the custom tag registry if needed
     // This can be used to register custom HTML tags for rendering
@@ -21,8 +21,8 @@ class CustomHtmlWidget extends StatefulWidget {
   }
 
   final String htmlContent;
-  final bool hasAddNoteButton;
   final void Function(String)? onAddNote;
+  final void Function(String)? onCreateQuoteImage;
 
   final CustomTagRegistry customTagRegistry = CustomTagRegistry();
 
@@ -36,6 +36,11 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
   void _handleAddNote(String selectedText) {
     debugPrint('Add note for selected text: "$selectedText"');
     widget.onAddNote?.call(selectedText);
+  }
+
+  void _handleCreateQuoteImage(String selectedText) {
+    debugPrint('Create quote image for selected text: "$selectedText"');
+    widget.onCreateQuoteImage?.call(selectedText);
   }
 
   @override
@@ -61,7 +66,7 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
             return AdaptiveTextSelectionToolbar.buttonItems(
               anchors: selectableRegionState.contextMenuAnchors,
               buttonItems: [
-                if (widget.hasAddNoteButton)
+                if (widget.onAddNote != null)
                   ContextMenuButtonItem(
                     onPressed: () {
                       if (_selectedText.isNotEmpty) {
@@ -69,6 +74,16 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
                       }
                     },
                     label: AppLocalizations.of(context)!.add_notes,
+                  ),
+                ...selectableRegionState.contextMenuButtonItems,
+                if (widget.onCreateQuoteImage != null)
+                  ContextMenuButtonItem(
+                    onPressed: () {
+                      if (_selectedText.isNotEmpty) {
+                        _handleCreateQuoteImage(_selectedText);
+                      }
+                    },
+                    label: AppLocalizations.of(context)!.create_quote_image,
                   ),
                 ...selectableRegionState.contextMenuButtonItems,
               ],

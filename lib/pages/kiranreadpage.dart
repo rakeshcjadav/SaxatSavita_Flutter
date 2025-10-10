@@ -8,11 +8,13 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/pages/settingspage.dart';
 import 'package:saxatsavita_flutter/pages/simple_note_editor_page.dart';
 import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
+import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
 
 class KiranReadPage extends StatefulWidget {
   const KiranReadPage({
@@ -583,6 +585,11 @@ class _KiranReadPageState extends State<KiranReadPage>
                                   _openNoteEditor(selectedText: selectedText);
                                   _resumeTimer();
                                 },
+                                onCreateQuoteImage: (selectedText) {
+                                  _pauseTimer();
+                                  _openQuoteEditor(selectedText: selectedText);
+                                  _resumeTimer();
+                                },
                               ),
                               const SizedBox(height: 8.0),
                               Tooltip(
@@ -960,6 +967,47 @@ class _KiranReadPageState extends State<KiranReadPage>
         setState(() {
           _hasDataChanged = true;
         });
+      }
+    }
+  }
+
+  Future<void> _openQuoteEditor({String? selectedText}) async {
+    debugPrint('Opening quote editor with selected text: $selectedText');
+    // Store context values before async operations
+    final navigator = Navigator.of(context);
+    final localizations = AppLocalizations.of(context)!;
+    final kiranTitle =
+        '${localizations.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}';
+
+    try {
+      final InspirationalQuote quote = InspirationalQuote(
+        quote: selectedText!,
+        author: "પ.પૂ. સદ્. શ્રી જોગીસ્વામી",
+        kiranIndex: widget.kiranInfo.index,
+        partNumber: int.parse(widget.partNumber.replaceAll('part', '')),
+      );
+      final result = await navigator.push(
+        MaterialPageRoute(
+          builder: (_) => QuotesImageGeneratorPage(quote: quote),
+        ),
+      );
+
+      // If quotes were modified, update UI
+      if (result == true && mounted) {
+        setState(() {
+          _hasDataChanged = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error opening quote editor: $e');
+      // Optionally show a snackbar or dialog to inform the user
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(""), // localizations.error_occurred),
+            duration: const Duration(seconds: 2),
+          ),
+        );
       }
     }
   }

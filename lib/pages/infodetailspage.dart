@@ -62,10 +62,7 @@ class Infodetailspage extends StatelessWidget {
                       debugPrint("Unfocus TextField");
                     },
                     child: SafeArea(
-                      child: CustomHtmlWidget(
-                        htmlContent: strContent,
-                        hasAddNoteButton: false,
-                      ),
+                      child: CustomHtmlWidget(htmlContent: strContent),
                     ),
                   ),
                 ),

@@ -740,7 +740,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminders_disabled_subtitle => 'No reminders will be sent';
 
   @override
-  String get quotes_image_generator => 'Quotes Image Generator';
+  String get quotes_image_generator => 'Quotes Generator';
 
   @override
   String get inspirational_quotes => 'Inspirational Quotes';
@@ -800,4 +800,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String error_saving_image(String error) {
     return 'Error saving image: $error';
   }
+
+  @override
+  String get create_quote_image => 'Create Quote';
 }

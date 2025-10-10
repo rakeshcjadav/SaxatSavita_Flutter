@@ -5,6 +5,8 @@ import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
+import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
+import 'package:saxatsavita_flutter/pages/simple_note_editor_page.dart';
 
 class SliverKiranReadPage extends StatefulWidget {
   const SliverKiranReadPage({
@@ -117,7 +119,9 @@ class _SliverKiranReadPageState extends State<SliverKiranReadPage> {
                       bottom: true,
                       child: CustomHtmlWidget(
                         htmlContent: getKiranContent(contentData),
-                        hasAddNoteButton: true,
+                        onAddNote: (selectedText) {
+                          _openNoteEditor(selectedText: selectedText);
+                        },
                       ),
                     ),
                   ]),
@@ -128,5 +132,51 @@ class _SliverKiranReadPageState extends State<SliverKiranReadPage> {
         },
       ),
     );
+  }
+
+  Future<void> _openNoteEditor({String? selectedText}) async {
+    debugPrint('Opening note editor with selected text: $selectedText');
+    // Store context values before async operations
+    final navigator = Navigator.of(context);
+    final localizations = AppLocalizations.of(context)!;
+    final kiranTitle =
+        '${localizations.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}';
+
+    try {
+      // Try to use the rich editor first
+      final result = await navigator.push(
+        MaterialPageRoute(
+          builder:
+              (_) => NoteEditorPage(
+                kiranUserInfo: widget.kiranUserInfo,
+                kiranTitle: kiranTitle,
+                selectedText: selectedText,
+              ),
+        ),
+      );
+
+      // If notes were modified, update UI
+      if (result == true && mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      debugPrint('Error with rich editor, falling back to simple editor: $e');
+
+      // Fallback to simple editor
+      final result = await navigator.push(
+        MaterialPageRoute(
+          builder:
+              (_) => SimpleNoteEditorPage(
+                kiranUserInfo: widget.kiranUserInfo,
+                kiranTitle: kiranTitle,
+              ),
+        ),
+      );
+
+      // If notes were modified, update UI
+      if (result == true) {
+        setState(() {});
+      }
+    }
   }
 }

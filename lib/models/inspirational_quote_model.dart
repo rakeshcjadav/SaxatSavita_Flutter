@@ -1,6 +1,6 @@
 class InspirationalQuote {
   final String quote;
-  final String author;
+  String author;
   final int partNumber;
   final int kiranIndex;
 
@@ -10,6 +10,11 @@ class InspirationalQuote {
     required this.partNumber,
     required this.kiranIndex,
   });
+
+  set setAuthor(String value) {
+    // ignore: unnecessary_this
+    this.author = value;
+  }
 
   // Convert from JSON
   factory InspirationalQuote.fromJson(Map<String, dynamic> json) {
