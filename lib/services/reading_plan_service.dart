@@ -1,8 +1,5 @@
-import 'dart:convert';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/notification_service.dart';
 
@@ -10,9 +7,6 @@ class ReadingPlanService {
   static final ReadingPlanService _instance = ReadingPlanService._internal();
   factory ReadingPlanService() => _instance;
   ReadingPlanService._internal();
-
-  static const String _storageKey = 'reading_plans';
-  static const String _activeplanKey = 'active_reading_plan_id';
 
   List<ReadingPlan> _readingPlans = [];
   String? _activePlanId;
@@ -51,25 +45,6 @@ class ReadingPlanService {
     } catch (e) {
       debugPrint('❌ Error loading reading plans: $e');
       return [];
-    }
-  }
-
-  /// Save reading plans to storage
-  Future<void> _saveReadingPlans() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final plansJson = json.encode(
-        _readingPlans.map((p) => p.toJson()).toList(),
-      );
-
-      await prefs.setString(_storageKey, plansJson);
-      if (_activePlanId != null) {
-        await prefs.setString(_activeplanKey, _activePlanId!);
-      }
-
-      debugPrint('💾 Reading plans saved successfully');
-    } catch (e) {
-      debugPrint('❌ Error saving reading plans: $e');
     }
   }
 
