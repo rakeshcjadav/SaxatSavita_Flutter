@@ -29,6 +29,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
   String _selectedFont = 'NotoSansGujarati';
   double _fontSize = 24.0;
   double _authorFontSize = 16.0;
+  double _imageHeight = 600.0;
   int _selectedTemplate = 0;
   String _selectedGradient = 'green';
 
@@ -38,7 +39,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
   // Predefined inspirational quotes
   final List<InspirationalQuote> _predefinedQuotes = [
     InspirationalQuote(
-      quote: '🙏 આત્મા સાથે જોડાવું એ જીવનની સૌથી મોટી સિદ્ધિ છે.',
+      quote:
+          '🙏 આત્મા સાથે જોડાવું એ જીવનની સૌથી મોટી સિદ્ધિ છે.આત્મા સાથે જોડાવું એ જીવનની સૌથી મોટી સિદ્ધિ છે.',
       author: 'પ.પૂ. સદ્. શ્રી જોગીસ્વામી',
       partNumber: 1,
       kiranIndex: 2,
@@ -134,21 +136,21 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(0.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Customization Section
+            _buildCustomizationSection(),
+            const SizedBox(height: 12),
+
             // Preview Section
             _buildPreviewSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
 
             // Text Input Section
             _buildTextInputSection(),
-            const SizedBox(height: 24),
-
-            // Customization Section
-            _buildCustomizationSection(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
 
             // Predefined Quotes Section
             _buildPredefinedQuotesSection(),
@@ -162,11 +164,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
     return Card(
       elevation: 8,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(0.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Preview', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 16),
+            Text('  Preview', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 16),
             Center(
               child: Container(
@@ -195,7 +198,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
   Widget _buildQuoteImage() {
     return Container(
       width: 400,
-      height: 400,
+      height: _imageHeight,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -218,12 +221,20 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Quote mark
-                Icon(
-                  Icons.format_quote,
-                  size: 48,
-                  color: _textColor.withOpacity(0.3),
+                Row(
+                  children: [
+                    Transform.flip(
+                      flipY: true,
+                      flipX: true,
+                      child: Icon(
+                        Icons.format_quote,
+                        size: 48,
+                        color: _textColor.withOpacity(0.3),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
 
                 // Quote text
                 Expanded(
@@ -245,7 +256,19 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
+                // Quote mark
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      Icons.format_quote,
+                      size: 48,
+                      color: _textColor.withOpacity(0.3),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
                 // Author
                 if (_authorController.text.isNotEmpty)
@@ -289,9 +312,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
                   ),
                 ],
 
-                const SizedBox(height: 12),
-
                 if (_currentSelectedQuote != null) ...[
+                  const SizedBox(height: 12),
                   // App branding
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -459,6 +481,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage> {
               max: 20.0,
               divisions: 8,
               onChanged: (value) => setState(() => _authorFontSize = value),
+            ),
+            const SizedBox(height: 16),
+
+            // Image height slider
+            Text('Image Height: ${_imageHeight.round()}px'),
+            Slider(
+              value: _imageHeight,
+              min: 300.0,
+              max: 800.0,
+              divisions: 50,
+              onChanged: (value) => setState(() => _imageHeight = value),
             ),
           ],
         ),
