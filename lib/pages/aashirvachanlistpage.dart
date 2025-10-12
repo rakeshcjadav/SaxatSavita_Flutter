@@ -10,7 +10,7 @@ class Aashirvachanpage extends StatelessWidget {
   List<AashirvachanModel> getAashirvachan() {
     return [
       AashirvachanModel(
-        title: 'પ.પૂ.સદ્. શ્રી જોગી સ્વામી',
+        title: 'પ.પૂ.પ્ર.બ્ર.સ્વ.સદ્. જોગીસ્વામી શ્રી ધર્મપ્રસાદદાસજીસ્વામી',
         tag: 'jogiswami',
         image: 'assets/res/z_ashirvachan_jogiswami_image.webp',
         content: AashirvachanContent(
@@ -81,6 +81,7 @@ class Aashirvachanpage extends StatelessWidget {
                 Text(
                   aashirvachan.title,
                   style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),

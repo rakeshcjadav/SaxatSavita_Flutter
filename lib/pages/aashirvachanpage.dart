@@ -55,6 +55,7 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
                   child: Text(
                     widget.aashirvachan.title,
                     style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 if (widget.aashirvachan.content.image != null) ...[
