@@ -144,9 +144,6 @@ class Utils {
     if (FirebaseAuth.instance.currentUser != null) {
       // Load data from Firebase
       await FirebaseIntegrationHelper().loadDataFromFirebase();
-
-      // Setup auto-sync
-      //FirebaseIntegrationHelper().setupAutoSync();
     }
   }
 }

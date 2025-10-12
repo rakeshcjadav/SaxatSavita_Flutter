@@ -17,6 +17,14 @@ class ReadingPlanService {
 
   void setReadingPlans(List<ReadingPlan> plans) {
     _readingPlans = plans;
+    // Search through all plans to find the active one
+    for (final plan in _readingPlans) {
+      if (plan.isActive) {
+        _activePlanId = plan.id;
+        debugPrint('✅ Active reading plan found: ${plan.title}');
+        break;
+      }
+    }
   }
 
   /// Load reading plans from storage
@@ -27,15 +35,6 @@ class ReadingPlanService {
       //_activePlanId = activePlanId;
 
       if (_readingPlans.isNotEmpty) {
-        // Search through all plans to find the active one
-        for (final plan in _readingPlans) {
-          if (plan.isActive) {
-            _activePlanId = plan.id;
-            debugPrint('✅ Active reading plan found: ${plan.title}');
-            break;
-          }
-        }
-
         return _readingPlans;
       }
 

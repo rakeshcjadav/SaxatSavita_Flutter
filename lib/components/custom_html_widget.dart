@@ -75,7 +75,6 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
                     },
                     label: AppLocalizations.of(context)!.add_notes,
                   ),
-                ...selectableRegionState.contextMenuButtonItems,
                 if (widget.onCreateQuoteImage != null)
                   ContextMenuButtonItem(
                     onPressed: () {

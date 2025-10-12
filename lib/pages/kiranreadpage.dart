@@ -85,14 +85,14 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   @override
   void dispose() {
+    // Stop stopwatch first to capture correct elapsed time
+    _stopwatch.stop();
+
     // Save reading history if session is long enough
     _saveReadingHistory();
 
     // Remove observer
     WidgetsBinding.instance.removeObserver(this);
-
-    // Stop and cleanup timers
-    _stopwatch.stop();
     _timer?.cancel();
     _timer = null;
 
@@ -370,9 +370,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     if (_sessionStartTime == null) return;
 
     try {
-      final sessionEndTime = DateTime.now();
-      final durationSeconds =
-          sessionEndTime.difference(_sessionStartTime!).inSeconds;
+      // Use stopwatch elapsed time which accounts for pause/resume cycles
+      final durationSeconds = _stopwatch.elapsed.inSeconds;
 
       // Only save if session was longer than 10 seconds
       if (durationSeconds >= 10) {
@@ -608,6 +607,10 @@ class _KiranReadPageState extends State<KiranReadPage>
                                                 ScaffoldMessenger.of(context);
                                             final localizations =
                                                 AppLocalizations.of(context)!;
+
+                                            // Stop stopwatch to capture correct elapsed time
+                                            _stopwatch.stop();
+                                            _timer?.cancel();
 
                                             // Save reading history before finishing
                                             await _saveReadingHistory();
