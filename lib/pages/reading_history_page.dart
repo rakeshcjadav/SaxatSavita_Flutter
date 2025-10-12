@@ -8,6 +8,8 @@ import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 
 class ReadingHistoryPage extends StatefulWidget {
   const ReadingHistoryPage({super.key});
@@ -16,7 +18,9 @@ class ReadingHistoryPage extends StatefulWidget {
   State<ReadingHistoryPage> createState() => _ReadingHistoryPageState();
 }
 
-class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
+class _ReadingHistoryPageState extends State<ReadingHistoryPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final KiranListService _kiranListService = KiranListService();
 
   List<ReadingHistory> _allHistory = [];
@@ -33,10 +37,21 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
   List<int> _availableYears = [];
   List<int> _availableMonths = [];
 
+  // Chart selection
+  int _selectedChartTab = 0;
+  final List<String> _chartTabs = ['Daily', 'Weekly', 'Parts', 'Duration'];
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     _loadReadingHistory();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadReadingHistory() async {
@@ -222,7 +237,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
         title: AppLocalizations.of(context)!.reading_history,
         actionItems: [ActionOptions.settings],
         extraActions: [
-          if (_filteredHistory.isNotEmpty)
+          if (_filteredHistory.isNotEmpty && _tabController.index == 0)
             IconButton(
               icon: Icon(
                 _areAllExpanded() ? Icons.unfold_less : Icons.unfold_more,
@@ -234,6 +249,19 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
                       : AppLocalizations.of(context)!.expandAll,
             ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(
+              icon: const Icon(Icons.history),
+              text: AppLocalizations.of(context)!.reading_history,
+            ),
+            Tab(icon: const Icon(Icons.analytics), text: 'Analytics'),
+          ],
+          //labelColor: Theme.of(context).colorScheme.primary,
+          // unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+          //indicatorColor: Theme.of(context).colorScheme.primary,
+        ),
       ),
       body:
           _isLoading
@@ -241,9 +269,13 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
               : SafeArea(
                 child: Column(
                   children: [
-                    _buildSummarySection(),
-                    _buildFilterSection(),
-                    Expanded(child: _buildHistoryList()),
+                    //_buildTabBar(),
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [_buildHistoryTab(), _buildAnalyticsTab()],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -441,6 +473,85 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
     );
   }
 
+  Widget _buildTabBar() {
+    return Container(
+      //color: Theme.of(context).scaffoldBackgroundColor,
+      child: TabBar(
+        controller: _tabController,
+        tabs: [
+          Tab(
+            icon: const Icon(Icons.history),
+            text: AppLocalizations.of(context)!.reading_history,
+          ),
+          Tab(icon: const Icon(Icons.analytics), text: 'Analytics'),
+        ],
+        labelColor: Theme.of(context).colorScheme.primary,
+        unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+        indicatorColor: Theme.of(context).colorScheme.primary,
+      ),
+    );
+  }
+
+  Widget _buildHistoryTab() {
+    return Column(
+      children: [
+        _buildSummarySection(),
+        _buildFilterSection(),
+        Expanded(child: _buildHistoryList()),
+      ],
+    );
+  }
+
+  Widget _buildAnalyticsTab() {
+    if (_filteredHistory.isEmpty) {
+      return _buildEmptyAnalyticsState();
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          _buildChartTabs(),
+          const SizedBox(height: 8),
+          _buildSelectedChart(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyAnalyticsState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.analytics_outlined,
+              size: 80.0,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: 24.0),
+            Text(
+              'No Analytics Available',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 12.0),
+            Text(
+              'Start reading to see your analytics and insights.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildHistoryList() {
     if (_filteredHistory.isEmpty) {
       return _buildEmptyState();
@@ -597,6 +708,582 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
     );
   }
 
+  // Chart Data Models
+  Widget _buildChartTabs() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(
+              'Analytics',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children:
+                          _chartTabs.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final title = entry.value;
+                            final isSelected = _selectedChartTab == index;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: FilterChip(
+                                label: Text(title),
+                                selected: isSelected,
+                                onSelected: (selected) {
+                                  if (selected) {
+                                    setState(() {
+                                      _selectedChartTab = index;
+                                    });
+                                  }
+                                },
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedChart() {
+    switch (_selectedChartTab) {
+      case 0:
+        return _buildDailyReadingChart();
+      case 1:
+        return _buildWeeklyReadingChart();
+      case 2:
+        return _buildPartsDistributionChart();
+      case 3:
+        return _buildDurationAnalysisChart();
+      default:
+        return _buildDailyReadingChart();
+    }
+  }
+
+  Widget _buildDailyReadingChart() {
+    final dailyData = _getDailyReadingData();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Daily Reading Minutes',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: LineChart(
+                LineChartData(
+                  gridData: const FlGridData(show: true),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            '${value.toInt()}m',
+                            style: const TextStyle(fontSize: 10),
+                          );
+                        },
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 32,
+                        getTitlesWidget: (value, meta) {
+                          final index = value.toInt();
+                          if (index >= 0 && index < dailyData.length) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                DateFormat(
+                                  'MM/dd',
+                                ).format(dailyData[index].date),
+                                style: const TextStyle(fontSize: 10),
+                              ),
+                            );
+                          }
+                          return const Text('');
+                        },
+                      ),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: true),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots:
+                          dailyData.asMap().entries.map((entry) {
+                            return FlSpot(
+                              entry.key.toDouble(),
+                              entry.value.minutes,
+                            );
+                          }).toList(),
+                      isCurved: true,
+                      color: Theme.of(context).colorScheme.primary,
+                      barWidth: 3,
+                      dotData: const FlDotData(show: true),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWeeklyReadingChart() {
+    final weeklyData = _getWeeklyReadingData();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Weekly Reading Hours',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY:
+                      weeklyData.isEmpty
+                          ? 1
+                          : weeklyData
+                                  .map((e) => e.hours)
+                                  .reduce((a, b) => a > b ? a : b) *
+                              1.2,
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        return BarTooltipItem(
+                          '${weeklyData[groupIndex].hours.toStringAsFixed(1)}h',
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            '${value.toInt()}h',
+                            style: const TextStyle(fontSize: 10),
+                          );
+                        },
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 32,
+                        getTitlesWidget: (value, meta) {
+                          final index = value.toInt();
+                          if (index >= 0 && index < weeklyData.length) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                'W${weeklyData[index].weekNumber}',
+                                style: const TextStyle(fontSize: 10),
+                              ),
+                            );
+                          }
+                          return const Text('');
+                        },
+                      ),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: true),
+                  barGroups:
+                      weeklyData.asMap().entries.map((entry) {
+                        return BarChartGroupData(
+                          x: entry.key,
+                          barRods: [
+                            BarChartRodData(
+                              toY: entry.value.hours,
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 20,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPartsDistributionChart() {
+    final partsData = _getPartsDistributionData();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Reading Distribution by Parts',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: PieChart(
+                      PieChartData(
+                        sections:
+                            partsData.asMap().entries.map((entry) {
+                              final index = entry.key;
+                              final data = entry.value;
+                              final colors = [
+                                Colors.blue,
+                                Colors.green,
+                                Colors.orange,
+                                Colors.purple,
+                                Colors.red,
+                              ];
+
+                              return PieChartSectionData(
+                                value: data.percentage,
+                                title: '${data.percentage.toStringAsFixed(1)}%',
+                                color: colors[index % colors.length],
+                                radius: 60,
+                                titleStyle: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }).toList(),
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 40,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:
+                          partsData.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final data = entry.value;
+                            final colors = [
+                              Colors.blue,
+                              Colors.green,
+                              Colors.orange,
+                              Colors.purple,
+                              Colors.red,
+                            ];
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 2.0,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 12,
+                                    height: 12,
+                                    decoration: BoxDecoration(
+                                      color: colors[index % colors.length],
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Part ${data.partNumber}',
+                                      style: const TextStyle(fontSize: 11),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDurationAnalysisChart() {
+    final durationData = _getDurationAnalysisData();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Reading Session Duration Analysis',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY:
+                      durationData.isEmpty
+                          ? 1
+                          : durationData
+                                  .map((e) => e.count.toDouble())
+                                  .reduce((a, b) => a > b ? a : b) *
+                              1.2,
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        return BarTooltipItem(
+                          '${durationData[groupIndex].count} sessions',
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            value.toInt().toString(),
+                            style: const TextStyle(fontSize: 10),
+                          );
+                        },
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 32,
+                        getTitlesWidget: (value, meta) {
+                          final index = value.toInt();
+                          if (index >= 0 && index < durationData.length) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                durationData[index].range,
+                                style: const TextStyle(fontSize: 9),
+                              ),
+                            );
+                          }
+                          return const Text('');
+                        },
+                      ),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: true),
+                  barGroups:
+                      durationData.asMap().entries.map((entry) {
+                        return BarChartGroupData(
+                          x: entry.key,
+                          barRods: [
+                            BarChartRodData(
+                              toY: entry.value.count.toDouble(),
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 20,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Data Models for Charts
+  List<DailyReadingData> _getDailyReadingData() {
+    final Map<DateTime, double> dailyMinutes = {};
+
+    for (final history in _filteredHistory) {
+      final date = DateTime(
+        history.createdAt.year,
+        history.createdAt.month,
+        history.createdAt.day,
+      );
+      dailyMinutes[date] =
+          (dailyMinutes[date] ?? 0) + (history.durationSeconds / 60);
+    }
+
+    final sortedEntries =
+        dailyMinutes.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
+
+    return sortedEntries
+        .take(30)
+        .map((entry) => DailyReadingData(entry.key, entry.value))
+        .toList();
+  }
+
+  List<WeeklyReadingData> _getWeeklyReadingData() {
+    final Map<int, double> weeklyHours = {};
+
+    for (final history in _filteredHistory) {
+      final weekNumber = _getWeekNumber(history.createdAt);
+      weeklyHours[weekNumber] =
+          (weeklyHours[weekNumber] ?? 0) + (history.durationSeconds / 3600);
+    }
+
+    final sortedEntries =
+        weeklyHours.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
+
+    return sortedEntries
+        .take(12)
+        .map((entry) => WeeklyReadingData(entry.key, entry.value))
+        .toList()
+        .reversed
+        .toList();
+  }
+
+  List<PartDistributionData> _getPartsDistributionData() {
+    final Map<int, int> partCounts = {};
+
+    for (final history in _filteredHistory) {
+      partCounts[history.partNumber] =
+          (partCounts[history.partNumber] ?? 0) + 1;
+    }
+
+    final totalSessions = _filteredHistory.length;
+
+    return partCounts.entries.map((entry) {
+        final percentage = (entry.value / totalSessions) * 100;
+        return PartDistributionData(entry.key, percentage);
+      }).toList()
+      ..sort((a, b) => a.partNumber.compareTo(b.partNumber));
+  }
+
+  List<DurationAnalysisData> _getDurationAnalysisData() {
+    final Map<String, int> durationRanges = {
+      '0-5m': 0,
+      '5-15m': 0,
+      '15-30m': 0,
+      '30-60m': 0,
+      '60m+': 0,
+    };
+
+    for (final history in _filteredHistory) {
+      final minutes = history.durationSeconds / 60;
+
+      if (minutes <= 5) {
+        durationRanges['0-5m'] = durationRanges['0-5m']! + 1;
+      } else if (minutes <= 15) {
+        durationRanges['5-15m'] = durationRanges['5-15m']! + 1;
+      } else if (minutes <= 30) {
+        durationRanges['15-30m'] = durationRanges['15-30m']! + 1;
+      } else if (minutes <= 60) {
+        durationRanges['30-60m'] = durationRanges['30-60m']! + 1;
+      } else {
+        durationRanges['60m+'] = durationRanges['60m+']! + 1;
+      }
+    }
+
+    return durationRanges.entries
+        .map((entry) => DurationAnalysisData(entry.key, entry.value))
+        .toList();
+  }
+
+  int _getWeekNumber(DateTime date) {
+    final startOfYear = DateTime(date.year, 1, 1);
+    final daysDifference = date.difference(startOfYear).inDays;
+    return (daysDifference / 7).ceil();
+  }
+
   String _getKiranTitle(ReadingHistory history) {
     final KiranInfo kiranInfo = KiranListService().getKiranInfo(
       history.partNumber,
@@ -686,4 +1373,33 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage> {
       ),
     );
   }
+}
+
+// Chart Data Model Classes
+class DailyReadingData {
+  final DateTime date;
+  final double minutes;
+
+  DailyReadingData(this.date, this.minutes);
+}
+
+class WeeklyReadingData {
+  final int weekNumber;
+  final double hours;
+
+  WeeklyReadingData(this.weekNumber, this.hours);
+}
+
+class PartDistributionData {
+  final int partNumber;
+  final double percentage;
+
+  PartDistributionData(this.partNumber, this.percentage);
+}
+
+class DurationAnalysisData {
+  final String range;
+  final int count;
+
+  DurationAnalysisData(this.range, this.count);
 }
