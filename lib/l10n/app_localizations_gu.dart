@@ -487,6 +487,22 @@ class AppLocalizationsGu extends AppLocalizations {
   String get chartSessionsLabel => 'સત્રો';
 
   @override
+  String get dailyChartDescription =>
+      'છેલ્લા ૩૦ દિવસમાં દરરોજ વાંચેલી મિનિટો દર્શાવતા આ લાઇન ચાર્ટ સાથે તમારી દૈનિક વાંચન આદતોને ટ્રેક કરો. શિખરો તમારા સૌથી ઉત્પાદક વાંચન દિવસો દર્શાવે છે.';
+
+  @override
+  String get weeklyChartDescription =>
+      'છેલ્લા ૧૨ અઠવાડિયામાં દર અઠવાડિયે કુલ વાંચેલા કલાકો દર્શાવતા આ બાર ચાર્ટ સાથે તમારા સાપ્તાહિક વાંચન પેટર્નને જુઓ. સતત વાંચન સમયગાળાને ઓળખવામાં મદદ કરે છે.';
+
+  @override
+  String get partsChartDescription =>
+      'આ પાઇ ચાર્ટ સાથે તમારું વાંચન પુસ્તકના વિવિધ ભાગોમાં કેવી રીતે વિતરિત થયું છે તે જુઓ. ભાગ પ્રમાણે તમારા વાંચન સત્રોનું ટકાવારી વિભાજન દર્શાવે છે.';
+
+  @override
+  String get durationChartDescription =>
+      'આ બાર ચાર્ટ સાથે તમારા વાંચન સત્રની લંબાઈનું વિશ્લેષણ કરો. તમારા સ્ટેમિના પેટર્નને સમજવામાં મદદ કરવા માટે સત્રોને સમયગાળાની શ્રેણીઓ અનુસાર જૂથબદ્ધ કરે છે.';
+
+  @override
   String get settings_saved => 'સેટિંગ્સ સફળતાપૂર્વક સાચવવામાં આવી';
 
   @override

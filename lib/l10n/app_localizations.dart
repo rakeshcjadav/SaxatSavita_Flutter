@@ -980,6 +980,30 @@ abstract class AppLocalizations {
   /// **'sessions'**
   String get chartSessionsLabel;
 
+  /// No description provided for @dailyChartDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your daily reading habits with this line chart showing minutes read per day over the last 30 days. Peaks indicate your most productive reading days.'**
+  String get dailyChartDescription;
+
+  /// No description provided for @weeklyChartDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'View your weekly reading patterns with this bar chart displaying total hours read per week over the last 12 weeks. Helps identify consistent reading periods.'**
+  String get weeklyChartDescription;
+
+  /// No description provided for @partsChartDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'See how your reading is distributed across different parts of the book with this pie chart. Shows the percentage breakdown of your reading sessions by part.'**
+  String get partsChartDescription;
+
+  /// No description provided for @durationChartDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze your reading session lengths with this bar chart. Groups your sessions by duration ranges to help you understand your reading stamina patterns.'**
+  String get durationChartDescription;
+
   /// No description provided for @settings_saved.
   ///
   /// In en, this message translates to:

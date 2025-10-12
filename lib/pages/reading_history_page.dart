@@ -262,7 +262,10 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               icon: const Icon(Icons.history),
               text: AppLocalizations.of(context)!.reading_history,
             ),
-            Tab(icon: const Icon(Icons.analytics), text: 'Analytics'),
+            Tab(
+              icon: const Icon(Icons.analytics),
+              text: AppLocalizations.of(context)!.analytics,
+            ),
           ],
           //labelColor: Theme.of(context).colorScheme.primary,
           // unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -776,6 +779,13 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
+            const SizedBox(height: 8),
+            Text(
+              AppLocalizations.of(context)!.dailyChartDescription,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
             const SizedBox(height: 16),
             SizedBox(
               height: 200,
@@ -868,6 +878,13 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              AppLocalizations.of(context)!.weeklyChartDescription,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -976,6 +993,13 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
+            const SizedBox(height: 8),
+            Text(
+              AppLocalizations.of(context)!.partsChartDescription,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
             const SizedBox(height: 16),
             SizedBox(
               height: 200,
@@ -1081,6 +1105,13 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              AppLocalizations.of(context)!.durationChartDescription,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
             SizedBox(

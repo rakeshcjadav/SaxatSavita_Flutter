@@ -486,6 +486,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chartSessionsLabel => 'sessions';
 
   @override
+  String get dailyChartDescription =>
+      'Track your daily reading habits with this line chart showing minutes read per day over the last 30 days. Peaks indicate your most productive reading days.';
+
+  @override
+  String get weeklyChartDescription =>
+      'View your weekly reading patterns with this bar chart displaying total hours read per week over the last 12 weeks. Helps identify consistent reading periods.';
+
+  @override
+  String get partsChartDescription =>
+      'See how your reading is distributed across different parts of the book with this pie chart. Shows the percentage breakdown of your reading sessions by part.';
+
+  @override
+  String get durationChartDescription =>
+      'Analyze your reading session lengths with this bar chart. Groups your sessions by duration ranges to help you understand your reading stamina patterns.';
+
+  @override
   String get settings_saved => 'ettings saved successfully';
 
   @override
