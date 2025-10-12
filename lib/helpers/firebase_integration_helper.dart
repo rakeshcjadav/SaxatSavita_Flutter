@@ -138,6 +138,9 @@ class FirebaseIntegrationHelper {
         final bookUserInfoList = data['bookUserInfo'] as List;
         Bookservice().insertBookUserInfoList(bookUserInfoList.cast());
         debugPrint('Book user info loaded from Firebase');
+      } else {
+        Bookservice()
+            .insertDefaultBookUserInfoList(); // Insert default book user info list if not available
       }
 
       // Update kiran user info if available

@@ -85,6 +85,17 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
   ),
 );
 
+AppSettings appSettingsDefault = AppSettings(
+  fontSize: 18,
+  lineHeight: 2.0,
+  themeColor: Colors.deepOrange,
+  themeVariant: DynamicSchemeVariant.tonalSpot,
+  brightness: Brightness.light,
+  themeContrastLevel: 0.5,
+  readingSpeed: 300.0,
+  language: 'gu',
+);
+
 AppSettings copyAppSettings(
   AppSettings settings, {
   double? fontSize,

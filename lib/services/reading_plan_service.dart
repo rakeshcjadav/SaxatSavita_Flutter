@@ -337,4 +337,14 @@ class ReadingPlanService {
 
     return summaries;
   }
+
+  /// Clear all reading plans (used during logout/cache clear)
+  void clearAllPlans() {
+    _readingPlans.clear();
+    _activePlanId = null;
+    debugPrint('🧹 All reading plans cleared from memory');
+  }
+
+  /// Get all plans (for cache info)
+  List<ReadingPlan> getAllPlans() => List.unmodifiable(_readingPlans);
 }

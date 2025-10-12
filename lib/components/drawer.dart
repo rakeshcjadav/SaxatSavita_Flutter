@@ -4,6 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/services/cache_service.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});
@@ -148,6 +150,11 @@ class _DrawerState extends State<MyDrawer> {
                       (context) =>
                           const Center(child: CircularProgressIndicator()),
                 );
+
+                // Clear all local cache before signing out
+                await CacheService().clearAllLocalCache();
+
+                appSettingsNotifier.value = appSettingsDefault;
 
                 // Sign out from Google
                 await GoogleSignIn.instance.signOut();

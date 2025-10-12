@@ -267,9 +267,6 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               text: AppLocalizations.of(context)!.analytics,
             ),
           ],
-          //labelColor: Theme.of(context).colorScheme.primary,
-          // unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-          //indicatorColor: Theme.of(context).colorScheme.primary,
         ),
       ),
       body:

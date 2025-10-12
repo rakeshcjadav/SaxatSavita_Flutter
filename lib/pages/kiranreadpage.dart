@@ -579,14 +579,18 @@ class _KiranReadPageState extends State<KiranReadPage>
                                         )
                                         : getKiranContent(contentData),
 
-                                onAddNote: (selectedText) {
+                                onAddNote: (selectedText) async {
                                   _pauseTimer();
-                                  _openNoteEditor(selectedText: selectedText);
+                                  await _openNoteEditor(
+                                    selectedText: selectedText,
+                                  );
                                   _resumeTimer();
                                 },
-                                onCreateQuoteImage: (selectedText) {
+                                onCreateQuoteImage: (selectedText) async {
                                   _pauseTimer();
-                                  _openQuoteEditor(selectedText: selectedText);
+                                  await _openQuoteEditor(
+                                    selectedText: selectedText,
+                                  );
                                   _resumeTimer();
                                 },
                               ),

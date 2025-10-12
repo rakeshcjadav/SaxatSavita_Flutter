@@ -17,6 +17,7 @@ class Bookservice {
   List<BookUserInfo>? get bookUserInfoList => _bookUserInfoList;
 
   set bookUserInfoList(List<BookUserInfo>? list) {
+    if (list == null) return;
     _bookUserInfoList = list;
   }
 
@@ -108,16 +109,7 @@ class Bookservice {
       _bookPartsByLanguage['en'] = bookparts;
       bookparts = await readBookparts(jsondata, 'gu');
       _bookPartsByLanguage['gu'] = bookparts;
-      bookUserInfoList =
-          bookparts
-              .map(
-                (part) => BookUserInfo(
-                  id: part.id,
-                  partNumber: part.partNumber,
-                  bookmarkKiranIndex: part.startKiranIndex,
-                ),
-              )
-              .toList();
+      insertDefaultBookUserInfoList();
 
       if (bookparts.isNotEmpty) {
         for (int i = 0; i < bookparts.length; i++) {
@@ -214,6 +206,24 @@ class Bookservice {
         _bookUserInfoList![index] = newInfo;
       } else {
         _bookUserInfoList!.add(newInfo);
+      }
+    }
+  }
+
+  void insertDefaultBookUserInfoList() {
+    if (_bookUserInfoList == null || _bookUserInfoList!.isEmpty) {
+      final bookparts = _bookPartsByLanguage['en'];
+      if (bookparts != null && bookparts.isNotEmpty) {
+        bookUserInfoList =
+            bookparts
+                .map(
+                  (part) => BookUserInfo(
+                    id: part.id,
+                    partNumber: part.partNumber,
+                    bookmarkKiranIndex: part.startKiranIndex,
+                  ),
+                )
+                .toList();
       }
     }
   }
