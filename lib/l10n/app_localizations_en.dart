@@ -442,6 +442,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get december => 'December';
 
   @override
+  String get analytics => 'Analytics';
+
+  @override
+  String get dailyChart => 'Daily';
+
+  @override
+  String get weeklyChart => 'Weekly';
+
+  @override
+  String get partsChart => 'Parts';
+
+  @override
+  String get durationChart => 'Duration';
+
+  @override
+  String get dailyReadingMinutes => 'Daily Reading Minutes';
+
+  @override
+  String get weeklyReadingHours => 'Weekly Reading Hours';
+
+  @override
+  String get readingDistributionByParts => 'Reading Distribution by Parts';
+
+  @override
+  String get readingSessionDurationAnalysis =>
+      'Reading Session Duration Analysis';
+
+  @override
+  String get noAnalyticsAvailable => 'No Analytics Available';
+
+  @override
+  String get startReadingForAnalytics =>
+      'Start reading to see your analytics and insights.';
+
+  @override
+  String get chartMinutesLabel => 'minutes';
+
+  @override
+  String get chartHoursLabel => 'hours';
+
+  @override
+  String get chartSessionsLabel => 'sessions';
+
+  @override
   String get settings_saved => 'ettings saved successfully';
 
   @override

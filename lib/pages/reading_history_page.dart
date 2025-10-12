@@ -39,7 +39,13 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
 
   // Chart selection
   int _selectedChartTab = 0;
-  final List<String> _chartTabs = ['Daily', 'Weekly', 'Parts', 'Duration'];
+
+  List<String> get _chartTabs => [
+    AppLocalizations.of(context)!.dailyChart,
+    AppLocalizations.of(context)!.weeklyChart,
+    AppLocalizations.of(context)!.partsChart,
+    AppLocalizations.of(context)!.durationChart,
+  ];
 
   @override
   void initState() {
@@ -269,7 +275,6 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               : SafeArea(
                 child: Column(
                   children: [
-                    //_buildTabBar(),
                     Expanded(
                       child: TabBarView(
                         controller: _tabController,
@@ -473,25 +478,6 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
     );
   }
 
-  Widget _buildTabBar() {
-    return Container(
-      //color: Theme.of(context).scaffoldBackgroundColor,
-      child: TabBar(
-        controller: _tabController,
-        tabs: [
-          Tab(
-            icon: const Icon(Icons.history),
-            text: AppLocalizations.of(context)!.reading_history,
-          ),
-          Tab(icon: const Icon(Icons.analytics), text: 'Analytics'),
-        ],
-        labelColor: Theme.of(context).colorScheme.primary,
-        unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-        indicatorColor: Theme.of(context).colorScheme.primary,
-      ),
-    );
-  }
-
   Widget _buildHistoryTab() {
     return Column(
       children: [
@@ -533,14 +519,14 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
             ),
             const SizedBox(height: 24.0),
             Text(
-              'No Analytics Available',
+              AppLocalizations.of(context)!.noAnalyticsAvailable,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 12.0),
             Text(
-              'Start reading to see your analytics and insights.',
+              AppLocalizations.of(context)!.startReadingForAnalytics,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -716,10 +702,10 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
         child: Column(
           children: [
             Text(
-              'Analytics',
+              AppLocalizations.of(context)!.analytics,
               style: Theme.of(
                 context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 8),
             Row(
@@ -785,7 +771,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Daily Reading Minutes',
+              AppLocalizations.of(context)!.dailyReadingMinutes,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -803,7 +789,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                         reservedSize: 40,
                         getTitlesWidget: (value, meta) {
                           return Text(
-                            '${value.toInt()}m',
+                            '${value.toInt()}${AppLocalizations.of(context)!.chartMinutesLabel.substring(0, 1)}',
                             style: const TextStyle(fontSize: 10),
                           );
                         },
@@ -878,7 +864,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Weekly Reading Hours',
+              AppLocalizations.of(context)!.weeklyReadingHours,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -900,7 +886,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          '${weeklyData[groupIndex].hours.toStringAsFixed(1)}h',
+                          '${weeklyData[groupIndex].hours.toStringAsFixed(1)} ${AppLocalizations.of(context)!.chartHoursLabel}',
                           const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -916,7 +902,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                         reservedSize: 40,
                         getTitlesWidget: (value, meta) {
                           return Text(
-                            '${value.toInt()}h',
+                            '${value.toInt()}${AppLocalizations.of(context)!.chartHoursLabel.substring(0, 1)}',
                             style: const TextStyle(fontSize: 10),
                           );
                         },
@@ -985,7 +971,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Reading Distribution by Parts',
+              AppLocalizations.of(context)!.readingDistributionByParts,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -1091,7 +1077,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Reading Session Duration Analysis',
+              AppLocalizations.of(context)!.readingSessionDurationAnalysis,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -1113,7 +1099,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          '${durationData[groupIndex].count} sessions',
+                          '${durationData[groupIndex].count} ${AppLocalizations.of(context)!.chartSessionsLabel}',
                           const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

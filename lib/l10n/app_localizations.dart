@@ -896,6 +896,90 @@ abstract class AppLocalizations {
   /// **'December'**
   String get december;
 
+  /// No description provided for @analytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get analytics;
+
+  /// No description provided for @dailyChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get dailyChart;
+
+  /// No description provided for @weeklyChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get weeklyChart;
+
+  /// No description provided for @partsChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Parts'**
+  String get partsChart;
+
+  /// No description provided for @durationChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get durationChart;
+
+  /// No description provided for @dailyReadingMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Reading Minutes'**
+  String get dailyReadingMinutes;
+
+  /// No description provided for @weeklyReadingHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Reading Hours'**
+  String get weeklyReadingHours;
+
+  /// No description provided for @readingDistributionByParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Distribution by Parts'**
+  String get readingDistributionByParts;
+
+  /// No description provided for @readingSessionDurationAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Session Duration Analysis'**
+  String get readingSessionDurationAnalysis;
+
+  /// No description provided for @noAnalyticsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No Analytics Available'**
+  String get noAnalyticsAvailable;
+
+  /// No description provided for @startReadingForAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Start reading to see your analytics and insights.'**
+  String get startReadingForAnalytics;
+
+  /// No description provided for @chartMinutesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get chartMinutesLabel;
+
+  /// No description provided for @chartHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get chartHoursLabel;
+
+  /// No description provided for @chartSessionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'sessions'**
+  String get chartSessionsLabel;
+
   /// No description provided for @settings_saved.
   ///
   /// In en, this message translates to:

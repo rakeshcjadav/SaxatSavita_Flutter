@@ -444,7 +444,50 @@ class AppLocalizationsGu extends AppLocalizations {
   String get december => 'ડિસેમ્બર';
 
   @override
-  String get settings_saved => 'સેટિંગ્સ સફળતાપૂર્વક સેવ થયા.';
+  String get analytics => 'વિશ્લેષણ';
+
+  @override
+  String get dailyChart => 'દૈનિક';
+
+  @override
+  String get weeklyChart => 'સાપ્તાહિક';
+
+  @override
+  String get partsChart => 'ભાગો';
+
+  @override
+  String get durationChart => 'સમયગાળો';
+
+  @override
+  String get dailyReadingMinutes => 'દૈનિક વાંચન મિનિટ';
+
+  @override
+  String get weeklyReadingHours => 'સાપ્તાહિક વાંચન કલાક';
+
+  @override
+  String get readingDistributionByParts => 'ભાગો પ્રમાણે વાંચન વિતરણ';
+
+  @override
+  String get readingSessionDurationAnalysis => 'વાંચન સત્ર સમયગાળાનું વિશ્લેષણ';
+
+  @override
+  String get noAnalyticsAvailable => 'કોઈ વિશ્લેષણ ઉપલબ્ધ નથી';
+
+  @override
+  String get startReadingForAnalytics =>
+      'તમારા વિશ્લેષણ અને અંતર્દૃષ્ટિ જોવા માટે વાંચવાનું શરૂ કરો.';
+
+  @override
+  String get chartMinutesLabel => 'મિનિટ';
+
+  @override
+  String get chartHoursLabel => 'કલાક';
+
+  @override
+  String get chartSessionsLabel => 'સત્રો';
+
+  @override
+  String get settings_saved => 'સેટિંગ્સ સફળતાપૂર્વક સાચવવામાં આવી';
 
   @override
   String get changes_discarded => 'બદલાવ રદ કરવામાં આવ્યા';
