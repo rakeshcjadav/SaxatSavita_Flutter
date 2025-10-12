@@ -520,12 +520,12 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     final progressSummary = _readingPlanService.getDailyProgressSummary();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildProgressChart(progressSummary),
-          const SizedBox(height: 24),
+          const SizedBox(height: 8),
           _buildProgressCalendar(progressSummary),
         ],
       ),
