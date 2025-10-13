@@ -124,24 +124,49 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                       kiran.index,
                     );
                     return Card(
-                      child: ExpansionTile(
-                        showTrailingIcon: true,
-                        key: Key(kiran.index.toString()),
-                        initiallyExpanded: _expandedIndex == index,
-                        onExpansionChanged: (expanded) {
-                          setState(() {
-                            _expandedIndex = expanded ? index : null;
-                          });
-                        },
-                        title: _buildKiranListItemWidget(
-                          kiran,
-                          kiranUserInfo,
-                          _expandedIndex == index,
-                        ),
-                        children: _buildKiranListItemExpandedWidget(
-                          kiran,
-                          kiranUserInfo,
-                        ),
+                      key: Key(kiran.index.toString()),
+                      child: Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              _navigateToKiranReadPage(kiran, kiranUserInfo);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildKiranListItemWidget(
+                                      kiran,
+                                      kiranUserInfo,
+                                      _expandedIndex == index,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      _expandedIndex == index
+                                          ? Icons.expand_less
+                                          : Icons.expand_more,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _expandedIndex =
+                                            _expandedIndex == index
+                                                ? null
+                                                : index;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (_expandedIndex == index)
+                            ..._buildKiranListItemExpandedWidget(
+                              kiran,
+                              kiranUserInfo,
+                            ),
+                        ],
                       ),
                     );
                   },

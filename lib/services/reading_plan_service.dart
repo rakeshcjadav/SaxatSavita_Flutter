@@ -102,8 +102,13 @@ class ReadingPlanService {
       );
       updateReadingPlan(updatedPlan);
 
-      // Deactivate other plans
+      // Deactivate other plans and cancel their reminders
       for (final otherPlan in _readingPlans.where((p) => p.id != planId)) {
+        // Cancel notifications for the plan being deactivated
+        await NotificationService().cancelReadingPlanRemindersForPlan(
+          otherPlan,
+        );
+
         final deactivatedPlan = otherPlan.copyWith(
           isActive: false,
           updatedAt: DateTime.now(),
@@ -130,20 +135,31 @@ class ReadingPlanService {
       // Auto-sync to Firebase
       await FirebaseIntegrationHelper().onReadingPlanUpdated(updatedPlan);
 
-      // Update notifications if this is the active plan
-      if (updatedPlan.id == _activePlanId) {
+      // Handle notification updates based on plan status
+      if (updatedPlan.isActive && updatedPlan.id == _activePlanId) {
+        // Schedule/update notifications for active plan
         await NotificationService().scheduleReadingPlanReminders(updatedPlan);
+      } else if (!updatedPlan.isActive) {
+        // Cancel notifications for deactivated plan
+        await NotificationService().cancelReadingPlanRemindersForPlan(
+          updatedPlan,
+        );
       }
     }
   }
 
   /// Delete reading plan
   Future<void> deleteReadingPlan(String planId) async {
+    // Find the plan before removing it to cancel its notifications
+    final planToDelete = _readingPlans.firstWhere((p) => p.id == planId);
+
+    // Cancel notifications for the plan being deleted
+    await NotificationService().cancelReadingPlanRemindersForPlan(planToDelete);
+
     _readingPlans.removeWhere((p) => p.id == planId);
 
     if (_activePlanId == planId) {
       _activePlanId = null;
-      await NotificationService().cancelReadingPlanReminders();
     }
 
     // Auto-sync to Firebase

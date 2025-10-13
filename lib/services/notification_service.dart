@@ -467,6 +467,22 @@ class NotificationService {
     }
   }
 
+  /// Cancel reminders for a specific reading plan
+  Future<void> cancelReadingPlanRemindersForPlan(ReadingPlan plan) async {
+    if (!_isInitialized) await initialize();
+
+    try {
+      for (final reminderTime in plan.reminderTimes) {
+        final notificationId =
+            plan.id.hashCode + (reminderTime.hour * 100 + reminderTime.minute);
+        await _flutterLocalNotificationsPlugin.cancel(notificationId);
+      }
+      debugPrint('🚫 Cancelled reminders for plan: ${plan.title}');
+    } catch (e) {
+      debugPrint('❌ Error cancelling reminders for plan ${plan.title}: $e');
+    }
+  }
+
   /// Show immediate reading suggestion notification
   Future<void> showReadingSuggestion() async {
     if (!_isInitialized) await initialize();
