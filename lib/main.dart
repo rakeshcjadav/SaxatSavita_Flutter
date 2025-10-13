@@ -22,8 +22,31 @@ import 'pages/aashirvachanlistpage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize Firebase with comprehensive error handling
+  try {
+    // Check if Firebase is already initialized
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } else {
+      // Firebase already initialized, use the existing app
+      Firebase.app();
+    }
+  } catch (e) {
+    // Handle any Firebase initialization errors
+    print('Firebase initialization error: $e');
+    // If it's a duplicate app error, try to get the existing app
+    if (e.toString().contains('duplicate-app')) {
+      try {
+        Firebase.app();
+      } catch (getAppError) {
+        print('Could not get existing Firebase app: $getAppError');
+      }
+    }
+  }
+
   // Load JSON data
   await AppDataService().loadData('assets/jsons/data.json');
   await AppDataService().loadInfoContent('assets/jsons/infodata.json');

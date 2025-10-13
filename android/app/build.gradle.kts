@@ -24,7 +24,7 @@ java {
 }
 
 android {
-    namespace = "com.farenidham.books.saxatsavita_flutter"
+    namespace = "com.farenidham.books.saxatsavita.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -40,7 +40,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.farenidham.books.saxatsavita_flutter"
+        applicationId = "com.farenidham.books.saxatsavita.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion // flutter.minSdkVersion

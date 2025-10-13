@@ -1,65 +1,59 @@
 {
   "project_info": {
-    "project_number": "1047945808084",
-    "project_id": "saxat-savita-flutter",
-    "storage_bucket": "saxat-savita-flutter.firebasestorage.app"
+    "project_number": "39080773295",
+    "firebase_url": "https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "saxat-savita-crashanalytics",
+    "storage_bucket": "saxat-savita-crashanalytics.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1047945808084:android:8bf8721ad3acbecd669341",
+        "mobilesdk_app_id": "1:39080773295:android:34dd117ce8c4e76351f65a",
         "android_client_info": {
-          "package_name": "com.farenidham.books.saxatsavita_flutter"
+          "package_name": "com.farenidham.books.saxatsavita.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1047945808084-2liqmi2mp5ah0jbaef3qg6503pp7aiqr.apps.googleusercontent.com",
+          "client_id": "39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.farenidham.books.saxatsavita_flutter",
-            "certificate_hash": "28341c08c2d77b43ac9ac0695bdaf4d0077f4d22"
+            "package_name": "com.farenidham.books.saxatsavita.app",
+            "certificate_hash": "1e63b5288e99f6bf636b7887920adc711bebceb7"
           }
         },
         {
-          "client_id": "1047945808084-e0vcddrfckh0k86tu2vq2725ppig42mf.apps.googleusercontent.com",
+          "client_id": "39080773295-nfrk7emad5f451016d20j64blf7ej841.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.farenidham.books.saxatsavita_flutter",
-            "certificate_hash": "0460dc1ab53f513792d693c05cb84ed4959fae6a"
+            "package_name": "com.farenidham.books.saxatsavita.app",
+            "certificate_hash": "4415e8939c728f5b27a30f4f202d31d4c7d8a2aa"
           }
         },
         {
-          "client_id": "1047945808084-q16sjesqtln7b983rcjorm073kkkguc5.apps.googleusercontent.com",
+          "client_id": "39080773295-vr110kk5g9ef0vtn5s0h489rhdt41h2r.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.farenidham.books.saxatsavita_flutter",
+            "package_name": "com.farenidham.books.saxatsavita.app",
             "certificate_hash": "387bec22ed686fe7a9131d00846ce7ed16c47343"
           }
         },
         {
-          "client_id": "1047945808084-ricmnkicke96hf5548ptg7bg1gckid5p.apps.googleusercontent.com",
+          "client_id": "39080773295-iq1ib7i2c56437q2imp2g9ms6hhh33dp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAg0r8Pny9Kc4F89JzP3bWbyrFwUylRQvg"
+          "current_key": "AIzaSyDewIEmCaTx8I0ScnTWS8eeHghun3kSKus"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1047945808084-ricmnkicke96hf5548ptg7bg1gckid5p.apps.googleusercontent.com",
+              "client_id": "39080773295-iq1ib7i2c56437q2imp2g9ms6hhh33dp.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "1047945808084-1apup4nlgd0qttdn2lp5kvhfrnsao00u.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.farenidham.books.saxatsavitaFlutter"
-              }
             }
           ]
         }
