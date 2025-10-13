@@ -134,6 +134,14 @@ class _DrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.transfer_within_a_station),
+            title: Text(AppLocalizations.of(context)!.settings),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/migration');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: Text(AppLocalizations.of(context)!.logout),
             onTap: () async {
