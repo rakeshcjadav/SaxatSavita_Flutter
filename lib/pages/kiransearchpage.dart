@@ -160,12 +160,14 @@ class SearchResult {
   final int partNumber;
   final String snippet;
   final bool isContentMatch;
+  final double relevanceScore;
 
   SearchResult({
     required this.kiranInfo,
     required this.partNumber,
     required this.snippet,
     this.isContentMatch = false,
+    this.relevanceScore = 0.0,
   });
 }
 
@@ -263,6 +265,124 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     }
   }
 
+  /// Calculate relevance score for a text against the search query
+  /// Higher scores indicate better matches
+  double _calculateRelevanceScore(String text, String query) {
+    final lowerText = text.toLowerCase();
+    final lowerQuery = query.toLowerCase();
+
+    // Base score
+    double score = 0.0;
+
+    // 1. Exact match gets highest score
+    if (lowerText == lowerQuery) {
+      return 100.0;
+    }
+
+    // 2. Exact phrase match gets very high score
+    if (lowerText.contains(lowerQuery)) {
+      score += 80.0;
+
+      // Bonus for match at the beginning
+      if (lowerText.startsWith(lowerQuery)) {
+        score += 15.0;
+      }
+
+      // Bonus for match as whole words
+      final regex = RegExp(r'\b' + RegExp.escape(lowerQuery) + r'\b');
+      if (regex.hasMatch(lowerText)) {
+        score += 10.0;
+      }
+
+      return score;
+    }
+
+    // 3. Multi-word matching
+    final queryWords =
+        lowerQuery
+            .split(RegExp(r'\s+'))
+            .where((word) => word.trim().isNotEmpty)
+            .toList();
+
+    if (queryWords.isEmpty) return 0.0;
+
+    int matchedWords = 0;
+    double wordScore = 0.0;
+
+    for (final word in queryWords) {
+      if (lowerText.contains(word)) {
+        matchedWords++;
+        wordScore += 20.0; // Base score per matched word
+
+        // Bonus for word at beginning of text
+        if (lowerText.startsWith(word)) {
+          wordScore += 10.0;
+        }
+
+        // Bonus for whole word match
+        final wordRegex = RegExp(r'\b' + RegExp.escape(word) + r'\b');
+        if (wordRegex.hasMatch(lowerText)) {
+          wordScore += 5.0;
+        }
+
+        // Bonus for adjacent words (check if current word appears near previous matched words)
+        for (final otherWord in queryWords) {
+          if (otherWord != word && lowerText.contains(otherWord)) {
+            final wordIndex = lowerText.indexOf(word);
+            final otherIndex = lowerText.indexOf(otherWord, wordIndex + 1);
+            final distance = (wordIndex - otherIndex).abs();
+
+            // Bonus for words that appear close to each other
+            if (distance <= 20) {
+              // Within 20 characters
+              wordScore += 3.0;
+            }
+          }
+        }
+      }
+    }
+
+    // Calculate final score based on matched words ratio
+    final matchRatio = matchedWords / queryWords.length;
+    score = wordScore * matchRatio;
+
+    // Bonus for matching all words
+    if (matchedWords == queryWords.length) {
+      score += 15.0;
+    }
+
+    // Length penalty - shorter text with same matches is more relevant
+    //final lengthPenalty = (lowerText.length / 100.0).clamp(0.0, 10.0);
+    //score = (score - lengthPenalty).clamp(0.0, double.infinity);
+
+    return score;
+  }
+
+  /// Calculate relevance score for content matches
+  Future<double> _calculateContentRelevance(
+    int partNumber,
+    int kiranIndex,
+    String query,
+  ) async {
+    try {
+      final path =
+          'assets/book/saxatsavita/part$partNumber/kiran_$kiranIndex.json';
+      final jsonString = await rootBundle.loadString(path);
+      final contentData = json.decode(jsonString);
+      final content = contentData['main']['content'] ?? '';
+
+      // Remove HTML tags for relevance calculation
+      final plainContent = content.replaceAll(RegExp(r'<[^>]*>'), '');
+
+      return _calculateRelevanceScore(plainContent, query);
+    } catch (e) {
+      debugPrint(
+        'Error calculating content relevance for kiran $kiranIndex: $e',
+      );
+      return 0.0;
+    }
+  }
+
   Future<void> _performSearch(String query) async {
     if (query.isEmpty) return;
 
@@ -281,15 +401,29 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         );
         if (kiranList != null) {
           for (final kiranInfo in kiranList.list) {
-            // Search in title
-            if (kiranInfo.title.toLowerCase().contains(lowerQuery) ||
+            // Search in title - support both exact match and multi-word match
+            bool titleMatches = false;
+            String titleSnippet = '';
+
+            if (_matchesMultiWord(kiranInfo.title.toLowerCase(), lowerQuery) ||
                 kiranInfo.number.toLowerCase().contains(lowerQuery)) {
+              titleMatches = true;
+              titleSnippet = _highlightMultiWordMatch(kiranInfo.title, query);
+            }
+
+            if (titleMatches) {
+              final titleRelevance = _calculateRelevanceScore(
+                '${kiranInfo.number} ${kiranInfo.title}',
+                query,
+              );
               results.add(
                 SearchResult(
                   kiranInfo: kiranInfo,
                   partNumber: partNumber,
-                  snippet: _highlightMatch(kiranInfo.title, query),
+                  snippet: titleSnippet,
                   isContentMatch: false,
+                  relevanceScore:
+                      titleRelevance + 10.0, // Bonus for title matches
                 ),
               );
             }
@@ -301,12 +435,19 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               query,
             );
             if (contentSnippet.isNotEmpty) {
+              // Calculate relevance for content (we'll need to pass the original content)
+              final contentRelevance = await _calculateContentRelevance(
+                partNumber,
+                kiranInfo.index,
+                query,
+              );
               results.add(
                 SearchResult(
                   kiranInfo: kiranInfo,
                   partNumber: partNumber,
                   snippet: contentSnippet,
                   isContentMatch: true,
+                  relevanceScore: contentRelevance,
                 ),
               );
             }
@@ -314,11 +455,20 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         }
       }
 
-      // Sort results by relevance (title matches first, then content matches)
+      // Sort results by relevance score (highest first)
       results.sort((a, b) {
+        // Primary sort: by relevance score (descending)
+        final scoreComparison = b.relevanceScore.compareTo(a.relevanceScore);
+        if (scoreComparison != 0) {
+          return scoreComparison;
+        }
+
+        // Secondary sort: title matches before content matches
         if (a.isContentMatch != b.isContentMatch) {
           return a.isContentMatch ? 1 : -1;
         }
+
+        // Tertiary sort: by kiran index
         return a.kiranInfo.index.compareTo(b.kiranInfo.index);
       });
 
@@ -431,7 +581,18 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       final lowerContent = plainContent.toLowerCase();
       final lowerQuery = query.toLowerCase();
 
-      final index = lowerContent.indexOf(lowerQuery);
+      // Try exact match first
+      int index = lowerContent.indexOf(lowerQuery);
+
+      // If no exact match, try multi-word match
+      if (index == -1 && _matchesMultiWord(lowerContent, lowerQuery)) {
+        // Find the first word of the query to get a starting position
+        final queryWords = lowerQuery.split(RegExp(r'\s+'));
+        if (queryWords.isNotEmpty) {
+          index = lowerContent.indexOf(queryWords.first);
+        }
+      }
+
       if (index != -1) {
         // Extract snippet around the match
         const snippetLength = 100;
@@ -448,7 +609,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         if (start > 0) snippet = '...$snippet';
         if (end < plainContent.length) snippet = '$snippet...';
 
-        return _highlightMatch(snippet, query);
+        return _highlightMultiWordMatch(snippet, query);
       }
     } catch (e) {
       debugPrint('Error searching content for kiran $kiranIndex: $e');
@@ -456,11 +617,53 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     return '';
   }
 
-  String _highlightMatch(String text, String query) {
-    final index = text.toLowerCase().indexOf(query.toLowerCase());
-    if (index == -1) return text;
+  /// Checks if the text matches all words in the query, even if they're not adjacent
+  bool _matchesMultiWord(String text, String query) {
+    // Split query into individual words, removing extra spaces
+    final queryWords =
+        query
+            .split(RegExp(r'\s+'))
+            .where((word) => word.trim().isNotEmpty)
+            .toList();
 
-    return '${text.substring(0, index)}**${text.substring(index, index + query.length)}**${text.substring(index + query.length)}';
+    if (queryWords.isEmpty) return false;
+
+    // Check if all query words are present in the text
+    for (final word in queryWords) {
+      if (!text.contains(word.toLowerCase())) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /// Highlights all matching words in the text, even if they're not adjacent
+  String _highlightMultiWordMatch(String text, String query) {
+    if (query.trim().isEmpty) return text;
+
+    // Split query into individual words
+    final queryWords =
+        query
+            .split(RegExp(r'\s+'))
+            .where((word) => word.trim().isNotEmpty)
+            .map((word) => word.toLowerCase())
+            .toList();
+
+    if (queryWords.isEmpty) return text;
+
+    String result = text;
+
+    // Highlight each word individually
+    for (final word in queryWords) {
+      // Create a case-insensitive regex for the word
+      final regex = RegExp(RegExp.escape(word), caseSensitive: false);
+      result = result.replaceAllMapped(regex, (match) {
+        return '**${match.group(0)}**';
+      });
+    }
+
+    return result;
   }
 
   void _navigateToKiran(SearchResult result) {
@@ -1124,6 +1327,13 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                   const SizedBox(width: 4),
                   Text(
                     Utils.getEstimatedReadingTime(result.kiranInfo.wordCount),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                  ),
+                  const Spacer(),
+                  Text(
+                    result.relevanceScore.toString(),
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: Colors.grey),
