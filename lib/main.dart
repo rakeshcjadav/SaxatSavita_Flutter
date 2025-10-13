@@ -5,7 +5,6 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
-import 'package:saxatsavita_flutter/pages/bookmarks_page.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';

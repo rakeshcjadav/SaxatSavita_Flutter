@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
-import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
-import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
-import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 
 class Bookmarkwidget extends StatefulWidget {
   final int partNumber;
@@ -79,34 +76,27 @@ class _BookmarkwidgetState extends State<Bookmarkwidget> {
   }
 
   String getUpdatedAt(Bookmark bookmark) {
-    return AppLocalizations.of(
-      context,
-    )!.last_read(bookmark.createdAt, bookmark.createdAt);
+    return _formatDate(bookmark.createdAt);
   }
 
-  void _navigateToBookMark(
-    BuildContext context,
-    int partNumber,
-    int kiranIndex,
-  ) async {
-    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
-    var kiranInfo = KiranListService().getKiranInfo(partNumber, kiranIndex);
-    var kiranUserInfo = KiranUserService().getKiranUserInfo(kiranIndex);
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (context) => KiranReadPage(
-              partNumber: bookUserInfo.id,
-              kiranInfo: kiranInfo,
-              kiranUserInfo: kiranUserInfo,
-            ),
-      ),
-    );
-    if (result == true) {
-      setState(() {
-        // Refresh the state to reflect any changes made in KiranReadPage
-      });
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays == 0) {
+      if (difference.inHours == 0) {
+        if (difference.inMinutes == 0) {
+          return 'Just now';
+        }
+        return '${difference.inMinutes}m ago';
+      }
+      return '${difference.inHours}h ago';
+    } else if (difference.inDays == 1) {
+      return 'Yesterday';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays}d ago';
+    } else {
+      return AppLocalizations.of(context)!.last_read(date, date);
     }
   }
 }

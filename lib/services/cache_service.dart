@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
-import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 
 /// Service to manage all local cache clearing operations
@@ -79,28 +78,6 @@ class CacheService {
     } catch (e) {
       debugPrint('❌ Error clearing in-memory cache: $e');
       rethrow;
-    }
-  }
-
-  /// Clear Firebase-related cache (optional - clears remote data)
-  Future<void> _clearFirebaseCache() async {
-    try {
-      // Note: This clears remote Firebase data, which might not always be desired
-      // You might want to make this optional based on user preference
-      final firebaseSync = FirebaseSyncService();
-
-      // Only clear if user is authenticated
-      if (firebaseSync.isAuthenticated) {
-        await firebaseSync.clearAllUserData();
-        debugPrint('✅ Firebase user data cleared');
-      } else {
-        debugPrint(
-          'ℹ️ User not authenticated, skipping Firebase data clearing',
-        );
-      }
-    } catch (e) {
-      debugPrint('❌ Error clearing Firebase cache: $e');
-      // Don't rethrow - Firebase clearing is optional and shouldn't block logout
     }
   }
 

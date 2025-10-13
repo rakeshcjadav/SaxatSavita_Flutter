@@ -24,8 +24,6 @@ class BookMainpage extends StatefulWidget {
 }
 
 class _BookmainpageState extends State<BookMainpage> {
-  int? _expandedIndex;
-
   @override
   void initState() {
     super.initState();
