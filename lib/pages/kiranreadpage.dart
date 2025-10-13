@@ -49,7 +49,6 @@ class _KiranReadPageState extends State<KiranReadPage>
   bool _isAutoScrolling = false;
   Timer? _autoScrollTimer;
   double _contentHeight = 0;
-  int _estimatedReadingSeconds = 0;
   bool _isInitialized = false;
 
   bool _hasDataChanged = false;
@@ -175,8 +174,11 @@ class _KiranReadPageState extends State<KiranReadPage>
     _elapsedNotifier.value = timeString;
 
     // Check if 80% of estimated reading time has elapsed
-    if (_estimatedReadingSeconds > 0 && !_isFinishButtonEnabledNotifier.value) {
-      final requiredSeconds = (_estimatedReadingSeconds * 0.8).round();
+    final estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
+      widget.kiranInfo.wordCount,
+    );
+    if (estimatedReadingSeconds > 0 && !_isFinishButtonEnabledNotifier.value) {
+      final requiredSeconds = (estimatedReadingSeconds * 0.8).round();
       if (seconds >= requiredSeconds) {
         _isFinishButtonEnabledNotifier.value = true;
         // Only call setState when the button state actually changes
@@ -207,15 +209,13 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   void _initializeAutoScroll() {
-    // Calculate estimated reading time in seconds
-    _estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
+    // Check if button should already be enabled (for cases where user has already spent time reading)
+    final estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
       widget.kiranInfo.wordCount,
     );
-
-    // Check if button should already be enabled (for cases where user has already spent time reading)
-    if (_estimatedReadingSeconds > 0 &&
+    if (estimatedReadingSeconds > 0 &&
         _stopwatch.elapsed.inSeconds >=
-            (_estimatedReadingSeconds * 0.8).round()) {
+            (estimatedReadingSeconds * 0.8).round()) {
       _isFinishButtonEnabled = true;
     }
 
@@ -245,7 +245,10 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   void _startAutoScroll() {
-    if (_contentHeight <= 0 || _estimatedReadingSeconds <= 0) return;
+    final estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
+      widget.kiranInfo.wordCount,
+    );
+    if (_contentHeight <= 0 || estimatedReadingSeconds <= 0) return;
 
     if (mounted) {
       setState(() {
@@ -254,7 +257,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
 
     // Calculate scroll speed (pixels per second)
-    final scrollSpeed = _contentHeight / _estimatedReadingSeconds;
+    final scrollSpeed = _contentHeight / estimatedReadingSeconds;
 
     _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 50), (
       timer,
