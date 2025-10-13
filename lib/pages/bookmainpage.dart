@@ -228,17 +228,15 @@ class _BookmainpageState extends State<BookMainpage> {
                 trailing: IconButton(
                   icon: Icon(Icons.bookmarks),
                   onPressed: () {
-                    setState(() {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => BookmarksPage(
-                                partNumber: bookparts[index].partNumber,
-                              ),
-                        ),
-                      );
-                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => BookmarksPage(
+                              partNumber: bookparts[index].partNumber,
+                            ),
+                      ),
+                    );
                   },
                 ),
                 titleTextStyle: Theme.of(context).textTheme.titleMedium,

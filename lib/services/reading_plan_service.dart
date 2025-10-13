@@ -21,6 +21,7 @@ class ReadingPlanService {
     for (final plan in _readingPlans) {
       if (plan.isActive) {
         _activePlanId = plan.id;
+        setActivePlan(plan.id); // Ensure notifications are scheduled
         debugPrint('✅ Active reading plan found: ${plan.title}');
         break;
       }
@@ -77,7 +78,6 @@ class ReadingPlanService {
     );
 
     _readingPlans.add(plan);
-    //await _saveReadingPlans();
 
     // Auto-sync to Firebase
     await FirebaseIntegrationHelper().onNewReadingPlanAdded(plan);
@@ -116,11 +116,6 @@ class ReadingPlanService {
         updateReadingPlan(deactivatedPlan);
       }
 
-      //await _saveReadingPlans();
-
-      // Schedule notifications for active plan
-      await NotificationService().scheduleReadingPlanReminders(updatedPlan);
-
       debugPrint('✅ Set active reading plan: ${plan.title}');
     }
   }
@@ -130,7 +125,6 @@ class ReadingPlanService {
     final index = _readingPlans.indexWhere((p) => p.id == updatedPlan.id);
     if (index != -1) {
       _readingPlans[index] = updatedPlan.copyWith(updatedAt: DateTime.now());
-      //await _saveReadingPlans();
 
       // Auto-sync to Firebase
       await FirebaseIntegrationHelper().onReadingPlanUpdated(updatedPlan);
