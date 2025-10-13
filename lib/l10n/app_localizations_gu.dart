@@ -36,6 +36,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get reading_history => 'પૂર્વ વાંચન';
 
   @override
+  String get reading => 'વાંચન';
+
+  @override
   String get loginWithGoogle => 'Sign in with Google';
 
   @override

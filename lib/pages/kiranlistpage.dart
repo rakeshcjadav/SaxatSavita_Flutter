@@ -25,6 +25,7 @@ class Kiranlistpage extends StatefulWidget {
 
 class _KiranlistpageState extends State<Kiranlistpage> {
   late Future<KiranList> _futureKiranList;
+  final ScrollController _scrollController = ScrollController();
 
   late BookUserInfo bookUserInfo;
   bool _hasDataChanged = false;
@@ -44,10 +45,16 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 });
 
     bookUserInfo = Bookservice().getBookUserInfo(widget.bookPart.partNumber);
+
+    // ✅ Schedule scroll AFTER the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToLastOpenedKiran();
+    });
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -88,6 +95,55 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     */
   }
 
+  void _scrollToLastOpenedKiran() {
+    // Check if lastOpenedKiranIndex exists and is valid
+    if (bookUserInfo.lastOpenedKiranIndex == null) {
+      return;
+    }
+
+    final targetIndex =
+        bookUserInfo.lastOpenedKiranIndex! - widget.bookPart.startKiranIndex;
+
+    // Ensure the index is valid
+    if (targetIndex < 0) {
+      return;
+    }
+
+    // Wait a bit more to ensure ListView is built and ScrollController is attached
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted && _scrollController.hasClients) {
+        _scrollToIndex(targetIndex);
+      }
+    });
+  }
+
+  void _scrollToIndex(int index) {
+    // Check if ScrollController is attached and widget is still mounted
+    if (!mounted || !_scrollController.hasClients) {
+      return;
+    }
+
+    // Height of each item (estimated)
+    const double itemHeight = 145.0; // Increased to account for card height
+    final position = index * itemHeight;
+
+    // Ensure we don't scroll beyond the content
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
+    final targetPosition =
+        position > maxScrollExtent ? maxScrollExtent : position;
+
+    final targetPositionMinus500 = targetPosition - 500;
+    if (targetPositionMinus500 > 0) {
+      _scrollController.jumpTo(targetPositionMinus500);
+    }
+
+    _scrollController.animateTo(
+      targetPosition,
+      duration: Duration(milliseconds: 1000),
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,6 +179,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 }
                 final kirans = snapshot.data!.list;
                 return ListView.builder(
+                  controller: _scrollController,
                   itemCount: kirans.length,
                   itemBuilder: (context, index) {
                     final kiran = kirans[index];

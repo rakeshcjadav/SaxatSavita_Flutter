@@ -260,7 +260,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
           tabs: [
             Tab(
               icon: const Icon(Icons.history),
-              text: AppLocalizations.of(context)!.reading_history,
+              text: AppLocalizations.of(context)!.reading,
             ),
             Tab(
               icon: const Icon(Icons.analytics),

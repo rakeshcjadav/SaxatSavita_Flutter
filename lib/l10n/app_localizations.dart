@@ -152,6 +152,12 @@ abstract class AppLocalizations {
   /// **'Reading History'**
   String get reading_history;
 
+  /// No description provided for @reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading'**
+  String get reading;
+
   /// No description provided for @loginWithGoogle.
   ///
   /// In en, this message translates to:

@@ -36,6 +36,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reading_history => 'Reading History';
 
   @override
+  String get reading => 'Reading';
+
+  @override
   String get loginWithGoogle => 'Sign in with Google';
 
   @override
