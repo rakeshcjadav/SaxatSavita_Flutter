@@ -192,6 +192,7 @@ class _BookmainpageState extends State<BookMainpage> {
           child: Column(
             children: [
               ListTile(
+                onTap: () => navigateToKiranList(bookparts, index),
                 title: Text(bookparts[index].displayname.toString()),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
