@@ -507,4 +507,24 @@ class FirebaseSyncService {
       return {};
     }
   }
+
+  void saveUserDetailsToFirebase() {
+    if (!isAuthenticated) return;
+    // Implement saving user details logic here
+    debugPrint('Saving user details to Firebase...');
+    // For example, you might want to save displayName and email
+    final user = _auth.currentUser;
+    if (user != null) {
+      userDoc!.set({
+        'displayName': user.displayName,
+        'email': user.email,
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      debugPrint('User details saved to Firebase successfully');
+    } else {
+      debugPrint(
+        'User not authenticated, cannot save user details',
+      ); // Handle the case where the user is not authenticated
+    }
+  }
 }

@@ -102,6 +102,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Text(
+                      "પ.પૂ.પ્ર.બ્ર.સ્વ.સદ્. જોગીસ્વામી શ્રી ધર્મપ્રસાદદાસજીસ્વામી",
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
                     Container(
                       padding: EdgeInsets.only(bottom: 10),
                       child: ElevatedButton.icon(

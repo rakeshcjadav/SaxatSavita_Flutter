@@ -185,6 +185,10 @@ class FirebaseIntegrationHelper {
 
     debugPrint('Auto-sync listeners configured');
   }
+
+  void saveUserDetailsToFirebase() {
+    _firebaseSync.saveUserDetailsToFirebase();
+  }
 }
 
 /// Extension methods to add Firebase sync to existing services

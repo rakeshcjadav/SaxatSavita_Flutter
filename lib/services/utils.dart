@@ -146,4 +146,8 @@ class Utils {
       await FirebaseIntegrationHelper().loadDataFromFirebase();
     }
   }
+
+  static void saveUserDetailsToFirebase() {
+    FirebaseIntegrationHelper().saveUserDetailsToFirebase();
+  }
 }

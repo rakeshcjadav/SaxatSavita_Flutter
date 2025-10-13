@@ -94,6 +94,8 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
         debugPrint('_handleAuthenticationEvent : Rounte : HomePage()');
 
         Utils.loadUserdatafromFirebase();
+
+        Utils.saveUserDetailsToFirebase();
         // Navigate after state is updated
         Navigator.pushReplacement(
           context,
