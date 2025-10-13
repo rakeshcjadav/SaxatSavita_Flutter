@@ -42,7 +42,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         children: [
           ClipRRect(
             child: Image(
-              image: AssetImage('assets/res/z_jogi_swami_tallest.jpg'),
+              image: AssetImage('assets/res/z_jogi_swami_tallest_2.jpg'),
               fit: BoxFit.cover,
               width: double.infinity,
             ),
@@ -90,26 +90,26 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     child: Center(
                       child: Text(
                         AppLocalizations.of(context)!.header_slok,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium!.copyWith(
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
                 ),
+                const SizedBox(height: 8),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "પ.પૂ.પ્ર.બ્ર.સ્વ.સદ્. જોગીસ્વામી શ્રી ધર્મપ્રસાદદાસજીસ્વામી",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      "પ.પૂ.પ્ર.બ્ર.સ્વ.સદ્. જોગીસ્વામી\nશ્રી ધર્મપ્રસાદદાસજી સ્વામી",
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Container(
                       padding: EdgeInsets.only(bottom: 10),
                       child: ElevatedButton.icon(

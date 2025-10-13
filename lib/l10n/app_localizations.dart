@@ -353,7 +353,7 @@ abstract class AppLocalizations {
   /// No description provided for @header_slok.
   ///
   /// In en, this message translates to:
-  /// **'।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।'**
+  /// **'।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।\n\nશ્રી સહજાનંદ સંસ્કારધામ\nમહામંત્રપીઠ - ફરેણી'**
   String get header_slok;
 
   /// No description provided for @search_kiranas.
