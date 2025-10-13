@@ -39,24 +39,23 @@ class Utils {
     BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
       kiranUserInfo.partNumber,
     );
-    return kiranUserInfo.kiranIndex == bookUserInfo.bookmarkKiranIndex;
+    return bookUserInfo.isKiranBookmarked(kiranUserInfo.kiranIndex);
   }
 
   static void setBookmark(KiranUserInfo kiranUserInfo) {
     BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
       kiranUserInfo.partNumber,
     );
-    if (kiranUserInfo.kiranIndex == bookUserInfo.bookmarkKiranIndex) {
+    if (bookUserInfo.isKiranBookmarked(kiranUserInfo.kiranIndex)) {
       // Remove bookmark
-      //bookUserInfo.bookmarkKiranIndex = -1;
-      return;
+      bookUserInfo.removeBookmark(kiranUserInfo.kiranIndex);
     } else {
       // Set bookmark
-      bookUserInfo.bookmarkKiranIndex = kiranUserInfo.kiranIndex;
-      bookUserInfo.updatedAt = DateTime.now();
-
-      FirebaseIntegrationHelper().onBookUserInfoChanged(bookUserInfo);
+      bookUserInfo.addBookmark(kiranUserInfo.kiranIndex);
     }
+
+    FirebaseIntegrationHelper().onBookUserInfoChanged(bookUserInfo);
+
     Bookservice().bookUserInfoList = [
       ...?Bookservice().bookUserInfoList?.where(
         (info) => info.partNumber != bookUserInfo.partNumber,
@@ -66,7 +65,7 @@ class Utils {
 
     // Print updated bookmark info
     debugPrint(
-      'Bookmark set to Kiran ${bookUserInfo.bookmarkKiranIndex} for Part ${bookUserInfo.partNumber}',
+      'Bookmark ${bookUserInfo.isKiranBookmarked(kiranUserInfo.kiranIndex) ? "removed from" : "set to"} Kiran ${kiranUserInfo.kiranIndex} for Part ${bookUserInfo.partNumber}',
     );
   }
 
@@ -97,20 +96,44 @@ class Utils {
     ];
   }
 
-  static void removeBookmark(KiranUserInfo kiranUserInfo) {}
+  static void removeBookmark(KiranUserInfo kiranUserInfo) {
+    BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
+      kiranUserInfo.partNumber,
+    );
+    bookUserInfo.removeBookmark(kiranUserInfo.kiranIndex);
+
+    FirebaseIntegrationHelper().onBookUserInfoChanged(bookUserInfo);
+
+    Bookservice().bookUserInfoList = [
+      ...?Bookservice().bookUserInfoList?.where(
+        (info) => info.partNumber != bookUserInfo.partNumber,
+      ),
+      bookUserInfo,
+    ];
+
+    debugPrint(
+      'Bookmark removed from Kiran ${kiranUserInfo.kiranIndex} for Part ${bookUserInfo.partNumber}',
+    );
+  }
 
   static void applyBookmarkToNextKiran(KiranUserInfo kiranUserInfo) {
     BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
       kiranUserInfo.partNumber,
     );
     final nextKiranIndex = kiranUserInfo.kiranIndex + 1;
-    // Assuming you have a method to get total Kirans in the part
     final endKiranIndex = Bookservice().getEndKiranIndex(
       kiranUserInfo.partNumber,
     );
+
+    // First remove the current bookmark if it exists
+    if (bookUserInfo.isKiranBookmarked(kiranUserInfo.kiranIndex)) {
+      bookUserInfo.removeBookmark(kiranUserInfo.kiranIndex);
+    }
+
     if (nextKiranIndex <= endKiranIndex) {
-      bookUserInfo.bookmarkKiranIndex = nextKiranIndex;
-      bookUserInfo.updatedAt = DateTime.now();
+      // Add bookmark to next Kiran
+      bookUserInfo.addBookmark(nextKiranIndex);
+
       FirebaseIntegrationHelper().onBookUserInfoChanged(bookUserInfo);
       Bookservice().bookUserInfoList = [
         ...?Bookservice().bookUserInfoList?.where(
@@ -119,14 +142,11 @@ class Utils {
         bookUserInfo,
       ];
       debugPrint(
-        'Bookmark moved to next Kiran ${bookUserInfo.bookmarkKiranIndex} for Part ${bookUserInfo.partNumber}',
+        'Bookmark moved to next Kiran $nextKiranIndex for Part ${bookUserInfo.partNumber}',
       );
     } else {
-      // If it's the last Kiran, remove the bookmark
-      bookUserInfo.bookmarkKiranIndex = Bookservice().getStartKiranIndex(
-        kiranUserInfo.partNumber,
-      );
-      bookUserInfo.updatedAt = DateTime.now();
+      // If it's the last Kiran, just remove the bookmark (already done above)
+      FirebaseIntegrationHelper().onBookUserInfoChanged(bookUserInfo);
       Bookservice().bookUserInfoList = [
         ...?Bookservice().bookUserInfoList?.where(
           (info) => info.partNumber != bookUserInfo.partNumber,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
-enum ActionOptions { info, settings, notes, search, favorite, bookmark }
+enum ActionOptions { info, settings, notes, search, favorite }
 
 AppBar buildAppBar(
   BuildContext context, {

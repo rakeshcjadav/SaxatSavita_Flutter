@@ -221,6 +221,12 @@ class Bookservice {
                     id: part.id,
                     partNumber: part.partNumber,
                     bookmarkKiranIndex: part.startKiranIndex,
+                    bookmarks: [
+                      Bookmark(
+                        kiranIndex: part.startKiranIndex,
+                        createdAt: DateTime.now(),
+                      ),
+                    ],
                   ),
                 )
                 .toList();

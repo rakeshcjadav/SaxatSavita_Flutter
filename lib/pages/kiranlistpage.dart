@@ -143,8 +143,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                               onTap: () {
                                 _navigateToKiranReadPage(kiran, kiranUserInfo);
                                 setState(() {
-                                  _expandedIndex =
-                                      _expandedIndex == index ? null : index;
+                                  _expandedIndex = index;
                                 });
                               },
                               child: Padding(

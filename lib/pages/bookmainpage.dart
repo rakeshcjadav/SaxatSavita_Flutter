@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/components/bookmarkwidget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
+import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/aashirvachanlistpage.dart';
+import 'package:saxatsavita_flutter/pages/bookmarks_page.dart';
 import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -21,6 +24,8 @@ class BookMainpage extends StatefulWidget {
 }
 
 class _BookmainpageState extends State<BookMainpage> {
+  int? _expandedIndex;
+
   @override
   void initState() {
     super.initState();
@@ -222,89 +227,35 @@ class _BookmainpageState extends State<BookMainpage> {
                     ),
                   ],
                 ),
-                trailing: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
+                trailing: IconButton(
+                  icon: Icon(Icons.bookmarks),
                   onPressed: () {
-                    navigateToKiranList(bookparts, index);
+                    setState(() {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => BookmarksPage(
+                                partNumber: bookparts[index].partNumber,
+                              ),
+                        ),
+                      );
+                    });
                   },
-                  child: Text(
-                    AppLocalizations.of(context)!.read,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
                 ),
                 titleTextStyle: Theme.of(context).textTheme.titleMedium,
                 subtitleTextStyle: Theme.of(context).textTheme.bodySmall,
               ),
-              if (isValidBookmark(bookparts[index].partNumber)) ...[
+              if (hasBookmarks(bookparts[index].partNumber)) ...[
                 const SizedBox(height: 8),
                 Divider(),
                 const SizedBox(height: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      label: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          getNameofBookMark(
-                            bookparts[index].partNumber,
-                            Bookservice()
-                                .getBookUserInfo(bookparts[index].partNumber)
-                                .bookmarkKiranIndex,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                      onPressed: () {
-                        navigateToBookMark(bookparts, index + 1);
-                      },
-                      icon: const Icon(Icons.bookmark, color: Colors.amber),
-                    ),
-                    if (Bookservice()
-                            .getBookUserInfo(bookparts[index].partNumber)
-                            .updatedAt !=
-                        null) ...[
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const SizedBox(width: 18),
-                          Icon(
-                            Icons.history,
-                            size: appSettingsNotifier.value.fontSize * 0.6,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.3),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            getUpdatedAt(bookparts[index].partNumber),
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall!.copyWith(
-                              fontSize:
-                                  appSettingsNotifier.value.fontSize * 0.6,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ],
+                Bookmarkwidget(
+                  partNumber: bookparts[index].partNumber,
+                  bookmark: getLatestBookmark(bookparts[index].partNumber)!,
+                  onTap: (partNumber, kiranIndex) {
+                    _navigateToBookMark(partNumber, kiranIndex);
+                  },
                 ),
               ],
             ],
@@ -312,16 +263,6 @@ class _BookmainpageState extends State<BookMainpage> {
         ),
       ),
     );
-  }
-
-  bool isValidBookmark(int partNumber) {
-    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
-    if (bookUserInfo.bookmarkKiranIndex == 0) {
-      return false;
-    } else {
-      return bookUserInfo.bookmarkKiranIndex !=
-          Bookservice().getStartKiranIndex(partNumber);
-    }
   }
 
   void navigateToKiranList(List<Bookpartmodel> bookparts, int index) async {
@@ -340,12 +281,13 @@ class _BookmainpageState extends State<BookMainpage> {
 
   String getNameofBookMark(int partNumber, int kiranIndex) {
     var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
-    if (bookUserInfo.bookmarkKiranIndex == 0) {
+    final latestBookmark = bookUserInfo.latestBookmark;
+    if (latestBookmark == null) {
       return "";
     } else {
       var kiranInfo = KiranListService().getKiranInfo(
         partNumber,
-        bookUserInfo.bookmarkKiranIndex,
+        latestBookmark.kiranIndex,
       );
       return "${kiranInfo.number} ${kiranInfo.title}";
     }
@@ -362,14 +304,40 @@ class _BookmainpageState extends State<BookMainpage> {
     }
   }
 
+  void _navigateToBookMark(int partNumber, int kiranIndex) async {
+    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    var kiranInfo = KiranListService().getKiranInfo(partNumber, kiranIndex);
+    var kiranUserInfo = KiranUserService().getKiranUserInfo(kiranIndex);
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => KiranReadPage(
+              partNumber: bookUserInfo.id,
+              kiranInfo: kiranInfo,
+              kiranUserInfo: kiranUserInfo,
+            ),
+      ),
+    );
+    if (result == true) {
+      setState(() {
+        // Refresh the state to reflect any changes made in KiranReadPage
+      });
+    }
+  }
+
   void navigateToBookMark(List<Bookpartmodel> bookparts, int partNumber) async {
     var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    final latestBookmark = bookUserInfo.latestBookmark;
+    if (latestBookmark == null) {
+      return;
+    }
     var kiranInfo = KiranListService().getKiranInfo(
       partNumber,
-      bookUserInfo.bookmarkKiranIndex,
+      latestBookmark.kiranIndex,
     );
     var kiranUserInfo = KiranUserService().getKiranUserInfo(
-      bookUserInfo.bookmarkKiranIndex,
+      latestBookmark.kiranIndex,
     );
     final result = await Navigator.push(
       context,
@@ -387,5 +355,21 @@ class _BookmainpageState extends State<BookMainpage> {
         // Refresh the state to reflect any changes made in KiranReadPage
       });
     }
+  }
+
+  Bookmark? getLatestBookmark(int partNumber) {
+    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    return bookUserInfo.latestBookmark;
+  }
+
+  // Get all bookmarks of current bookuserinfo
+  List<Bookmark> getBookmarks(int partNumber) {
+    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    return bookUserInfo.bookmarks;
+  }
+
+  bool hasBookmarks(int partNumber) {
+    var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
+    return bookUserInfo.bookmarks.isNotEmpty;
   }
 }

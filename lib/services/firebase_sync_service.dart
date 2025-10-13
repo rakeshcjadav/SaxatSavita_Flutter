@@ -82,14 +82,29 @@ class FirebaseSyncService {
 
       for (final info in bookUserInfoList) {
         final docRef = collection.doc('${info.partNumber}');
+        final jsonData = info.toJson();
+
+        // Validate bookmark queue integrity before syncing
+        if (jsonData['bookmarks'] is List) {
+          final bookmarks = jsonData['bookmarks'] as List;
+          if (bookmarks.length > 5) {
+            debugPrint(
+              'Warning: Bookmark queue has more than 5 items for part ${info.partNumber}. Trimming to 5.',
+            );
+            jsonData['bookmarks'] = bookmarks.take(5).toList();
+          }
+        }
+
         batch.set(docRef, {
-          ...info.toJson(),
+          ...jsonData,
           'lastUpdated': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
       }
 
       await batch.commit();
-      debugPrint('BookUserInfo synced to Firebase successfully');
+      debugPrint(
+        'BookUserInfo synced to Firebase successfully (${bookUserInfoList.length} items)',
+      );
     } catch (e) {
       debugPrint('Error syncing BookUserInfo to Firebase: $e');
     }
@@ -104,9 +119,36 @@ class FirebaseSyncService {
 
     try {
       final snapshot = await userDoc!.collection('bookUserInfo').get();
-      return snapshot.docs
-          .map((doc) => BookUserInfo.fromJson(doc.data()))
-          .toList();
+      final loadedItems = <BookUserInfo>[];
+
+      for (final doc in snapshot.docs) {
+        try {
+          final data = doc.data();
+
+          // Handle migration from old format without bookmarks array
+          if (data['bookmarks'] == null && data['bookmarkKiranIndex'] != null) {
+            debugPrint('Migrating old bookmark format for part ${doc.id}');
+            data['bookmarks'] = [
+              {
+                'kiranIndex': data['bookmarkKiranIndex'],
+                'createdAt':
+                    data['updatedAt'] ?? DateTime.now().toIso8601String(),
+              },
+            ];
+          }
+
+          final bookUserInfo = BookUserInfo.fromJson(data);
+          loadedItems.add(bookUserInfo);
+        } catch (e) {
+          debugPrint('Error parsing BookUserInfo for document ${doc.id}: $e');
+          // Continue with other documents even if one fails
+        }
+      }
+
+      debugPrint(
+        'BookUserInfo loaded from Firebase successfully (${loadedItems.length} items)',
+      );
+      return loadedItems;
     } catch (e) {
       debugPrint('Error loading BookUserInfo from Firebase: $e');
       return [];
@@ -118,10 +160,27 @@ class FirebaseSyncService {
     if (!isAuthenticated) return;
 
     try {
+      final jsonData = info.toJson();
+
+      // Validate bookmark queue integrity before syncing
+      if (jsonData['bookmarks'] is List) {
+        final bookmarks = jsonData['bookmarks'] as List;
+        if (bookmarks.length > 5) {
+          debugPrint(
+            'Warning: Bookmark queue has more than 5 items for part ${info.partNumber}. Trimming to 5.',
+          );
+          jsonData['bookmarks'] = bookmarks.take(5).toList();
+        }
+      }
+
       await userDoc!.collection('bookUserInfo').doc('${info.partNumber}').set({
-        ...info.toJson(),
+        ...jsonData,
         'lastUpdated': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
+
+      debugPrint(
+        'Single BookUserInfo synced for part ${info.partNumber} with ${info.bookmarks.length} bookmarks',
+      );
     } catch (e) {
       debugPrint('Error syncing single BookUserInfo: $e');
     }

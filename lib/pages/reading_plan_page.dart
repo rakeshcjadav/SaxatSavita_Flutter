@@ -471,36 +471,60 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                 PopupMenuItem(
                   value: 'activate',
                   enabled: !isActive,
-                  child: Text(
-                    isActive
-                        ? AppLocalizations.of(context)!.already_active
-                        : AppLocalizations.of(context)!.set_as_active,
-                    style:
+                  child: Row(
+                    children: [
+                      Icon(
+                        isActive ? Icons.play_arrow : Icons.pause,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
                         isActive
-                            ? TextStyle(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onPrimary.withValues(alpha: 0.5),
-                            )
-                            : TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
+                            ? AppLocalizations.of(context)!.already_active
+                            : AppLocalizations.of(context)!.set_as_active,
+                        style:
+                            isActive
+                                ? TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimary
+                                      .withValues(alpha: 0.5),
+                                )
+                                : TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                      ),
+                    ],
                   ),
                 ),
                 PopupMenuItem(
                   value: 'edit',
-                  child: Text(
-                    AppLocalizations.of(context)!.reading_plans_edit,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.edit,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.reading_plans_edit,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 PopupMenuItem(
                   value: 'delete',
-                  child: Text(
-                    AppLocalizations.of(context)!.reading_plans_delete,
-                    style: TextStyle(color: Colors.red.shade300),
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete, color: Colors.red.shade300),
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.reading_plans_delete,
+                        style: TextStyle(color: Colors.red.shade300),
+                      ),
+                    ],
                   ),
                 ),
               ],
