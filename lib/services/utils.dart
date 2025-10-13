@@ -69,6 +69,23 @@ class Utils {
     );
   }
 
+  static void updateLastOpenedKiran(BookUserInfo bookUserInfo, int kiranIndex) {
+    bookUserInfo.updateLastOpenedKiran(kiranIndex);
+
+    FirebaseIntegrationHelper().onBookUserInfoChanged(bookUserInfo);
+
+    Bookservice().bookUserInfoList = [
+      ...?Bookservice().bookUserInfoList?.where(
+        (info) => info.partNumber != bookUserInfo.partNumber,
+      ),
+      bookUserInfo,
+    ];
+
+    debugPrint(
+      'Updated last opened Kiran to $kiranIndex for Part ${bookUserInfo.partNumber}',
+    );
+  }
+
   static void updateKiranUserInfo(KiranUserInfo kiranUserInfo) {
     // Update the KiranUserInfo in the service
     final kiranService = KiranUserService();

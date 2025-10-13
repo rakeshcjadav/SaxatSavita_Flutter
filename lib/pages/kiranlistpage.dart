@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranlist_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
+import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import '../models/bookpart_model.dart';
 import '../services/kiranuser_service.dart';
 
 class Kiranlistpage extends StatefulWidget {
-  final Bookpartmodel bookPart;
   const Kiranlistpage({super.key, required this.bookPart});
+
+  final Bookpartmodel bookPart;
 
   @override
   State<Kiranlistpage> createState() => _KiranlistpageState();
@@ -23,7 +26,9 @@ class Kiranlistpage extends StatefulWidget {
 class _KiranlistpageState extends State<Kiranlistpage> {
   late Future<KiranList> _futureKiranList;
 
+  late BookUserInfo bookUserInfo;
   bool _hasDataChanged = false;
+  int? _expandedIndex;
 
   @override
   void initState() {
@@ -37,9 +42,9 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 .then((_) {
                   return KiranListService().getKiranList(widget.bookPart.id)!;
                 });
-  }
 
-  int? _expandedIndex;
+    bookUserInfo = Bookservice().getBookUserInfo(widget.bookPart.partNumber);
+  }
 
   @override
   void dispose() {
@@ -50,6 +55,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     KiranInfo kiran,
     KiranUserInfo kiranUserInfo,
   ) async {
+    Utils.updateLastOpenedKiran(bookUserInfo, kiran.index);
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -127,7 +133,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                         side:
-                            _expandedIndex == index
+                            bookUserInfo.lastOpenedKiranIndex == kiran.index
                                 ? BorderSide(
                                   color: Theme.of(context).colorScheme.primary,
                                   width: 1.0,
@@ -143,6 +149,9 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                               onTap: () {
                                 _navigateToKiranReadPage(kiran, kiranUserInfo);
                                 setState(() {
+                                  bookUserInfo.updateLastOpenedKiran(
+                                    kiran.index,
+                                  );
                                   _expandedIndex = index;
                                 });
                               },
@@ -176,7 +185,9 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                                 ),
                               ),
                             ),
-                            if (_expandedIndex == index)
+                            if (_expandedIndex == index ||
+                                bookUserInfo.lastOpenedKiranIndex ==
+                                    kiran.index)
                               ..._buildKiranListItemExpandedWidget(
                                 kiran,
                                 kiranUserInfo,

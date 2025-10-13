@@ -221,6 +221,7 @@ class Bookservice {
                     id: part.id,
                     partNumber: part.partNumber,
                     bookmarkKiranIndex: part.startKiranIndex,
+                    lastOpenedKiranIndex: part.startKiranIndex,
                     bookmarks: [
                       Bookmark(
                         kiranIndex: part.startKiranIndex,

@@ -24,6 +24,7 @@ class BookUserInfo {
   final int partNumber;
   int bookmarkKiranIndex; // Keep for backward compatibility
   List<Bookmark> bookmarks; // New queue of bookmarks (max 5)
+  int? lastOpenedKiranIndex; // To track the last opened kiran
   DateTime? updatedAt;
 
   BookUserInfo({
@@ -31,6 +32,7 @@ class BookUserInfo {
     required this.partNumber,
     required this.bookmarkKiranIndex,
     List<Bookmark>? bookmarks,
+    this.lastOpenedKiranIndex,
     this.updatedAt,
   }) : bookmarks = bookmarks ?? [];
 
@@ -79,6 +81,12 @@ class BookUserInfo {
     return bookmarks.any((bookmark) => bookmark.kiranIndex == kiranIndex);
   }
 
+  // Update the last opened kiran index
+  void updateLastOpenedKiran(int kiranIndex) {
+    lastOpenedKiranIndex = kiranIndex;
+    updatedAt = DateTime.now();
+  }
+
   factory BookUserInfo.fromJson(Map<String, dynamic> json) {
     List<Bookmark> bookmarks = [];
     if (json['bookmarks'] != null) {
@@ -93,6 +101,7 @@ class BookUserInfo {
       partNumber: json['partNumber'] ?? 0,
       bookmarkKiranIndex: json['bookmarkKiranIndex'] ?? 1,
       bookmarks: bookmarks,
+      lastOpenedKiranIndex: json['lastOpenedKiranIndex'] ?? 1,
       updatedAt:
           json['updatedAt'] != null
               ? DateTime.tryParse(json['updatedAt'])
@@ -106,6 +115,7 @@ class BookUserInfo {
       'partNumber': partNumber,
       'bookmarkKiranIndex': bookmarkKiranIndex,
       'bookmarks': bookmarks.map((bookmark) => bookmark.toJson()).toList(),
+      'lastOpenedKiranIndex': lastOpenedKiranIndex,
       'updatedAt': updatedAt?.toIso8601String(),
     };
   }
