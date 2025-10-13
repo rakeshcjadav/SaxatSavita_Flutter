@@ -124,49 +124,66 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                       kiran.index,
                     );
                     return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side:
+                            _expandedIndex == index
+                                ? BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  width: 1.0,
+                                )
+                                : BorderSide.none,
+                      ),
                       key: Key(kiran.index.toString()),
-                      child: Column(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              _navigateToKiranReadPage(kiran, kiranUserInfo);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildKiranListItemWidget(
-                                      kiran,
-                                      kiranUserInfo,
-                                      _expandedIndex == index,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                _navigateToKiranReadPage(kiran, kiranUserInfo);
+                                setState(() {
+                                  _expandedIndex =
+                                      _expandedIndex == index ? null : index;
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: _buildKiranListItemWidget(
+                                        kiran,
+                                        kiranUserInfo,
+                                        _expandedIndex == index,
+                                      ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      _expandedIndex == index
-                                          ? Icons.expand_less
-                                          : Icons.expand_more,
+                                    IconButton(
+                                      icon: Icon(
+                                        _expandedIndex == index
+                                            ? Icons.expand_less
+                                            : Icons.expand_more,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _expandedIndex =
+                                              _expandedIndex == index
+                                                  ? null
+                                                  : index;
+                                        });
+                                      },
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _expandedIndex =
-                                            _expandedIndex == index
-                                                ? null
-                                                : index;
-                                      });
-                                    },
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          if (_expandedIndex == index)
-                            ..._buildKiranListItemExpandedWidget(
-                              kiran,
-                              kiranUserInfo,
-                            ),
-                        ],
+                            if (_expandedIndex == index)
+                              ..._buildKiranListItemExpandedWidget(
+                                kiran,
+                                kiranUserInfo,
+                              ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -188,74 +205,8 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        kiranUserInfo.toggleFavourite();
-                      });
-                    },
-                    iconSize: appSettingsNotifier.value.fontSize,
-                    icon: Icon(
-                      kiranUserInfo.isFavourite == 1
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      color:
-                          kiranUserInfo.isFavourite == 1
-                              ? Colors.pink
-                              : Theme.of(context).iconTheme.color,
-                    ),
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.favorite,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (_) => NoteEditorPage(
-                                kiranUserInfo: kiranUserInfo,
-                                kiranTitle:
-                                    '${AppLocalizations.of(context)!.kiran} ${kiran.number.replaceAll(".", "")}',
-                              ),
-                        ),
-                      );
-                    },
-                    iconSize: appSettingsNotifier.value.fontSize,
-                    icon: Icon(Icons.note),
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.notes,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
+            _buildFavoriteButton(kiran, kiranUserInfo),
+            _buildNoteButton(kiran, kiranUserInfo),
           ],
         ),
         trailing: ElevatedButton(
@@ -396,5 +347,79 @@ class _KiranlistpageState extends State<Kiranlistpage> {
       return AppLocalizations.of(context)!.not_yet_read;
     }
     return AppLocalizations.of(context)!.reading_count(kiranUserInfo.readCount);
+  }
+
+  Container _buildFavoriteButton(KiranInfo kiran, KiranUserInfo kiranUserInfo) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                kiranUserInfo.toggleFavourite();
+              });
+            },
+            iconSize: appSettingsNotifier.value.fontSize,
+            icon: Icon(
+              kiranUserInfo.isFavourite == 1
+                  ? Icons.favorite
+                  : Icons.favorite_border,
+              color:
+                  kiranUserInfo.isFavourite == 1
+                      ? Colors.pink
+                      : Theme.of(context).iconTheme.color,
+            ),
+          ),
+          Text(
+            AppLocalizations.of(context)!.favorite,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _buildNoteButton(KiranInfo kiran, KiranUserInfo kiranUserInfo) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) => NoteEditorPage(
+                        kiranUserInfo: kiranUserInfo,
+                        kiranTitle:
+                            '${AppLocalizations.of(context)!.kiran} ${kiran.number.replaceAll(".", "")}',
+                      ),
+                ),
+              );
+            },
+            iconSize: appSettingsNotifier.value.fontSize,
+            icon: Icon(Icons.note),
+          ),
+          Text(
+            AppLocalizations.of(context)!.notes,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+    );
   }
 }
