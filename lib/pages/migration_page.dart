@@ -11,12 +11,16 @@ class MigrationPage extends StatefulWidget {
 }
 
 class _MigrationPageState extends State<MigrationPage> {
-  final ReadingHistoryMigrationService _migrationService = ReadingHistoryMigrationService();
-  
+  final ReadingHistoryMigrationService _readingHistoryMigrationService =
+      ReadingHistoryMigrationService();
+
   bool _isLoading = false;
-  bool _hasMigrated = false;
-  MigrationPreview? _preview;
-  MigrationResult? _result;
+  bool _hasReadingHistoryMigrated = false;
+  
+  // Reading History Migration
+  MigrationPreview? _readingHistoryPreview;
+  MigrationResult? _readingHistoryResult;
+  
   double _progress = 0.0;
 
   @override
@@ -34,9 +38,9 @@ class _MigrationPageState extends State<MigrationPage> {
     });
 
     try {
-      final preview = await _migrationService.getMigrationPreview(user.uid);
+      final preview = await _readingHistoryMigrationService.getMigrationPreview(user.uid);
       setState(() {
-        _preview = preview;
+        _readingHistoryPreview = preview;
         _isLoading = false;
       });
     } catch (e) {
@@ -44,15 +48,15 @@ class _MigrationPageState extends State<MigrationPage> {
         _isLoading = false;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading preview: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error loading preview: $e')));
       }
     }
   }
 
   Future<void> _runMigration() async {
-    if (_hasMigrated) return;
+    if (_hasReadingHistoryMigrated) return;
 
     setState(() {
       _isLoading = true;
@@ -60,7 +64,7 @@ class _MigrationPageState extends State<MigrationPage> {
     });
 
     try {
-      final result = await _migrationService.autoMigrateCurrentUser(
+      final result = await _readingHistoryMigrationService.autoMigrateCurrentUser(
         onProgress: (current, total) {
           setState(() {
             _progress = current / total;
@@ -69,8 +73,8 @@ class _MigrationPageState extends State<MigrationPage> {
       );
 
       setState(() {
-        _result = result;
-        _hasMigrated = true;
+        _readingHistoryResult = result;
+        _hasReadingHistoryMigrated = true;
         _isLoading = false;
       });
 
@@ -87,9 +91,9 @@ class _MigrationPageState extends State<MigrationPage> {
         _isLoading = false;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Migration failed: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Migration failed: $e')));
       }
     }
   }
@@ -97,47 +101,54 @@ class _MigrationPageState extends State<MigrationPage> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    
+
     if (user == null) {
       return Scaffold(
         appBar: buildAppBar(context, title: 'Data Migration', actionItems: []),
-        body: const Center(
-          child: Text('Please log in to migrate your data'),
-        ),
+        body: const Center(child: Text('Please log in to migrate your data')),
       );
     }
 
     return Scaffold(
-      appBar: buildAppBar(context, title: 'Reading History Migration', actionItems: []),
-      body: _isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(_progress > 0 ? 'Migrating... ${(_progress * 100).toInt()}%' : 'Loading...'),
-                  if (_progress > 0) 
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: LinearProgressIndicator(value: _progress),
+      appBar: buildAppBar(
+        context,
+        title: 'Reading History Migration',
+        actionItems: [],
+      ),
+      body:
+          _isLoading
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
+                    Text(
+                      _progress > 0
+                          ? 'Migrating... ${(_progress * 100).toInt()}%'
+                          : 'Loading...',
                     ),
-                ],
+                    if (_progress > 0)
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: LinearProgressIndicator(value: _progress),
+                      ),
+                  ],
+                ),
+              )
+              : SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildPreviewCard(),
+                    const SizedBox(height: 16),
+                    if (_readingHistoryResult != null) _buildResultCard(),
+                    if (_readingHistoryResult != null) const SizedBox(height: 16),
+                    _buildActionCard(),
+                  ],
+                ),
               ),
-            )
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildPreviewCard(),
-                  const SizedBox(height: 16),
-                  if (_result != null) _buildResultCard(),
-                  if (_result != null) const SizedBox(height: 16),
-                  _buildActionCard(),
-                ],
-              ),
-            ),
     );
   }
 
@@ -150,7 +161,10 @@ class _MigrationPageState extends State<MigrationPage> {
           children: [
             Row(
               children: [
-                Icon(Icons.preview, color: Theme.of(context).colorScheme.primary),
+                Icon(
+                  Icons.preview,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'Migration Preview',
@@ -159,9 +173,9 @@ class _MigrationPageState extends State<MigrationPage> {
               ],
             ),
             const SizedBox(height: 16),
-            if (_preview == null)
+            if (_readingHistoryPreview == null)
               const Text('Loading preview...')
-            else if (_preview!.totalLegacyEntries == 0)
+            else if (_readingHistoryPreview!.totalLegacyEntries == 0)
               const Row(
                 children: [
                   Icon(Icons.check_circle, color: Colors.green),
@@ -170,13 +184,31 @@ class _MigrationPageState extends State<MigrationPage> {
                 ],
               )
             else ...[
-              _buildPreviewItem('Total Legacy Entries', '${_preview!.totalLegacyEntries}'),
-              _buildPreviewItem('New Entries to Migrate', '${_preview!.newEntriesToMigrate}'),
-              _buildPreviewItem('Duplicates Found', '${_preview!.duplicatesFound}'),
-              _buildPreviewItem('Total Reading Time', _preview!.totalReadingTime),
-              _buildPreviewItem('Unique Kirans Read', '${_preview!.uniqueKiransRead}'),
-              if (_preview!.dateRange != null)
-                _buildPreviewItem('Date Range', _preview!.dateRange!.formattedRange),
+              _buildPreviewItem(
+                'Total Legacy Entries',
+                '${_readingHistoryPreview!.totalLegacyEntries}',
+              ),
+              _buildPreviewItem(
+                'New Entries to Migrate',
+                '${_readingHistoryPreview!.newEntriesToMigrate}',
+              ),
+              _buildPreviewItem(
+                'Duplicates Found',
+                '${_readingHistoryPreview!.duplicatesFound}',
+              ),
+              _buildPreviewItem(
+                'Total Reading Time',
+                _readingHistoryPreview!.totalReadingTime,
+              ),
+              _buildPreviewItem(
+                'Unique Kirans Read',
+                '${_readingHistoryPreview!.uniqueKiransRead}',
+              ),
+              if (_readingHistoryPreview!.dateRange != null)
+                _buildPreviewItem(
+                  'Date Range',
+                  _readingHistoryPreview!.dateRange!.formattedRange,
+                ),
             ],
           ],
         ),
@@ -191,7 +223,12 @@ class _MigrationPageState extends State<MigrationPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: Theme.of(context).textTheme.bodyMedium),
-          Text(value, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -199,7 +236,7 @@ class _MigrationPageState extends State<MigrationPage> {
 
   Widget _buildResultCard() {
     return Card(
-      color: _result!.success ? Colors.green.shade50 : Colors.red.shade50,
+      color: _readingHistoryResult!.success ? Colors.green.shade50 : Colors.red.shade50,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -208,8 +245,8 @@ class _MigrationPageState extends State<MigrationPage> {
             Row(
               children: [
                 Icon(
-                  _result!.success ? Icons.check_circle : Icons.error,
-                  color: _result!.success ? Colors.green : Colors.red,
+                  _readingHistoryResult!.success ? Icons.check_circle : Icons.error,
+                  color: _readingHistoryResult!.success ? Colors.green : Colors.red,
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -219,15 +256,21 @@ class _MigrationPageState extends State<MigrationPage> {
               ],
             ),
             const SizedBox(height: 16),
-            Text(_result!.message),
+            Text(_readingHistoryResult!.message),
             const SizedBox(height: 8),
-            _buildPreviewItem('Migrated', '${_result!.migratedCount}'),
-            _buildPreviewItem('Skipped', '${_result!.skippedCount}'),
-            _buildPreviewItem('Errors', '${_result!.errorCount}'),
-            if (_result!.errors.isNotEmpty) ...[
+            _buildPreviewItem('Migrated', '${_readingHistoryResult!.migratedCount}'),
+            _buildPreviewItem('Skipped', '${_readingHistoryResult!.skippedCount}'),
+            _buildPreviewItem('Errors', '${_readingHistoryResult!.errorCount}'),
+            if (_readingHistoryResult!.errors.isNotEmpty) ...[
               const SizedBox(height: 8),
-              const Text('Errors:', style: TextStyle(fontWeight: FontWeight.bold)),
-              ..._result!.errors.map((error) => Text('• $error', style: const TextStyle(color: Colors.red))),
+              const Text(
+                'Errors:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              ..._readingHistoryResult!.errors.map(
+                (error) =>
+                    Text('• $error', style: const TextStyle(color: Colors.red)),
+              ),
             ],
           ],
         ),
@@ -244,16 +287,16 @@ class _MigrationPageState extends State<MigrationPage> {
           children: [
             Row(
               children: [
-                Icon(Icons.play_arrow, color: Theme.of(context).colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  'Actions',
-                  style: Theme.of(context).textTheme.titleLarge,
+                Icon(
+                  Icons.play_arrow,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
+                const SizedBox(width: 8),
+                Text('Actions', style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),
-            if (_preview?.hasDataToMigrate == true && !_hasMigrated) ...[
+            if (_readingHistoryPreview?.hasDataToMigrate == true && !_hasReadingHistoryMigrated) ...[
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -266,7 +309,7 @@ class _MigrationPageState extends State<MigrationPage> {
                 'This will migrate your legacy reading history to the current format. Duplicates will be skipped.',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
-            ] else if (_hasMigrated) ...[
+            ] else if (_hasReadingHistoryMigrated) ...[
               const Row(
                 children: [
                   Icon(Icons.check, color: Colors.green),
@@ -280,8 +323,8 @@ class _MigrationPageState extends State<MigrationPage> {
                 child: TextButton(
                   onPressed: () {
                     setState(() {
-                      _hasMigrated = false;
-                      _result = null;
+                      _hasReadingHistoryMigrated = false;
+                      _readingHistoryResult = null;
                     });
                     _loadPreview();
                   },

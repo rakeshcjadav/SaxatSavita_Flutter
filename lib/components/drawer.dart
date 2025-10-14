@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -133,14 +134,16 @@ class _DrawerState extends State<MyDrawer> {
               Navigator.pushNamed(context, '/settings');
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.transfer_within_a_station),
-            title: Text(AppLocalizations.of(context)!.settings),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/migration');
-            },
-          ),
+          if (kDebugMode) ...[
+            ListTile(
+              leading: const Icon(Icons.transfer_within_a_station),
+              title: Text("Migration (Debug)"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/migration');
+              },
+            ),
+          ],
           ListTile(
             leading: const Icon(Icons.logout),
             title: Text(AppLocalizations.of(context)!.logout),

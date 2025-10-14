@@ -8,7 +8,7 @@ import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
-import 'package:saxatsavita_flutter/pages/migration_page.dart';
+
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
@@ -20,6 +20,7 @@ import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'pages/settingspage.dart';
 import 'pages/aashirvachanlistpage.dart';
+import 'pages/comprehensive_migration_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -229,7 +230,7 @@ class SakshatSavitaApp extends StatelessWidget {
             '/reading_plans': (context) => const ReadingPlanPage(),
             '/quotes_generator':
                 (context) => const QuotesImageGeneratorPage(quote: null),
-            '/migration': (context) => const MigrationPage(),
+            '/migration': (context) => const ComprehensiveMigrationPage(),
           },
         );
       },

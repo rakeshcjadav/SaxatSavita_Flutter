@@ -24,7 +24,7 @@ class LegacyReadingHistory {
   /// Create from Firebase document
   factory LegacyReadingHistory.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    
+
     return LegacyReadingHistory(
       category: data['category'] ?? 'KIRAN_READ',
       createdAt: _parseDateTime(data['createdAt']),
@@ -37,7 +37,10 @@ class LegacyReadingHistory {
   }
 
   /// Create from Map (for JSON parsing)
-  factory LegacyReadingHistory.fromMap(Map<String, dynamic> map, {String? docId}) {
+  factory LegacyReadingHistory.fromMap(
+    Map<String, dynamic> map, {
+    String? docId,
+  }) {
     return LegacyReadingHistory(
       category: map['category'] ?? 'KIRAN_READ',
       createdAt: _parseDateTime(map['createdAt']),
@@ -64,7 +67,7 @@ class LegacyReadingHistory {
   /// Helper method to parse different datetime formats from Firebase
   static DateTime _parseDateTime(dynamic dateValue) {
     if (dateValue == null) return DateTime.now();
-    
+
     if (dateValue is Timestamp) {
       return dateValue.toDate();
     } else if (dateValue is DateTime) {
@@ -79,7 +82,7 @@ class LegacyReadingHistory {
       // Assume it's milliseconds since epoch
       return DateTime.fromMillisecondsSinceEpoch(dateValue);
     }
-    
+
     return DateTime.now();
   }
 
@@ -113,7 +116,8 @@ class LegacyReadingHistory {
       'durationSeconds': durationSeconds,
       'category': category,
       // Add any additional fields needed for current format
-      'readingDate': createdAt.toIso8601String().split('T')[0], // YYYY-MM-DD format
+      'readingDate':
+          createdAt.toIso8601String().split('T')[0], // YYYY-MM-DD format
       'progress': 100, // Assume completed if in history
     };
   }
@@ -155,13 +159,15 @@ class LegacyReadingHistoryStats {
   LegacyReadingHistoryStats(this.entries);
 
   /// Total reading time in seconds
-  int get totalReadingTime => entries.fold(0, (sum, entry) => sum + entry.durationSeconds);
+  int get totalReadingTime =>
+      entries.fold(0, (sum, entry) => sum + entry.durationSeconds);
 
   /// Total number of sessions
   int get totalSessions => entries.length;
 
   /// Number of valid sessions (with duration > 0)
-  int get validSessions => entries.where((entry) => entry.isValidSession).length;
+  int get validSessions =>
+      entries.where((entry) => entry.isValidSession).length;
 
   /// Number of unique kirans read
   int get uniqueKiransRead {
@@ -182,7 +188,10 @@ class LegacyReadingHistoryStats {
   }
 
   /// Get entries for a specific date range
-  List<LegacyReadingHistory> getEntriesInDateRange(DateTime start, DateTime end) {
+  List<LegacyReadingHistory> getEntriesInDateRange(
+    DateTime start,
+    DateTime end,
+  ) {
     return entries.where((entry) {
       return entry.createdAt.isAfter(start) && entry.createdAt.isBefore(end);
     }).toList();
