@@ -388,6 +388,13 @@ class KiranUserInfoMigrationService {
       return 'KiranUserInfo migration successful: $migrated entries migrated';
     }
   }
+
+  /// Auto-migrate KiranUserInfo for current user (simplified interface)
+  Future<KiranUserInfoMigrationResult> autoMigrateCurrentUser({
+    Function(int current, int total)? onProgress,
+  }) async {
+    return await autoMigrateCurrentUserKiranUserInfo(onProgress: onProgress);
+  }
 }
 
 /// Result of a KiranUserInfo migration operation

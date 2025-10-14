@@ -96,6 +96,10 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
         Utils.loadUserdatafromFirebase();
 
         Utils.saveUserDetailsToFirebase();
+
+        // Check if migration is needed and perform it
+        await Utils.checkAndPerformMigration();
+
         // Navigate after state is updated
         Navigator.pushReplacement(
           context,

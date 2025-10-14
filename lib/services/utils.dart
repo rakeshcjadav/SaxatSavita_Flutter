@@ -5,7 +5,9 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
+import 'package:saxatsavita_flutter/services/kiranuser_info_migration_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
+import 'package:saxatsavita_flutter/services/reading_history_migration_service.dart';
 
 class Utils {
   static Color oppositeColor(Color color) {
@@ -186,5 +188,10 @@ class Utils {
 
   static void saveUserDetailsToFirebase() {
     FirebaseIntegrationHelper().saveUserDetailsToFirebase();
+  }
+
+  static Future<void> checkAndPerformMigration() async {
+    await ReadingHistoryMigrationService().autoMigrateCurrentUser();
+    await KiranUserInfoMigrationService().autoMigrateCurrentUser();
   }
 }
