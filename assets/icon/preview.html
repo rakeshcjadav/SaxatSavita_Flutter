@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sakshaat Savita App Icons Preview</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #fff8e1, #ffecb3); 
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(255, 87, 34, 0.1), 0 1px 8px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        .icon-preview { display: inline-block; margin: 20px; text-align: center; }
+        .icon-preview img { 
+            width: 120px; 
+            height: 120px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 25px rgba(255, 87, 34, 0.3), 0 3px 10px rgba(0, 0, 0, 0.1); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .icon-preview img:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 12px 35px rgba(255, 87, 34, 0.4), 0 5px 15px rgba(0, 0, 0, 0.15); 
+        }
+        .icon-preview h3 { margin: 10px 0 5px 0; color: #FF5722; }
+        .adaptive-preview { 
+            background: linear-gradient(135deg, #FF5722, #FF8A50, #FFAB40); 
+            padding: 15px; 
+            border-radius: 50%; 
+            box-shadow: 0 6px 20px rgba(255, 87, 34, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .adaptive-preview:hover { 
+            transform: scale(1.05); 
+        }
+        .adaptive-preview img { 
+            box-shadow: none !important; 
+            border-radius: 15px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🙏 Sakshaat Savita App Icons</h1>
+        <p>Preview of your generated app icons:</p>
+        
+        <div class="icon-preview">
+            <img src="app_icon.png" alt="Main App Icon">
+            <h3>Main Icon</h3>
+            <p>iOS & Android standard</p>
+        </div>
+        
+        <div class="icon-preview">
+            <div class="adaptive-preview">
+                <img src="app_icon_foreground.png" alt="Adaptive Foreground">
+            </div>
+            <h3>Android Adaptive</h3>
+            <p>Foreground + Background</p>
+        </div>
+        
+        <h2>✨ Features</h2>
+        <ul>
+            <li>High quality 1024x1024 resolution</li>
+            <li>Optimized for iOS and Android</li>
+            <li>Android Adaptive Icon support</li>
+            <li>Spiritual theme with golden background</li>
+        </ul>
+    </div>
+</body>
+</html>
