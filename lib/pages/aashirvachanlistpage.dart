@@ -19,7 +19,7 @@ class Aashirvachanpage extends StatelessWidget {
         ),
       ),
       AashirvachanModel(
-        title: 'પૂ. સ્વામીશ્રી',
+        title: 'વચનામૃત મર્મજ્ઞ પ.પૂ.સદ્. શાસ્ત્રી શ્રી બાલકૃષ્ણદાસજીસ્વામી',
         tag: 'swamishree',
         image: 'assets/res/z_ashirvachan_swami_shree_image.webp',
         content: AashirvachanContent(

@@ -225,19 +225,37 @@ class _BookmainpageState extends State<BookMainpage> {
                     ),
                   ],
                 ),
-                trailing: IconButton(
-                  icon: Icon(Icons.bookmarks),
-                  onPressed: () {
-                    Navigator.push(
+                trailing: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Theme.of(
                       context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => BookmarksPage(
-                              partNumber: bookparts[index].partNumber,
-                            ),
+                    ).colorScheme.surfaceContainer.withValues(alpha: 1.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.shadow.withValues(alpha: 0.2),
+                        spreadRadius: 0.5,
+                        blurRadius: 3,
+                        offset: const Offset(0, 1),
                       ),
-                    );
-                  },
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.bookmarks, color: Colors.amber),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => BookmarksPage(
+                                partNumber: bookparts[index].partNumber,
+                              ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 titleTextStyle: Theme.of(context).textTheme.titleMedium,
                 subtitleTextStyle: Theme.of(context).textTheme.bodySmall,
