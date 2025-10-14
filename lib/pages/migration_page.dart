@@ -16,11 +16,11 @@ class _MigrationPageState extends State<MigrationPage> {
 
   bool _isLoading = false;
   bool _hasReadingHistoryMigrated = false;
-  
+
   // Reading History Migration
   MigrationPreview? _readingHistoryPreview;
   MigrationResult? _readingHistoryResult;
-  
+
   double _progress = 0.0;
 
   @override
@@ -38,7 +38,9 @@ class _MigrationPageState extends State<MigrationPage> {
     });
 
     try {
-      final preview = await _readingHistoryMigrationService.getMigrationPreview(user.uid);
+      final preview = await _readingHistoryMigrationService.getMigrationPreview(
+        user.uid,
+      );
       setState(() {
         _readingHistoryPreview = preview;
         _isLoading = false;
@@ -64,13 +66,14 @@ class _MigrationPageState extends State<MigrationPage> {
     });
 
     try {
-      final result = await _readingHistoryMigrationService.autoMigrateCurrentUser(
-        onProgress: (current, total) {
-          setState(() {
-            _progress = current / total;
-          });
-        },
-      );
+      final result = await _readingHistoryMigrationService
+          .autoMigrateCurrentUser(
+            onProgress: (current, total) {
+              setState(() {
+                _progress = current / total;
+              });
+            },
+          );
 
       setState(() {
         _readingHistoryResult = result;
@@ -144,7 +147,8 @@ class _MigrationPageState extends State<MigrationPage> {
                     _buildPreviewCard(),
                     const SizedBox(height: 16),
                     if (_readingHistoryResult != null) _buildResultCard(),
-                    if (_readingHistoryResult != null) const SizedBox(height: 16),
+                    if (_readingHistoryResult != null)
+                      const SizedBox(height: 16),
                     _buildActionCard(),
                   ],
                 ),
@@ -236,7 +240,10 @@ class _MigrationPageState extends State<MigrationPage> {
 
   Widget _buildResultCard() {
     return Card(
-      color: _readingHistoryResult!.success ? Colors.green.shade50 : Colors.red.shade50,
+      color:
+          _readingHistoryResult!.success
+              ? Colors.green.shade50
+              : Colors.red.shade50,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -245,8 +252,13 @@ class _MigrationPageState extends State<MigrationPage> {
             Row(
               children: [
                 Icon(
-                  _readingHistoryResult!.success ? Icons.check_circle : Icons.error,
-                  color: _readingHistoryResult!.success ? Colors.green : Colors.red,
+                  _readingHistoryResult!.success
+                      ? Icons.check_circle
+                      : Icons.error,
+                  color:
+                      _readingHistoryResult!.success
+                          ? Colors.green
+                          : Colors.red,
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -258,8 +270,14 @@ class _MigrationPageState extends State<MigrationPage> {
             const SizedBox(height: 16),
             Text(_readingHistoryResult!.message),
             const SizedBox(height: 8),
-            _buildPreviewItem('Migrated', '${_readingHistoryResult!.migratedCount}'),
-            _buildPreviewItem('Skipped', '${_readingHistoryResult!.skippedCount}'),
+            _buildPreviewItem(
+              'Migrated',
+              '${_readingHistoryResult!.migratedCount}',
+            ),
+            _buildPreviewItem(
+              'Skipped',
+              '${_readingHistoryResult!.skippedCount}',
+            ),
             _buildPreviewItem('Errors', '${_readingHistoryResult!.errorCount}'),
             if (_readingHistoryResult!.errors.isNotEmpty) ...[
               const SizedBox(height: 8),
@@ -296,7 +314,8 @@ class _MigrationPageState extends State<MigrationPage> {
               ],
             ),
             const SizedBox(height: 16),
-            if (_readingHistoryPreview?.hasDataToMigrate == true && !_hasReadingHistoryMigrated) ...[
+            if (_readingHistoryPreview?.hasDataToMigrate == true &&
+                !_hasReadingHistoryMigrated) ...[
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

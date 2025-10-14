@@ -16,7 +16,7 @@ class KiranUserInfoMigrationService {
       // Check different possible collection paths
       final paths = [
         'users/$userId/Part_1',
-        'users/$userId/Part_2', 
+        'users/$userId/Part_2',
         'users/$userId/Part_3',
         'users/$userId/Part_4',
         'users/$userId/Part_5',
@@ -28,7 +28,7 @@ class KiranUserInfoMigrationService {
           return true;
         }
       }
-      
+
       return false;
     } catch (e) {
       debugPrint('Error checking for legacy KiranUserInfo data: $e');
@@ -37,17 +37,19 @@ class KiranUserInfoMigrationService {
   }
 
   /// Get all legacy KiranUserInfo data for a user
-  Future<List<LegacyKiranUserInfo>> getLegacyKiranUserInfoData(String userId) async {
+  Future<List<LegacyKiranUserInfo>> getLegacyKiranUserInfoData(
+    String userId,
+  ) async {
     try {
       final List<LegacyKiranUserInfo> allEntries = [];
-      
+
       // Check all possible part collections (Part_1 to Part_5)
       for (int partNum = 1; partNum <= 5; partNum++) {
         final collectionPath = 'users/$userId/Part_$partNum';
-        
+
         try {
           final snapshot = await _firestore.collection(collectionPath).get();
-          
+
           for (final doc in snapshot.docs) {
             final entry = LegacyKiranUserInfo.fromFirestore(doc);
             // Override partNumber from collection path if it's different
@@ -64,21 +66,23 @@ class KiranUserInfoMigrationService {
             );
             allEntries.add(legacyEntry);
           }
-          
-          debugPrint('Found ${snapshot.docs.length} entries in $collectionPath');
+
+          debugPrint(
+            'Found ${snapshot.docs.length} entries in $collectionPath',
+          );
         } catch (e) {
           debugPrint('Error reading from $collectionPath: $e');
           // Continue with other parts even if one fails
         }
       }
-      
+
       // Sort by part number and kiran index
       allEntries.sort((a, b) {
         final partComparison = a.partNumber.compareTo(b.partNumber);
         if (partComparison != 0) return partComparison;
         return a.kiranIndex.compareTo(b.kiranIndex);
       });
-      
+
       return allEntries;
     } catch (e) {
       debugPrint('Error fetching legacy KiranUserInfo data: $e');
@@ -95,7 +99,7 @@ class KiranUserInfoMigrationService {
     try {
       // Get all legacy data
       final legacyEntries = await getLegacyKiranUserInfoData(userId);
-      
+
       if (legacyEntries.isEmpty) {
         return KiranUserInfoMigrationResult(
           success: true,
@@ -113,11 +117,11 @@ class KiranUserInfoMigrationService {
 
       // TODO: You'll need to implement these methods in your actual service
       // For now, I'll show the conversion structure
-      
+
       // Process each legacy entry
       for (int i = 0; i < legacyEntries.length; i++) {
         final legacyEntry = legacyEntries[i];
-        
+
         try {
           // Convert to current format
           final currentEntry = KiranUserInfo(
@@ -133,13 +137,15 @@ class KiranUserInfoMigrationService {
 
           // Check if entry already exists (you'll need to implement this based on your storage)
           final isDuplicate = await _checkIfKiranUserInfoExists(
-            currentEntry.partNumber, 
+            currentEntry.partNumber,
             currentEntry.kiranIndex,
             userId,
           );
 
           if (isDuplicate) {
-            debugPrint('Skipping duplicate KiranUserInfo: ${legacyEntry.toString()}');
+            debugPrint(
+              'Skipping duplicate KiranUserInfo: ${legacyEntry.toString()}',
+            );
             skippedCount++;
           } else {
             // Save to current storage system (you'll need to implement this)
@@ -150,10 +156,10 @@ class KiranUserInfoMigrationService {
 
           // Report progress
           onProgress?.call(i + 1, legacyEntries.length);
-
         } catch (e) {
           errorCount++;
-          final errorMsg = 'Failed to migrate KiranUserInfo ${legacyEntry.documentId}: $e';
+          final errorMsg =
+              'Failed to migrate KiranUserInfo ${legacyEntry.documentId}: $e';
           errors.add(errorMsg);
           debugPrint(errorMsg);
         }
@@ -169,10 +175,13 @@ class KiranUserInfoMigrationService {
         migratedCount: migratedCount,
         skippedCount: skippedCount,
         errorCount: errorCount,
-        message: _buildMigrationMessage(migratedCount, skippedCount, errorCount),
+        message: _buildMigrationMessage(
+          migratedCount,
+          skippedCount,
+          errorCount,
+        ),
         errors: errors,
       );
-
     } catch (e) {
       debugPrint('KiranUserInfo migration failed: $e');
       return KiranUserInfoMigrationResult(
@@ -195,10 +204,10 @@ class KiranUserInfoMigrationService {
       // Delete from all part collections
       for (int partNum = 1; partNum <= 5; partNum++) {
         final collectionPath = 'users/$userId/Part_$partNum';
-        
+
         try {
           final snapshot = await _firestore.collection(collectionPath).get();
-          
+
           for (final doc in snapshot.docs) {
             batch.delete(doc.reference);
             deletedCount++;
@@ -212,7 +221,6 @@ class KiranUserInfoMigrationService {
         await batch.commit();
         debugPrint('Deleted $deletedCount legacy KiranUserInfo entries');
       }
-      
     } catch (e) {
       debugPrint('Error deleting legacy KiranUserInfo data: $e');
       rethrow;
@@ -220,7 +228,9 @@ class KiranUserInfoMigrationService {
   }
 
   /// Get migration preview without actually migrating
-  Future<KiranUserInfoMigrationPreview> getKiranUserInfoMigrationPreview(String userId) async {
+  Future<KiranUserInfoMigrationPreview> getKiranUserInfoMigrationPreview(
+    String userId,
+  ) async {
     try {
       final legacyEntries = await getLegacyKiranUserInfoData(userId);
 
@@ -255,7 +265,6 @@ class KiranUserInfoMigrationService {
           (partNum, entries) => MapEntry(partNum, entries.length),
         ),
       );
-
     } catch (e) {
       debugPrint('Error creating KiranUserInfo migration preview: $e');
       return KiranUserInfoMigrationPreview(
@@ -286,32 +295,43 @@ class KiranUserInfoMigrationService {
       );
     }
 
-    return await migrateLegacyKiranUserInfoData(user.uid, onProgress: onProgress);
+    return await migrateLegacyKiranUserInfoData(
+      user.uid,
+      onProgress: onProgress,
+    );
   }
 
   // TODO: Implement these methods based on your current storage system
-  
+
   /// Check if a KiranUserInfo entry already exists in current system
-  Future<bool> _checkIfKiranUserInfoExists(int partNumber, int kiranIndex, String userId) async {
+  Future<bool> _checkIfKiranUserInfoExists(
+    int partNumber,
+    int kiranIndex,
+    String userId,
+  ) async {
     try {
       // Check in the current KiranUserService
       final kiranService = KiranUserService();
-      final existingKiran = kiranService.kiranUserInfoList
-          .where((kiran) => kiran.kiranIndex == kiranIndex)
-          .firstOrNull;
+      final existingKiran =
+          kiranService.kiranUserInfoList
+              .where((kiran) => kiran.kiranIndex == kiranIndex)
+              .firstOrNull;
 
       if (existingKiran != null) {
         // Check if it has been modified from default values
-        final hasData = existingKiran.isFavourite != 0 ||
+        final hasData =
+            existingKiran.isFavourite != 0 ||
             existingKiran.readCount != 0 ||
             existingKiran.progress != 0 ||
             existingKiran.note != null ||
             existingKiran.updatedAt != null;
-        
-        debugPrint('KiranUserInfo exists for kiranIndex=$kiranIndex, hasData=$hasData');
+
+        debugPrint(
+          'KiranUserInfo exists for kiranIndex=$kiranIndex, hasData=$hasData',
+        );
         return hasData;
       }
-      
+
       return false;
     } catch (e) {
       debugPrint('Error checking KiranUserInfo existence: $e');
@@ -319,29 +339,38 @@ class KiranUserInfoMigrationService {
     }
   }
 
-  /// Save KiranUserInfo to current storage system  
-  Future<void> _saveKiranUserInfo(KiranUserInfo kiranUserInfo, String userId) async {
+  /// Save KiranUserInfo to current storage system
+  Future<void> _saveKiranUserInfo(
+    KiranUserInfo kiranUserInfo,
+    String userId,
+  ) async {
     try {
       // Use the same method as the app currently uses to update KiranUserInfo
       final kiranService = KiranUserService();
       final kiranList = kiranService.kiranUserInfoList;
-      
+
       // Find and update the existing entry
       final index = kiranList.indexWhere(
         (k) => k.kiranIndex == kiranUserInfo.kiranIndex,
       );
-      
+
       if (index >= 0) {
         // Update the existing entry
         kiranList[index] = kiranUserInfo;
-        debugPrint('Updated KiranUserInfo for kiran ${kiranUserInfo.kiranIndex}');
+        debugPrint(
+          'Updated KiranUserInfo for kiran ${kiranUserInfo.kiranIndex}',
+        );
 
         // Sync to Firebase using the app's existing sync mechanism
         await kiranService.syncSingleToFirebase(kiranUserInfo);
-        
-        debugPrint('Successfully saved KiranUserInfo: ${kiranUserInfo.kiranIndex}');
+
+        debugPrint(
+          'Successfully saved KiranUserInfo: ${kiranUserInfo.kiranIndex}',
+        );
       } else {
-        debugPrint('Warning: KiranUserInfo not found in service for kiranIndex: ${kiranUserInfo.kiranIndex}');
+        debugPrint(
+          'Warning: KiranUserInfo not found in service for kiranIndex: ${kiranUserInfo.kiranIndex}',
+        );
       }
     } catch (e) {
       debugPrint('Error saving KiranUserInfo: $e');
