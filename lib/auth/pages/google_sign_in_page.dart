@@ -188,22 +188,36 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
     // or all of the, but for simplicity this just handles cancel, and reports
     // the rest as generic errors.
     return switch (e.code) {
-      GoogleSignInExceptionCode.canceled => 'Sign in canceled',
+      GoogleSignInExceptionCode.canceled => 'Sign in cancelled',
       _ => 'GoogleSignInException ${e.code}: ${e.description}',
     };
   }
 
   Widget _buildBody() {
     final GoogleSignInAccount? user = _currentUser;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
       children: <Widget>[
         if (user != null)
           ..._buildAuthenticatedWidgets(user, _errorMessage)
         else
           ..._buildUnauthenticatedWidgets(),
-        const SizedBox(height: 20),
-        if (_errorMessage.isNotEmpty) Text(_errorMessage),
+        SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (_errorMessage.isNotEmpty)
+                Center(
+                  child: Text(
+                    _errorMessage,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium!.copyWith(color: Colors.red),
+                  ),
+                ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -215,88 +229,110 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   ) {
     return <Widget>[
       // The user is Authenticated.
-      ListTile(
-        leading: GoogleUserCircleAvatar(identity: user),
-        title: Text(user.displayName ?? ''),
-        subtitle: Text(user.email),
+      Center(
+        child: Column(
+          children: [
+            ListTile(
+              leading: GoogleUserCircleAvatar(identity: user),
+              title: Text(user.displayName ?? ''),
+              subtitle: Text(user.email),
+            ),
+            const SizedBox(height: 10),
+            const Text('Signed in successfully.'),
+            Text(errorMessage),
+          ],
+        ),
       ),
-      const Text('Signed in successfully.'),
-      Text(errorMessage),
-      ElevatedButton(onPressed: _handleSignOut, child: const Text('SIGN OUT')),
+      //ElevatedButton(onPressed: _handleSignOut, child: const Text('SIGN OUT')),
     ];
   }
 
   /// Returns the list of widgets to include if the user is not authenticated.
   List<Widget> _buildUnauthenticatedWidgets() {
     return <Widget>[
-      Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.primary,
-            width: 5,
+      Stack(
+        children: [
+          ClipRRect(
+            child: Image(
+              image: AssetImage('assets/res/z_jogi_swami_tallest_2.jpg'),
+              fit: BoxFit.cover,
+              width: double.infinity,
+            ),
           ),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image(
-            image: AssetImage('assets/res/z_jogi_swami.jpg'),
-            fit: BoxFit.cover,
-            width: double.infinity,
-          ),
-        ),
-      ),
-      const SizedBox(height: 20),
-      // #docregion ExplicitSignIn
-      if (googleSignIn.supportsAuthenticate())
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black87,
-            //minimumSize: const Size(double.infinity, 50),
-          ),
-          onPressed: () async {
-            try {
-              await GoogleSignIn.instance.authenticate();
-            } catch (e) {
-              // #enddocregion ExplicitSignIn
-              _errorMessage = e.toString();
-              // #docregion ExplicitSignIn
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15, bottom: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
+          SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Image.asset(
-                  'assets/signin-assets/android_light_rd_na@2x.png',
-                  height: 36.0,
-                ),
-                const SizedBox(width: 12),
                 Text(
-                  AppLocalizations.of(context)!.loginWithGoogle,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  "પ.પૂ.પ્ર.બ્ર.સ્વ.સદ્. જોગીસ્વામી\nશ્રી ધર્મપ્રસાદદાસજી સ્વામી",
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
+                const SizedBox(height: 10),
+                // #docregion ExplicitSignIn
+                if (googleSignIn.supportsAuthenticate()) ...[
+                  Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black87,
+                        //minimumSize: const Size(double.infinity, 50),
+                      ),
+                      onPressed: () async {
+                        try {
+                          await GoogleSignIn.instance.authenticate();
+                        } catch (e) {
+                          // #enddocregion ExplicitSignIn
+                          _errorMessage = e.toString();
+                          // #docregion ExplicitSignIn
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 15, bottom: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              'assets/signin-assets/android_light_rd_na@2x.png',
+                              height: 36.0,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              AppLocalizations.of(context)!.loginWithGoogle,
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 60),
+                ] else ...<Widget>[
+                  // #enddocregion ExplicitSignIn
+                  const Text(
+                    'This platform does not have a known authentication method',
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ),
+                      );
+                    },
+                    child: const Text("Enter"),
+                  ),
+                  // #docregion ExplicitSignIn
+                ],
               ],
             ),
           ),
-        )
-      else ...<Widget>[
-        // #enddocregion ExplicitSignIn
-        const Text('This platform does not have a known authentication method'),
-        ElevatedButton(
-          onPressed: () async {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-          },
-          child: const Text("Enter"),
-        ),
-        // #docregion ExplicitSignIn
-      ],
+        ],
+      ),
     ];
   }
 
