@@ -126,19 +126,19 @@ cat > assets/icon/preview.html << 'EOF'
             width: 120px; 
             height: 120px; 
             border-radius: 20px; 
-            box-shadow: 0 8px 25px rgba(184, 87, 42, 0.3), 0 3px 10px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 8px 25px rgba(255, 87, 34, 0.3), 0 3px 10px rgba(0, 0, 0, 0.1); 
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .icon-preview img:hover { 
             transform: translateY(-3px); 
-            box-shadow: 0 12px 35px rgba(184, 87, 42, 0.4), 0 5px 15px rgba(0, 0, 0, 0.15); 
+            box-shadow: 0 12px 35px rgba(255, 87, 34, 0.4), 0 5px 15px rgba(0, 0, 0, 0.15); 
         }
-        .icon-preview h3 { margin: 10px 0 5px 0; color: #B8572A; }
+        .icon-preview h3 { margin: 10px 0 5px 0; color: #FF5722; }
         .adaptive-preview { 
-            background: linear-gradient(135deg, #B8572A, #D2691E, #CD853F); 
+            background: linear-gradient(135deg, #FF5722, #FF8A50, #FFAB40); 
             padding: 15px; 
             border-radius: 50%; 
-            box-shadow: 0 6px 20px rgba(184, 87, 42, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 6px 20px rgba(255, 87, 34, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.2);
             transition: transform 0.3s ease;
         }
         .adaptive-preview:hover { 
