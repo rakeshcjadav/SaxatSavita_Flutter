@@ -54,6 +54,13 @@
             {
               "client_id": "39080773295-iq1ib7i2c56437q2imp2g9ms6hhh33dp.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "39080773295-31oropdhe023tocb08aetf1k9d1mq6kt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.farenidham.books.saxatsavitaFlutter"
+              }
             }
           ]
         }
