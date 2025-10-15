@@ -56,30 +56,30 @@
 		</array>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>UIStatusBarHidden</key>
-	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>googlegmail</string>
-		<string>googlemail</string>
-		<string>googleplus</string>
-		<string>googledrive</string>
-		<string>googlephotos</string>
-		<string>googleearth</string>
-		<string>googlemaps</string>
-		<string>googlesheets</string>
-		<string>googledocs</string>
-		<string>googleslides</string>
-		<string>googlekeep</string>
-		<string>googlechrome</string>
-	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to save beautiful quote images that you create with our quote generator.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app needs access to save inspirational quote images to your photo library.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera access to take photos for creating personalized quote images.</string>
-</dict>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+		<true/>
+		<key>UIStatusBarHidden</key>
+		<false/>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>googlegmail</string>
+			<string>googlemail</string>
+			<string>googleplus</string>
+			<string>googledrive</string>
+			<string>googlephotos</string>
+			<string>googleearth</string>
+			<string>googlemaps</string>
+			<string>googlesheets</string>
+			<string>googledocs</string>
+			<string>googleslides</string>
+			<string>googlekeep</string>
+			<string>googlechrome</string>
+		</array>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>This app needs access to your photo library to save beautiful quote images that you create with our quote generator.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>This app needs access to save inspirational quote images to your photo library.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>This app needs camera access to take photos for creating personalized quote images.</string>
+	</dict>
 </plist>
