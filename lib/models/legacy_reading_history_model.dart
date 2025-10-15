@@ -125,7 +125,7 @@ class LegacyReadingHistory {
   @override
   String toString() {
     return 'LegacyReadingHistory(documentId: $documentId, category: $category, '
-        'createdAt: $createdAt, duration: ${formattedDuration}, '
+        'createdAt: $createdAt, duration: $formattedDuration, '
         'part: $partNumber, kiran: $kiranIndex, historyIndex: $historyIndex)';
   }
 

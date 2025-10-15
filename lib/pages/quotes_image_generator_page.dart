@@ -32,9 +32,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   late TabController _customizationTabController;
 
   // Customization options
-  Color _textColor = Colors.white;
-  Color _authorColor = Colors.white70;
-  String _selectedFont = 'NotoSansGujarati';
+  final Color _textColor = Colors.white;
+  final Color _authorColor = Colors.white70;
+  final String _selectedFont = 'NotoSansGujarati';
   double _fontSize = 24.0;
   double _authorFontSize = 16.0;
   double _imageHeight = 300.0;
@@ -232,7 +232,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           ),
         ),
         const SizedBox(height: 16),
-        Container(
+        SizedBox(
           height: _imageHeight + 60,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -1019,7 +1019,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildStoryLayout() {
     final user = FirebaseAuth.instance.currentUser;
-    return Container(
+    return SizedBox(
       width: _imageWidth,
       height: _imageHeight,
       child: Stack(
