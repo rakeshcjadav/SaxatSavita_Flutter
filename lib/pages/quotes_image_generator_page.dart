@@ -189,6 +189,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildPreviewSection() {
     final templates = [
+      {'name': 'Profile', 'index': 8},
+      {'name': 'Card', 'index': 9},
       {'name': 'Simple', 'index': 0},
       {'name': 'Geometric', 'index': 1},
       {'name': 'Floral', 'index': 2},
@@ -197,8 +199,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       {'name': 'Elegant', 'index': 5},
       {'name': 'Modern', 'index': 6},
       {'name': 'Classic', 'index': 7},
-      {'name': 'Profile', 'index': 8},
-      {'name': 'Card', 'index': 9},
       {'name': 'Social', 'index': 10},
       {'name': 'Story', 'index': 11},
     ];
@@ -678,7 +678,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Widget _buildProfileLayout() {
     final user = FirebaseAuth.instance.currentUser;
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           // User Profile Section
@@ -727,7 +727,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                         fontFamily: _selectedFont,
                       ),
                     ),
-                    const SizedBox(height: 4),
                     Text(
                       'Devotee of ${AppLocalizations.of(context)!.sakshatSavita}',
                       style: TextStyle(
@@ -741,9 +740,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               ),
             ],
           ),
-
-          const SizedBox(height: 32),
-
           // Quote Section
           Expanded(
             child: Center(
@@ -755,7 +751,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     size: 32,
                     color: _textColor.withOpacity(0.6),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
                   Text(
                     _quoteController.text.isNotEmpty
