@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:share_plus/share_plus.dart';
@@ -36,8 +37,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   String _selectedFont = 'NotoSansGujarati';
   double _fontSize = 24.0;
   double _authorFontSize = 16.0;
-  double _imageHeight = 400.0;
-  double _imageWidth = 400.0;
+  double _imageHeight = 300.0;
+  double _imageWidth = 300.0;
   int _selectedTemplate = 0;
   String _selectedGradient = 'green';
 
@@ -136,10 +137,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.quotes_image_generator),
-        elevation: 0,
-        actions: [
+      appBar: buildAppBar(
+        context,
+        title: AppLocalizations.of(context)!.quotes_image_generator,
+        extraActions: [
           if (hasEnableEditing) ...[
             IconButton(
               icon: const Icon(Icons.shuffle),
@@ -158,6 +159,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             tooltip: AppLocalizations.of(context)!.save_quote,
           ),
         ],
+        bottom: TabBar(
+          controller: _customizationTabController,
+          tabs: const [
+            Tab(icon: Icon(Icons.palette), text: 'Colors'),
+            Tab(icon: Icon(Icons.text_fields), text: 'Font Size'),
+            Tab(icon: Icon(Icons.photo_size_select_large), text: 'Image Size'),
+          ],
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -678,7 +687,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Widget _buildProfileLayout() {
     final user = FirebaseAuth.instance.currentUser;
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(32.0),
       child: Column(
         children: [
           // User Profile Section
@@ -1453,35 +1462,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildCustomizationSection() {
-    return Column(
-      children: [
-        // Tab Bar Header
-        TabBar(
-          controller: _customizationTabController,
-          labelColor: Theme.of(context).colorScheme.primary,
-          unselectedLabelColor: Theme.of(
-            context,
-          ).colorScheme.onSurface.withOpacity(0.6),
-          indicatorColor: Theme.of(context).colorScheme.primary,
-          tabs: const [
-            Tab(icon: Icon(Icons.palette), text: 'Colors'),
-            Tab(icon: Icon(Icons.text_fields), text: 'Font Size'),
-            Tab(icon: Icon(Icons.photo_size_select_large), text: 'Image Size'),
-          ],
-        ),
-        // Tab Bar Content
-        SizedBox(
-          height: 112, // Fixed height for tab content
-          child: TabBarView(
-            controller: _customizationTabController,
-            children: [
-              _buildColorTab(),
-              _buildFontSizeTab(),
-              _buildImageSizeTab(),
-            ],
-          ),
-        ),
-      ],
+    return SizedBox(
+      height: 112, // Fixed height for tab content
+      child: TabBarView(
+        controller: _customizationTabController,
+        children: [_buildColorTab(), _buildFontSizeTab(), _buildImageSizeTab()],
+      ),
     );
   }
 
