@@ -171,6 +171,7 @@ class _BookmainpageState extends State<BookMainpage> {
                 } else if (snapshot.data != null) {
                   var bookparts = snapshot.data as List<Bookpartmodel>;
                   return ListView.builder(
+                    primary: true,
                     itemCount: bookparts.length,
                     itemBuilder: (context, index) {
                       return bookPartWidget(bookparts, index);

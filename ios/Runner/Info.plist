@@ -23,7 +23,7 @@
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>GIDClientID</key>
-		<string>1047945808084-1apup4nlgd0qttdn2lp5kvhfrnsao00u.apps.googleusercontent.com</string>
+		<string>39080773295-31oropdhe023tocb08aetf1k9d1mq6kt.apps.googleusercontent.com</string>
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
@@ -31,7 +31,7 @@
 				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>com.googleusercontent.apps.1047945808084-1apup4nlgd0qttdn2lp5kvhfrnsao00u</string>
+					<string>com.googleusercontent.apps.39080773295-31oropdhe023tocb08aetf1k9d1mq6kt</string>
 				</array>
 			</dict>
 		</array>
@@ -56,9 +56,30 @@
 		</array>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
-		<key>UIApplicationSupportsIndirectInputEvents</key>
-		<true/>
-		<key>UIStatusBarHidden</key>
-		<false/>
-	</dict>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>googlegmail</string>
+		<string>googlemail</string>
+		<string>googleplus</string>
+		<string>googledrive</string>
+		<string>googlephotos</string>
+		<string>googleearth</string>
+		<string>googlemaps</string>
+		<string>googlesheets</string>
+		<string>googledocs</string>
+		<string>googleslides</string>
+		<string>googlekeep</string>
+		<string>googlechrome</string>
+	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to save beautiful quote images that you create with our quote generator.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to save inspirational quote images to your photo library.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to take photos for creating personalized quote images.</string>
+</dict>
 </plist>

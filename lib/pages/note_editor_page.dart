@@ -357,17 +357,15 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             ),
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: Scrollbar(
-            child: QuillEditor.basic(
-              controller: _controller,
-              focusNode: _focusNode,
-              config: QuillEditorConfig(
-                autoFocus: true,
-                expands: true,
-                padding: EdgeInsets.zero,
-                scrollable: true,
-                placeholder: 'Add your notes here...',
-              ),
+          child: QuillEditor.basic(
+            controller: _controller,
+            focusNode: _focusNode,
+            config: QuillEditorConfig(
+              autoFocus: true,
+              expands: true,
+              padding: EdgeInsets.zero,
+              scrollable: true,
+              placeholder: 'Add your notes here...',
             ),
           ),
         ),

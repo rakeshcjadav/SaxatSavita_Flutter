@@ -56,6 +56,7 @@ class Infodetailspage extends StatelessWidget {
               child: Scrollbar(
                 interactive: true,
                 child: SingleChildScrollView(
+                  primary: true,
                   child: GestureDetector(
                     onTap: () {
                       //FocusScope.of(context).unfocus();

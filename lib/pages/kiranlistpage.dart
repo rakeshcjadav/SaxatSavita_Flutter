@@ -167,6 +167,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         child: Padding(
           padding: const EdgeInsets.only(left: 4.0, right: 4.0),
           child: Scrollbar(
+            controller: _scrollController,
             child: FutureBuilder<KiranList>(
               future: _futureKiranList,
               builder: (context, snapshot) {
