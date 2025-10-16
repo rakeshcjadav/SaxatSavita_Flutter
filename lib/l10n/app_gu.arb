@@ -458,5 +458,14 @@
     "enter_author": "લેખક અથવા સ્ત્રોત દાખલ કરો",
     "customization": "કસ્ટમાઇઝેશન",
     "template_style": "ટેમ્પલેટ શૈલી",
-    "background": "પૃષ્ઠભૂમિ"
+    "background": "પૃષ્ઠભૂમિ",
+    
+    "reading_preferences": "વાંચન પસંદગીઓ",
+    "theme_appearance": "થીમ અને દેખાવ",
+    "language_localization": "ભાષા અને સ્થાનિકીકરણ",
+    "light_mode_option": "પ્રકાશ",
+    "dark_mode_option": "અંધારું",
+    "error_saving_settings": "સેટિંગ્સ સેવ કરવામાં ભૂલ",
+    "language_gujarati": "ગુજરાતી",
+    "language_english": "અંગ્રેજી"
 }

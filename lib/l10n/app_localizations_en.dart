@@ -888,4 +888,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get background => 'Background';
+
+  @override
+  String get reading_preferences => 'Reading Preferences';
+
+  @override
+  String get theme_appearance => 'Theme & Appearance';
+
+  @override
+  String get language_localization => 'Language & Localization';
+
+  @override
+  String get light_mode_option => 'Light';
+
+  @override
+  String get dark_mode_option => 'Dark';
+
+  @override
+  String get error_saving_settings => 'Error saving settings';
+
+  @override
+  String get language_gujarati => 'ગુજરાતી';
+
+  @override
+  String get language_english => 'English';
 }

@@ -892,4 +892,28 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get background => 'પૃષ્ઠભૂમિ';
+
+  @override
+  String get reading_preferences => 'વાંચન પસંદગીઓ';
+
+  @override
+  String get theme_appearance => 'થીમ અને દેખાવ';
+
+  @override
+  String get language_localization => 'ભાષા અને સ્થાનિકીકરણ';
+
+  @override
+  String get light_mode_option => 'પ્રકાશ';
+
+  @override
+  String get dark_mode_option => 'અંધારું';
+
+  @override
+  String get error_saving_settings => 'સેટિંગ્સ સેવ કરવામાં ભૂલ';
+
+  @override
+  String get language_gujarati => 'ગુજરાતી';
+
+  @override
+  String get language_english => 'અંગ્રેજી';
 }

@@ -1723,6 +1723,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Background'**
   String get background;
+
+  /// No description provided for @reading_preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Preferences'**
+  String get reading_preferences;
+
+  /// No description provided for @theme_appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme & Appearance'**
+  String get theme_appearance;
+
+  /// No description provided for @language_localization.
+  ///
+  /// In en, this message translates to:
+  /// **'Language & Localization'**
+  String get language_localization;
+
+  /// No description provided for @light_mode_option.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get light_mode_option;
+
+  /// No description provided for @dark_mode_option.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get dark_mode_option;
+
+  /// No description provided for @error_saving_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving settings'**
+  String get error_saving_settings;
+
+  /// No description provided for @language_gujarati.
+  ///
+  /// In en, this message translates to:
+  /// **'ગુજરાતી'**
+  String get language_gujarati;
+
+  /// No description provided for @language_english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get language_english;
 }
 
 class _AppLocalizationsDelegate

@@ -458,5 +458,14 @@
     "enter_author": "Enter author or source",
     "customization": "Customization",
     "template_style": "Template Style",
-    "background": "Background"
+    "background": "Background",
+    
+    "reading_preferences": "Reading Preferences",
+    "theme_appearance": "Theme & Appearance",
+    "language_localization": "Language & Localization",
+    "light_mode_option": "Light",
+    "dark_mode_option": "Dark",
+    "error_saving_settings": "Error saving settings",
+    "language_gujarati": "ગુજરાતી",
+    "language_english": "English"
 }

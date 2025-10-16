@@ -128,7 +128,9 @@ class _SettingsPageState extends State<SettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error saving settings: $e'),
+            content: Text(
+              '${AppLocalizations.of(context)!.error_saving_settings}: $e',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -143,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Changes discarded'),
+        content: Text(AppLocalizations.of(context)!.changes_discarded),
         backgroundColor: Colors.orange,
       ),
     );
@@ -230,14 +232,23 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: const EdgeInsets.all(8.0),
                 child: ListView(
                   children: [
+                    // Reading Preferences Section
+                    _buildSectionHeader(
+                      context,
+                      AppLocalizations.of(context)!.reading_preferences,
+                      Icons.chrome_reader_mode,
+                    ),
+                    const SizedBox(height: 8),
+
                     // Font Size
                     Card(
                       child: ListTile(
+                        leading: const Icon(Icons.text_fields),
                         title: Text(
-                          '${AppLocalizations.of(context)!.font_size}: $_fontSize',
+                          '${AppLocalizations.of(context)!.font_size}: ${_fontSize.round()}',
                         ),
                         subtitle: Slider(
                           min: 15,
@@ -254,18 +265,20 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                     ),
+
                     // Line Height
                     Card(
                       child: ListTile(
+                        leading: const Icon(Icons.format_line_spacing),
                         title: Text(
-                          '${AppLocalizations.of(context)!.line_height}: ${_lineHeight}x',
+                          '${AppLocalizations.of(context)!.line_height}: ${_lineHeight.toStringAsFixed(1)}x',
                         ),
                         subtitle: Slider(
                           min: 1.5,
                           max: 3.0,
                           divisions: 15,
                           value: _lineHeight,
-                          label: _lineHeight.round().toString(),
+                          label: _lineHeight.toStringAsFixed(1),
                           onChanged: (value) {
                             setState(() {
                               _lineHeight = value;
@@ -275,9 +288,44 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                     ),
+
+                    // Reading Speed
+                    Card(
+                      child: ListTile(
+                        leading: const Icon(Icons.speed),
+                        title: Text(
+                          '${AppLocalizations.of(context)!.reading_speed}: ${_readingSpeed.round()} ${AppLocalizations.of(context)!.words_per_minute}',
+                        ),
+                        subtitle: Slider(
+                          min: 50,
+                          max: 300.0,
+                          divisions: 25,
+                          value: _readingSpeed,
+                          label: '${_readingSpeed.round()}',
+                          onChanged: (value) {
+                            setState(() {
+                              _readingSpeed = value;
+                            });
+                            _updateHasUnsavedChanges();
+                          },
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Theme & Appearance Section
+                    _buildSectionHeader(
+                      context,
+                      AppLocalizations.of(context)!.theme_appearance,
+                      Icons.palette,
+                    ),
+                    const SizedBox(height: 8),
+
                     // Theme Color
                     Card(
                       child: ListTile(
+                        leading: const Icon(Icons.color_lens),
                         title: Text(AppLocalizations.of(context)!.theme_color),
                         subtitle: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -296,14 +344,84 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                     ),
+
+                    // Theme Mode (Light/Dark)
+                    Card(
+                      child: ListTile(
+                        leading: Icon(
+                          _brightness == Brightness.light
+                              ? Icons.light_mode
+                              : Icons.dark_mode,
+                        ),
+                        title: Text(AppLocalizations.of(context)!.theme_mode),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RadioListTile<Brightness>(
+                                title: Row(
+                                  children: [
+                                    const Icon(Icons.light_mode, size: 16),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.light_mode_option,
+                                    ),
+                                  ],
+                                ),
+                                value: Brightness.light,
+                                groupValue: _brightness,
+                                onChanged: (Brightness? value) {
+                                  setState(() {
+                                    _brightness = value!;
+                                  });
+                                  _updateHasUnsavedChanges();
+                                },
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                              RadioListTile<Brightness>(
+                                title: Row(
+                                  children: [
+                                    const Icon(Icons.dark_mode, size: 16),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.dark_mode_option,
+                                    ),
+                                  ],
+                                ),
+                                value: Brightness.dark,
+                                groupValue: _brightness,
+                                onChanged: (Brightness? value) {
+                                  setState(() {
+                                    _brightness = value!;
+                                  });
+                                  _updateHasUnsavedChanges();
+                                },
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
                     // Theme Variant Selection
                     Card(
                       child: ListTile(
+                        leading: const Icon(Icons.style),
                         title: Text(
                           AppLocalizations.of(context)!.theme_variant,
                         ),
                         subtitle: DropdownButton<DynamicSchemeVariant>(
                           value: appSettingsNotifier.value.themeVariant,
+                          isExpanded: true,
                           items:
                               DynamicSchemeVariant.values.map((variant) {
                                 return DropdownMenuItem(
@@ -328,51 +446,20 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                     ),
-                    // Language Selection
-                    Card(
-                      child: ListTile(
-                        title: Text(AppLocalizations.of(context)!.theme_mode),
-                        subtitle: RadioGroup<Brightness>(
-                          groupValue: _brightness,
-                          onChanged: (Brightness? value) {
-                            setState(() {
-                              _brightness = value!;
-                            });
-                            _updateHasUnsavedChanges();
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const ListTile(
-                                title: Text('Light'),
-                                leading: Radio<Brightness>(
-                                  value: Brightness.light,
-                                ),
-                              ),
-                              const ListTile(
-                                title: Text('Dark'),
-                                leading: Radio<Brightness>(
-                                  value: Brightness.dark,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+
                     // Theme Contrast Level
                     Card(
                       child: ListTile(
+                        leading: const Icon(Icons.contrast),
                         title: Text(
-                          '${AppLocalizations.of(context)!.theme_contrast}: $_themeContrastLevel',
+                          '${AppLocalizations.of(context)!.theme_contrast}: ${_themeContrastLevel.toStringAsFixed(1)}',
                         ),
                         subtitle: Slider(
                           min: -1.0,
                           max: 1.0,
                           divisions: 4,
                           value: _themeContrastLevel,
-                          label: '${_themeContrastLevel}x',
+                          label: _themeContrastLevel.toStringAsFixed(1),
                           onChanged: (value) {
                             setState(() {
                               _themeContrastLevel = value;
@@ -382,56 +469,81 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                     ),
-                    // Reading Speed
-                    Card(
-                      child: ListTile(
-                        title: Text(
-                          '${AppLocalizations.of(context)!.reading_speed}: $_readingSpeed ${AppLocalizations.of(context)!.words_per_minute}',
-                        ),
-                        subtitle: Slider(
-                          min: 50,
-                          max: 300.0,
-                          divisions: 25,
-                          value: _readingSpeed,
-                          label: '$_readingSpeed',
-                          onChanged: (value) {
-                            setState(() {
-                              _readingSpeed = value;
-                            });
-                            _updateHasUnsavedChanges();
-                          },
-                        ),
-                      ),
+
+                    const SizedBox(height: 24),
+
+                    // Language & Localization Section
+                    _buildSectionHeader(
+                      context,
+                      AppLocalizations.of(context)!.language_localization,
+                      Icons.language,
                     ),
+                    const SizedBox(height: 8),
+
                     // Language Selection
                     Card(
                       child: ListTile(
+                        leading: const Icon(Icons.translate),
                         title: Text(AppLocalizations.of(context)!.language),
-                        subtitle: RadioGroup<String>(
-                          groupValue: _language,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _language = value!;
-                            });
-                            _updateHasUnsavedChanges();
-                          },
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const ListTile(
-                                title: Text('ગુજરાતી'),
-                                leading: Radio<String>(value: 'gu'),
+                              RadioListTile<String>(
+                                title: Row(
+                                  children: [
+                                    const Icon(Icons.language, size: 16),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.language_gujarati,
+                                    ),
+                                  ],
+                                ),
+                                value: 'gu',
+                                groupValue: _language,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _language = value!;
+                                  });
+                                  _updateHasUnsavedChanges();
+                                },
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
                               ),
-                              const ListTile(
-                                title: Text('English'),
-                                leading: Radio<String>(value: 'en'),
+                              RadioListTile<String>(
+                                title: Row(
+                                  children: [
+                                    const Icon(Icons.translate, size: 16),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.language_english,
+                                    ),
+                                  ],
+                                ),
+                                value: 'en',
+                                groupValue: _language,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _language = value!;
+                                  });
+                                  _updateHasUnsavedChanges();
+                                },
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                         ),
                       ),
                     ),
+
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -504,6 +616,36 @@ class _SettingsPageState extends State<SettingsPage> {
             width: 3,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    IconData icon,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        children: [
+          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(left: 16),
+              height: 1,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            ),
+          ),
+        ],
       ),
     );
   }
