@@ -445,7 +445,7 @@ class _KiranReadPageState extends State<KiranReadPage>
               icon: Icon(
                 Utils.isBookmarked(widget.kiranUserInfo)
                     ? Icons.bookmark
-                    : Icons.bookmark_border,
+                    : Icons.bookmark_add,
                 color:
                     Utils.isBookmarked(widget.kiranUserInfo)
                         ? Colors.amber

@@ -1518,6 +1518,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           Row(
             children: [
               Icon(Icons.person, size: 16),
+              const SizedBox(width: 8),
               Text(
                 '${AppLocalizations.of(context)!.author_font}: ${_authorFontSize.round()}px',
               ),

@@ -331,13 +331,13 @@ class _SettingsPageState extends State<SettingsPage> {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              _buildColorOption(Colors.indigo),
-                              _buildColorOption(Colors.blue),
                               _buildColorOption(Colors.yellow),
                               _buildColorOption(Colors.orange),
                               _buildColorOption(Colors.deepOrange),
-                              _buildColorOption(Colors.teal),
                               _buildColorOption(Colors.pink),
+                              _buildColorOption(Colors.teal),
+                              _buildColorOption(Colors.blue),
+                              _buildColorOption(Colors.indigo),
                               _buildColorOption(Colors.deepPurple),
                             ],
                           ),
