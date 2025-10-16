@@ -275,6 +275,8 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               : SafeArea(
                 child: Column(
                   children: [
+                    _buildSummarySection(),
+                    _buildFilterSection(),
                     Expanded(
                       child: TabBarView(
                         controller: _tabController,
@@ -290,36 +292,45 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
   Widget _buildSummarySection() {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.all(8.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(12.0),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            AppLocalizations.of(context)!.totalReadingTime,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-            ),
+          Row(
+            children: [
+              Icon(
+                Icons.history,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+              const SizedBox(width: 8.0),
+              Text(
+                _getTotalReadingTime(),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 8.0),
-          Text(
-            _getTotalReadingTime(),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8.0),
-          Text(
-            '${_filteredHistory.length} ${AppLocalizations.of(context)!.readingSessions}',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-            ),
+          Row(
+            children: [
+              Icon(
+                Icons.import_contacts,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+              const SizedBox(width: 8.0),
+              Text(
+                '${_filteredHistory.length} ${AppLocalizations.of(context)!.readingSessions}',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -327,165 +338,155 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
   }
 
   Widget _buildFilterSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.filterByDate,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall!.copyWith(fontSize: 18),
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.filterByDate,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              if (_selectedYear != null || _selectedMonth != null) ...[
+                const SizedBox(height: 12.0),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.2),
+                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: Row(
+                    children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            _selectedYear = null;
+                            _selectedMonth = null;
+                            _applyFilters();
+                          });
+                        },
+                        icon: const Icon(Icons.clear),
+                        label: Text(
+                          AppLocalizations.of(context)!.clearFilters,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall!.copyWith(fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                if (_selectedYear != null || _selectedMonth != null) ...[
-                  const SizedBox(height: 12.0),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(
+              ],
+            ],
+          ),
+          const SizedBox(height: 12.0),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<int>(
+                  initialValue: _selectedYear,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.year,
+                    border: const OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 8.0,
+                    ),
+                    labelStyle: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium!.copyWith(fontSize: 18),
+                  ),
+                  items: [
+                    DropdownMenuItem<int>(
+                      value: null,
+                      child: Text(
+                        AppLocalizations.of(context)!.allYears,
+                        style: Theme.of(
                           context,
-                        ).colorScheme.primary.withValues(alpha: 0.2),
+                        ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                       ),
-                      borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: Row(
-                      children: [
-                        TextButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              _selectedYear = null;
-                              _selectedMonth = null;
-                              _applyFilters();
-                            });
-                          },
-                          icon: const Icon(Icons.clear),
-                          label: Text(
-                            AppLocalizations.of(context)!.clearFilters,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall!.copyWith(fontSize: 18),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            const SizedBox(height: 12.0),
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<int>(
-                    initialValue: _selectedYear,
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.year,
-                      border: const OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 8.0,
-                      ),
-                      labelStyle: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium!.copyWith(fontSize: 18),
-                    ),
-                    items: [
-                      DropdownMenuItem<int>(
-                        value: null,
+                    ..._availableYears.map(
+                      (year) => DropdownMenuItem<int>(
+                        value: year,
                         child: Text(
-                          AppLocalizations.of(context)!.allYears,
+                          year.toString(),
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                         ),
                       ),
-                      ..._availableYears.map(
-                        (year) => DropdownMenuItem<int>(
-                          value: year,
-                          child: Text(
-                            year.toString(),
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium!.copyWith(fontSize: 18),
-                          ),
-                        ),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedYear = value;
-                        _applyFilters();
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12.0),
-                Expanded(
-                  child: DropdownButtonFormField<int>(
-                    initialValue: _selectedMonth,
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.month,
-                      border: const OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 8.0,
-                      ),
-                      labelStyle: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                     ),
-                    items: [
-                      DropdownMenuItem<int>(
-                        value: null,
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedYear = value;
+                      _applyFilters();
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(width: 12.0),
+              Expanded(
+                child: DropdownButtonFormField<int>(
+                  initialValue: _selectedMonth,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.month,
+                    border: const OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 8.0,
+                    ),
+                    labelStyle: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium!.copyWith(fontSize: 18),
+                  ),
+                  items: [
+                    DropdownMenuItem<int>(
+                      value: null,
+                      child: Text(
+                        AppLocalizations.of(context)!.allMonths,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium!.copyWith(fontSize: 18),
+                      ),
+                    ),
+                    ..._availableMonths.map(
+                      (month) => DropdownMenuItem<int>(
+                        value: month,
                         child: Text(
-                          AppLocalizations.of(context)!.allMonths,
+                          _getMonthName(month),
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium!.copyWith(fontSize: 18),
                         ),
                       ),
-                      ..._availableMonths.map(
-                        (month) => DropdownMenuItem<int>(
-                          value: month,
-                          child: Text(
-                            _getMonthName(month),
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium!.copyWith(fontSize: 18),
-                          ),
-                        ),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedMonth = value;
-                        _applyFilters();
-                      });
-                    },
-                  ),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedMonth = value;
+                      _applyFilters();
+                    });
+                  },
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildHistoryTab() {
-    return Column(
-      children: [
-        _buildSummarySection(),
-        _buildFilterSection(),
-        Expanded(child: _buildHistoryList()),
-      ],
-    );
+    return Column(children: [Expanded(child: _buildHistoryList())]);
   }
 
   Widget _buildAnalyticsTab() {
