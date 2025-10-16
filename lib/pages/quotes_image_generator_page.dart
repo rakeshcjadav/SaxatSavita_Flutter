@@ -1320,23 +1320,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     );
   }
 
-  Widget _buildFloralPattern() {
-    return Positioned.fill(
-      child: Opacity(
-        opacity: 0.1,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            image: const DecorationImage(
-              image: AssetImage('assets/res/pattern_floral.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildSpiritualPattern() {
     return CustomPaint(
       painter: SpiritualPatternPainter(_textColor.withOpacity(0.08)),
