@@ -400,12 +400,45 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildDefaultLayout() {
+    User? user = FirebaseAuth.instance.currentUser;
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (user?.displayName != null) ...[
+                Text(
+                  user!.displayName!,
+                  style: TextStyle(
+                    color: _authorColor,
+                    fontSize: _authorFontSize,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: _selectedFont,
+                    height: 1.2,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              user?.photoURL != null
+                  ? ClipOval(
+                    child: Image.network(
+                      user!.photoURL!,
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                      errorBuilder:
+                          (context, error, stackTrace) => _buildDefaultAvatar(),
+                    ),
+                  )
+                  : _buildDefaultAvatar(),
+              const SizedBox(width: 16),
+            ],
+          ),
           // Quote mark
           Row(
             children: [
@@ -1686,17 +1719,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Future<void> _shareImage() async {
     try {
       final imageBytes = await _captureImage();
-      if (imageBytes != null && mounted) {
+      if (imageBytes != null) {
         final directory = await getTemporaryDirectory();
         final imagePath =
             '${directory.path}/quote_${DateTime.now().millisecondsSinceEpoch}.png';
         final imageFile = File(imagePath);
         await imageFile.writeAsBytes(imageBytes);
 
-        final shareText = mounted ? AppLocalizations.of(context)!.share_text : 'Inspirational quote generated with Sakshat Savita app';
         await Share.shareXFiles([
           XFile(imagePath),
-        ], text: shareText);
+        ], text: AppLocalizations.of(context)!.share_text);
       }
     } catch (e) {
       if (mounted) {
@@ -1714,12 +1746,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Future<void> _saveImage() async {
     try {
       final imageBytes = await _captureImage();
-      if (imageBytes != null && mounted) {
+      if (imageBytes != null) {
         // Save directly to the device gallery
-        final albumName = mounted ? AppLocalizations.of(context)!.album_name : 'Sakshat Savita Quotes';
         await Gal.putImageBytes(
           imageBytes,
-          album: albumName,
+          album: AppLocalizations.of(context)!.album_name,
         );
 
         if (mounted) {

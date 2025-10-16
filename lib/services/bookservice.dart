@@ -13,6 +13,7 @@ class Bookservice {
 
   final Map<String, List<Bookpartmodel>> _bookPartsByLanguage = {};
 
+  int currentPartNumber = 1;
   List<BookUserInfo>? _bookUserInfoList = [];
   List<BookUserInfo>? get bookUserInfoList => _bookUserInfoList;
 

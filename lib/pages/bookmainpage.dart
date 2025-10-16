@@ -15,6 +15,7 @@ import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'kiranlistpage.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class BookMainpage extends StatefulWidget {
   const BookMainpage({super.key});
@@ -24,9 +25,27 @@ class BookMainpage extends StatefulWidget {
 }
 
 class _BookmainpageState extends State<BookMainpage> {
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
+
   @override
   void initState() {
     super.initState();
+
+    // ✅ Schedule scroll AFTER the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Wait a bit more to ensure ListView is built and ScrollController is attached
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted) {
+          _itemScrollController.scrollTo(
+            index: Bookservice().currentPartNumber - 1,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
+    });
   }
 
   @override
@@ -51,103 +70,111 @@ class _BookmainpageState extends State<BookMainpage> {
           ActionOptions.settings,
         ],
       ),
-      body: Stack(
-        children: [
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 1.0),
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.0),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              height: 300,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 1.0),
+                    Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.0),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
               ),
             ),
-          ),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Aashirvachanpage(),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Aashirvachanpage(),
+                            ),
+                          );
+                        },
+                        style: ButtonStyle(
+                          elevation: WidgetStatePropertyAll(5),
+                          backgroundColor: WidgetStatePropertyAll(
+                            Theme.of(context).colorScheme.surfaceContainer,
                           ),
-                        );
-                      },
-                      style: ButtonStyle(
-                        elevation: WidgetStatePropertyAll(5),
-                        backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.surfaceContainer,
-                        ),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                      ),
-                      //icon: const Icon(Icons.topic),
-                      child: Text(
-                        AppLocalizations.of(context)!.aashirvachan,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final infoItem = AppDataService().getInfoValue(
-                          "preface",
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    Infodetailspage(infoItem: infoItem!),
-                          ),
-                        );
-                      },
-                      style: ButtonStyle(
-                        elevation: WidgetStatePropertyAll(5),
-                        backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.surfaceContainer,
-                        ),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
                           ),
                         ),
+                        //icon: const Icon(Icons.topic),
+                        child: Text(
+                          AppLocalizations.of(context)!.aashirvachan,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                       ),
-                      //icon: const Icon(Icons.article),
-                      child: Text(
-                        AppLocalizations.of(context)!.preface,
-                        style: Theme.of(context).textTheme.titleMedium,
+                      ElevatedButton(
+                        onPressed: () async {
+                          final infoItem = AppDataService().getInfoValue(
+                            "preface",
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      Infodetailspage(infoItem: infoItem!),
+                            ),
+                          );
+                        },
+                        style: ButtonStyle(
+                          elevation: WidgetStatePropertyAll(5),
+                          backgroundColor: WidgetStatePropertyAll(
+                            Theme.of(context).colorScheme.surfaceContainer,
+                          ),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                        //icon: const Icon(Icons.article),
+                        child: Text(
+                          AppLocalizations.of(context)!.preface,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(20.0),
-                child: Image(
-                  image: const AssetImage('assets/res/z_swami_aashirvad.webp'),
-                  color: Theme.of(context).colorScheme.onPrimary,
+                Container(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Image(
+                    image: const AssetImage(
+                      'assets/res/z_swami_aashirvad.webp',
+                    ),
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
                 ),
-              ),
-              Text(
-                AppLocalizations.of(context)!.tag_line,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              Expanded(child: bookPartsWidget()),
-            ],
-          ),
-        ],
+                Text(
+                  AppLocalizations.of(context)!.tag_line,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Expanded(child: bookPartsWidget()),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -170,8 +197,9 @@ class _BookmainpageState extends State<BookMainpage> {
                   return const Center(child: Text("No data found"));
                 } else if (snapshot.data != null) {
                   var bookparts = snapshot.data as List<Bookpartmodel>;
-                  return ListView.builder(
-                    primary: true,
+                  return ScrollablePositionedList.builder(
+                    itemScrollController: _itemScrollController,
+                    itemPositionsListener: _itemPositionsListener,
                     itemCount: bookparts.length,
                     itemBuilder: (context, index) {
                       return bookPartWidget(bookparts, index);
@@ -190,13 +218,24 @@ class _BookmainpageState extends State<BookMainpage> {
 
   Widget bookPartWidget(List<Bookpartmodel> bookparts, int index) {
     return GestureDetector(
+      onTap: () => navigateToKiranList(bookparts, index),
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          side:
+              Bookservice().currentPartNumber == bookparts[index].partNumber
+                  ? BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 1.0,
+                  )
+                  : BorderSide.none,
+        ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               ListTile(
-                onTap: () => navigateToKiranList(bookparts, index),
+                //onTap: () => navigateToKiranList(bookparts, index),
                 title: Text(bookparts[index].displayname.toString()),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,6 +328,7 @@ class _BookmainpageState extends State<BookMainpage> {
     );
     if (result == true) {
       setState(() {
+        Bookservice().currentPartNumber = bookparts[index].partNumber;
         // Refresh the state to reflect any changes made in KiranReadPage
       });
     }

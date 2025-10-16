@@ -1793,7 +1793,7 @@ abstract class AppLocalizations {
   /// No description provided for @devotee_of.
   ///
   /// In en, this message translates to:
-  /// **'Devotee of'**
+  /// **'Devotee of : '**
   String get devotee_of;
 
   /// No description provided for @tab_colors.

@@ -927,7 +927,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get spiritual_seeker => 'આધ્યાત્મિક સાધક';
 
   @override
-  String get devotee_of => 'ભક્ત';
+  String get devotee_of => 'ભક્ત : ';
 
   @override
   String get tab_colors => 'રંગો';
@@ -960,7 +960,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get kiran_label => 'કિરણ';
 
   @override
-  String get sharing_spiritual_wisdom => 'આધ્યાત્મિક જ્ઞાન વહેંચતા';
+  String get sharing_spiritual_wisdom => 'આજ નો આધ્યાત્મિક વિચાર';
 
   @override
   String get shared_spiritual_thought => 'એક આધ્યાત્મિક વિચાર વહેંચ્યો';

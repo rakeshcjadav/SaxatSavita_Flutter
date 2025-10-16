@@ -13,6 +13,7 @@ import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import '../models/bookpart_model.dart';
 import '../services/kiranuser_service.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class Kiranlistpage extends StatefulWidget {
   const Kiranlistpage({super.key, required this.bookPart});
@@ -26,6 +27,9 @@ class Kiranlistpage extends StatefulWidget {
 class _KiranlistpageState extends State<Kiranlistpage> {
   late Future<KiranList> _futureKiranList;
   final ScrollController _scrollController = ScrollController();
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
 
   late BookUserInfo bookUserInfo;
   bool _hasDataChanged = false;
@@ -111,7 +115,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
 
     // Wait a bit more to ensure ListView is built and ScrollController is attached
     Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted && _scrollController.hasClients) {
+      if (mounted) {
         _scrollToIndex(targetIndex);
       }
     });
@@ -119,27 +123,13 @@ class _KiranlistpageState extends State<Kiranlistpage> {
 
   void _scrollToIndex(int index) {
     // Check if ScrollController is attached and widget is still mounted
-    if (!mounted || !_scrollController.hasClients) {
+    if (!mounted) {
       return;
     }
 
-    // Height of each item (estimated)
-    const double itemHeight = 145.0; // Increased to account for card height
-    final position = index * itemHeight;
-
-    // Ensure we don't scroll beyond the content
-    final maxScrollExtent = _scrollController.position.maxScrollExtent;
-    final targetPosition =
-        position > maxScrollExtent ? maxScrollExtent : position;
-
-    final targetPositionMinus500 = targetPosition - 500;
-    if (targetPositionMinus500 > 0) {
-      _scrollController.jumpTo(targetPositionMinus500);
-    }
-
-    _scrollController.animateTo(
-      targetPosition,
-      duration: Duration(milliseconds: 1000),
+    _itemScrollController.scrollTo(
+      index: index,
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
   }
@@ -161,102 +151,112 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         canPop: false,
         onPopInvokedWithResult: (bool didPop, Object? result) {
           if (!didPop) {
-            Navigator.of(context).pop(_hasDataChanged);
+            Navigator.of(context).pop(true);
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-          child: Scrollbar(
-            controller: _scrollController,
-            child: FutureBuilder<KiranList>(
-              future: _futureKiranList,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
-                  return const Center(child: Text('No kirans found.'));
-                }
-                final kirans = snapshot.data!.list;
-                return ListView.builder(
-                  controller: _scrollController,
-                  itemCount: kirans.length,
-                  itemBuilder: (context, index) {
-                    final kiran = kirans[index];
-                    final kiranUserInfo = KiranUserService().getKiranUserInfo(
-                      kiran.index,
-                    );
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side:
-                            bookUserInfo.lastOpenedKiranIndex == kiran.index
-                                ? BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 1.0,
-                                )
-                                : BorderSide.none,
-                      ),
-                      key: Key(kiran.index.toString()),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                _navigateToKiranReadPage(kiran, kiranUserInfo);
-                                setState(() {
-                                  bookUserInfo.updateLastOpenedKiran(
-                                    kiran.index,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+            child: Scrollbar(
+              controller: _scrollController,
+              child: FutureBuilder<KiranList>(
+                future: _futureKiranList,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
+                    return const Center(child: Text('No kirans found.'));
+                  }
+                  final kirans = snapshot.data!.list;
+                  return ScrollablePositionedList.builder(
+                    itemScrollController: _itemScrollController,
+                    itemPositionsListener: _itemPositionsListener,
+                    itemCount: kirans.length,
+                    itemBuilder: (context, index) {
+                      final kiran = kirans[index];
+                      final kiranUserInfo = KiranUserService().getKiranUserInfo(
+                        kiran.index,
+                      );
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side:
+                              bookUserInfo.lastOpenedKiranIndex == kiran.index
+                                  ? BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    width: 1.0,
+                                  )
+                                  : BorderSide.none,
+                        ),
+                        key: Key(kiran.index.toString()),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  _navigateToKiranReadPage(
+                                    kiran,
+                                    kiranUserInfo,
                                   );
-                                  _expandedIndex = index;
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: _buildKiranListItemWidget(
-                                        kiran,
-                                        kiranUserInfo,
-                                        _expandedIndex == index,
+                                  setState(() {
+                                    bookUserInfo.updateLastOpenedKiran(
+                                      kiran.index,
+                                    );
+                                    _expandedIndex = index;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildKiranListItemWidget(
+                                          kiran,
+                                          kiranUserInfo,
+                                          _expandedIndex == index,
+                                        ),
                                       ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        _expandedIndex == index
-                                            ? Icons.expand_less
-                                            : Icons.expand_more,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _expandedIndex =
-                                              _expandedIndex == index
-                                                  ? null
-                                                  : index;
-                                        });
-                                      },
-                                    ),
-                                  ],
+                                      if (bookUserInfo.lastOpenedKiranIndex !=
+                                          kiran.index) ...[
+                                        IconButton(
+                                          icon: Icon(
+                                            _expandedIndex == index
+                                                ? Icons.expand_less
+                                                : Icons.expand_more,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _expandedIndex =
+                                                  _expandedIndex == index
+                                                      ? null
+                                                      : index;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            if (_expandedIndex == index ||
-                                bookUserInfo.lastOpenedKiranIndex ==
-                                    kiran.index)
-                              ..._buildKiranListItemExpandedWidget(
-                                kiran,
-                                kiranUserInfo,
-                              ),
-                          ],
+                              if (_expandedIndex == index ||
+                                  bookUserInfo.lastOpenedKiranIndex ==
+                                      kiran.index)
+                                ..._buildKiranListItemExpandedWidget(
+                                  kiran,
+                                  kiranUserInfo,
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),

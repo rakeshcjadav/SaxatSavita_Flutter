@@ -923,7 +923,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spiritual_seeker => 'Spiritual Seeker';
 
   @override
-  String get devotee_of => 'Devotee of';
+  String get devotee_of => 'Devotee of : ';
 
   @override
   String get tab_colors => 'Colors';
