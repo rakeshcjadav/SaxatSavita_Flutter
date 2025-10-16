@@ -21,9 +21,13 @@ import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'pages/settingspage.dart';
 import 'pages/aashirvachanlistpage.dart';
 import 'pages/comprehensive_migration_page.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  // Keep splash until initialization completes
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // Initialize Firebase with comprehensive error handling
   try {

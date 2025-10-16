@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
@@ -35,6 +36,8 @@ class _MyWidgetState extends State<SplashPage> {
         if (!mounted) return;
 
         Utils.loadUserdatafromFirebase();
+
+        FlutterNativeSplash.remove(); // remove splash after init
 
         await Navigator.pushReplacement(
           context,

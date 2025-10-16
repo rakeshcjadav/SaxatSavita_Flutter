@@ -14,15 +14,15 @@ flutter_native_splash:
   # of your splash screen to a solid color.  Use background_image to set the background of your
   # splash screen to a png image.  This is useful for gradients. The image will be stretch to the
   # size of the app. Only one parameter can be used, color and background_image cannot both be set.
-  #color: "#B8572A"
-  background_image: "assets/res/splash_background.png"
+  color: "#61270d"
+  #background_image: "assets/res/splash_background.png"
 
   # Optional parameters are listed below.  To enable a parameter, uncomment the line by removing
   # the leading # character.
 
   # The image parameter allows you to specify an image used in the splash screen.  It must be a
   # png file and should be sized for 4x pixel density.
-  image: assets/res/z_jogi_swami_tallest.png
+  image: assets/res/z_jogi_swami.png
 
   # The branding property allows you to specify an image used as branding in the splash screen.
   # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
@@ -63,7 +63,7 @@ flutter_native_splash:
     #image: assets/android12splash.png
 
     # Splash screen background color.
-    color: "#B8572A"
+    color: "#61270d"
 
     # App icon background color.
     #icon_background_color: "#111111"
@@ -94,13 +94,13 @@ flutter_native_splash:
   #color_dark_web: "#042a49"
   #image_android: assets/splash-android.png
   #image_dark_android: assets/splash-invert-android.png
-  image_ios: assets/res/z_jogi_swami_tallest_2.jpg
+  #image_ios: assets/res/z_jogi_swami_tallest_2.jpg
   #image_dark_ios: assets/splash-invert-ios.png
   #image_web: assets/splash-web.gif
   #image_dark_web: assets/splash-invert-web.gif
   #background_image_android: "assets/background-android.png"
   #background_image_dark_android: "assets/dark-background-android.png"
-  background_image_ios: "assets/res/splash_background.png"
+  #background_image_ios: "assets/res/splash_background.png"
   #background_image_dark_ios: "assets/dark-background-ios.png"
   #background_image_web: "assets/background-web.png"
   #background_image_dark_web: "assets/dark-background-web.png"
