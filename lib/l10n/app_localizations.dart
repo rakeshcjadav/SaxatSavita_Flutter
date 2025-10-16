@@ -1771,6 +1771,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'English'**
   String get language_english;
+
+  /// No description provided for @quote_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get quote_preview;
+
+  /// No description provided for @swipe_templates.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe to see all templates →'**
+  String get swipe_templates;
+
+  /// No description provided for @spiritual_seeker.
+  ///
+  /// In en, this message translates to:
+  /// **'Spiritual Seeker'**
+  String get spiritual_seeker;
+
+  /// No description provided for @devotee_of.
+  ///
+  /// In en, this message translates to:
+  /// **'Devotee of'**
+  String get devotee_of;
+
+  /// No description provided for @tab_colors.
+  ///
+  /// In en, this message translates to:
+  /// **'Colors'**
+  String get tab_colors;
+
+  /// No description provided for @tab_font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Font Size'**
+  String get tab_font_size;
+
+  /// No description provided for @tab_image_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Image Size'**
+  String get tab_image_size;
+
+  /// No description provided for @predefined_quotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Predefined Spiritual Quotes'**
+  String get predefined_quotes;
+
+  /// No description provided for @quote_font.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote'**
+  String get quote_font;
+
+  /// No description provided for @author_font.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get author_font;
+
+  /// No description provided for @height_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get height_label;
+
+  /// No description provided for @width_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Width'**
+  String get width_label;
+
+  /// No description provided for @part_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Part'**
+  String get part_label;
+
+  /// No description provided for @kiran_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran'**
+  String get kiran_label;
+
+  /// No description provided for @sharing_spiritual_wisdom.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing Spiritual Wisdom'**
+  String get sharing_spiritual_wisdom;
+
+  /// No description provided for @shared_spiritual_thought.
+  ///
+  /// In en, this message translates to:
+  /// **'shared a spiritual thought'**
+  String get shared_spiritual_thought;
+
+  /// No description provided for @error_sharing_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Error sharing image'**
+  String get error_sharing_image;
+
+  /// No description provided for @share_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspirational quote generated with Sakshat Savita app'**
+  String get share_text;
+
+  /// No description provided for @album_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakshat Savita Quotes'**
+  String get album_name;
+
+  /// No description provided for @predefined_quote_1.
+  ///
+  /// In en, this message translates to:
+  /// **'🙏 Connecting with the soul is life\'s greatest achievement.'**
+  String get predefined_quote_1;
+
+  /// No description provided for @predefined_quote_2.
+  ///
+  /// In en, this message translates to:
+  /// **'📖 Daily spiritual reading brings light to your life.'**
+  String get predefined_quote_2;
+
+  /// No description provided for @predefined_quote_3.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ Peace comes not from outside, but from within.'**
+  String get predefined_quote_3;
+
+  /// No description provided for @predefined_quote_4.
+  ///
+  /// In en, this message translates to:
+  /// **'🌅 Every new day is an opportunity for spiritual growth.'**
+  String get predefined_quote_4;
+
+  /// No description provided for @predefined_quote_5.
+  ///
+  /// In en, this message translates to:
+  /// **'💫 Truth, love and compassion - these three are the foundation of life.'**
+  String get predefined_quote_5;
 }
 
 class _AppLocalizationsDelegate

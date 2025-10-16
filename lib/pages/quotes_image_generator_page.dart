@@ -37,10 +37,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   final String _selectedFont = 'NotoSansGujarati';
   double _fontSize = 24.0;
   double _authorFontSize = 16.0;
-  double _imageHeight = 300.0;
-  double _imageWidth = 300.0;
-  int _selectedTemplate = 0;
-  String _selectedGradient = 'green';
+  double _imageHeight = 370.0;
+  double _imageWidth = 370.0;
+  int _selectedTemplate = 8;
+  String _selectedGradient = 'orange';
 
   // Current quote reference
   InspirationalQuote? _currentSelectedQuote;
@@ -48,33 +48,33 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   bool hasEnableEditing = false;
 
   // Predefined inspirational quotes
-  final List<InspirationalQuote> _predefinedQuotes = [
+  List<InspirationalQuote> get _predefinedQuotes => [
     InspirationalQuote(
-      quote: '🙏 આત્મા સાથે જોડાવું એ જીવનની સૌથી મોટી સિદ્ધિ છે.',
+      quote: AppLocalizations.of(context)!.predefined_quote_1,
       author: '',
       partNumber: -1,
       kiranIndex: -1,
     ),
     InspirationalQuote(
-      quote: '📖 દરરોજ અધ્યાત્મિક વાંચન તમારા જીવનમાં પ્રકાશ લાવે છે.',
+      quote: AppLocalizations.of(context)!.predefined_quote_2,
       author: '',
       partNumber: -1,
       kiranIndex: -1,
     ),
     InspirationalQuote(
-      quote: '✨ શાંતિ બહારથી નહીં, અંદરથી આવે છે.',
+      quote: AppLocalizations.of(context)!.predefined_quote_3,
       author: '',
       partNumber: -1,
       kiranIndex: -1,
     ),
     InspirationalQuote(
-      quote: '🌅 દરેક નવો દિવસ આત્મિક વૃદ્ધિની તક છે.',
+      quote: AppLocalizations.of(context)!.predefined_quote_4,
       author: '',
       partNumber: -1,
       kiranIndex: -1,
     ),
     InspirationalQuote(
-      quote: '💫 સત્ય, પ્રેમ અને કરુણા - આ ત્રણે જીવનના આધાર છે.',
+      quote: AppLocalizations.of(context)!.predefined_quote_5,
       author: '',
       partNumber: -1,
       kiranIndex: -1,
@@ -83,10 +83,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   // Color gradients
   final Map<String, List<Color>> _gradients = {
-    'green': [const Color(0xFF2E7D32), const Color(0xFF4CAF50)],
-    'blue': [const Color(0xFF1565C0), const Color(0xFF42A5F5)],
-    'purple': [const Color(0xFF6A1B9A), const Color(0xFFAB47BC)],
     'orange': [Colors.deepOrange.shade700, Colors.orange.shade400],
+    'blue': [const Color(0xFF1565C0), const Color(0xFF42A5F5)],
+    'green': [const Color(0xFF2E7D32), const Color(0xFF4CAF50)],
+    'purple': [const Color(0xFF6A1B9A), const Color(0xFFAB47BC)],
     'teal': [Colors.teal.shade700, Colors.teal.shade400],
     'indigo': [Colors.indigo.shade700, Colors.indigo.shade400],
     'saffron': [const Color(0xFFFF6F00), const Color(0xFFFFB74D)],
@@ -105,6 +105,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       hasEnableEditing = false;
     } else {
       hasEnableEditing = true;
+      // Don't call _getRandomQuote() here since localization isn't ready yet
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Call this here where localization is available
+    if (widget.quote == null &&
+        hasEnableEditing &&
+        _quoteController.text.isEmpty) {
       _getRandomQuote();
     }
   }
@@ -161,10 +172,19 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         ],
         bottom: TabBar(
           controller: _customizationTabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.palette), text: 'Colors'),
-            Tab(icon: Icon(Icons.text_fields), text: 'Font Size'),
-            Tab(icon: Icon(Icons.photo_size_select_large), text: 'Image Size'),
+          tabs: [
+            Tab(
+              icon: Icon(Icons.palette),
+              text: AppLocalizations.of(context)!.tab_colors,
+            ),
+            Tab(
+              icon: Icon(Icons.text_fields),
+              text: AppLocalizations.of(context)!.tab_font_size,
+            ),
+            Tab(
+              icon: Icon(Icons.photo_size_select_large),
+              text: AppLocalizations.of(context)!.tab_image_size,
+            ),
           ],
         ),
       ),
@@ -202,7 +222,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       {'name': 'Card', 'index': 9},
       {'name': 'Simple', 'index': 0},
       {'name': 'Geometric', 'index': 1},
-      {'name': 'Floral', 'index': 2},
       {'name': 'Spiritual', 'index': 3},
       {'name': 'Mandala', 'index': 4},
       {'name': 'Elegant', 'index': 5},
@@ -220,9 +239,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Preview', style: Theme.of(context).textTheme.titleLarge),
               Text(
-                'Swipe to see all templates →',
+                AppLocalizations.of(context)!.quote_preview,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Text(
+                AppLocalizations.of(context)!.swipe_templates,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.grey[600],
                   fontStyle: FontStyle.italic,
@@ -335,7 +357,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         children: [
           // Background pattern (optional)
           if (templateIndex == 1) _buildGeometricPattern(),
-          if (templateIndex == 2) _buildFloralPattern(),
           if (templateIndex == 3) _buildSpiritualPattern(),
           if (templateIndex == 4) _buildMandalaPattern(),
           if (templateIndex == 5) _buildElegantPattern(),
@@ -728,7 +749,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user?.displayName ?? 'Spiritual Seeker',
+                      user?.displayName ??
+                          AppLocalizations.of(context)!.spiritual_seeker,
                       style: TextStyle(
                         color: _textColor,
                         fontSize: 18,
@@ -737,7 +759,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       ),
                     ),
                     Text(
-                      'Devotee of ${AppLocalizations.of(context)!.sakshatSavita}',
+                      '${AppLocalizations.of(context)!.devotee_of} ${AppLocalizations.of(context)!.sakshatSavita}',
                       style: TextStyle(
                         color: _textColor.withOpacity(0.7),
                         fontSize: 12,
@@ -836,7 +858,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user?.displayName ?? 'Spiritual Seeker',
+                      user?.displayName ??
+                          AppLocalizations.of(context)!.spiritual_seeker,
                       style: TextStyle(
                         color: _textColor,
                         fontSize: 14,
@@ -845,7 +868,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       ),
                     ),
                     Text(
-                      'Sharing Spiritual Wisdom',
+                      AppLocalizations.of(context)!.sharing_spiritual_wisdom,
                       style: TextStyle(
                         color: _textColor.withOpacity(0.6),
                         fontSize: 11,
@@ -934,7 +957,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user?.displayName ?? 'Spiritual Seeker',
+                      user?.displayName ??
+                          AppLocalizations.of(context)!.spiritual_seeker,
                       style: TextStyle(
                         color: _textColor,
                         fontSize: 14,
@@ -943,7 +967,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       ),
                     ),
                     Text(
-                      'shared a spiritual thought',
+                      AppLocalizations.of(context)!.shared_spiritual_thought,
                       style: TextStyle(
                         color: _textColor.withOpacity(0.6),
                         fontSize: 11,
@@ -1076,7 +1100,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     const SizedBox(width: 8),
 
                     Text(
-                      user?.displayName ?? 'Spiritual Seeker',
+                      user?.displayName ??
+                          AppLocalizations.of(context)!.spiritual_seeker,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -1489,9 +1514,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('Quote: ${_fontSize.round()}px'),
+              Icon(Icons.format_size, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                '${AppLocalizations.of(context)!.quote_font}: ${_fontSize.round()}px',
+              ),
               Expanded(
                 child: Slider(
                   value: _fontSize,
@@ -1505,7 +1534,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           ),
           Row(
             children: [
-              Text('Author: ${_authorFontSize.round()}px'),
+              Icon(Icons.person, size: 16),
+              Text(
+                '${AppLocalizations.of(context)!.author_font}: ${_authorFontSize.round()}px',
+              ),
               Expanded(
                 child: Slider(
                   value: _authorFontSize,
@@ -1530,7 +1562,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         children: [
           Row(
             children: [
-              Text('Height: ${_imageHeight.round()}px'),
+              Icon(Icons.height, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                '${AppLocalizations.of(context)!.height_label}: ${_imageHeight.round()}px',
+              ),
               Expanded(
                 child: Slider(
                   value: _imageHeight,
@@ -1544,7 +1580,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           ),
           Row(
             children: [
-              Text('Width: ${_imageWidth.round()}px'),
+              RotatedBox(quarterTurns: 1, child: Icon(Icons.height, size: 16)),
+              const SizedBox(width: 8),
+              Text(
+                '${AppLocalizations.of(context)!.width_label}: ${_imageWidth.round()}px',
+              ),
               Expanded(
                 child: Slider(
                   value: _imageWidth,
@@ -1598,7 +1638,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Predefined Spiritual Quotes',
+              AppLocalizations.of(context)!.predefined_quotes,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
@@ -1623,7 +1663,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       children: [
                         Text('— ${quote.author}'),
                         Text(
-                          'Part ${quote.partNumber}, Kiran ${quote.kiranIndex}',
+                          '${AppLocalizations.of(context)!.part_label} ${quote.partNumber}, ${AppLocalizations.of(context)!.kiran_label} ${quote.kiranIndex}',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -1671,13 +1711,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
         await Share.shareXFiles([
           XFile(imagePath),
-        ], text: 'Inspirational quote generated with Sakshat Savita app');
+        ], text: AppLocalizations.of(context)!.share_text);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error sharing image: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${AppLocalizations.of(context)!.error_sharing_image}: $e',
+            ),
+          ),
+        );
       }
     }
   }
@@ -1687,7 +1731,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       final imageBytes = await _captureImage();
       if (imageBytes != null) {
         // Save directly to the device gallery
-        await Gal.putImageBytes(imageBytes, album: 'Sakshat Savita Quotes');
+        await Gal.putImageBytes(
+          imageBytes,
+          album: AppLocalizations.of(context)!.album_name,
+        );
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -1702,7 +1749,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error saving image: $e'),
+            content: Text(
+              AppLocalizations.of(context)!.error_saving_image(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );

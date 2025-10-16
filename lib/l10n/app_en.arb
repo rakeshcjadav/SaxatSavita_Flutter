@@ -467,5 +467,31 @@
     "dark_mode_option": "Dark",
     "error_saving_settings": "Error saving settings",
     "language_gujarati": "ગુજરાતી",
-    "language_english": "English"
+    "language_english": "English",
+    
+    "quote_preview": "Preview",
+    "swipe_templates": "Swipe to see all templates →",
+    "spiritual_seeker": "Spiritual Seeker",
+    "devotee_of": "Devotee of",
+    "tab_colors": "Colors",
+    "tab_font_size": "Font Size",
+    "tab_image_size": "Image Size",
+    "predefined_quotes": "Predefined Spiritual Quotes",
+    "quote_font": "Quote",
+    "author_font": "Author",
+    "height_label": "Height",
+    "width_label": "Width",
+    "part_label": "Part",
+  "kiran_label": "Kiran",
+  "sharing_spiritual_wisdom": "Sharing Spiritual Wisdom",
+  "shared_spiritual_thought": "shared a spiritual thought",
+  "error_sharing_image": "Error sharing image",
+    "share_text": "Inspirational quote generated with Sakshat Savita app",
+    "album_name": "Sakshat Savita Quotes",
+    
+    "predefined_quote_1": "🙏 Connecting with the soul is life's greatest achievement.",
+    "predefined_quote_2": "📖 Daily spiritual reading brings light to your life.",
+    "predefined_quote_3": "✨ Peace comes not from outside, but from within.",
+    "predefined_quote_4": "🌅 Every new day is an opportunity for spiritual growth.",
+    "predefined_quote_5": "💫 Truth, love and compassion - these three are the foundation of life."
 }

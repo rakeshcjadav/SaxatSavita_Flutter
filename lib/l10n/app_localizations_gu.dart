@@ -916,4 +916,80 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get language_english => 'અંગ્રેજી';
+
+  @override
+  String get quote_preview => 'પૂર્વાવલોકન';
+
+  @override
+  String get swipe_templates => 'બધા ટેમ્પલેટ્સ જોવા માટે સ્વાઇપ કરો →';
+
+  @override
+  String get spiritual_seeker => 'આધ્યાત્મિક સાધક';
+
+  @override
+  String get devotee_of => 'ભક્ત';
+
+  @override
+  String get tab_colors => 'રંગો';
+
+  @override
+  String get tab_font_size => 'ફોન્ટ સાઇઝ';
+
+  @override
+  String get tab_image_size => 'ઇમેજ સાઇઝ';
+
+  @override
+  String get predefined_quotes => 'પૂર્વનિર્ધારિત આધ્યાત્મિક સુવિચારો';
+
+  @override
+  String get quote_font => 'સુવિચાર';
+
+  @override
+  String get author_font => 'લેખક';
+
+  @override
+  String get height_label => 'ઊંચાઈ';
+
+  @override
+  String get width_label => 'પહોળાઈ';
+
+  @override
+  String get part_label => 'ભાગ';
+
+  @override
+  String get kiran_label => 'કિરણ';
+
+  @override
+  String get sharing_spiritual_wisdom => 'આધ્યાત્મિક જ્ઞાન વહેંચતા';
+
+  @override
+  String get shared_spiritual_thought => 'એક આધ્યાત્મિક વિચાર વહેંચ્યો';
+
+  @override
+  String get error_sharing_image => 'ઇમેજ શેર કરવામાં ભૂલ';
+
+  @override
+  String get share_text =>
+      'સાક્ષાત્ સવિતા એપ્લિકેશન સાથે પ્રેરણાદાયક સુવિચાર બનાવવામાં આવ્યો';
+
+  @override
+  String get album_name => 'સાક્ષાત્ સવિતા સુવિચારો';
+
+  @override
+  String get predefined_quote_1 =>
+      '🙏 આત્મા સાથે જોડાવું એ જીવનની સૌથી મોટી સિદ્ધિ છે.';
+
+  @override
+  String get predefined_quote_2 =>
+      '📖 દરરોજ અધ્યાત્મિક વાંચન તમારા જીવનમાં પ્રકાશ લાવે છે.';
+
+  @override
+  String get predefined_quote_3 => '✨ શાંતિ બહારથી નહીં, અંદરથી આવે છે.';
+
+  @override
+  String get predefined_quote_4 => '🌅 દરેક નવો દિવસ આત્મિક વૃદ્ધિની તક છે.';
+
+  @override
+  String get predefined_quote_5 =>
+      '💫 સત્ય, પ્રેમ અને કરુણા - આ ત્રણે જીવનના આધાર છે.';
 }

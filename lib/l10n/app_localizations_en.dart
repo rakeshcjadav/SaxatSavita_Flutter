@@ -912,4 +912,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get language_english => 'English';
+
+  @override
+  String get quote_preview => 'Preview';
+
+  @override
+  String get swipe_templates => 'Swipe to see all templates →';
+
+  @override
+  String get spiritual_seeker => 'Spiritual Seeker';
+
+  @override
+  String get devotee_of => 'Devotee of';
+
+  @override
+  String get tab_colors => 'Colors';
+
+  @override
+  String get tab_font_size => 'Font Size';
+
+  @override
+  String get tab_image_size => 'Image Size';
+
+  @override
+  String get predefined_quotes => 'Predefined Spiritual Quotes';
+
+  @override
+  String get quote_font => 'Quote';
+
+  @override
+  String get author_font => 'Author';
+
+  @override
+  String get height_label => 'Height';
+
+  @override
+  String get width_label => 'Width';
+
+  @override
+  String get part_label => 'Part';
+
+  @override
+  String get kiran_label => 'Kiran';
+
+  @override
+  String get sharing_spiritual_wisdom => 'Sharing Spiritual Wisdom';
+
+  @override
+  String get shared_spiritual_thought => 'shared a spiritual thought';
+
+  @override
+  String get error_sharing_image => 'Error sharing image';
+
+  @override
+  String get share_text =>
+      'Inspirational quote generated with Sakshat Savita app';
+
+  @override
+  String get album_name => 'Sakshat Savita Quotes';
+
+  @override
+  String get predefined_quote_1 =>
+      '🙏 Connecting with the soul is life\'s greatest achievement.';
+
+  @override
+  String get predefined_quote_2 =>
+      '📖 Daily spiritual reading brings light to your life.';
+
+  @override
+  String get predefined_quote_3 =>
+      '✨ Peace comes not from outside, but from within.';
+
+  @override
+  String get predefined_quote_4 =>
+      '🌅 Every new day is an opportunity for spiritual growth.';
+
+  @override
+  String get predefined_quote_5 =>
+      '💫 Truth, love and compassion - these three are the foundation of life.';
 }
