@@ -30,7 +30,7 @@ class AppSettings {
       brightness:
           json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
       themeContrastLevel: json['themeContrastLevel']?.toDouble() ?? 0.5,
-      readingSpeed: json['readingSpeed']?.toDouble() ?? 300.0,
+      readingSpeed: json['readingSpeed']?.toDouble() ?? 200.0,
       language: json['language'] ?? 'gu',
     );
   }
@@ -80,7 +80,7 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
     themeVariant: DynamicSchemeVariant.tonalSpot,
     brightness: Brightness.light,
     themeContrastLevel: 0.5,
-    readingSpeed: 300.0,
+    readingSpeed: 200.0,
     language: 'gu',
   ),
 );
@@ -92,7 +92,7 @@ AppSettings appSettingsDefault = AppSettings(
   themeVariant: DynamicSchemeVariant.tonalSpot,
   brightness: Brightness.light,
   themeContrastLevel: 0.5,
-  readingSpeed: 300.0,
+  readingSpeed: 200.0,
   language: 'gu',
 );
 

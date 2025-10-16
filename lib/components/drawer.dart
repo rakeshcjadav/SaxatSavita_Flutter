@@ -126,14 +126,6 @@ class _DrawerState extends State<MyDrawer> {
               );
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: Text(AppLocalizations.of(context)!.settings),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/settings');
-            },
-          ),
           if (kDebugMode) ...[
             ListTile(
               leading: const Icon(Icons.transfer_within_a_station),
