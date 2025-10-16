@@ -1000,4 +1000,10 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get shastri_swami =>
       'વચનામૃત મર્મજ્ઞ પ.પૂ. સદ્. શાસ્ત્રી\nશ્રી બાલકૃષ્ણદાસજી સ્વામી';
+
+  @override
+  String get below_target => 'લક્ષ્યથી ઓછું';
+
+  @override
+  String get target_achieved => 'લક્ષ્ય પૂર્ણ';
 }

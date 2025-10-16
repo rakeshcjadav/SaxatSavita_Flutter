@@ -1927,6 +1927,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'વચનામૃત મર્મજ્ઞ પ.પૂ. સદ્. શાસ્ત્રી\nશ્રી બાલકૃષ્ણદાસજી સ્વામી'**
   String get shastri_swami;
+
+  /// No description provided for @below_target.
+  ///
+  /// In en, this message translates to:
+  /// **'Below Target'**
+  String get below_target;
+
+  /// No description provided for @target_achieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Achieved'**
+  String get target_achieved;
 }
 
 class _AppLocalizationsDelegate

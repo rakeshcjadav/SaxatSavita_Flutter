@@ -998,4 +998,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get shastri_swami =>
       'વચનામૃત મર્મજ્ઞ પ.પૂ. સદ્. શાસ્ત્રી\nશ્રી બાલકૃષ્ણદાસજી સ્વામી';
+
+  @override
+  String get below_target => 'Below Target';
+
+  @override
+  String get target_achieved => 'Target Achieved';
 }

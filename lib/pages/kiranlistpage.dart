@@ -32,7 +32,6 @@ class _KiranlistpageState extends State<Kiranlistpage> {
       ItemPositionsListener.create();
 
   late BookUserInfo bookUserInfo;
-  bool _hasDataChanged = false;
   int? _expandedIndex;
 
   @override
@@ -80,7 +79,6 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     );
     if (result == true) {
       setState(() {
-        _hasDataChanged = true;
         // Refresh the state to reflect any changes made in KiranReadPage
       });
     }

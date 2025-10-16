@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
@@ -557,6 +558,17 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
   }
 
   Widget _buildProgressChart(List<Map<String, dynamic>> progressSummary) {
+    if (_readingPlanService.activePlan == null || progressSummary.isEmpty) {
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Center(child: Text('No progress data available')),
+        ),
+      );
+    }
+
+    final activePlan = _readingPlanService.activePlan!;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -567,34 +579,432 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
               AppLocalizations.of(context)!.last_30_days_progress,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children:
-                    progressSummary.map((day) {
-                      final progress = (day['progressPercentage'] as double)
-                          .clamp(0.0, 1.0);
-                      final goalAchieved = day['goalAchieved'] as bool;
-
-                      return Container(
-                        width: 8,
-                        height: 180 * progress,
-                        margin: const EdgeInsets.symmetric(horizontal: 1),
-                        decoration: BoxDecoration(
-                          color:
-                              goalAchieved
-                                  ? Colors.green
-                                  : Theme.of(
-                                    context,
-                                  ).primaryColor.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(4),
+            // Reading Time Chart
+            Container(
+              margin: const EdgeInsets.only(top: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: const BoxDecoration(
+                          color: Colors.blue,
+                          shape: BoxShape.circle,
                         ),
-                      );
-                    }).toList(),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.reading_time,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 180,
+                    child: Scrollbar(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: progressSummary.length * 30.0,
+                          child: BarChart(
+                            BarChartData(
+                              maxY:
+                                  (activePlan.targetSeconds ~/ 60) *
+                                  1.5, // Target minutes * 1.5
+                              minY: 0.0,
+                              barTouchData: BarTouchData(
+                                touchTooltipData: BarTouchTooltipData(
+                                  tooltipPadding: const EdgeInsets.all(8),
+                                  tooltipMargin: 8,
+                                  getTooltipItem: (
+                                    group,
+                                    groupIndex,
+                                    rod,
+                                    rodIndex,
+                                  ) {
+                                    final day = progressSummary[groupIndex];
+                                    final date = day['date'] as DateTime;
+                                    final seconds = day['seconds'] as int;
+                                    final minutes = seconds ~/ 60;
+
+                                    return BarTooltipItem(
+                                      '${date.day}/${date.month}\n${AppLocalizations.of(context)!.reading_time}: ${minutes}m\nTarget: ${activePlan.targetSeconds ~/ 60}m',
+                                      TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              titlesData: FlTitlesData(
+                                show: true,
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    reservedSize: 30,
+                                    interval: 2,
+                                    getTitlesWidget: (value, meta) {
+                                      if (value.toInt() >= 0 &&
+                                          value.toInt() <
+                                              progressSummary.length) {
+                                        final date =
+                                            progressSummary[value
+                                                    .toInt()]['date']
+                                                as DateTime;
+                                        return Text(
+                                          '${date.day}',
+                                          style: const TextStyle(fontSize: 10),
+                                        );
+                                      }
+                                      return const SizedBox.shrink();
+                                    },
+                                  ),
+                                ),
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    reservedSize: 40,
+                                    interval:
+                                        (activePlan.targetSeconds ~/ 60) /
+                                        4, // Show 4-5 intervals
+                                    getTitlesWidget: (value, meta) {
+                                      return Text(
+                                        '${value.toInt()}m',
+                                        style: const TextStyle(fontSize: 10),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                topTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                                rightTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                              ),
+                              borderData: FlBorderData(
+                                show: true,
+                                border: Border.all(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  width: 1,
+                                ),
+                              ),
+                              gridData: FlGridData(
+                                show: true,
+                                drawVerticalLine: true,
+                                drawHorizontalLine: true,
+                                horizontalInterval:
+                                    (activePlan.targetSeconds ~/ 60) / 4,
+                                verticalInterval: 5,
+                                getDrawingHorizontalLine:
+                                    (value) => FlLine(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      strokeWidth: 1,
+                                    ),
+                                getDrawingVerticalLine:
+                                    (value) => FlLine(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      strokeWidth: 1,
+                                    ),
+                              ),
+                              barGroups:
+                                  progressSummary.asMap().entries.map((entry) {
+                                    final index = entry.key;
+                                    final day = entry.value;
+                                    final minutes =
+                                        (day['seconds'] as int) ~/ 60;
+                                    final seconds = day['seconds'] as int;
+                                    final targetMet =
+                                        seconds >= activePlan.targetSeconds;
+
+                                    return BarChartGroupData(
+                                      x: index,
+                                      barRods: [
+                                        BarChartRodData(
+                                          toY: minutes.toDouble(),
+                                          color:
+                                              targetMet
+                                                  ? Colors.green
+                                                  : Colors.blue,
+                                          width: 16,
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(4),
+                                            topRight: Radius.circular(4),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
+                              groupsSpace: 8,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            ),
+            // Reading Time Chart Legend
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Blue indicator for below target
+                Container(
+                  width: 16,
+                  height: 12,
+                  decoration: const BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  AppLocalizations.of(context)!.below_target,
+                  style: const TextStyle(fontSize: 12),
+                ),
+                const SizedBox(width: 16),
+                // Green indicator for target achieved
+                Container(
+                  width: 16,
+                  height: 12,
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  AppLocalizations.of(context)!.target_achieved,
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Kirans Chart
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: const BoxDecoration(
+                        color: Colors.orange,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      AppLocalizations.of(context)!.kirans,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 180,
+                  child: Scrollbar(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: progressSummary.length * 30.0,
+                        child: BarChart(
+                          BarChartData(
+                            maxY:
+                                (activePlan.targetKirans * 3)
+                                    .toDouble(), // Target kirans * 3
+                            minY: 0.0,
+                            barTouchData: BarTouchData(
+                              touchTooltipData: BarTouchTooltipData(
+                                tooltipPadding: const EdgeInsets.all(8),
+                                tooltipMargin: 8,
+                                getTooltipItem: (
+                                  group,
+                                  groupIndex,
+                                  rod,
+                                  rodIndex,
+                                ) {
+                                  final day = progressSummary[groupIndex];
+                                  final date = day['date'] as DateTime;
+                                  final kirans = day['kirans'] as int;
+
+                                  return BarTooltipItem(
+                                    '${date.day}/${date.month}\n${AppLocalizations.of(context)!.kirans}: $kirans\nTarget: ${activePlan.targetKirans}',
+                                    TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            titlesData: FlTitlesData(
+                              show: true,
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 30,
+                                  interval: 2,
+                                  getTitlesWidget: (value, meta) {
+                                    if (value.toInt() >= 0 &&
+                                        value.toInt() <
+                                            progressSummary.length) {
+                                      final date =
+                                          progressSummary[value.toInt()]['date']
+                                              as DateTime;
+                                      return Text(
+                                        '${date.day}',
+                                        style: const TextStyle(fontSize: 10),
+                                      );
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                ),
+                              ),
+                              leftTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 40,
+                                  interval:
+                                      activePlan.targetKirans > 4
+                                          ? (activePlan.targetKirans / 4)
+                                              .ceil()
+                                              .toDouble()
+                                          : 1.0,
+                                  getTitlesWidget: (value, meta) {
+                                    return Text(
+                                      '${value.toInt()}',
+                                      style: const TextStyle(fontSize: 10),
+                                    );
+                                  },
+                                ),
+                              ),
+                              topTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              rightTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                            ),
+                            borderData: FlBorderData(
+                              show: true,
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            gridData: FlGridData(
+                              show: true,
+                              drawVerticalLine: true,
+                              drawHorizontalLine: true,
+                              horizontalInterval:
+                                  activePlan.targetKirans > 4
+                                      ? (activePlan.targetKirans / 4)
+                                          .ceil()
+                                          .toDouble()
+                                      : 1.0,
+                              verticalInterval: 5,
+                              getDrawingHorizontalLine:
+                                  (value) => FlLine(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    strokeWidth: 1,
+                                  ),
+                              getDrawingVerticalLine:
+                                  (value) => FlLine(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    strokeWidth: 1,
+                                  ),
+                            ),
+                            barGroups:
+                                progressSummary.asMap().entries.map((entry) {
+                                  final index = entry.key;
+                                  final day = entry.value;
+                                  final kirans = day['kirans'] as int;
+                                  final targetMet =
+                                      kirans >= activePlan.targetKirans;
+
+                                  return BarChartGroupData(
+                                    x: index,
+                                    barRods: [
+                                      BarChartRodData(
+                                        toY: kirans.toDouble(),
+                                        color:
+                                            targetMet
+                                                ? Colors.green
+                                                : Colors.orange,
+                                        width: 16,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(4),
+                                          topRight: Radius.circular(4),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),
+                            groupsSpace: 8,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // Kirans Chart Legend
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Orange indicator for below target
+                    Container(
+                      width: 16,
+                      height: 12,
+                      decoration: const BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      AppLocalizations.of(context)!.below_target,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    const SizedBox(width: 16),
+                    // Green indicator for target achieved
+                    Container(
+                      width: 16,
+                      height: 12,
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      AppLocalizations.of(context)!.target_achieved,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
