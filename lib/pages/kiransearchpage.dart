@@ -281,7 +281,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
 
     // 2. Exact phrase match gets very high score
     if (lowerText.contains(lowerQuery)) {
-      score += 80.0;
+      score += 150.0;
 
       // Bonus for match at the beginning
       if (lowerText.startsWith(lowerQuery)) {
