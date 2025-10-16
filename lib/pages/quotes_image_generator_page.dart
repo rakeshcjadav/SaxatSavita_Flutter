@@ -1686,16 +1686,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Future<void> _shareImage() async {
     try {
       final imageBytes = await _captureImage();
-      if (imageBytes != null) {
+      if (imageBytes != null && mounted) {
         final directory = await getTemporaryDirectory();
         final imagePath =
             '${directory.path}/quote_${DateTime.now().millisecondsSinceEpoch}.png';
         final imageFile = File(imagePath);
         await imageFile.writeAsBytes(imageBytes);
 
+        final shareText = mounted ? AppLocalizations.of(context)!.share_text : 'Inspirational quote generated with Sakshat Savita app';
         await Share.shareXFiles([
           XFile(imagePath),
-        ], text: AppLocalizations.of(context)!.share_text);
+        ], text: shareText);
       }
     } catch (e) {
       if (mounted) {
@@ -1713,11 +1714,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Future<void> _saveImage() async {
     try {
       final imageBytes = await _captureImage();
-      if (imageBytes != null) {
+      if (imageBytes != null && mounted) {
         // Save directly to the device gallery
+        final albumName = mounted ? AppLocalizations.of(context)!.album_name : 'Sakshat Savita Quotes';
         await Gal.putImageBytes(
           imageBytes,
-          album: AppLocalizations.of(context)!.album_name,
+          album: albumName,
         );
 
         if (mounted) {

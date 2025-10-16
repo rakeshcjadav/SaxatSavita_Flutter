@@ -7,10 +7,10 @@ import 'package:saxatsavita_flutter/pages/aashirvachanpage.dart';
 class Aashirvachanpage extends StatelessWidget {
   const Aashirvachanpage({super.key});
 
-  List<AashirvachanModel> getAashirvachan() {
+  List<AashirvachanModel> getAashirvachan(BuildContext context) {
     return [
       AashirvachanModel(
-        title: 'પ.પૂ.પ્ર.બ્ર.સ્વ.સદ્. જોગીસ્વામી શ્રી ધર્મપ્રસાદદાસજીસ્વામી',
+        title: AppLocalizations.of(context)!.jogi_swami,
         tag: 'jogiswami',
         image: 'assets/res/z_ashirvachan_jogiswami_image.webp',
         content: AashirvachanContent(
@@ -19,7 +19,7 @@ class Aashirvachanpage extends StatelessWidget {
         ),
       ),
       AashirvachanModel(
-        title: 'વચનામૃત મર્મજ્ઞ પ.પૂ.સદ્. શાસ્ત્રી શ્રી બાલકૃષ્ણદાસજીસ્વામી',
+        title: AppLocalizations.of(context)!.shastri_swami,
         tag: 'swamishree',
         image: 'assets/res/z_ashirvachan_swami_shree_image.webp',
         content: AashirvachanContent(
@@ -39,9 +39,9 @@ class Aashirvachanpage extends StatelessWidget {
         actionItems: [ActionOptions.info, ActionOptions.settings],
       ),
       body: ListView.builder(
-        itemCount: getAashirvachan().length,
+        itemCount: getAashirvachan(context).length,
         itemBuilder: (context, index) {
-          final aashirvachan = getAashirvachan()[index];
+          final aashirvachan = getAashirvachan(context)[index];
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

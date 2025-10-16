@@ -990,4 +990,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get predefined_quote_5 =>
       '💫 Truth, love and compassion - these three are the foundation of life.';
+
+  @override
+  String get jogi_swami =>
+      'પ.પૂ.પ્ર.બ્ર.સ્વ. સદ્. જોગીસ્વામી\nશ્રી ધર્મપ્રસાદદાસજી સ્વામી';
+
+  @override
+  String get shastri_swami =>
+      'વચનામૃત મર્મજ્ઞ પ.પૂ. સદ્. શાસ્ત્રી\nશ્રી બાલકૃષ્ણદાસજી સ્વામી';
 }

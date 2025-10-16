@@ -1915,6 +1915,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'💫 Truth, love and compassion - these three are the foundation of life.'**
   String get predefined_quote_5;
+
+  /// No description provided for @jogi_swami.
+  ///
+  /// In en, this message translates to:
+  /// **'પ.પૂ.પ્ર.બ્ર.સ્વ. સદ્. જોગીસ્વામી\nશ્રી ધર્મપ્રસાદદાસજી સ્વામી'**
+  String get jogi_swami;
+
+  /// No description provided for @shastri_swami.
+  ///
+  /// In en, this message translates to:
+  /// **'વચનામૃત મર્મજ્ઞ પ.પૂ. સદ્. શાસ્ત્રી\nશ્રી બાલકૃષ્ણદાસજી સ્વામી'**
+  String get shastri_swami;
 }
 
 class _AppLocalizationsDelegate

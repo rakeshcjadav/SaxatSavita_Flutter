@@ -103,7 +103,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "પ.પૂ.પ્ર.બ્ર.સ્વ.સદ્. જોગીસ્વામી\nશ્રી ધર્મપ્રસાદદાસજી સ્વામી",
+                      AppLocalizations.of(context)!.jogi_swami,
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),

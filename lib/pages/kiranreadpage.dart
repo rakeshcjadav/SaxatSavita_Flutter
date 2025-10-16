@@ -989,7 +989,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     try {
       final InspirationalQuote quote = InspirationalQuote(
         quote: selectedText!,
-        author: "પ.પૂ.પ્ર.બ્ર.સ્વ.સદ્. જોગીસ્વામી શ્રી ધર્મપ્રસાદદાસજીસ્વામી",
+        author: AppLocalizations.of(context)!.jogi_swami,
         kiranIndex: widget.kiranInfo.index,
         partNumber: int.parse(widget.partNumber.replaceAll('part', '')),
       );
