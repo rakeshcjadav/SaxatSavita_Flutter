@@ -22,7 +22,7 @@ class _MyWidgetState extends State<SplashPage> {
   Future<void> _checkAuthAndNavigate() async {
     try {
       // Wait for a minimum splash display time
-      await Future.delayed(const Duration(seconds: 0));
+      await Future.delayed(const Duration(seconds: 1));
 
       if (!mounted) return;
 
@@ -45,6 +45,8 @@ class _MyWidgetState extends State<SplashPage> {
         );
       } else {
         if (!mounted) return;
+
+        FlutterNativeSplash.remove(); // remove splash after init
 
         await Navigator.pushReplacement(
           context,

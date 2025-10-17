@@ -101,6 +101,10 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
         await Utils.checkAndPerformMigration();
 
         debugPrint('_handleAuthenticationEvent : Migration done');
+
+        setState(() {
+          _errorMessage = 'Navigation to HomePage';
+        });
         // Navigate after state is updated
         await Navigator.pushReplacement(
           context,
