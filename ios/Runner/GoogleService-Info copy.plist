@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia.apps.googleusercontent.com</string>
+	<string>39080773295-31oropdhe023tocb08aetf1k9d1mq6kt.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia</string>
+	<string>com.googleusercontent.apps.39080773295-31oropdhe023tocb08aetf1k9d1mq6kt</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.astound.SaxatSavita</string>
+	<string>com.farenidham.books.saxatsavitaFlutter</string>
 	<key>PROJECT_ID</key>
 	<string>saxat-savita-crashanalytics</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:39080773295:ios:4e8e19d9e7db917051f65a</string>
+	<string>1:39080773295:ios:7561dafc5cb225af51f65a</string>
 	<key>DATABASE_URL</key>
 	<string>https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>

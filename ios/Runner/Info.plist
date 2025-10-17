@@ -23,7 +23,7 @@
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>GIDClientID</key>
-		<string>39080773295-31oropdhe023tocb08aetf1k9d1mq6kt.apps.googleusercontent.com</string>
+		<string>39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia.apps.googleusercontent.com</string>
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
@@ -31,7 +31,7 @@
 				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>com.googleusercontent.apps.39080773295-31oropdhe023tocb08aetf1k9d1mq6kt</string>
+					<string>com.googleusercontent.apps.39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia</string>
 				</array>
 			</dict>
 		</array>
