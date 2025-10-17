@@ -69,7 +69,6 @@ class Aashirvachanpage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         child: Image.asset(
                           aashirvachan.image,
-                          height: 190,
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),

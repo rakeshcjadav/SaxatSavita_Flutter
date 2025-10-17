@@ -385,7 +385,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     }
 
     return Card(
-      color: color.withOpacity(0.1),
+      color: color.withValues(alpha: 0.1),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -691,7 +691,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                               borderData: FlBorderData(
                                 show: true,
                                 border: Border.all(
-                                  color: Colors.grey.withOpacity(0.3),
+                                  color: Colors.grey.withValues(alpha: 0.3),
                                   width: 1,
                                 ),
                               ),
@@ -704,12 +704,12 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                 verticalInterval: 5,
                                 getDrawingHorizontalLine:
                                     (value) => FlLine(
-                                      color: Colors.grey.withOpacity(0.2),
+                                      color: Colors.grey.withValues(alpha: 0.2),
                                       strokeWidth: 1,
                                     ),
                                 getDrawingVerticalLine:
                                     (value) => FlLine(
-                                      color: Colors.grey.withOpacity(0.2),
+                                      color: Colors.grey.withValues(alpha: 0.2),
                                       strokeWidth: 1,
                                     ),
                               ),
@@ -904,7 +904,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                             borderData: FlBorderData(
                               show: true,
                               border: Border.all(
-                                color: Colors.grey.withOpacity(0.3),
+                                color: Colors.grey.withValues(alpha: 0.3),
                                 width: 1,
                               ),
                             ),
@@ -921,12 +921,12 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                               verticalInterval: 5,
                               getDrawingHorizontalLine:
                                   (value) => FlLine(
-                                    color: Colors.grey.withOpacity(0.2),
+                                    color: Colors.grey.withValues(alpha: 0.2),
                                     strokeWidth: 1,
                                   ),
                               getDrawingVerticalLine:
                                   (value) => FlLine(
-                                    color: Colors.grey.withOpacity(0.2),
+                                    color: Colors.grey.withValues(alpha: 0.2),
                                     strokeWidth: 1,
                                   ),
                             ),
@@ -1048,7 +1048,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                 } else if (progress > 0.5) {
                   cellColor = Colors.orange;
                 } else if (progress > 0.0) {
-                  cellColor = Colors.blue.withOpacity(0.5);
+                  cellColor = Colors.blue.withValues(alpha: 0.5);
                 } else {
                   cellColor = Colors.grey[300]!;
                 }
@@ -1085,7 +1085,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                   AppLocalizations.of(context)!.partial,
                 ),
                 _buildLegendItem(
-                  Colors.blue.withOpacity(0.5),
+                  Colors.blue.withValues(alpha: 0.5),
                   AppLocalizations.of(context)!.started,
                 ),
                 _buildLegendItem(

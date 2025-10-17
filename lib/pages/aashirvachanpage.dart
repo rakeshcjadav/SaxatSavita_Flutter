@@ -44,7 +44,7 @@ class _AashirvachanDetailPageState extends State<AashirvachanDetailPage> {
                       borderRadius: BorderRadius.circular(16),
                       child: Image.asset(
                         widget.aashirvachan.image,
-                        height: 195,
+
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),

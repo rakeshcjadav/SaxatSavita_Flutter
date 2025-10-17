@@ -642,7 +642,9 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Container(
               margin: const EdgeInsets.only(left: 16),
               height: 1,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.3),
             ),
           ),
         ],

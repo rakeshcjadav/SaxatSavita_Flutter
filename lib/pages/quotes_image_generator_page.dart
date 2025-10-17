@@ -290,10 +290,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                             BoxShadow(
                               color:
                                   isSelected
-                                      ? Theme.of(
-                                        context,
-                                      ).colorScheme.primary.withOpacity(0.3)
-                                      : Colors.black.withOpacity(0.1),
+                                      ? Theme.of(context).colorScheme.primary
+                                          .withValues(alpha: 0.3)
+                                      : Colors.black.withValues(alpha: 0.1),
                               blurRadius: isSelected ? 12 : 6,
                               offset: const Offset(0, 3),
                             ),
@@ -448,7 +447,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 child: Icon(
                   Icons.format_quote,
                   size: 48,
-                  color: _textColor.withOpacity(0.3),
+                  color: _textColor.withValues(alpha: 0.3),
                 ),
               ),
             ],
@@ -481,7 +480,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               Icon(
                 Icons.format_quote,
                 size: 48,
-                color: _textColor.withOpacity(0.3),
+                color: _textColor.withValues(alpha: 0.3),
               ),
             ],
           ),
@@ -502,7 +501,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           Icon(
             Icons.self_improvement,
             size: 32,
-            color: _textColor.withOpacity(0.8),
+            color: _textColor.withValues(alpha: 0.8),
           ),
           const SizedBox(height: 20),
 
@@ -511,10 +510,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               child: Container(
                 padding: const EdgeInsets.all(24.0),
                 decoration: BoxDecoration(
-                  color: _textColor.withOpacity(0.05),
+                  color: _textColor.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: _textColor.withOpacity(0.2),
+                    color: _textColor.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
@@ -557,8 +556,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           padding: const EdgeInsets.all(32.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _textColor.withOpacity(0.05),
-            border: Border.all(color: _textColor.withOpacity(0.3), width: 2),
+            color: _textColor.withValues(alpha: 0.05),
+            border: Border.all(
+              color: _textColor.withValues(alpha: 0.3),
+              width: 2,
+            ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -597,7 +599,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             width: 4,
             height: _imageHeight * 0.6,
             decoration: BoxDecoration(
-              color: _textColor.withOpacity(0.3),
+              color: _textColor.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -657,7 +659,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           const SizedBox(height: 32),
 
           // Simple line separator
-          Container(width: 100, height: 1, color: _textColor.withOpacity(0.4)),
+          Container(
+            width: 100,
+            height: 1,
+            color: _textColor.withValues(alpha: 0.4),
+          ),
 
           const SizedBox(height: 24),
           _buildAuthorAndSource(),
@@ -671,7 +677,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       margin: const EdgeInsets.all(40.0),
       padding: const EdgeInsets.all(32.0),
       decoration: BoxDecoration(
-        border: Border.all(color: _textColor.withOpacity(0.3), width: 2),
+        border: Border.all(color: _textColor.withValues(alpha: 0.3), width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -686,7 +692,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               Icon(
                 Icons.auto_stories,
                 size: 24,
-                color: _textColor.withOpacity(0.6),
+                color: _textColor.withValues(alpha: 0.6),
               ),
               const SizedBox(width: 16),
               _buildClassicDecoration(),
@@ -732,7 +738,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       width: 30,
       height: 2,
       decoration: BoxDecoration(
-        color: _textColor.withOpacity(0.4),
+        color: _textColor.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(1),
       ),
     );
@@ -754,10 +760,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: _textColor.withOpacity(0.3),
+                    color: _textColor.withValues(alpha: 0.3),
                     width: 2,
                   ),
-                  color: _textColor.withOpacity(0.1),
+                  color: _textColor.withValues(alpha: 0.1),
                 ),
                 child:
                     user?.photoURL != null
@@ -794,7 +800,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     Text(
                       '${AppLocalizations.of(context)!.devotee_of} ${AppLocalizations.of(context)!.sakshatSavita}',
                       style: TextStyle(
-                        color: _textColor.withOpacity(0.7),
+                        color: _textColor.withValues(alpha: 0.7),
                         fontSize: 12,
                         fontFamily: _selectedFont,
                       ),
@@ -813,7 +819,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   Icon(
                     Icons.format_quote,
                     size: 32,
-                    color: _textColor.withOpacity(0.6),
+                    color: _textColor.withValues(alpha: 0.6),
                   ),
                   const SizedBox(height: 12),
 
@@ -849,9 +855,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       margin: const EdgeInsets.all(24.0),
       padding: const EdgeInsets.all(28.0),
       decoration: BoxDecoration(
-        color: _textColor.withOpacity(0.05),
+        color: _textColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _textColor.withOpacity(0.2), width: 1),
+        border: Border.all(color: _textColor.withValues(alpha: 0.2), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -865,7 +871,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: _textColor.withOpacity(0.3),
+                    color: _textColor.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -903,7 +909,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     Text(
                       AppLocalizations.of(context)!.sharing_spiritual_wisdom,
                       style: TextStyle(
-                        color: _textColor.withOpacity(0.6),
+                        color: _textColor.withValues(alpha: 0.6),
                         fontSize: 11,
                         fontFamily: _selectedFont,
                       ),
@@ -963,8 +969,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      _textColor.withOpacity(0.2),
-                      _textColor.withOpacity(0.1),
+                      _textColor.withValues(alpha: 0.2),
+                      _textColor.withValues(alpha: 0.1),
                     ],
                   ),
                 ),
@@ -1002,7 +1008,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     Text(
                       AppLocalizations.of(context)!.shared_spiritual_thought,
                       style: TextStyle(
-                        color: _textColor.withOpacity(0.6),
+                        color: _textColor.withValues(alpha: 0.6),
                         fontSize: 11,
                         fontFamily: _selectedFont,
                       ),
@@ -1013,7 +1019,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
               Icon(
                 Icons.more_horiz,
-                color: _textColor.withOpacity(0.5),
+                color: _textColor.withValues(alpha: 0.5),
                 size: 20,
               ),
             ],
@@ -1027,10 +1033,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               width: double.infinity,
               padding: const EdgeInsets.all(24.0),
               decoration: BoxDecoration(
-                color: _textColor.withOpacity(0.03),
+                color: _textColor.withValues(alpha: 0.03),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: _textColor.withOpacity(0.1),
+                  color: _textColor.withValues(alpha: 0.1),
                   width: 1,
                 ),
               ),
@@ -1089,10 +1095,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.3),
+                  Colors.black.withValues(alpha: 0.3),
                   Colors.transparent,
                   Colors.transparent,
-                  Colors.black.withOpacity(0.5),
+                  Colors.black.withValues(alpha: 0.5),
                 ],
               ),
             ),
@@ -1183,7 +1189,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                           Text(
                             '— ${_authorController.text}',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                               fontSize: _authorFontSize,
                               fontStyle: FontStyle.italic,
                               fontFamily: _selectedFont,
@@ -1246,16 +1252,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         shape: BoxShape.circle,
         color:
             isStory
-                ? Colors.white.withOpacity(0.2)
-                : _textColor.withOpacity(0.1),
+                ? Colors.white.withValues(alpha: 0.2)
+                : _textColor.withValues(alpha: 0.1),
       ),
       child: Icon(
         Icons.person,
         size: size * 0.6,
         color:
             isStory
-                ? Colors.white.withOpacity(0.8)
-                : _textColor.withOpacity(0.6),
+                ? Colors.white.withValues(alpha: 0.8)
+                : _textColor.withValues(alpha: 0.6),
       ),
     );
   }
@@ -1263,12 +1269,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Widget _buildSocialAction(IconData icon, String label) {
     return Column(
       children: [
-        Icon(icon, color: _textColor.withOpacity(0.7), size: 20),
+        Icon(icon, color: _textColor.withValues(alpha: 0.7), size: 20),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
-            color: _textColor.withOpacity(0.6),
+            color: _textColor.withValues(alpha: 0.6),
             fontSize: 10,
             fontFamily: _selectedFont,
           ),
@@ -1301,14 +1307,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: _textColor.withOpacity(0.1),
+              color: _textColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _textColor.withOpacity(0.3), width: 1),
+              border: Border.all(
+                color: _textColor.withValues(alpha: 0.3),
+                width: 1,
+              ),
             ),
             child: Text(
               'કિરણ ${KiranListService().getKiranTitle(_currentSelectedQuote!.partNumber, _currentSelectedQuote!.kiranIndex)}',
               style: TextStyle(
-                color: _textColor.withOpacity(0.8),
+                color: _textColor.withValues(alpha: 0.8),
                 fontSize: 11,
                 fontFamily: _selectedFont,
                 fontWeight: FontWeight.w500,
@@ -1327,14 +1336,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             children: [
               Icon(
                 Icons.auto_stories,
-                color: _textColor.withOpacity(0.7),
+                color: _textColor.withValues(alpha: 0.7),
                 size: 16,
               ),
               const SizedBox(width: 8),
               Text(
                 '${AppLocalizations.of(context)!.sakshatSavita} : ${Bookservice().getPartTitle(context, _currentSelectedQuote!.partNumber)}',
                 style: TextStyle(
-                  color: _textColor.withOpacity(0.7),
+                  color: _textColor.withValues(alpha: 0.7),
                   fontSize: 12,
                   fontFamily: _selectedFont,
                 ),
@@ -1348,21 +1357,21 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildGeometricPattern() {
     return CustomPaint(
-      painter: GeometricPatternPainter(_textColor.withOpacity(0.1)),
+      painter: GeometricPatternPainter(_textColor.withValues(alpha: 0.1)),
       child: Container(),
     );
   }
 
   Widget _buildSpiritualPattern() {
     return CustomPaint(
-      painter: SpiritualPatternPainter(_textColor.withOpacity(0.08)),
+      painter: SpiritualPatternPainter(_textColor.withValues(alpha: 0.08)),
       child: Container(),
     );
   }
 
   Widget _buildMandalaPattern() {
     return CustomPaint(
-      painter: MandalaPatternPainter(_textColor.withOpacity(0.1)),
+      painter: MandalaPatternPainter(_textColor.withValues(alpha: 0.1)),
       child: Container(),
     );
   }
@@ -1374,11 +1383,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         gradient: RadialGradient(
           center: Alignment.topRight,
           radius: 1.5,
-          colors: [_textColor.withOpacity(0.05), Colors.transparent],
+          colors: [_textColor.withValues(alpha: 0.05), Colors.transparent],
         ),
       ),
       child: CustomPaint(
-        painter: ElegantBorderPainter(_textColor.withOpacity(0.2)),
+        painter: ElegantBorderPainter(_textColor.withValues(alpha: 0.2)),
         child: Container(),
       ),
     );
@@ -1386,7 +1395,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildModernPattern() {
     return CustomPaint(
-      painter: ModernPatternPainter(_textColor.withOpacity(0.06)),
+      painter: ModernPatternPainter(_textColor.withValues(alpha: 0.06)),
       child: Container(),
     );
   }
@@ -1395,14 +1404,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _textColor.withOpacity(0.3), width: 2),
+        border: Border.all(color: _textColor.withValues(alpha: 0.3), width: 2),
       ),
       margin: const EdgeInsets.all(16),
       child: Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: _textColor.withOpacity(0.2), width: 1),
+          border: Border.all(
+            color: _textColor.withValues(alpha: 0.2),
+            width: 1,
+          ),
         ),
       ),
     );
@@ -1410,7 +1422,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildProfilePattern() {
     return CustomPaint(
-      painter: ProfilePatternPainter(_textColor.withOpacity(0.05)),
+      painter: ProfilePatternPainter(_textColor.withValues(alpha: 0.05)),
       child: Container(),
     );
   }
@@ -1422,7 +1434,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         gradient: RadialGradient(
           center: Alignment.bottomLeft,
           radius: 1.2,
-          colors: [_textColor.withOpacity(0.08), Colors.transparent],
+          colors: [_textColor.withValues(alpha: 0.08), Colors.transparent],
         ),
       ),
     );
@@ -1430,7 +1442,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildSocialPattern() {
     return CustomPaint(
-      painter: SocialPatternPainter(_textColor.withOpacity(0.04)),
+      painter: SocialPatternPainter(_textColor.withValues(alpha: 0.04)),
       child: Container(),
     );
   }
@@ -1443,9 +1455,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            _textColor.withOpacity(0.1),
+            _textColor.withValues(alpha: 0.1),
             Colors.transparent,
-            _textColor.withOpacity(0.05),
+            _textColor.withValues(alpha: 0.05),
           ],
         ),
       ),
