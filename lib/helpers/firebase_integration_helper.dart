@@ -186,8 +186,8 @@ class FirebaseIntegrationHelper {
     debugPrint('Auto-sync listeners configured');
   }
 
-  void saveUserDetailsToFirebase() {
-    _firebaseSync.saveUserDetailsToFirebase();
+  Future<void> saveUserDetailsToFirebase() async {
+    await _firebaseSync.saveUserDetailsToFirebase();
   }
 }
 

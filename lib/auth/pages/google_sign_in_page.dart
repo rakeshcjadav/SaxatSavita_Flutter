@@ -93,15 +93,16 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
 
         debugPrint('_handleAuthenticationEvent : Rounte : HomePage()');
 
-        Utils.loadUserdatafromFirebase();
+        await Utils.loadUserdatafromFirebase();
 
-        Utils.saveUserDetailsToFirebase();
+        await Utils.saveUserDetailsToFirebase();
 
         // Check if migration is needed and perform it
         await Utils.checkAndPerformMigration();
 
+        debugPrint('_handleAuthenticationEvent : Migration done');
         // Navigate after state is updated
-        Navigator.pushReplacement(
+        await Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );

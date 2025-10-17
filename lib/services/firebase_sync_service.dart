@@ -567,14 +567,14 @@ class FirebaseSyncService {
     }
   }
 
-  void saveUserDetailsToFirebase() {
+  Future<void> saveUserDetailsToFirebase() async {
     if (!isAuthenticated) return;
     // Implement saving user details logic here
     debugPrint('Saving user details to Firebase...');
     // For example, you might want to save displayName and email
     final user = _auth.currentUser;
     if (user != null) {
-      userDoc!.set({
+      await userDoc!.set({
         'displayName': user.displayName,
         'email': user.email,
         'lastUpdated': FieldValue.serverTimestamp(),

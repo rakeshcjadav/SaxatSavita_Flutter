@@ -178,7 +178,7 @@ class Utils {
     }
   }
 
-  static void loadUserdatafromFirebase() async {
+  static Future<void> loadUserdatafromFirebase() async {
     // Check if user is already logged in
     if (FirebaseAuth.instance.currentUser != null) {
       // Load data from Firebase
@@ -186,12 +186,15 @@ class Utils {
     }
   }
 
-  static void saveUserDetailsToFirebase() {
-    FirebaseIntegrationHelper().saveUserDetailsToFirebase();
+  static Future<void> saveUserDetailsToFirebase() async {
+    await FirebaseIntegrationHelper().saveUserDetailsToFirebase();
   }
 
   static Future<void> checkAndPerformMigration() async {
+    debugPrint('Checking and performing data migration if needed...');
     await ReadingHistoryMigrationService().autoMigrateCurrentUser();
+    debugPrint('Finished migrating reading history.');
     await KiranUserInfoMigrationService().autoMigrateCurrentUser();
+    debugPrint('Finished migrating Kiran user info.');
   }
 }
