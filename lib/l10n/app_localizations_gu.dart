@@ -1086,15 +1086,15 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_spiritual_reading =>
-      'સાક્ષાત સવિતાના દિવ્ય જ્ઞાનમાં ડૂબકી મારો, આધ્યાત્મિક શિક્ષાઓનો વ્યાપક સંગ્રહ જે તમારા આત્માની યાત્રાને માર્ગદર્શન આપશે.';
+      'પ.પૂ. સદ્. જોગીસ્વામીએ વચનામૃતના રહસ્યો સમજાવીને જીવાત્માઓને બ્રહ્મરૂપ કર્યા. શાસ્ત્રી બાલકૃષ્ણદાસજીએ આ દિવ્ય કથા-વાર્તાઓને \"સાક્ષાત્ સવિતા\" નામે સંકલિત કર્યા.';
 
   @override
   String get welcome_aashirvachan_desc =>
-      'પ.પૂ.પ્ર.બ્ર.સ્વ. સદ્. જોગીસ્વામીના પવિત્ર શબ્દો દ્વારા દિવ્ય આશીર્વાદ અને આધ્યાત્મિક માર્ગદર્શન પ્રાપ્ત કરો.';
+      'પ.પૂ.પ્ર.બ્ર.સ્વ. સદ્. જોગીસ્વામી અને વચનામૃત મર્મજ્ઞ પ.પૂ. સદ્. શાસ્ત્રી શ્રી બાલકૃષ્ણદાસજી સ્વામીના પવિત્ર શબ્દો દ્વારા દિવ્ય આશીર્વાદ અને આધ્યાત્મિક માર્ગદર્શન પ્રાપ્ત કરો.';
 
   @override
   String get welcome_search_desc =>
-      'અમારી શક્તિશાળી શોધ સુવિધા સાથે ચોક્કસ શિક્ષાઓ, શ્લોકો અથવા વિષયો ઝડપથી શોધો જે તમામ સામગ્રીમાં કાર્ય કરે છે.';
+      'શક્તિશાળી શોધ સુવિધા સાથે ચોક્કસ કિરણો, શ્લોકો અથવા વિષયો ઝડપથી શોધો.';
 
   @override
   String get welcome_notes_desc =>
@@ -1102,7 +1102,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_reading_plans_desc =>
-      'વ્યક્તિગત વાંચન લક્ષ્યો સેટ કરો અને સંરચિત આધ્યાત્મિક શીખવાની યોજનાઓ દ્વારા તમારી પ્રગતિને ટ્રૅક કરો.';
+      'વ્યક્તિગત વાંચન લક્ષ્યો સેટ કરો અને રોજ આધ્યાત્મિક વાંચન માટે દૈનિક યોજનાઓ સાથે તમારી પ્રગતિને ટ્રૅક કરો.';
 
   @override
   String get welcome_reading_history_desc =>
@@ -1110,18 +1110,18 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_quotes_generator_desc =>
-      'પ્રેરણાદાયક આધ્યાત્મિક ગ્રંથોમાંથી સુંદર, શેર કરી શકાય તેવી ક્વોટ છબીઓ બનાવો જ્ઞાન અને હકારાત્મકતા ફેલાવવા માટે.';
+      'પ્રેરણાદાયક આધ્યાત્મિક ગ્રંથોમાંથી સુંદર, શેર કરી શકાય તેવા સુવિચારોની છબીઓ બનાવો જ્ઞાન અને હકારાત્મકતા ફેલાવવા માટે.';
 
   @override
   String get welcome_information_desc =>
-      'આધ્યાત્મિક પ્રથાઓ, પરંપરાઓ અને ઊંડી શિક્ષાઓ વિશેની વિગતવાર માહિતી મેળવો.';
+      'પ.પૂ.પ્ર.બ્ર.સ્વ. સદ્. જોગીસ્વામીનું જીવનવૃતાંત, સાક્ષાત્ સવિતા નો ઉદય અને શ્રી સહજાનંદ સંસ્કારધામ મહામંત્રપીઠ - ફરેણી વિશેની વિગતવાર માહિતી મેળવો.';
 
   @override
-  String get welcome_feature_spiritual_texts =>
-      'પ્રામાણિક આધ્યાત્મિક ગ્રંથોની ઍક્સેસ';
+  String get welcome_feature_spiritual_texts => 'વચનામૃતના રહસ્યોને સમજો';
 
   @override
-  String get welcome_feature_five_parts => 'પાંચ વ્યાપક ભાગોમાં નેવિગેટ કરો';
+  String get welcome_feature_five_parts =>
+      'ગ્રંથ પાંચ મુખ્ય ભાગોમાં વિભાજિત છે';
 
   @override
   String get welcome_feature_gujarati_english =>
@@ -1147,19 +1147,20 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_feature_sync_across_devices =>
-      'તમારા તમામ ઉપકરણોમાં સિંક કરો';
+      'તમારા તમામ ઉપકરણોમાં(મોબાઈલ, ટેબ્લેટ) સિંક(Sync) કરો';
 
   @override
   String get welcome_feature_custom_reading_goals =>
-      'કસ્ટમ વાંચન લક્ષ્યો સેટ કરો';
+      'દૈનિક વાંચન લક્ષ્યો નક્કી કરો';
 
   @override
   String get welcome_feature_progress_tracking =>
-      'તમારી વાંચન પ્રગતિને ટ્રૅક કરો';
+      'તમારી વાંચન પ્રગતિ પર નજર રાખો';
 
   @override
-  String get welcome_feature_beautiful_quotes => 'સુંદર ક્વોટ છબીઓ બનાવો';
+  String get welcome_feature_beautiful_quotes =>
+      'સુંદર સુવિચારોની છબીઓ(images) બનાવો';
 
   @override
-  String get welcome_feature_share_inspiration => 'અન્યો સાથે પ્રેરણા શેર કરો';
+  String get welcome_feature_share_inspiration => 'અન્યોને પ્રેરણા આપો';
 }

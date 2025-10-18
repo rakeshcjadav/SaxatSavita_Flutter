@@ -873,11 +873,20 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                                 final hasData = dailyData[index].minutes > 0;
 
                                 // Always show most recent date with data and Today/Yesterday
-                                final isMostRecentWithData = _isMostRecentDate(date, dailyData);
-                                if (isMostRecentWithData || _isToday(date) || _isYesterday(date)) {
-                                  final label = isMostRecentWithData && !_isToday(date) 
-                                      ? _getMostRecentDateLabel(date, hasData)
-                                      : _getIntuitiveDateLabel(date);
+                                final isMostRecentWithData = _isMostRecentDate(
+                                  date,
+                                  dailyData,
+                                );
+                                if (isMostRecentWithData ||
+                                    _isToday(date) ||
+                                    _isYesterday(date)) {
+                                  final label =
+                                      isMostRecentWithData && !_isToday(date)
+                                          ? _getMostRecentDateLabel(
+                                            date,
+                                            hasData,
+                                          )
+                                          : _getIntuitiveDateLabel(date);
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     child: Text(
@@ -1026,9 +1035,14 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -1071,8 +1085,14 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        final isMostRecent = _isMostRecentWeek(groupIndex, weeklyData);
-                        final weekLabel = isMostRecent ? 'Latest' : 'Week ${weeklyData[groupIndex].weekNumber}';
+                        final isMostRecent = _isMostRecentWeek(
+                          groupIndex,
+                          weeklyData,
+                        );
+                        final weekLabel =
+                            isMostRecent
+                                ? 'Latest'
+                                : 'Week ${weeklyData[groupIndex].weekNumber}';
                         return BarTooltipItem(
                           '$weekLabel: ${weeklyData[groupIndex].hours.toStringAsFixed(1)} ${AppLocalizations.of(context)!.chartHoursLabel}',
                           const TextStyle(
@@ -1105,10 +1125,16 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
                           if (index >= 0 && index < weeklyData.length) {
-                            final isMostRecent = _isMostRecentWeek(index, weeklyData);
+                            final isMostRecent = _isMostRecentWeek(
+                              index,
+                              weeklyData,
+                            );
                             final hasData = weeklyData[index].hours > 0;
-                            final label = _getMostRecentWeekLabel(weeklyData[index].weekNumber, isMostRecent && hasData);
-                            
+                            final label = _getMostRecentWeekLabel(
+                              weeklyData[index].weekNumber,
+                              isMostRecent && hasData,
+                            );
+
                             return Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
@@ -1116,12 +1142,19 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 9,
-                                  color: isMostRecent && hasData 
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                                  fontWeight: isMostRecent && hasData 
-                                      ? FontWeight.bold 
-                                      : FontWeight.normal,
+                                  color:
+                                      isMostRecent && hasData
+                                          ? Theme.of(
+                                            context,
+                                          ).colorScheme.primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.7),
+                                  fontWeight:
+                                      isMostRecent && hasData
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                 ),
                               ),
                             );
@@ -1140,23 +1173,33 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                   borderData: FlBorderData(
                     show: true,
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
                   barGroups:
                       weeklyData.asMap().entries.map((entry) {
-                        final isMostRecent = _isMostRecentWeek(entry.key, weeklyData);
+                        final isMostRecent = _isMostRecentWeek(
+                          entry.key,
+                          weeklyData,
+                        );
                         final hasData = entry.value.hours > 0;
                         return BarChartGroupData(
                           x: entry.key,
                           barRods: [
                             BarChartRodData(
                               toY: entry.value.hours,
-                              color: isMostRecent && hasData 
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
-                              width: isMostRecent && hasData ? 24 : 20, // Make most recent week with data slightly wider
+                              color:
+                                  isMostRecent && hasData
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context).colorScheme.primary
+                                          .withValues(alpha: 0.8),
+                              width:
+                                  isMostRecent && hasData
+                                      ? 24
+                                      : 20, // Make most recent week with data slightly wider
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(4),
                                 topRight: Radius.circular(4),
@@ -1419,20 +1462,26 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
     // Find the most recent day with actual reading data
     final today = DateTime.now();
     DateTime? mostRecentDate;
-    
+
     if (dailyMinutes.isNotEmpty) {
       // Get the most recent date from actual reading history
       mostRecentDate = dailyMinutes.keys.reduce((a, b) => a.isAfter(b) ? a : b);
     }
-    
+
     // Use most recent reading date or today if no data exists
     final startDate = mostRecentDate ?? today;
-    final normalizedStartDate = DateTime(startDate.year, startDate.month, startDate.day);
-    
+    final normalizedStartDate = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+
     final List<DailyReadingData> result = [];
 
     for (int i = 0; i < 30; i++) {
-      final date = normalizedStartDate.subtract(Duration(days: i)); // Start from most recent and go backwards
+      final date = normalizedStartDate.subtract(
+        Duration(days: i),
+      ); // Start from most recent and go backwards
       final minutes = dailyMinutes[date] ?? 0.0;
       result.add(DailyReadingData(date, minutes));
     }
@@ -1464,11 +1513,11 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
     if (weeklyHours.isNotEmpty) {
       mostRecentWeekNumber = weeklyHours.keys.reduce((a, b) => a > b ? a : b);
     }
-    
+
     // Use most recent week with data or current week if no data exists
     final currentWeekNumber = _getWeekNumber(DateTime.now());
     final startWeekNumber = mostRecentWeekNumber ?? currentWeekNumber;
-    
+
     final List<WeeklyReadingData> result = [];
 
     for (int i = 0; i < 12; i++) {
@@ -1638,7 +1687,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
     if (!hasData) {
       return _getIntuitiveDateLabel(date);
     }
-    
+
     if (_isToday(date)) {
       return 'Latest (Today)';
     } else if (_isYesterday(date)) {
@@ -1646,7 +1695,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
     } else {
       final now = DateTime.now();
       final difference = now.difference(date).inDays;
-      
+
       if (difference <= 7) {
         return 'Latest (${DateFormat('EEE').format(date)})';
       } else {
@@ -1657,21 +1706,23 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
 
   bool _isMostRecentDate(DateTime date, List<DailyReadingData> dailyData) {
     if (dailyData.isEmpty) return false;
-    return dailyData.first.date.isAtSameMomentAs(date) && dailyData.first.minutes > 0;
+    return dailyData.first.date.isAtSameMomentAs(date) &&
+        dailyData.first.minutes > 0;
   }
 
   bool _isMostRecentWeek(int weekNumber, List<WeeklyReadingData> weeklyData) {
     if (weeklyData.isEmpty) return false;
-    return weeklyData.first.weekNumber == weekNumber && weeklyData.first.hours > 0;
+    return weeklyData.first.weekNumber == weekNumber &&
+        weeklyData.first.hours > 0;
   }
 
   String _getMostRecentWeekLabel(int weekNumber, bool hasData) {
     final currentWeekNumber = _getWeekNumber(DateTime.now());
-    
+
     if (!hasData) {
       return weekNumber == currentWeekNumber ? 'This\nweek' : 'W$weekNumber';
     }
-    
+
     if (weekNumber == currentWeekNumber) {
       return 'Latest\n(This week)';
     } else if (weekNumber == currentWeekNumber - 1) {

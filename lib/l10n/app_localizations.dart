@@ -2063,7 +2063,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcome_spiritual_reading.
   ///
   /// In en, this message translates to:
-  /// **'Dive into the divine wisdom of Sakshat Savita, a comprehensive collection of spiritual teachings that will guide your soul\'s journey.'**
+  /// **''**
   String get welcome_spiritual_reading;
 
   /// No description provided for @welcome_aashirvachan_desc.

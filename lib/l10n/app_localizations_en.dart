@@ -1082,8 +1082,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome_tour => 'Welcome to Sakshat Savita';
 
   @override
-  String get welcome_spiritual_reading =>
-      'Dive into the divine wisdom of Sakshat Savita, a comprehensive collection of spiritual teachings that will guide your soul\'s journey.';
+  String get welcome_spiritual_reading => '';
 
   @override
   String get welcome_aashirvachan_desc =>
