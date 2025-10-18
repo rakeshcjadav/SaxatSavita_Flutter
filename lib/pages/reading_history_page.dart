@@ -778,11 +778,46 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.dailyChartDescription,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            Column(
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.dailyChartDescription,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.timeline,
+                        size: 12,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Latest ← • → 30 days back',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Scrollbar(
@@ -827,23 +862,69 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
-                            reservedSize: 32,
+                            reservedSize:
+                                40, // Increased to accommodate longer labels
                             interval:
-                                dailyData.length > 15
-                                    ? 3
-                                    : 1, // Show fewer labels for crowded charts
+                                1, // Always check every point, but conditionally show labels
                             getTitlesWidget: (value, meta) {
                               final index = value.toInt();
                               if (index >= 0 && index < dailyData.length) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    DateFormat(
-                                      'dd/MM',
-                                    ).format(dailyData[index].date),
-                                    style: const TextStyle(fontSize: 10),
-                                  ),
-                                );
+                                final date = dailyData[index].date;
+                                final hasData = dailyData[index].minutes > 0;
+
+                                // Always show most recent date with data and Today/Yesterday
+                                final isMostRecentWithData = _isMostRecentDate(date, dailyData);
+                                if (isMostRecentWithData || _isToday(date) || _isYesterday(date)) {
+                                  final label = isMostRecentWithData && !_isToday(date) 
+                                      ? _getMostRecentDateLabel(date, hasData)
+                                      : _getIntuitiveDateLabel(date);
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      label,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                // For other dates, show selectively based on chart density
+                                final shouldShow =
+                                    dailyData.length > 20
+                                        ? index % 7 ==
+                                            0 // Show every 7th for very crowded
+                                        : dailyData.length > 10
+                                        ? index % 3 ==
+                                            0 // Show every 3rd for moderately crowded
+                                        : true; // Show all for sparse charts
+
+                                // Always show first (Today) and last (30 days ago) positions
+                                if (shouldShow ||
+                                    index == 0 ||
+                                    index == dailyData.length - 1) {
+                                  final label = _getIntuitiveDateLabel(date);
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      label,
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.7),
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                  );
+                                }
                               }
                               return const Text('');
                             },
@@ -879,7 +960,24 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                               0.3, // Control curve smoothness to prevent overshooting
                           color: Theme.of(context).colorScheme.primary,
                           barWidth: 3,
-                          dotData: const FlDotData(show: true),
+                          dotData: FlDotData(
+                            show: true,
+                            getDotPainter: (spot, percent, barData, index) {
+                              // Make "Today" dot more prominent (now at index 0 - left side)
+                              final isToday = index == 0;
+                              return FlDotCirclePainter(
+                                radius: isToday ? 6 : 4,
+                                color:
+                                    isToday
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context).colorScheme.primary
+                                            .withValues(alpha: 0.8),
+                                strokeWidth: isToday ? 3 : 2,
+                                strokeColor:
+                                    Theme.of(context).colorScheme.surface,
+                              );
+                            },
+                          ),
                           belowBarData: BarAreaData(
                             show: true,
                             color: Theme.of(
@@ -917,11 +1015,43 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.weeklyChartDescription,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.weeklyChartDescription,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.calendar_view_week,
+                        size: 12,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Latest ← • → 12 weeks back',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -929,6 +1059,8 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.spaceAround,
+                  // Define chart boundaries
+                  minY: 0,
                   maxY:
                       weeklyData.isEmpty
                           ? 1
@@ -939,8 +1071,10 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        final isMostRecent = _isMostRecentWeek(groupIndex, weeklyData);
+                        final weekLabel = isMostRecent ? 'Latest' : 'Week ${weeklyData[groupIndex].weekNumber}';
                         return BarTooltipItem(
-                          '${weeklyData[groupIndex].hours.toStringAsFixed(1)} ${AppLocalizations.of(context)!.chartHoursLabel}',
+                          '$weekLabel: ${weeklyData[groupIndex].hours.toStringAsFixed(1)} ${AppLocalizations.of(context)!.chartHoursLabel}',
                           const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -954,6 +1088,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                       sideTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 40,
+                        interval: null, // Let fl_chart auto-calculate intervals
                         getTitlesWidget: (value, meta) {
                           return Text(
                             '${value.toInt()}${AppLocalizations.of(context)!.chartHoursLabel.substring(0, 1)}',
@@ -965,15 +1100,29 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 32,
+                        reservedSize: 40, // Increased for better labels
+                        interval: 1, // Check every bar
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
                           if (index >= 0 && index < weeklyData.length) {
+                            final isMostRecent = _isMostRecentWeek(index, weeklyData);
+                            final hasData = weeklyData[index].hours > 0;
+                            final label = _getMostRecentWeekLabel(weeklyData[index].weekNumber, isMostRecent && hasData);
+                            
                             return Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
-                                'W${weeklyData[index].weekNumber}',
-                                style: const TextStyle(fontSize: 10),
+                                label,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  color: isMostRecent && hasData 
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                                  fontWeight: isMostRecent && hasData 
+                                      ? FontWeight.bold 
+                                      : FontWeight.normal,
+                                ),
                               ),
                             );
                           }
@@ -988,16 +1137,26 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                       sideTitles: SideTitles(showTitles: false),
                     ),
                   ),
-                  borderData: FlBorderData(show: true),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                      width: 1,
+                    ),
+                  ),
                   barGroups:
                       weeklyData.asMap().entries.map((entry) {
+                        final isMostRecent = _isMostRecentWeek(entry.key, weeklyData);
+                        final hasData = entry.value.hours > 0;
                         return BarChartGroupData(
                           x: entry.key,
                           barRods: [
                             BarChartRodData(
                               toY: entry.value.hours,
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 20,
+                              color: isMostRecent && hasData 
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                              width: isMostRecent && hasData ? 24 : 20, // Make most recent week with data slightly wider
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(4),
                                 topRight: Radius.circular(4),
@@ -1257,21 +1416,35 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
           (dailyMinutes[date] ?? 0) + (history.durationSeconds / 60);
     }
 
-    // Generate last 30 days (including today)
+    // Find the most recent day with actual reading data
     final today = DateTime.now();
-    final startDate = DateTime(
-      today.year,
-      today.month,
-      today.day,
-    ).subtract(const Duration(days: 29));
-
+    DateTime? mostRecentDate;
+    
+    if (dailyMinutes.isNotEmpty) {
+      // Get the most recent date from actual reading history
+      mostRecentDate = dailyMinutes.keys.reduce((a, b) => a.isAfter(b) ? a : b);
+    }
+    
+    // Use most recent reading date or today if no data exists
+    final startDate = mostRecentDate ?? today;
+    final normalizedStartDate = DateTime(startDate.year, startDate.month, startDate.day);
+    
     final List<DailyReadingData> result = [];
 
     for (int i = 0; i < 30; i++) {
-      final date = startDate.add(Duration(days: i));
+      final date = normalizedStartDate.subtract(Duration(days: i)); // Start from most recent and go backwards
       final minutes = dailyMinutes[date] ?? 0.0;
       result.add(DailyReadingData(date, minutes));
     }
+
+    // Debug: Uncomment to verify the progression
+    // debugPrint('Chart progression check:');
+    // debugPrint(
+    //   'Index 0 (left): ${result.first.date} - ${_getIntuitiveDateLabel(result.first.date)}',
+    // );
+    // debugPrint(
+    //   'Index ${result.length - 1} (right): ${result.last.date} - ${_getIntuitiveDateLabel(result.last.date)}',
+    // );
 
     return result;
   }
@@ -1279,21 +1452,38 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
   List<WeeklyReadingData> _getWeeklyReadingData() {
     final Map<int, double> weeklyHours = {};
 
+    // Accumulate reading hours by week number
     for (final history in _filteredHistory) {
       final weekNumber = _getWeekNumber(history.createdAt);
       weeklyHours[weekNumber] =
           (weeklyHours[weekNumber] ?? 0) + (history.durationSeconds / 3600);
     }
 
-    final sortedEntries =
-        weeklyHours.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
+    // Find the most recent week with actual reading data
+    int? mostRecentWeekNumber;
+    if (weeklyHours.isNotEmpty) {
+      mostRecentWeekNumber = weeklyHours.keys.reduce((a, b) => a > b ? a : b);
+    }
+    
+    // Use most recent week with data or current week if no data exists
+    final currentWeekNumber = _getWeekNumber(DateTime.now());
+    final startWeekNumber = mostRecentWeekNumber ?? currentWeekNumber;
+    
+    final List<WeeklyReadingData> result = [];
 
-    return sortedEntries
-        .take(12)
-        .map((entry) => WeeklyReadingData(entry.key, entry.value))
-        .toList()
-        .reversed
-        .toList();
+    for (int i = 0; i < 12; i++) {
+      // Calculate week number by going backwards from start week
+      final weekNumber = startWeekNumber - i;
+      final hours = weeklyHours[weekNumber] ?? 0.0;
+      result.add(WeeklyReadingData(weekNumber, hours));
+    }
+
+    // Debug: Uncomment to verify the weekly progression
+    // debugPrint('Weekly chart progression check:');
+    // debugPrint('Index 0 (left): Week ${result.first.weekNumber} - This week');
+    // debugPrint('Index ${result.length - 1} (right): Week ${result.last.weekNumber} - 12 weeks ago');
+
+    return result;
   }
 
   List<PartDistributionData> _getPartsDistributionData() {
@@ -1403,6 +1593,91 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
         return localizations.december;
       default:
         return month.toString();
+    }
+  }
+
+  // Helper methods for intuitive date labels
+  bool _isToday(DateTime date) {
+    final now = DateTime.now();
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
+  }
+
+  bool _isYesterday(DateTime date) {
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    return date.year == yesterday.year &&
+        date.month == yesterday.month &&
+        date.day == yesterday.day;
+  }
+
+  String _getIntuitiveDateLabel(DateTime date) {
+    if (_isToday(date)) {
+      return 'Today';
+    } else if (_isYesterday(date)) {
+      return 'Yesterday';
+    } else {
+      final now = DateTime.now();
+      final difference = now.difference(date).inDays;
+
+      if (difference <= 7) {
+        // Show day of week for last 7 days
+        return DateFormat('EEE').format(date); // Mon, Tue, etc.
+      } else if (difference <= 30) {
+        // Show short date for last 30 days
+        return DateFormat('dd/MM').format(date);
+      } else {
+        // Show month/year for older dates
+        return DateFormat('MM/yy').format(date);
+      }
+    }
+  }
+
+  // Get context-aware label for the most recent data
+  String _getMostRecentDateLabel(DateTime date, bool hasData) {
+    if (!hasData) {
+      return _getIntuitiveDateLabel(date);
+    }
+    
+    if (_isToday(date)) {
+      return 'Latest (Today)';
+    } else if (_isYesterday(date)) {
+      return 'Latest (Yesterday)';
+    } else {
+      final now = DateTime.now();
+      final difference = now.difference(date).inDays;
+      
+      if (difference <= 7) {
+        return 'Latest (${DateFormat('EEE').format(date)})';
+      } else {
+        return 'Latest (${DateFormat('dd/MM').format(date)})';
+      }
+    }
+  }
+
+  bool _isMostRecentDate(DateTime date, List<DailyReadingData> dailyData) {
+    if (dailyData.isEmpty) return false;
+    return dailyData.first.date.isAtSameMomentAs(date) && dailyData.first.minutes > 0;
+  }
+
+  bool _isMostRecentWeek(int weekNumber, List<WeeklyReadingData> weeklyData) {
+    if (weeklyData.isEmpty) return false;
+    return weeklyData.first.weekNumber == weekNumber && weeklyData.first.hours > 0;
+  }
+
+  String _getMostRecentWeekLabel(int weekNumber, bool hasData) {
+    final currentWeekNumber = _getWeekNumber(DateTime.now());
+    
+    if (!hasData) {
+      return weekNumber == currentWeekNumber ? 'This\nweek' : 'W$weekNumber';
+    }
+    
+    if (weekNumber == currentWeekNumber) {
+      return 'Latest\n(This week)';
+    } else if (weekNumber == currentWeekNumber - 1) {
+      return 'Latest\n(Last week)';
+    } else {
+      return 'Latest\n(W$weekNumber)';
     }
   }
 
