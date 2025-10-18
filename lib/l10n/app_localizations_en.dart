@@ -935,6 +935,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tab_image_size => 'Image';
 
   @override
+  String get tab_user_info => 'User';
+
+  @override
+  String get sign_in_to_show_profile => 'Sign in to show your profile info';
+
+  @override
+  String get show_avatar => 'Show Avatar';
+
+  @override
+  String get show_name => 'Show Name';
+
+  @override
   String get predefined_quotes => 'Predefined Spiritual Quotes';
 
   @override

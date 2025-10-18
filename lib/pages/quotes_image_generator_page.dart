@@ -42,6 +42,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
 
+  // User info options (optional)
+  bool _showUserAvatar = false;
+  bool _showUserName = false;
+
   // Current quote reference
   InspirationalQuote? _currentSelectedQuote;
 
@@ -96,7 +100,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   @override
   void initState() {
     super.initState();
-    _customizationTabController = TabController(length: 3, vsync: this);
+    _customizationTabController = TabController(length: 4, vsync: this);
     // Set first predefined quote as default
     if (widget.quote != null) {
       _currentSelectedQuote = widget.quote;
@@ -184,6 +188,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             Tab(
               icon: Icon(Icons.photo_size_select_large),
               text: AppLocalizations.of(context)!.tab_image_size,
+            ),
+            Tab(
+              icon: Icon(Icons.person),
+              text: AppLocalizations.of(context)!.tab_user_info,
             ),
           ],
         ),
@@ -399,45 +407,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildDefaultLayout() {
-    User? user = FirebaseAuth.instance.currentUser;
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (user?.displayName != null) ...[
-                Text(
-                  user!.displayName!,
-                  style: TextStyle(
-                    color: _authorColor,
-                    fontSize: _authorFontSize,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: _selectedFont,
-                    height: 1.2,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-              user?.photoURL != null
-                  ? ClipOval(
-                    child: Image.network(
-                      user!.photoURL!,
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.cover,
-                      errorBuilder:
-                          (context, error, stackTrace) => _buildDefaultAvatar(),
-                    ),
-                  )
-                  : _buildDefaultAvatar(),
-              const SizedBox(width: 16),
-            ],
-          ),
+          _buildUserInfo(),
           // Quote mark
           Row(
             children: [
@@ -746,70 +722,79 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildProfileLayout() {
     final user = FirebaseAuth.instance.currentUser;
+
+    // For profile layout, show user info unless explicitly disabled
+    final showAvatar = _showUserAvatar;
+    final showName = _showUserName;
+
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
         children: [
           // User Profile Section
-          Row(
-            children: [
-              // User Avatar
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: _textColor.withValues(alpha: 0.3),
-                    width: 2,
+          if (showAvatar || showName)
+            Row(
+              children: [
+                // User Avatar
+                if (showAvatar)
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: _textColor.withValues(alpha: 0.3),
+                        width: 2,
+                      ),
+                      color: _textColor.withValues(alpha: 0.1),
+                    ),
+                    child:
+                        user?.photoURL != null
+                            ? ClipOval(
+                              child: Image.network(
+                                user!.photoURL!,
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) =>
+                                        _buildDefaultAvatar(),
+                              ),
+                            )
+                            : _buildDefaultAvatar(),
                   ),
-                  color: _textColor.withValues(alpha: 0.1),
-                ),
-                child:
-                    user?.photoURL != null
-                        ? ClipOval(
-                          child: Image.network(
-                            user!.photoURL!,
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) =>
-                                    _buildDefaultAvatar(),
+                if (showAvatar && showName) const SizedBox(width: 16),
+                // User Info
+                if (showName)
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user?.displayName ??
+                              AppLocalizations.of(context)!.spiritual_seeker,
+                          style: TextStyle(
+                            color: _textColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: _selectedFont,
                           ),
-                        )
-                        : _buildDefaultAvatar(),
-              ),
-              const SizedBox(width: 16),
-
-              // User Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user?.displayName ??
-                          AppLocalizations.of(context)!.spiritual_seeker,
-                      style: TextStyle(
-                        color: _textColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: _selectedFont,
-                      ),
+                        ),
+                        Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.devotee_of_sakshat_savita,
+                          style: TextStyle(
+                            color: _textColor.withValues(alpha: 0.7),
+                            fontSize: 12,
+                            fontFamily: _selectedFont,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      AppLocalizations.of(context)!.devotee_of_sakshat_savita,
-                      style: TextStyle(
-                        color: _textColor.withValues(alpha: 0.7),
-                        fontSize: 12,
-                        fontFamily: _selectedFont,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+                  ),
+              ],
+            ),
           // Quote Section
           Expanded(
             child: Center(
@@ -865,58 +850,61 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           // Header with avatar and name
           Row(
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: _textColor.withValues(alpha: 0.3),
-                    width: 1,
+              // User Avatar
+              if (_showUserAvatar)
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: _textColor.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child:
+                      user?.photoURL != null
+                          ? ClipOval(
+                            child: Image.network(
+                              user!.photoURL!,
+                              width: 48,
+                              height: 48,
+                              fit: BoxFit.cover,
+                              errorBuilder:
+                                  (context, error, stackTrace) =>
+                                      _buildDefaultAvatar(size: 48),
+                            ),
+                          )
+                          : _buildDefaultAvatar(size: 48),
+                ),
+              if (_showUserAvatar && _showUserName) const SizedBox(width: 12),
+              // User Name
+              if (_showUserName)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user?.displayName ??
+                            AppLocalizations.of(context)!.spiritual_seeker,
+                        style: TextStyle(
+                          color: _textColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: _selectedFont,
+                        ),
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.sharing_spiritual_wisdom,
+                        style: TextStyle(
+                          color: _textColor.withValues(alpha: 0.6),
+                          fontSize: 11,
+                          fontFamily: _selectedFont,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child:
-                    user?.photoURL != null
-                        ? ClipOval(
-                          child: Image.network(
-                            user!.photoURL!,
-                            width: 48,
-                            height: 48,
-                            fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) =>
-                                    _buildDefaultAvatar(size: 48),
-                          ),
-                        )
-                        : _buildDefaultAvatar(size: 48),
-              ),
-              const SizedBox(width: 12),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user?.displayName ??
-                          AppLocalizations.of(context)!.spiritual_seeker,
-                      style: TextStyle(
-                        color: _textColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: _selectedFont,
-                      ),
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!.sharing_spiritual_wisdom,
-                      style: TextStyle(
-                        color: _textColor.withValues(alpha: 0.6),
-                        fontSize: 11,
-                        fontFamily: _selectedFont,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
 
@@ -959,71 +947,77 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: [
-          // Social media header
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      _textColor.withValues(alpha: 0.2),
-                      _textColor.withValues(alpha: 0.1),
-                    ],
+          // Social media header - only show if user info is enabled
+          if (_showUserAvatar || _showUserName)
+            Row(
+              children: [
+                if (_showUserAvatar)
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          _textColor.withValues(alpha: 0.2),
+                          _textColor.withValues(alpha: 0.1),
+                        ],
+                      ),
+                    ),
+                    child:
+                        user?.photoURL != null
+                            ? ClipOval(
+                              child: Image.network(
+                                user!.photoURL!,
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) =>
+                                        _buildDefaultAvatar(size: 40),
+                              ),
+                            )
+                            : _buildDefaultAvatar(size: 40),
                   ),
-                ),
-                child:
-                    user?.photoURL != null
-                        ? ClipOval(
-                          child: Image.network(
-                            user!.photoURL!,
-                            width: 40,
-                            height: 40,
-                            fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) =>
-                                    _buildDefaultAvatar(size: 40),
+                if (_showUserAvatar && _showUserName) const SizedBox(width: 12),
+
+                if (_showUserName)
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user?.displayName ??
+                              AppLocalizations.of(context)!.spiritual_seeker,
+                          style: TextStyle(
+                            color: _textColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: _selectedFont,
                           ),
-                        )
-                        : _buildDefaultAvatar(size: 40),
-              ),
-              const SizedBox(width: 12),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user?.displayName ??
-                          AppLocalizations.of(context)!.spiritual_seeker,
-                      style: TextStyle(
-                        color: _textColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: _selectedFont,
-                      ),
+                        ),
+                        Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.shared_spiritual_thought,
+                          style: TextStyle(
+                            color: _textColor.withValues(alpha: 0.6),
+                            fontSize: 11,
+                            fontFamily: _selectedFont,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      AppLocalizations.of(context)!.shared_spiritual_thought,
-                      style: TextStyle(
-                        color: _textColor.withValues(alpha: 0.6),
-                        fontSize: 11,
-                        fontFamily: _selectedFont,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
 
-              Icon(
-                Icons.more_horiz,
-                color: _textColor.withValues(alpha: 0.5),
-                size: 20,
-              ),
-            ],
-          ),
+                if (_showUserAvatar && _showUserName)
+                  Icon(
+                    Icons.more_horiz,
+                    color: _textColor.withValues(alpha: 0.5),
+                    size: 20,
+                  ),
+              ],
+            ),
 
           const SizedBox(height: 24),
 
@@ -1111,49 +1105,52 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 // Story header
                 Row(
                   children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                    if (_showUserAvatar)
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child:
+                            user?.photoURL != null
+                                ? ClipOval(
+                                  child: Image.network(
+                                    user!.photoURL!,
+                                    width: 36,
+                                    height: 36,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            _buildDefaultAvatar(
+                                              size: 36,
+                                              isStory: true,
+                                            ),
+                                  ),
+                                )
+                                : _buildDefaultAvatar(size: 36, isStory: true),
                       ),
-                      child:
-                          user?.photoURL != null
-                              ? ClipOval(
-                                child: Image.network(
-                                  user!.photoURL!,
-                                  width: 36,
-                                  height: 36,
-                                  fit: BoxFit.cover,
-                                  errorBuilder:
-                                      (context, error, stackTrace) =>
-                                          _buildDefaultAvatar(
-                                            size: 36,
-                                            isStory: true,
-                                          ),
-                                ),
-                              )
-                              : _buildDefaultAvatar(size: 36, isStory: true),
-                    ),
-                    const SizedBox(width: 8),
+                    if (_showUserAvatar && _showUserName)
+                      const SizedBox(width: 8),
 
-                    Text(
-                      user?.displayName ??
-                          AppLocalizations.of(context)!.spiritual_seeker,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        shadows: [
-                          Shadow(
-                            offset: Offset(0, 1),
-                            blurRadius: 3,
-                            color: Colors.black54,
-                          ),
-                        ],
+                    if (_showUserName)
+                      Text(
+                        user?.displayName ??
+                            AppLocalizations.of(context)!.spiritual_seeker,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, 1),
+                              blurRadius: 3,
+                              color: Colors.black54,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                 ),
 
@@ -1279,6 +1276,48 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             fontFamily: _selectedFont,
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildUserInfo() {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null || (!_showUserAvatar && !_showUserName)) {
+      return SizedBox.shrink();
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        if (_showUserName && user.displayName != null) ...[
+          Text(
+            user.displayName!,
+            style: TextStyle(
+              color: _authorColor,
+              fontSize: _authorFontSize,
+              fontWeight: FontWeight.w600,
+              fontFamily: _selectedFont,
+              height: 1.2,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+        if (_showUserAvatar)
+          user.photoURL != null
+              ? ClipOval(
+                child: Image.network(
+                  user.photoURL!,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  errorBuilder:
+                      (context, error, stackTrace) => _buildDefaultAvatar(),
+                ),
+              )
+              : _buildDefaultAvatar(),
+        const SizedBox(width: 16),
       ],
     );
   }
@@ -1519,7 +1558,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       height: 112, // Fixed height for tab content
       child: TabBarView(
         controller: _customizationTabController,
-        children: [_buildColorTab(), _buildFontSizeTab(), _buildImageSizeTab()],
+        children: [
+          _buildColorTab(),
+          _buildFontSizeTab(),
+          _buildImageSizeTab(),
+          _buildUserInfoTab(),
+        ],
       ),
     );
   }
@@ -1625,6 +1669,60 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserInfoTab() {
+    final user = FirebaseAuth.instance.currentUser;
+    final hasUserData =
+        user != null && (user.displayName != null || user.photoURL != null);
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (!hasUserData)
+            Text(
+              AppLocalizations.of(context)!.sign_in_to_show_profile,
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            )
+          else ...[
+            // Show User Avatar option
+            Row(
+              children: [
+                Icon(Icons.account_circle, size: 16),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.show_avatar),
+                Spacer(),
+                Switch(
+                  value: _showUserAvatar,
+                  onChanged:
+                      hasUserData && user.photoURL != null
+                          ? (value) => setState(() => _showUserAvatar = value)
+                          : null,
+                ),
+              ],
+            ),
+            // Show User Name option
+            Row(
+              children: [
+                Icon(Icons.person, size: 16),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.show_name),
+                Spacer(),
+                Switch(
+                  value: _showUserName,
+                  onChanged:
+                      hasUserData && user.displayName != null
+                          ? (value) => setState(() => _showUserName = value)
+                          : null,
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

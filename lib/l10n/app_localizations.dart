@@ -1814,6 +1814,30 @@ abstract class AppLocalizations {
   /// **'Image'**
   String get tab_image_size;
 
+  /// No description provided for @tab_user_info.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get tab_user_info;
+
+  /// No description provided for @sign_in_to_show_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to show your profile info'**
+  String get sign_in_to_show_profile;
+
+  /// No description provided for @show_avatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Avatar'**
+  String get show_avatar;
+
+  /// No description provided for @show_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Name'**
+  String get show_name;
+
   /// No description provided for @predefined_quotes.
   ///
   /// In en, this message translates to:

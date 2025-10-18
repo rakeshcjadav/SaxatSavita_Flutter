@@ -939,6 +939,19 @@ class AppLocalizationsGu extends AppLocalizations {
   String get tab_image_size => 'ઇમેજ';
 
   @override
+  String get tab_user_info => 'વાચક';
+
+  @override
+  String get sign_in_to_show_profile =>
+      'તમારી પ્રોફાઇલ માહિતી બતાવવા માટે સાઇન ઇન કરો';
+
+  @override
+  String get show_avatar => 'અવતાર બતાવો';
+
+  @override
+  String get show_name => 'નામ બતાવો';
+
+  @override
   String get predefined_quotes => 'પૂર્વનિર્ધારિત આધ્યાત્મિક સુવિચારો';
 
   @override
