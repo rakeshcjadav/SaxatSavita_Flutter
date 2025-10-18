@@ -793,12 +793,29 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                   width: dailyData.length < 7 ? 300 : dailyData.length * 50.0,
                   child: LineChart(
                     LineChartData(
+                      // Define chart boundaries to prevent overshooting
+                      minX: 0,
+                      maxX: (dailyData.length - 1).toDouble(),
+                      minY: 0,
+                      maxY:
+                          dailyData.isEmpty
+                              ? 1
+                              : dailyData
+                                      .map((e) => e.minutes)
+                                      .reduce((a, b) => a > b ? a : b) *
+                                  1.1,
+
+                      // Clip data to prevent overshooting
+                      clipData: FlClipData.all(),
+
                       gridData: const FlGridData(show: true),
                       titlesData: FlTitlesData(
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 40,
+                            interval:
+                                null, // Let fl_chart auto-calculate intervals
                             getTitlesWidget: (value, meta) {
                               return Text(
                                 '${value.toInt()}${AppLocalizations.of(context)!.chartMinutesLabel.substring(0, 2)}',
@@ -811,6 +828,10 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                           sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 32,
+                            interval:
+                                dailyData.length > 15
+                                    ? 3
+                                    : 1, // Show fewer labels for crowded charts
                             getTitlesWidget: (value, meta) {
                               final index = value.toInt();
                               if (index >= 0 && index < dailyData.length) {
@@ -835,7 +856,15 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                           sideTitles: SideTitles(showTitles: false),
                         ),
                       ),
-                      borderData: FlBorderData(show: true),
+                      borderData: FlBorderData(
+                        show: true,
+                        border: Border.all(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.outline.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
                       lineBarsData: [
                         LineChartBarData(
                           spots:
@@ -846,6 +875,8 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                                 );
                               }).toList(),
                           isCurved: true,
+                          curveSmoothness:
+                              0.3, // Control curve smoothness to prevent overshooting
                           color: Theme.of(context).colorScheme.primary,
                           barWidth: 3,
                           dotData: const FlDotData(show: true),
@@ -855,6 +886,8 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                               context,
                             ).colorScheme.primary.withValues(alpha: 0.1),
                           ),
+                          // Prevent line from going outside chart bounds
+                          preventCurveOverShooting: true,
                         ),
                       ],
                     ),
@@ -1213,6 +1246,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
   List<DailyReadingData> _getDailyReadingData() {
     final Map<DateTime, double> dailyMinutes = {};
 
+    // Accumulate reading minutes by date
     for (final history in _filteredHistory) {
       final date = DateTime(
         history.createdAt.year,
@@ -1223,13 +1257,23 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
           (dailyMinutes[date] ?? 0) + (history.durationSeconds / 60);
     }
 
-    final sortedEntries =
-        dailyMinutes.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
+    // Generate last 30 days (including today)
+    final today = DateTime.now();
+    final startDate = DateTime(
+      today.year,
+      today.month,
+      today.day,
+    ).subtract(const Duration(days: 29));
 
-    return sortedEntries
-        .take(30)
-        .map((entry) => DailyReadingData(entry.key, entry.value))
-        .toList();
+    final List<DailyReadingData> result = [];
+
+    for (int i = 0; i < 30; i++) {
+      final date = startDate.add(Duration(days: i));
+      final minutes = dailyMinutes[date] ?? 0.0;
+      result.add(DailyReadingData(date, minutes));
+    }
+
+    return result;
   }
 
   List<WeeklyReadingData> _getWeeklyReadingData() {

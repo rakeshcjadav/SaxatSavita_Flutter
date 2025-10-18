@@ -1570,7 +1570,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildColorTab() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 8.0,
+        left: 16.0,
+        right: 16.0,
+      ),
       child: Wrap(
         spacing: 4.0,
         children:
@@ -1581,7 +1586,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildFontSizeTab() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 8.0,
+        left: 16.0,
+        right: 16.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1629,7 +1639,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildImageSizeTab() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 8.0,
+        left: 16.0,
+        right: 16.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1680,7 +1695,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         user != null && (user.displayName != null || user.photoURL != null);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 8.0,
+        left: 16.0,
+        right: 16.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
