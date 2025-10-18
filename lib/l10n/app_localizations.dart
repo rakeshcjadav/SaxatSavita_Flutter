@@ -110,12 +110,6 @@ abstract class AppLocalizations {
   /// **'Sakshat Savita'**
   String get sakshatSavita;
 
-  /// No description provided for @menu_one.
-  ///
-  /// In en, this message translates to:
-  /// **'Sakshat Savita'**
-  String get menu_one;
-
   /// No description provided for @aashirvachan.
   ///
   /// In en, this message translates to:
@@ -134,17 +128,11 @@ abstract class AppLocalizations {
   /// **'Information Section'**
   String get information_section;
 
-  /// No description provided for @menu_four.
-  ///
-  /// In en, this message translates to:
-  /// **'Notes'**
-  String get menu_four;
-
-  /// No description provided for @menu_five.
+  /// No description provided for @search.
   ///
   /// In en, this message translates to:
   /// **'Search'**
-  String get menu_five;
+  String get search;
 
   /// No description provided for @reading_history.
   ///
@@ -2041,6 +2029,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remind Later'**
   String get remind_later;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @get_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get get_started;
+
+  /// No description provided for @welcome_tour.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Sakshat Savita'**
+  String get welcome_tour;
+
+  /// No description provided for @welcome_spiritual_reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Dive into the divine wisdom of Sakshat Savita, a comprehensive collection of spiritual teachings that will guide your soul\'s journey.'**
+  String get welcome_spiritual_reading;
+
+  /// No description provided for @welcome_aashirvachan_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive divine blessings and spiritual guidance through the sacred words of revered saints and spiritual masters.'**
+  String get welcome_aashirvachan_desc;
+
+  /// No description provided for @welcome_search_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Quickly find specific teachings, verses, or topics with our powerful search feature that works across all content.'**
+  String get welcome_search_desc;
+
+  /// No description provided for @welcome_notes_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture your spiritual insights and create personal notes to enhance your learning and meditation practice.'**
+  String get welcome_notes_desc;
+
+  /// No description provided for @welcome_reading_plans_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Set personalized reading goals and track your progress through structured spiritual learning plans.'**
+  String get welcome_reading_plans_desc;
+
+  /// No description provided for @welcome_reading_history_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep track of your spiritual journey with detailed reading history and personal milestones.'**
+  String get welcome_reading_history_desc;
+
+  /// No description provided for @welcome_quotes_generator_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create beautiful, shareable quote images from inspiring spiritual texts to spread wisdom and positivity.'**
+  String get welcome_quotes_generator_desc;
+
+  /// No description provided for @welcome_information_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Access detailed information about spiritual practices, traditions, and the profound teachings within.'**
+  String get welcome_information_desc;
+
+  /// No description provided for @welcome_feature_spiritual_texts.
+  ///
+  /// In en, this message translates to:
+  /// **'Access authentic spiritual texts'**
+  String get welcome_feature_spiritual_texts;
+
+  /// No description provided for @welcome_feature_five_parts.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate through five comprehensive parts'**
+  String get welcome_feature_five_parts;
+
+  /// No description provided for @welcome_feature_gujarati_english.
+  ///
+  /// In en, this message translates to:
+  /// **'Available in Gujarati and English'**
+  String get welcome_feature_gujarati_english;
+
+  /// No description provided for @welcome_feature_divine_blessings.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive divine blessings daily'**
+  String get welcome_feature_divine_blessings;
+
+  /// No description provided for @welcome_feature_spiritual_guidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Get spiritual guidance for life'**
+  String get welcome_feature_spiritual_guidance;
+
+  /// No description provided for @welcome_feature_advanced_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced search capabilities'**
+  String get welcome_feature_advanced_search;
+
+  /// No description provided for @welcome_feature_instant_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Get instant, relevant results'**
+  String get welcome_feature_instant_results;
+
+  /// No description provided for @welcome_feature_personal_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Write and organize personal notes'**
+  String get welcome_feature_personal_notes;
+
+  /// No description provided for @welcome_feature_sync_across_devices.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync across all your devices'**
+  String get welcome_feature_sync_across_devices;
+
+  /// No description provided for @welcome_feature_custom_reading_goals.
+  ///
+  /// In en, this message translates to:
+  /// **'Set custom reading goals'**
+  String get welcome_feature_custom_reading_goals;
+
+  /// No description provided for @welcome_feature_progress_tracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your reading progress'**
+  String get welcome_feature_progress_tracking;
+
+  /// No description provided for @welcome_feature_beautiful_quotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Create beautiful quote images'**
+  String get welcome_feature_beautiful_quotes;
+
+  /// No description provided for @welcome_feature_share_inspiration.
+  ///
+  /// In en, this message translates to:
+  /// **'Share inspiration with others'**
+  String get welcome_feature_share_inspiration;
 }
 
 class _AppLocalizationsDelegate

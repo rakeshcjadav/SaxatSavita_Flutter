@@ -123,7 +123,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       builder:
           (context) => AlertDialog(
             title: Text(
-              AppLocalizations.of(context)!.menu_four,
+              AppLocalizations.of(context)!.notes,
             ), // Using "Notes" from existing keys
             content: Text(
               'You have unsaved changes. Do you want to discard them?',
@@ -198,7 +198,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            '${AppLocalizations.of(context)!.menu_four} - ${widget.kiranTitle}',
+            '${AppLocalizations.of(context)!.notes} - ${widget.kiranTitle}',
           ),
           actions: [
             IconButton(

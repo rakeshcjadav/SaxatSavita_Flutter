@@ -24,7 +24,7 @@ class NavigationbarState extends State<Navigationbar> {
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(
           icon: Icon(Icons.edit_document),
-          label: AppLocalizations.of(context)!.menu_four,
+          label: AppLocalizations.of(context)!.notes,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.history),

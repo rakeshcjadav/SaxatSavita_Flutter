@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
+import 'package:saxatsavita_flutter/services/first_time_user_service.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -48,6 +50,29 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _revertChanges() {
     appSettingsNotifier.value = _originalSettings;
+  }
+
+  Future<void> _resetWelcomeScreen() async {
+    try {
+      await FirstTimeUserService.resetFirstTimeUser();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Welcome screen will show on next app launch'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to reset welcome screen: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
     _fontSize = _originalSettings.fontSize;
     _lineHeight = _originalSettings.lineHeight;
     _themeColor = _originalSettings.themeColor;
@@ -542,6 +567,27 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                     ),
+
+                    // Debug Section (only show in debug mode)
+                    if (kDebugMode) ...[
+                      const SizedBox(height: 24),
+                      _buildSectionHeader(
+                        context,
+                        'Debug Options',
+                        Icons.bug_report,
+                      ),
+                      const SizedBox(height: 8),
+                      Card(
+                        child: ListTile(
+                          leading: const Icon(Icons.restart_alt),
+                          title: const Text('Reset Welcome Screen'),
+                          subtitle: const Text(
+                            'Show welcome screen on next app launch',
+                          ),
+                          onTap: _resetWelcomeScreen,
+                        ),
+                      ),
+                    ],
 
                     const SizedBox(height: 16),
                   ],

@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
+import 'package:saxatsavita_flutter/services/first_time_user_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 
 class SplashPage extends StatefulWidget {
@@ -37,12 +39,24 @@ class _MyWidgetState extends State<SplashPage> {
 
         Utils.loadUserdatafromFirebase();
 
+        // Check if this is the first time user
+        final isFirstTime = await FirstTimeUserService.isFirstTimeUser();
+
         FlutterNativeSplash.remove(); // remove splash after init
 
-        await Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
+        if (isFirstTime) {
+          // Show welcome screen for first-time users
+          await Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+          );
+        } else {
+          // Go directly to homepage for returning users
+          await Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
       } else {
         if (!mounted) return;
 

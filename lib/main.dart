@@ -8,7 +8,7 @@ import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
-
+import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
@@ -235,6 +235,7 @@ class SakshatSavitaApp extends StatelessWidget {
             '/quotes_generator':
                 (context) => const QuotesImageGeneratorPage(quote: null),
             '/migration': (context) => const ComprehensiveMigrationPage(),
+            '/welcome': (context) => const WelcomeScreen(),
           },
         );
       },

@@ -15,9 +15,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sakshatSavita => 'Sakshat Savita';
 
   @override
-  String get menu_one => 'Sakshat Savita';
-
-  @override
   String get aashirvachan => 'Aashirvachan';
 
   @override
@@ -27,10 +24,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get information_section => 'Information Section';
 
   @override
-  String get menu_four => 'Notes';
-
-  @override
-  String get menu_five => 'Search';
+  String get search => 'Search';
 
   @override
   String get reading_history => 'Reading History';
@@ -1071,4 +1065,99 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remind_later => 'Remind Later';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get get_started => 'Get Started';
+
+  @override
+  String get welcome_tour => 'Welcome to Sakshat Savita';
+
+  @override
+  String get welcome_spiritual_reading =>
+      'Dive into the divine wisdom of Sakshat Savita, a comprehensive collection of spiritual teachings that will guide your soul\'s journey.';
+
+  @override
+  String get welcome_aashirvachan_desc =>
+      'Receive divine blessings and spiritual guidance through the sacred words of revered saints and spiritual masters.';
+
+  @override
+  String get welcome_search_desc =>
+      'Quickly find specific teachings, verses, or topics with our powerful search feature that works across all content.';
+
+  @override
+  String get welcome_notes_desc =>
+      'Capture your spiritual insights and create personal notes to enhance your learning and meditation practice.';
+
+  @override
+  String get welcome_reading_plans_desc =>
+      'Set personalized reading goals and track your progress through structured spiritual learning plans.';
+
+  @override
+  String get welcome_reading_history_desc =>
+      'Keep track of your spiritual journey with detailed reading history and personal milestones.';
+
+  @override
+  String get welcome_quotes_generator_desc =>
+      'Create beautiful, shareable quote images from inspiring spiritual texts to spread wisdom and positivity.';
+
+  @override
+  String get welcome_information_desc =>
+      'Access detailed information about spiritual practices, traditions, and the profound teachings within.';
+
+  @override
+  String get welcome_feature_spiritual_texts =>
+      'Access authentic spiritual texts';
+
+  @override
+  String get welcome_feature_five_parts =>
+      'Navigate through five comprehensive parts';
+
+  @override
+  String get welcome_feature_gujarati_english =>
+      'Available in Gujarati and English';
+
+  @override
+  String get welcome_feature_divine_blessings =>
+      'Receive divine blessings daily';
+
+  @override
+  String get welcome_feature_spiritual_guidance =>
+      'Get spiritual guidance for life';
+
+  @override
+  String get welcome_feature_advanced_search => 'Advanced search capabilities';
+
+  @override
+  String get welcome_feature_instant_results => 'Get instant, relevant results';
+
+  @override
+  String get welcome_feature_personal_notes =>
+      'Write and organize personal notes';
+
+  @override
+  String get welcome_feature_sync_across_devices =>
+      'Sync across all your devices';
+
+  @override
+  String get welcome_feature_custom_reading_goals => 'Set custom reading goals';
+
+  @override
+  String get welcome_feature_progress_tracking => 'Track your reading progress';
+
+  @override
+  String get welcome_feature_beautiful_quotes =>
+      'Create beautiful quote images';
+
+  @override
+  String get welcome_feature_share_inspiration =>
+      'Share inspiration with others';
 }

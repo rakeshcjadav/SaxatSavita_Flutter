@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -58,14 +59,6 @@ class _DrawerState extends State<MyDrawer> {
               ),
             ),
           ),
-          /*ListTile(
-            leading: const Icon(Icons.home),
-            title: Text(AppLocalizations.of(context)!.menu_one),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/home');
-            },
-          ),*/
           ListTile(
             leading: const Icon(Icons.description),
             title: Text(AppLocalizations.of(context)!.aashirvachan),
@@ -84,7 +77,7 @@ class _DrawerState extends State<MyDrawer> {
           ),
           ListTile(
             leading: const Icon(Icons.note),
-            title: Text(AppLocalizations.of(context)!.menu_four),
+            title: Text(AppLocalizations.of(context)!.notes),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/notes');
@@ -92,7 +85,7 @@ class _DrawerState extends State<MyDrawer> {
           ),
           ListTile(
             leading: const Icon(Icons.search),
-            title: Text(AppLocalizations.of(context)!.menu_five),
+            title: Text(AppLocalizations.of(context)!.search),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/search');
@@ -123,6 +116,17 @@ class _DrawerState extends State<MyDrawer> {
                 context,
                 '/quotes_generator',
                 arguments: {null},
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.celebration),
+            title: Text(AppLocalizations.of(context)!.welcome_tour),
+            onTap: () {
+              // Show welcome screen for first-time users
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const WelcomeScreen()),
               );
             },
           ),

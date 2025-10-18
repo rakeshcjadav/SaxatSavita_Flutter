@@ -694,7 +694,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     return Scaffold(
       appBar: buildAppBar(
         context,
-        title: AppLocalizations.of(context)!.menu_five,
+        title: AppLocalizations.of(context)!.search,
         actionItems: [],
       ),
       body: Column(

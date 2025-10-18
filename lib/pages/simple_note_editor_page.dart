@@ -56,7 +56,7 @@ class _SimpleNoteEditorPageState extends State<SimpleNoteEditorPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.menu_four),
+            title: Text(AppLocalizations.of(context)!.notes),
             content: Text(
               'You have unsaved changes. Do you want to discard them?',
             ),
@@ -127,7 +127,7 @@ class _SimpleNoteEditorPageState extends State<SimpleNoteEditorPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            '${AppLocalizations.of(context)!.menu_four} - ${widget.kiranTitle}',
+            '${AppLocalizations.of(context)!.notes} - ${widget.kiranTitle}',
           ),
           actions: [
             IconButton(
