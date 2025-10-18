@@ -1082,7 +1082,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get get_started => 'શરૂઆત કરો';
 
   @override
-  String get welcome_tour => 'આપનું સ્વાગત છે!';
+  String get welcome_tour => 'સ્વાગત!';
 
   @override
   String get welcome_spiritual_reading =>

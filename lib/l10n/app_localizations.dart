@@ -2057,25 +2057,25 @@ abstract class AppLocalizations {
   /// No description provided for @welcome_tour.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Sakshat Savita'**
+  /// **'Welcome!'**
   String get welcome_tour;
 
   /// No description provided for @welcome_spiritual_reading.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'P.P. Sad. Jogiswami explained the secrets of Vachanamrut and transformed souls into Brahmarup. Shastri Balkrishndasji compiled these divine discourses under the name \'Sakshat Savita\'.'**
   String get welcome_spiritual_reading;
 
   /// No description provided for @welcome_aashirvachan_desc.
   ///
   /// In en, this message translates to:
-  /// **'Receive divine blessings and spiritual guidance through the sacred words of revered saints and spiritual masters.'**
+  /// **'Receive divine blessings and spiritual guidance through the sacred words of P.P.Pr.Br.Sw. Sad. Jogiswami and Vachanamrut expert P.P. Sad. Shastri Shri Balkrishndasji Swami.'**
   String get welcome_aashirvachan_desc;
 
   /// No description provided for @welcome_search_desc.
   ///
   /// In en, this message translates to:
-  /// **'Quickly find specific teachings, verses, or topics with our powerful search feature that works across all content.'**
+  /// **'Quickly search for specific Kirans, verses, or topics with powerful search functionality.'**
   String get welcome_search_desc;
 
   /// No description provided for @welcome_notes_desc.
@@ -2087,7 +2087,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcome_reading_plans_desc.
   ///
   /// In en, this message translates to:
-  /// **'Set personalized reading goals and track your progress through structured spiritual learning plans.'**
+  /// **'Set personal reading goals and track your progress with daily plans for regular spiritual reading.'**
   String get welcome_reading_plans_desc;
 
   /// No description provided for @welcome_reading_history_desc.
@@ -2099,25 +2099,25 @@ abstract class AppLocalizations {
   /// No description provided for @welcome_quotes_generator_desc.
   ///
   /// In en, this message translates to:
-  /// **'Create beautiful, shareable quote images from inspiring spiritual texts to spread wisdom and positivity.'**
+  /// **'Create beautiful, shareable quote images from inspirational spiritual texts to spread knowledge and positivity.'**
   String get welcome_quotes_generator_desc;
 
   /// No description provided for @welcome_information_desc.
   ///
   /// In en, this message translates to:
-  /// **'Access detailed information about spiritual practices, traditions, and the profound teachings within.'**
+  /// **'Get detailed information about P.P.Pr.Br.Sw. Sad. Jogiswami\'s biography, the origin of Sakshat Savita, and Shri Sahjanand Sanskardham Mahamantrapith - Fareni.'**
   String get welcome_information_desc;
 
   /// No description provided for @welcome_feature_spiritual_texts.
   ///
   /// In en, this message translates to:
-  /// **'Access authentic spiritual texts'**
+  /// **'Understand \"Vachanamrut\"'**
   String get welcome_feature_spiritual_texts;
 
   /// No description provided for @welcome_feature_five_parts.
   ///
   /// In en, this message translates to:
-  /// **'Navigate through five comprehensive parts'**
+  /// **'All five parts'**
   String get welcome_feature_five_parts;
 
   /// No description provided for @welcome_feature_gujarati_english.
@@ -2129,7 +2129,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcome_feature_divine_blessings.
   ///
   /// In en, this message translates to:
-  /// **'Receive divine blessings daily'**
+  /// **'Receive daily divine blessings'**
   String get welcome_feature_divine_blessings;
 
   /// No description provided for @welcome_feature_spiritual_guidance.
@@ -2159,13 +2159,13 @@ abstract class AppLocalizations {
   /// No description provided for @welcome_feature_sync_across_devices.
   ///
   /// In en, this message translates to:
-  /// **'Sync across all your devices'**
+  /// **'Sync across all your devices (mobile, tablet)'**
   String get welcome_feature_sync_across_devices;
 
   /// No description provided for @welcome_feature_custom_reading_goals.
   ///
   /// In en, this message translates to:
-  /// **'Set custom reading goals'**
+  /// **'Set daily reading goals'**
   String get welcome_feature_custom_reading_goals;
 
   /// No description provided for @welcome_feature_progress_tracking.
@@ -2183,7 +2183,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcome_feature_share_inspiration.
   ///
   /// In en, this message translates to:
-  /// **'Share inspiration with others'**
+  /// **'Inspire others'**
   String get welcome_feature_share_inspiration;
 }
 

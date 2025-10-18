@@ -1079,18 +1079,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get get_started => 'Get Started';
 
   @override
-  String get welcome_tour => 'Welcome to Sakshat Savita';
+  String get welcome_tour => 'Welcome!';
 
   @override
-  String get welcome_spiritual_reading => '';
+  String get welcome_spiritual_reading =>
+      'P.P. Sad. Jogiswami explained the secrets of Vachanamrut and transformed souls into Brahmarup. Shastri Balkrishndasji compiled these divine discourses under the name \'Sakshat Savita\'.';
 
   @override
   String get welcome_aashirvachan_desc =>
-      'Receive divine blessings and spiritual guidance through the sacred words of revered saints and spiritual masters.';
+      'Receive divine blessings and spiritual guidance through the sacred words of P.P.Pr.Br.Sw. Sad. Jogiswami and Vachanamrut expert P.P. Sad. Shastri Shri Balkrishndasji Swami.';
 
   @override
   String get welcome_search_desc =>
-      'Quickly find specific teachings, verses, or topics with our powerful search feature that works across all content.';
+      'Quickly search for specific Kirans, verses, or topics with powerful search functionality.';
 
   @override
   String get welcome_notes_desc =>
@@ -1098,7 +1099,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcome_reading_plans_desc =>
-      'Set personalized reading goals and track your progress through structured spiritual learning plans.';
+      'Set personal reading goals and track your progress with daily plans for regular spiritual reading.';
 
   @override
   String get welcome_reading_history_desc =>
@@ -1106,19 +1107,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcome_quotes_generator_desc =>
-      'Create beautiful, shareable quote images from inspiring spiritual texts to spread wisdom and positivity.';
+      'Create beautiful, shareable quote images from inspirational spiritual texts to spread knowledge and positivity.';
 
   @override
   String get welcome_information_desc =>
-      'Access detailed information about spiritual practices, traditions, and the profound teachings within.';
+      'Get detailed information about P.P.Pr.Br.Sw. Sad. Jogiswami\'s biography, the origin of Sakshat Savita, and Shri Sahjanand Sanskardham Mahamantrapith - Fareni.';
 
   @override
-  String get welcome_feature_spiritual_texts =>
-      'Access authentic spiritual texts';
+  String get welcome_feature_spiritual_texts => 'Understand \"Vachanamrut\"';
 
   @override
-  String get welcome_feature_five_parts =>
-      'Navigate through five comprehensive parts';
+  String get welcome_feature_five_parts => 'All five parts';
 
   @override
   String get welcome_feature_gujarati_english =>
@@ -1126,7 +1125,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcome_feature_divine_blessings =>
-      'Receive divine blessings daily';
+      'Receive daily divine blessings';
 
   @override
   String get welcome_feature_spiritual_guidance =>
@@ -1144,10 +1143,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcome_feature_sync_across_devices =>
-      'Sync across all your devices';
+      'Sync across all your devices (mobile, tablet)';
 
   @override
-  String get welcome_feature_custom_reading_goals => 'Set custom reading goals';
+  String get welcome_feature_custom_reading_goals => 'Set daily reading goals';
 
   @override
   String get welcome_feature_progress_tracking => 'Track your reading progress';
@@ -1157,6 +1156,5 @@ class AppLocalizationsEn extends AppLocalizations {
       'Create beautiful quote images';
 
   @override
-  String get welcome_feature_share_inspiration =>
-      'Share inspiration with others';
+  String get welcome_feature_share_inspiration => 'Inspire others';
 }
