@@ -621,7 +621,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get reading_plans_edit => 'સંપાદિત કરો';
 
   @override
-  String get reading_plans_delete => 'ડિલીટ કરો';
+  String get reading_plans_delete => 'ડિલિટ કરો';
 
   @override
   String get last_30_days_progress => 'છેલ્લા ૩૦ દિવસની પ્રગતિ';
@@ -927,16 +927,16 @@ class AppLocalizationsGu extends AppLocalizations {
   String get spiritual_seeker => 'આધ્યાત્મિક સાધક';
 
   @override
-  String get devotee_of => 'ભક્ત : ';
+  String get devotee_of_sakshat_savita => 'સાક્ષાત્ સવિતા ના વાચક';
 
   @override
   String get tab_colors => 'રંગો';
 
   @override
-  String get tab_font_size => 'ફોન્ટ સાઇઝ';
+  String get tab_font_size => 'ફોન્ટ';
 
   @override
-  String get tab_image_size => 'ઇમેજ સાઇઝ';
+  String get tab_image_size => 'ઇમેજ';
 
   @override
   String get predefined_quotes => 'પૂર્વનિર્ધારિત આધ્યાત્મિક સુવિચારો';
@@ -1006,4 +1006,59 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get target_achieved => 'લક્ષ્ય પૂર્ણ';
+
+  @override
+  String reminder_6am(int minutes) {
+    return '🌅 આધ્યાત્મિક જ્ઞાન સાથે દિવસની શરૂઆત કરો! તમારા $minutes મિનિટના વાંચનનો સમય.';
+  }
+
+  @override
+  String reminder_7am(int kirans) {
+    return '☀️ સુપ્રભાત! આજે સાક્ષાત સવિતામાંથી $kirans કિરણ સાથે શરૂઆત કરો.';
+  }
+
+  @override
+  String get reminder_8am =>
+      '🌤️ સવારના વાંચનનો સમય! તમારી દૈનિક આધ્યાત્મિક યાત્રા રાહ જોઈ રહી છે.';
+
+  @override
+  String get reminder_9am =>
+      '🌞 સવારે 9 વાગ્યા - તમારી દૈનિક વાંચન પ્રેક્ટિસ માટે આદર્શ સમય.';
+
+  @override
+  String reminder_12pm(int minutes) {
+    return '🌤️ બપોરનો આધ્યાત્મિક વિરામ! આંતરિક શાંતિ માટે $minutes મિનિટ કાઢો.';
+  }
+
+  @override
+  String get reminder_3pm =>
+      '🌤️ બપોરનું વાંચન સત્ર! તમારી આધ્યાત્મિક વૃદ્ધિ ચાલુ રાખો.';
+
+  @override
+  String get reminder_6pm =>
+      '🌇 સાંજનો વાંચન સમય! આધ્યાત્મિક જ્ઞાન સાથે આજના દિવસ પર વિચાર કરો.';
+
+  @override
+  String reminder_7pm(int kirans) {
+    return '🌆 સાંજના વાંચન સાથે આરામ કરો. $kirans કિરણ બાકી છે!';
+  }
+
+  @override
+  String get reminder_8pm =>
+      '🌙 સાંજનો આધ્યાત્મિક સમય! તમારો દૈનિક વાંચન લક્ષ્ય પૂરો કરો.';
+
+  @override
+  String get reminder_9pm =>
+      '✨ સૂતાં પહેલાં, દિવ્ય જ્ઞાન સાથે તમારા આત્માને પોષણ આપો.';
+
+  @override
+  String reminder_default(int minutes) {
+    return '📖 વાંચન રિમાઇન્ડર! તમારી દૈનિક $minutes મિનિટની આધ્યાત્મિક પ્રેક્ટિસ ભૂલશો નહીં.';
+  }
+
+  @override
+  String get read_now => 'વાંચો';
+
+  @override
+  String get remind_later => 'પછી યાદ અપાવો';
 }

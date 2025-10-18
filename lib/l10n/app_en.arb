@@ -472,10 +472,10 @@
     "quote_preview": "Preview",
     "swipe_templates": "Swipe to see all templates →",
     "spiritual_seeker": "Spiritual Seeker",
-    "devotee_of": "Devotee of : ",
+    "devotee_of_sakshat_savita": "Devotee of Sakshat Savita",
     "tab_colors": "Colors",
-    "tab_font_size": "Font Size",
-    "tab_image_size": "Image Size",
+    "tab_font_size": "Font",
+    "tab_image_size": "Image",
     "predefined_quotes": "Predefined Spiritual Quotes",
     "quote_font": "Quote",
     "author_font": "Author",
@@ -498,6 +498,53 @@
     "shastri_swami": "વચનામૃત મર્મજ્ઞ પ.પૂ. સદ્. શાસ્ત્રી\nશ્રી બાલકૃષ્ણદાસજી સ્વામી",
     
     "below_target": "Below Target",
-    "target_achieved": "Target Achieved"
-
+    "target_achieved": "Target Achieved",
+    "reminder_6am": "🌅 Start your day with spiritual wisdom! Time for your {minutes}-minute reading.",
+    "@reminder_6am": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "reminder_7am": "☀️ Good morning! Begin today with {kirans} Kiran(s) from Saxat Savita.",
+    "@reminder_7am": {
+        "placeholders": {
+            "kirans": {
+                "type": "int"
+            }
+        }
+    },
+    "reminder_8am": "🌤️ Morning reading time! Your daily spiritual journey awaits.",
+    "reminder_9am": "🌞 It's 9 AM - perfect time for your daily reading practice.",
+    "reminder_12pm": "🌤️ Midday spiritual break! Take {minutes} minutes for inner peace.",
+    "@reminder_12pm": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "reminder_3pm": "🌤️ Afternoon reading session! Continue your spiritual growth.",
+    "reminder_6pm": "🌇 Evening reading time! Reflect on today with spiritual wisdom.",
+    "reminder_7pm": "🌆 Wind down with your evening reading. {kirans} Kiran(s) to go!",
+    "@reminder_7pm": {
+        "placeholders": {
+            "kirans": {
+                "type": "int"
+            }
+        }
+    },
+    "reminder_8pm": "🌙 Evening spiritual time! Complete your daily reading goal.",
+    "reminder_9pm": "✨ Before bed, nourish your soul with divine wisdom.",
+    "reminder_default": "📖 Reading reminder! Don't forget your daily {minutes}-minute spiritual practice.",
+    "@reminder_default": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "read_now": "Read Now",
+    "remind_later": "Remind Later"
 }

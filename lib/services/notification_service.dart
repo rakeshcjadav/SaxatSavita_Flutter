@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -244,9 +245,12 @@ class NotificationService {
     final notificationId =
         plan.id.hashCode + (reminderTime.hour * 100 + reminderTime.minute);
 
+    AppLocalizations appLocalizations =
+        AppLocalizations.of(NavigationService.navigatorKey.currentContext!)!;
+
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       notificationId,
-      '📚 Reading Time!',
+      '📚 ${appLocalizations.reading_time}',
       _getReminderMessage(plan, reminderTime),
       scheduledDate,
       NotificationDetails(
@@ -269,15 +273,15 @@ class NotificationService {
           usesChronometer: false,
           fullScreenIntent: true,
           actions: [
-            const AndroidNotificationAction(
+            AndroidNotificationAction(
               'read_now',
-              'Read Now',
+              appLocalizations.read_now,
               icon: DrawableResourceAndroidBitmap('@drawable/ic_read'),
               showsUserInterface: true,
             ),
-            const AndroidNotificationAction(
+            AndroidNotificationAction(
               'remind_later',
-              'Remind Later',
+              appLocalizations.remind_later,
               icon: DrawableResourceAndroidBitmap('@drawable/ic_reminder'),
               showsUserInterface: true,
             ),
@@ -299,24 +303,36 @@ class NotificationService {
 
   /// Get appropriate reminder message based on time and plan
   String _getReminderMessage(ReadingPlan plan, ReminderTime reminderTime) {
+    AppLocalizations localizations =
+        AppLocalizations.of(NavigationService.navigatorKey.currentContext!)!;
     final hour = reminderTime.hour;
-    final timeMessages = {
-      6: "🌅 Start your day with spiritual wisdom! Time for your ${plan.targetSeconds ~/ 60}-minute reading.",
-      7: "☀️ Good morning! Begin today with ${plan.targetKirans} Kiran(s) from Saxat Savita.",
-      8: "🌤️ Morning reading time! Your daily spiritual journey awaits.",
-      9: "🌞 It's 9 AM - perfect time for your daily reading practice.",
-      12:
-          "🌤️ Midday spiritual break! Take ${plan.targetSeconds ~/ 60} minutes for inner peace.",
-      15: "🌤️ Afternoon reading session! Continue your spiritual growth.",
-      18: "🌇 Evening reading time! Reflect on today with spiritual wisdom.",
-      19:
-          "🌆 Wind down with your evening reading. ${plan.targetKirans} Kiran(s) to go!",
-      20: "🌙 Evening spiritual time! Complete your daily reading goal.",
-      21: "✨ Before bed, nourish your soul with divine wisdom.",
-    };
+    final minutes = plan.targetSeconds ~/ 60;
+    final kirans = plan.targetKirans;
 
-    return timeMessages[hour] ??
-        "📖 Reading reminder! Don't forget your daily ${plan.targetSeconds ~/ 60}-minute spiritual practice.";
+    switch (hour) {
+      case 6:
+        return localizations.reminder_6am(minutes);
+      case 7:
+        return localizations.reminder_7am(kirans);
+      case 8:
+        return localizations.reminder_8am;
+      case 9:
+        return localizations.reminder_9am;
+      case 12:
+        return localizations.reminder_12pm(minutes);
+      case 15:
+        return localizations.reminder_3pm;
+      case 18:
+        return localizations.reminder_6pm;
+      case 19:
+        return localizations.reminder_7pm(kirans);
+      case 20:
+        return localizations.reminder_8pm;
+      case 21:
+        return localizations.reminder_9pm;
+      default:
+        return localizations.reminder_default(minutes);
+    }
   }
 
   /// Show goal achieved notification

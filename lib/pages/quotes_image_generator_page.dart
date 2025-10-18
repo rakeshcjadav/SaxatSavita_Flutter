@@ -798,7 +798,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       ),
                     ),
                     Text(
-                      '${AppLocalizations.of(context)!.devotee_of} ${AppLocalizations.of(context)!.sakshatSavita}',
+                      AppLocalizations.of(context)!.devotee_of_sakshat_savita,
                       style: TextStyle(
                         color: _textColor.withValues(alpha: 0.7),
                         fontSize: 12,

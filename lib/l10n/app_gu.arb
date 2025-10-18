@@ -303,7 +303,7 @@
     "already_active": "પહેલેથી સક્રિય",
     "set_as_active": "સક્રિય તરીકે સેટ કરો",
     "reading_plans_edit": "સંપાદિત કરો",
-    "reading_plans_delete": "ડિલીટ કરો",
+    "reading_plans_delete": "ડિલિટ કરો",
     "last_30_days_progress": "છેલ્લા ૩૦ દિવસની પ્રગતિ",
     "progress_calendar": "પ્રગતિ કૅલેન્ડર",
     "goal_achieved": "લક્ષ્ય પૂર્ણ",
@@ -472,10 +472,10 @@
     "quote_preview": "પૂર્વાવલોકન",
     "swipe_templates": "બધા ટેમ્પલેટ્સ જોવા માટે સ્વાઇપ કરો →",
     "spiritual_seeker": "આધ્યાત્મિક સાધક",
-    "devotee_of": "ભક્ત : ",
+    "devotee_of_sakshat_savita": "સાક્ષાત્ સવિતા ના વાચક",
     "tab_colors": "રંગો",
-    "tab_font_size": "ફોન્ટ સાઇઝ",
-    "tab_image_size": "ઇમેજ સાઇઝ",
+    "tab_font_size": "ફોન્ટ",
+    "tab_image_size": "ઇમેજ",
     "predefined_quotes": "પૂર્વનિર્ધારિત આધ્યાત્મિક સુવિચારો",
     "quote_font": "સુવિચાર",
     "author_font": "લેખક",
@@ -498,5 +498,53 @@
     "shastri_swami": "વચનામૃત મર્મજ્ઞ પ.પૂ. સદ્. શાસ્ત્રી\nશ્રી બાલકૃષ્ણદાસજી સ્વામી",
     
     "below_target": "લક્ષ્યથી ઓછું",
-    "target_achieved": "લક્ષ્ય પૂર્ણ"
+    "target_achieved": "લક્ષ્ય પૂર્ણ",
+    "reminder_6am": "🌅 આધ્યાત્મિક જ્ઞાન સાથે દિવસની શરૂઆત કરો! તમારા {minutes} મિનિટના વાંચનનો સમય.",
+    "@reminder_6am": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "reminder_7am": "☀️ સુપ્રભાત! આજે સાક્ષાત સવિતામાંથી {kirans} કિરણ સાથે શરૂઆત કરો.",
+    "@reminder_7am": {
+        "placeholders": {
+            "kirans": {
+                "type": "int"
+            }
+        }
+    },
+    "reminder_8am": "🌤️ સવારના વાંચનનો સમય! તમારી દૈનિક આધ્યાત્મિક યાત્રા રાહ જોઈ રહી છે.",
+    "reminder_9am": "🌞 સવારે 9 વાગ્યા - તમારી દૈનિક વાંચન પ્રેક્ટિસ માટે આદર્શ સમય.",
+    "reminder_12pm": "🌤️ બપોરનો આધ્યાત્મિક વિરામ! આંતરિક શાંતિ માટે {minutes} મિનિટ કાઢો.",
+    "@reminder_12pm": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "reminder_3pm": "🌤️ બપોરનું વાંચન સત્ર! તમારી આધ્યાત્મિક વૃદ્ધિ ચાલુ રાખો.",
+    "reminder_6pm": "🌇 સાંજનો વાંચન સમય! આધ્યાત્મિક જ્ઞાન સાથે આજના દિવસ પર વિચાર કરો.",
+    "reminder_7pm": "🌆 સાંજના વાંચન સાથે આરામ કરો. {kirans} કિરણ બાકી છે!",
+    "@reminder_7pm": {
+        "placeholders": {
+            "kirans": {
+                "type": "int"
+            }
+        }
+    },
+    "reminder_8pm": "🌙 સાંજનો આધ્યાત્મિક સમય! તમારો દૈનિક વાંચન લક્ષ્ય પૂરો કરો.",
+    "reminder_9pm": "✨ સૂતાં પહેલાં, દિવ્ય જ્ઞાન સાથે તમારા આત્માને પોષણ આપો.",
+    "reminder_default": "📖 વાંચન રિમાઇન્ડર! તમારી દૈનિક {minutes} મિનિટની આધ્યાત્મિક પ્રેક્ટિસ ભૂલશો નહીં.",
+    "@reminder_default": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "read_now": "વાંચો",
+    "remind_later": "પછી યાદ અપાવો"
 }

@@ -923,16 +923,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spiritual_seeker => 'Spiritual Seeker';
 
   @override
-  String get devotee_of => 'Devotee of : ';
+  String get devotee_of_sakshat_savita => 'Devotee of Sakshat Savita';
 
   @override
   String get tab_colors => 'Colors';
 
   @override
-  String get tab_font_size => 'Font Size';
+  String get tab_font_size => 'Font';
 
   @override
-  String get tab_image_size => 'Image Size';
+  String get tab_image_size => 'Image';
 
   @override
   String get predefined_quotes => 'Predefined Spiritual Quotes';
@@ -1004,4 +1004,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get target_achieved => 'Target Achieved';
+
+  @override
+  String reminder_6am(int minutes) {
+    return '🌅 Start your day with spiritual wisdom! Time for your $minutes-minute reading.';
+  }
+
+  @override
+  String reminder_7am(int kirans) {
+    return '☀️ Good morning! Begin today with $kirans Kiran(s) from Saxat Savita.';
+  }
+
+  @override
+  String get reminder_8am =>
+      '🌤️ Morning reading time! Your daily spiritual journey awaits.';
+
+  @override
+  String get reminder_9am =>
+      '🌞 It\'s 9 AM - perfect time for your daily reading practice.';
+
+  @override
+  String reminder_12pm(int minutes) {
+    return '🌤️ Midday spiritual break! Take $minutes minutes for inner peace.';
+  }
+
+  @override
+  String get reminder_3pm =>
+      '🌤️ Afternoon reading session! Continue your spiritual growth.';
+
+  @override
+  String get reminder_6pm =>
+      '🌇 Evening reading time! Reflect on today with spiritual wisdom.';
+
+  @override
+  String reminder_7pm(int kirans) {
+    return '🌆 Wind down with your evening reading. $kirans Kiran(s) to go!';
+  }
+
+  @override
+  String get reminder_8pm =>
+      '🌙 Evening spiritual time! Complete your daily reading goal.';
+
+  @override
+  String get reminder_9pm =>
+      '✨ Before bed, nourish your soul with divine wisdom.';
+
+  @override
+  String reminder_default(int minutes) {
+    return '📖 Reading reminder! Don\'t forget your daily $minutes-minute spiritual practice.';
+  }
+
+  @override
+  String get read_now => 'Read Now';
+
+  @override
+  String get remind_later => 'Remind Later';
 }

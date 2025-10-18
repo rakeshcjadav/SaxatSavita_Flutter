@@ -1790,11 +1790,11 @@ abstract class AppLocalizations {
   /// **'Spiritual Seeker'**
   String get spiritual_seeker;
 
-  /// No description provided for @devotee_of.
+  /// No description provided for @devotee_of_sakshat_savita.
   ///
   /// In en, this message translates to:
-  /// **'Devotee of : '**
-  String get devotee_of;
+  /// **'Devotee of Sakshat Savita'**
+  String get devotee_of_sakshat_savita;
 
   /// No description provided for @tab_colors.
   ///
@@ -1805,13 +1805,13 @@ abstract class AppLocalizations {
   /// No description provided for @tab_font_size.
   ///
   /// In en, this message translates to:
-  /// **'Font Size'**
+  /// **'Font'**
   String get tab_font_size;
 
   /// No description provided for @tab_image_size.
   ///
   /// In en, this message translates to:
-  /// **'Image Size'**
+  /// **'Image'**
   String get tab_image_size;
 
   /// No description provided for @predefined_quotes.
@@ -1939,6 +1939,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Target Achieved'**
   String get target_achieved;
+
+  /// No description provided for @reminder_6am.
+  ///
+  /// In en, this message translates to:
+  /// **'🌅 Start your day with spiritual wisdom! Time for your {minutes}-minute reading.'**
+  String reminder_6am(int minutes);
+
+  /// No description provided for @reminder_7am.
+  ///
+  /// In en, this message translates to:
+  /// **'☀️ Good morning! Begin today with {kirans} Kiran(s) from Saxat Savita.'**
+  String reminder_7am(int kirans);
+
+  /// No description provided for @reminder_8am.
+  ///
+  /// In en, this message translates to:
+  /// **'🌤️ Morning reading time! Your daily spiritual journey awaits.'**
+  String get reminder_8am;
+
+  /// No description provided for @reminder_9am.
+  ///
+  /// In en, this message translates to:
+  /// **'🌞 It\'s 9 AM - perfect time for your daily reading practice.'**
+  String get reminder_9am;
+
+  /// No description provided for @reminder_12pm.
+  ///
+  /// In en, this message translates to:
+  /// **'🌤️ Midday spiritual break! Take {minutes} minutes for inner peace.'**
+  String reminder_12pm(int minutes);
+
+  /// No description provided for @reminder_3pm.
+  ///
+  /// In en, this message translates to:
+  /// **'🌤️ Afternoon reading session! Continue your spiritual growth.'**
+  String get reminder_3pm;
+
+  /// No description provided for @reminder_6pm.
+  ///
+  /// In en, this message translates to:
+  /// **'🌇 Evening reading time! Reflect on today with spiritual wisdom.'**
+  String get reminder_6pm;
+
+  /// No description provided for @reminder_7pm.
+  ///
+  /// In en, this message translates to:
+  /// **'🌆 Wind down with your evening reading. {kirans} Kiran(s) to go!'**
+  String reminder_7pm(int kirans);
+
+  /// No description provided for @reminder_8pm.
+  ///
+  /// In en, this message translates to:
+  /// **'🌙 Evening spiritual time! Complete your daily reading goal.'**
+  String get reminder_8pm;
+
+  /// No description provided for @reminder_9pm.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ Before bed, nourish your soul with divine wisdom.'**
+  String get reminder_9pm;
+
+  /// No description provided for @reminder_default.
+  ///
+  /// In en, this message translates to:
+  /// **'📖 Reading reminder! Don\'t forget your daily {minutes}-minute spiritual practice.'**
+  String reminder_default(int minutes);
+
+  /// No description provided for @read_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Read Now'**
+  String get read_now;
+
+  /// No description provided for @remind_later.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind Later'**
+  String get remind_later;
 }
 
 class _AppLocalizationsDelegate
