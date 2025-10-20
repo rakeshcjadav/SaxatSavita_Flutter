@@ -48,6 +48,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   // Auto-scroll variables
   bool _isAutoScrolling = false;
   Timer? _autoScrollTimer;
+  Timer? _autoScrollDelayTimer; // Timer for 5-second delay
   double _contentHeight = 0;
   bool _isInitialized = false;
 
@@ -99,6 +100,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     _isAutoScrolling = false;
     _autoScrollTimer?.cancel();
     _autoScrollTimer = null;
+    _autoScrollDelayTimer?.cancel();
+    _autoScrollDelayTimer = null;
 
     // Dispose scroll controller
     _scrollController.dispose();
@@ -300,7 +303,11 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   void _stopAutoScroll() {
     _autoScrollTimer?.cancel();
+    _autoScrollDelayTimer?.cancel(); // Also cancel delay timer
+    _autoScrollDelayTimer = null;
     _isAutoScrolling = false;
+
+    debugPrint('Auto-scroll stopped');
 
     if (mounted) {
       setState(() {
@@ -330,9 +337,41 @@ class _KiranReadPageState extends State<KiranReadPage>
   void _toggleAutoScroll() {
     if (_isAutoScrolling) {
       _stopAutoScroll();
+    } else if (_autoScrollDelayTimer != null) {
+      // Cancel the delay timer if it's running
+      _autoScrollDelayTimer?.cancel();
+      _autoScrollDelayTimer = null;
+      setState(() {}); // Update UI to remove pending state
+      debugPrint('Auto-scroll delay cancelled');
     } else {
+      // Start 5-second countdown when play button is pressed
+      _startAutoScrollWithDelay();
+    }
+  }
+
+  void _startAutoScrollWithDelay() {
+    // Cancel any existing delay timer
+    _autoScrollDelayTimer?.cancel();
+
+    // Set to pending state
+    setState(() {
+      // This will trigger UI to show pending state
+    });
+
+    final currentPosition = _scrollController.position.pixels;
+    if (currentPosition < 50) {
+      // Start 5-second delay timer
+      _autoScrollDelayTimer = Timer(const Duration(seconds: 5), () {
+        if (mounted) {
+          _startAutoScroll();
+        }
+      });
+    } else {
+      // Start auto-scroll immediately
       _startAutoScroll();
     }
+
+    debugPrint('Auto-scroll will start in 5 seconds...');
   }
 
   Future<Map<String, dynamic>> _loadKiranContent() async {
@@ -1065,11 +1104,24 @@ class _KiranReadPageState extends State<KiranReadPage>
                 _toggleAutoScroll();
               },
               icon: Icon(
-                _isAutoScrolling ? Icons.pause : Icons.play_arrow,
-                color: _isAutoScrolling ? Colors.amber : null,
+                _isAutoScrolling
+                    ? Icons.pause
+                    : (_autoScrollDelayTimer != null
+                        ? Icons.schedule
+                        : Icons.play_arrow),
+                color:
+                    _isAutoScrolling
+                        ? Colors.amber
+                        : (_autoScrollDelayTimer != null
+                            ? Colors.orange
+                            : null),
               ),
               tooltip:
-                  _isAutoScrolling ? 'Pause Auto-scroll' : 'Start Auto-scroll',
+                  _isAutoScrolling
+                      ? 'Pause Auto-scroll'
+                      : (_autoScrollDelayTimer != null
+                          ? 'Auto-scroll starting in 5 seconds...'
+                          : 'Start Auto-scroll'),
               iconSize: 28,
             ),
           ),
