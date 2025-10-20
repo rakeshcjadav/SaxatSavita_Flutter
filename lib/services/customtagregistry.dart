@@ -50,10 +50,26 @@ class CustomTagRegistry {
             lineHeight: LineHeight(1.0),
           ),
         },
+        //extensions: [...CustomTagRegistry().buildExtensions(context)],
       );
     });
 
     register("slok", (context, extensionContext, innerHtml) {
+      // grab and replace anchor tag from innerHtml if exists
+      // <a> tags should be replaced with their text content
+      // e.g. <a href="dict:word">word</a> becomes just "word"
+      // This is to avoid nested clickable links inside slok blocks
+      // Render this anchor link separately after slok rendering
+      // using the "a" tag handler below.
+      // Use RegExp to find and anchor tag
+      final anchorMatches = innerHtml.getRegExpMatches(
+        RegExp(r'<a[^>]*>(.*?)<\/a>'),
+      );
+      innerHtml = innerHtml.replaceAllMapped(
+        RegExp(r'<a[^>]*>(.*?)<\/a>'),
+        (match) => match.group(1) ?? '',
+      );
+
       Color fontColor = Theme.of(context).colorScheme.primary;
       TextStyle slokStyle = Theme.of(context).textTheme.titleSmall!;
       return Container(
@@ -62,17 +78,54 @@ class CustomTagRegistry {
           color: fontColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(0),
         ),
-        child: Row(
+        child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
-              child: ColoredBox(
-                color: fontColor,
-                child: SizedBox(width: 4, height: slokStyle.fontSize! * 2.0),
-              ),
+            Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  child: ColoredBox(
+                    color: fontColor,
+                    child: SizedBox(
+                      width: 4,
+                      height: slokStyle.fontSize! * 2.0,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(child: Text(innerHtml, style: slokStyle)),
+              ],
             ),
-            const SizedBox(width: 8),
-            Expanded(child: Text(innerHtml, style: slokStyle)),
+            if (anchorMatches.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children:
+                    anchorMatches.map((match) {
+                      MeaningItem? meaning = Bookservice().getMeaning(match);
+                      if (meaning != null && meaning.index != -1) {
+                        return Text(
+                          '📚 ${meaning.word}: ${meaning.meaning}',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Utils.oppositeColor(
+                              Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Text(
+                          '$match: No meaning found',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        );
+                      }
+                    }).toList(),
+              ),
+            ],
           ],
         ),
       );
@@ -222,5 +275,12 @@ class CustomTagRegistry {
         );
       },
     );
+  }
+}
+
+extension on String {
+  List<String> getRegExpMatches(RegExp regExp) {
+    final matches = regExp.allMatches(this);
+    return matches.map((m) => m.group(1) ?? '').toList();
   }
 }

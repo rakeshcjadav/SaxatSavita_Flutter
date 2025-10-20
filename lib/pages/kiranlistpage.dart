@@ -155,106 +155,99 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-            child: Scrollbar(
-              controller: _scrollController,
-              child: FutureBuilder<KiranList>(
-                future: _futureKiranList,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
-                    return const Center(child: Text('No kirans found.'));
-                  }
-                  final kirans = snapshot.data!.list;
-                  return ScrollablePositionedList.builder(
-                    itemScrollController: _itemScrollController,
-                    itemPositionsListener: _itemPositionsListener,
-                    itemCount: kirans.length,
-                    itemBuilder: (context, index) {
-                      final kiran = kirans[index];
-                      final kiranUserInfo = KiranUserService().getKiranUserInfo(
-                        kiran.index,
-                      );
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          side:
-                              bookUserInfo.lastOpenedKiranIndex == kiran.index
-                                  ? BorderSide(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    width: 1.0,
-                                  )
-                                  : BorderSide.none,
-                        ),
-                        key: Key(kiran.index.toString()),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _navigateToKiranReadPage(
-                                    kiran,
-                                    kiranUserInfo,
+            child: FutureBuilder<KiranList>(
+              future: _futureKiranList,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
+                  return const Center(child: Text('No kirans found.'));
+                }
+                final kirans = snapshot.data!.list;
+                return ScrollablePositionedList.builder(
+                  itemScrollController: _itemScrollController,
+                  itemPositionsListener: _itemPositionsListener,
+                  itemCount: kirans.length,
+                  itemBuilder: (context, index) {
+                    final kiran = kirans[index];
+                    final kiranUserInfo = KiranUserService().getKiranUserInfo(
+                      kiran.index,
+                    );
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side:
+                            bookUserInfo.lastOpenedKiranIndex == kiran.index
+                                ? BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  width: 1.0,
+                                )
+                                : BorderSide.none,
+                      ),
+                      key: Key(kiran.index.toString()),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                _navigateToKiranReadPage(kiran, kiranUserInfo);
+                                setState(() {
+                                  bookUserInfo.updateLastOpenedKiran(
+                                    kiran.index,
                                   );
-                                  setState(() {
-                                    bookUserInfo.updateLastOpenedKiran(
-                                      kiran.index,
-                                    );
-                                    _expandedIndex = index;
-                                  });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: _buildKiranListItemWidget(
-                                          kiran,
-                                          kiranUserInfo,
-                                          _expandedIndex == index,
-                                        ),
+                                  _expandedIndex = index;
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: _buildKiranListItemWidget(
+                                        kiran,
+                                        kiranUserInfo,
+                                        _expandedIndex == index,
                                       ),
-                                      if (bookUserInfo.lastOpenedKiranIndex !=
-                                          kiran.index) ...[
-                                        IconButton(
-                                          icon: Icon(
-                                            _expandedIndex == index
-                                                ? Icons.expand_less
-                                                : Icons.expand_more,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _expandedIndex =
-                                                  _expandedIndex == index
-                                                      ? null
-                                                      : index;
-                                            });
-                                          },
+                                    ),
+                                    if (bookUserInfo.lastOpenedKiranIndex !=
+                                        kiran.index) ...[
+                                      IconButton(
+                                        icon: Icon(
+                                          _expandedIndex == index
+                                              ? Icons.expand_less
+                                              : Icons.expand_more,
                                         ),
-                                      ],
+                                        onPressed: () {
+                                          setState(() {
+                                            _expandedIndex =
+                                                _expandedIndex == index
+                                                    ? null
+                                                    : index;
+                                          });
+                                        },
+                                      ),
                                     ],
-                                  ),
+                                  ],
                                 ),
                               ),
-                              if (_expandedIndex == index ||
-                                  bookUserInfo.lastOpenedKiranIndex ==
-                                      kiran.index)
-                                ..._buildKiranListItemExpandedWidget(
-                                  kiran,
-                                  kiranUserInfo,
-                                ),
-                            ],
-                          ),
+                            ),
+                            if (_expandedIndex == index ||
+                                bookUserInfo.lastOpenedKiranIndex ==
+                                    kiran.index)
+                              ..._buildKiranListItemExpandedWidget(
+                                kiran,
+                                kiranUserInfo,
+                              ),
+                          ],
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ),
