@@ -104,7 +104,9 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
 
       debugPrint('_handleAuthenticationEvent : $googleAuth');
 
-      final userCredential = await firebaseAuth.signInWithCredential(credential);
+      final userCredential = await firebaseAuth.signInWithCredential(
+        credential,
+      );
 
       debugPrint('_handleAuthenticationEvent : $firebaseAuth');
 
@@ -162,6 +164,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
     debugPrint('_handleAuthenticationEvent : Rounted : HomePage()');
   }
 
+  /*
   // Debug method to test Apple Sign-In capability
   Future<void> _testAppleSignInCapability() async {
     debugPrint('=== Testing Apple Sign-In Capability ===');
@@ -209,58 +212,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
       }
     }
   }
-
-  Future<void> _handleSignOut() async {
-    try {
-      // Show loading indicator
-      if (mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder:
-              (context) => const Center(child: CircularProgressIndicator()),
-        );
-      }
-
-      // Sign out from Google
-      await googleSignIn.signOut();
-      // Sign out from Firebase
-      await firebaseAuth.signOut();
-
-      if (mounted) {
-        // Pop loading indicator
-        Navigator.pop(context);
-        setState(() {
-          _currentUser = null;
-          _errorMessage = '';
-        });
-
-        // Navigate back to sign-in page
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const GoogleSignInPage()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        // Pop loading indicator if showing
-        Navigator.pop(context);
-        setState(() {
-          _errorMessage = 'Error signing out: ${e.toString()}';
-        });
-
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error signing out: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-      debugPrint('Sign out error: $e');
-    }
-  }
-
+  */
   void _handleAuthenticationError(Object e) async {
     debugPrint('_handleAuthenticationError : start');
     setState(() {
