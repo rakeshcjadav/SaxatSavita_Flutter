@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
+import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_info_migration_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_history_migration_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils {
   static Color oppositeColor(Color color) {
@@ -190,11 +194,120 @@ class Utils {
     await FirebaseIntegrationHelper().saveUserDetailsToFirebase();
   }
 
+  static Future<void> saveAppleUserDetailsToFirebase(
+    String displayName,
+    String email,
+  ) async {
+    await FirebaseIntegrationHelper().saveAppleUserDetailsToFirebase(
+      displayName,
+      email,
+    );
+  }
+
+  static Future<Map<String, String>> getUserInfoSummary() async {
+    return await AppDataService().getUserInfoSummary();
+  }
+
   static Future<void> checkAndPerformMigration() async {
     debugPrint('Checking and performing data migration if needed...');
     await ReadingHistoryMigrationService().autoMigrateCurrentUser();
     debugPrint('Finished migrating reading history.');
     await KiranUserInfoMigrationService().autoMigrateCurrentUser();
     debugPrint('Finished migrating Kiran user info.');
+  }
+
+  // Apple Sign-In user data cache management
+  // This is crucial because Apple only provides user info on FIRST sign-in
+
+  static const String _appleUserCacheKey = 'apple_user_cache';
+
+  // Cache Apple user data securely for subsequent sign-ins
+  static Future<void> cacheAppleUserData({
+    required String userIdentifier,
+    required String? email,
+    required String? givenName,
+    required String? familyName,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final userData = {
+      'userIdentifier': userIdentifier,
+      'email': email,
+      'givenName': givenName,
+      'familyName': familyName,
+      'cachedAt': DateTime.now().toIso8601String(),
+    };
+
+    // Store as JSON string
+    final existingCache = prefs.getString(_appleUserCacheKey);
+    Map<String, dynamic> cache = {};
+
+    if (existingCache != null) {
+      try {
+        cache = json.decode(existingCache) as Map<String, dynamic>;
+      } catch (e) {
+        debugPrint('Error parsing existing Apple user cache: $e');
+      }
+    }
+
+    cache[userIdentifier] = userData;
+    await prefs.setString(_appleUserCacheKey, json.encode(cache));
+
+    debugPrint('Cached Apple user data for: $userIdentifier');
+    debugPrint('Cached data: $userData');
+  }
+
+  // Retrieve cached Apple user data for subsequent sign-ins
+  static Future<Map<String, dynamic>?> getCachedAppleUserData(
+    String userIdentifier,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final cacheString = prefs.getString(_appleUserCacheKey);
+
+    if (cacheString == null) return null;
+
+    try {
+      final cache = json.decode(cacheString) as Map<String, dynamic>;
+      final userData = cache[userIdentifier] as Map<String, dynamic>?;
+
+      if (userData != null) {
+        debugPrint('Retrieved cached Apple user data for: $userIdentifier');
+        debugPrint('Cached data: $userData');
+        return userData;
+      }
+    } catch (e) {
+      debugPrint('Error retrieving cached Apple user data: $e');
+    }
+
+    return null;
+  }
+
+  // Clear cached Apple user data (useful for testing or user logout)
+  static Future<void> clearAppleUserCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_appleUserCacheKey);
+    debugPrint('Cleared Apple user cache');
+  }
+
+  // Debug method to show cached Apple user data
+  static Future<void> debugAppleUserCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cacheString = prefs.getString(_appleUserCacheKey);
+
+    if (cacheString != null) {
+      try {
+        final cache = json.decode(cacheString) as Map<String, dynamic>;
+        debugPrint('=== Apple User Cache Contents ===');
+        cache.forEach((key, value) {
+          debugPrint('User ID: $key');
+          debugPrint('Data: $value');
+          debugPrint('---');
+        });
+      } catch (e) {
+        debugPrint('Error reading Apple user cache: $e');
+      }
+    } else {
+      debugPrint('Apple user cache is empty');
+    }
   }
 }

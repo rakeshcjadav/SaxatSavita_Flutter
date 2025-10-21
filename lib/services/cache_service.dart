@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
@@ -66,6 +67,9 @@ class CacheService {
       // Clear book user info if applicable
       Bookservice().bookUserInfoList = [];
       debugPrint('✅ Book user info cache cleared');
+
+      AppDataService().clearUserInfoSummary();
+      debugPrint('✅ App data user info summary cache cleared');
 
       // Note: AppSettings are stored in Firebase and cleared by _clearFirebaseCache()
       // No additional local settings clearing needed

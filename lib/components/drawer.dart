@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
@@ -8,6 +10,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});
@@ -17,9 +20,72 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _DrawerState extends State<MyDrawer> {
+  Map<String, String> _userInfoSummary = {};
   @override
   void initState() {
     super.initState();
+
+    getUserInfoSummary();
+  }
+
+  Future<void> getUserInfoSummary() async {
+    _userInfoSummary = await Utils.getUserInfoSummary();
+    setState(() {});
+  }
+
+  Widget getAvatar() {
+    if (_userInfoSummary['platform'] == 'apple') {
+      return CircleAvatar(
+        backgroundImage: AssetImage('assets/res/z_jogi_swami_avatar.png'),
+      );
+    } else if (FirebaseAuth.instance.currentUser?.photoURL == null ||
+        FirebaseAuth.instance.currentUser!.photoURL!.isEmpty) {
+      return CircleAvatar(
+        backgroundImage: AssetImage('assets/res/z_jogi_swami_avatar.png'),
+      );
+    } else {
+      return CircleAvatar(
+        backgroundImage: NetworkImage(
+          FirebaseAuth.instance.currentUser?.photoURL ?? '',
+        ),
+      );
+    }
+  }
+
+  Widget getAccountName() {
+    if (Platform.isIOS) {
+      return Text(
+        _userInfoSummary['displayName'] ?? '',
+        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+      );
+    }
+    return Text(
+      FirebaseAuth.instance.currentUser?.displayName ??
+          AppLocalizations.of(context)!.sakshatSavita,
+      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+        color: Theme.of(context).colorScheme.onPrimary,
+      ),
+    );
+  }
+
+  Widget getAccountEmail() {
+    if (Platform.isIOS) {
+      return Text(
+        _userInfoSummary['email'] ?? '',
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+      );
+    }
+    return Text(
+      FirebaseAuth.instance.currentUser?.email ??
+          AppLocalizations.of(context)!.sakshatSavita,
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        color: Theme.of(context).colorScheme.onPrimary,
+      ),
+    );
   }
 
   @override
@@ -37,27 +103,10 @@ class _DrawerState extends State<MyDrawer> {
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  FirebaseAuth.instance.currentUser?.photoURL ??
-                      'assets/res/sakshat_savita_logo.png',
-                ),
-              ),
+              child: getAvatar(),
             ),
-            accountName: Text(
-              FirebaseAuth.instance.currentUser?.displayName ??
-                  AppLocalizations.of(context)!.sakshatSavita,
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-            ),
-            accountEmail: Text(
-              FirebaseAuth.instance.currentUser?.email ??
-                  AppLocalizations.of(context)!.sakshatSavita,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-            ),
+            accountName: getAccountName(),
+            accountEmail: getAccountEmail(),
           ),
           ListTile(
             leading: const Icon(Icons.description),

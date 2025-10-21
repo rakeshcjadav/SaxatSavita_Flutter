@@ -62,33 +62,37 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCVZ0aibkjqCH12L0ZOpIe_Z0Tgz7JPWMA',
-    appId: '1:39080773295:ios:7561dafc5cb225af51f65a',
+    appId: '1:39080773295:ios:4e8e19d9e7db917051f65a',
     messagingSenderId: '39080773295',
     projectId: 'saxat-savita-crashanalytics',
     databaseURL: 'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
     androidClientId: '39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com',
-    iosClientId: '39080773295-31oropdhe023tocb08aetf1k9d1mq6kt.apps.googleusercontent.com',
-    iosBundleId: 'com.farenidham.books.saxatsavitaFlutter',
+    iosClientId: '39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia.apps.googleusercontent.com',
+    iosBundleId: 'com.astound.SaxatSavita',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAv46ORVkMOUxZGJEK9-8hdJWjlAkKDsgc',
-    appId: '1:1047945808084:ios:98214531b0dccdd1669341',
-    messagingSenderId: '1047945808084',
-    projectId: 'saxat-savita-flutter',
-    storageBucket: 'saxat-savita-flutter.firebasestorage.app',
-    iosClientId: '1047945808084-1apup4nlgd0qttdn2lp5kvhfrnsao00u.apps.googleusercontent.com',
-    iosBundleId: 'com.farenidham.books.saxatsavitaFlutter',
+    apiKey: 'AIzaSyCVZ0aibkjqCH12L0ZOpIe_Z0Tgz7JPWMA',
+    appId: '1:39080773295:ios:4e8e19d9e7db917051f65a',
+    messagingSenderId: '39080773295',
+    projectId: 'saxat-savita-crashanalytics',
+    databaseURL: 'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
+    androidClientId: '39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com',
+    iosClientId: '39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia.apps.googleusercontent.com',
+    iosBundleId: 'com.astound.SaxatSavita',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAD0RgMMI9OE1Dd_5SqB5WS7TVN8ovkb6Y',
-    appId: '1:1047945808084:web:575b2b2797908bb2669341',
-    messagingSenderId: '1047945808084',
-    projectId: 'saxat-savita-flutter',
-    authDomain: 'saxat-savita-flutter.firebaseapp.com',
-    storageBucket: 'saxat-savita-flutter.firebasestorage.app',
-    measurementId: 'G-Y9M2LFXT3W',
+    apiKey: 'AIzaSyBoaqkdcr4QjPCC0RCeXBkHs1_o4S7TDAU',
+    appId: '1:39080773295:web:22b0a57cfad3de1651f65a',
+    messagingSenderId: '39080773295',
+    projectId: 'saxat-savita-crashanalytics',
+    authDomain: 'saxat-savita-crashanalytics.firebaseapp.com',
+    databaseURL: 'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
+    measurementId: 'G-J5EEYEL2WS',
   );
+
 }

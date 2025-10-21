@@ -586,4 +586,61 @@ class FirebaseSyncService {
       ); // Handle the case where the user is not authenticated
     }
   }
+
+  Future<void> saveAppleUserDetailsToFirebase(
+    String displayName,
+    String email,
+  ) async {
+    if (!isAuthenticated) return;
+    // Implement saving user details logic here
+    debugPrint('Saving Apple user details to Firebase...');
+    final user = _auth.currentUser;
+    if (user != null) {
+      await userDoc!.set({
+        'displayName': displayName,
+        'email': email,
+        'provider': 'apple',
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      debugPrint('Apple user details saved to Firebase successfully');
+    } else {
+      debugPrint('User not authenticated, cannot save Apple user details');
+    }
+  }
+
+  Future<Map<String, String>> getUserInfoSummary() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      return {};
+    }
+
+    try {
+      debugPrint('Fetching user info summary...');
+      final doc = await userDoc!.get();
+
+      if (doc.exists && doc.data() != null) {
+        final data = doc.data()! as Map<String, dynamic>;
+        return {
+          'displayName': data['displayName'] ?? user.displayName ?? 'N/A',
+          'email': data['email'] ?? user.email ?? 'N/A',
+          'provider': data['provider'] ?? 'unknown',
+        };
+      }
+
+      // Fallback to Firebase user data if Firestore document doesn't exist
+      return {
+        'displayName': user.displayName ?? 'N/A',
+        'email': user.email ?? 'N/A',
+        'provider': 'unknown',
+      };
+    } catch (e) {
+      debugPrint('Error fetching user info summary: $e');
+      // Return Firebase user data as fallback
+      return {
+        'displayName': user.displayName ?? 'N/A',
+        'email': user.email ?? 'N/A',
+        'provider': 'unknown',
+      };
+    }
+  }
 }

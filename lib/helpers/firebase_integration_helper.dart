@@ -189,6 +189,17 @@ class FirebaseIntegrationHelper {
   Future<void> saveUserDetailsToFirebase() async {
     await _firebaseSync.saveUserDetailsToFirebase();
   }
+
+  Future<void> saveAppleUserDetailsToFirebase(
+    String displayName,
+    String email,
+  ) async {
+    await _firebaseSync.saveAppleUserDetailsToFirebase(displayName, email);
+  }
+
+  Future<Map<String, String>> getUserInfoSummary() async {
+    return await _firebaseSync.getUserInfoSummary();
+  }
 }
 
 /// Extension methods to add Firebase sync to existing services
