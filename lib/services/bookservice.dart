@@ -18,7 +18,6 @@ class Bookservice {
   List<BookUserInfo>? get bookUserInfoList => _bookUserInfoList;
 
   set bookUserInfoList(List<BookUserInfo>? list) {
-    if (list == null) return;
     _bookUserInfoList = list;
   }
 
@@ -198,6 +197,11 @@ class Bookservice {
   }
 
   void insertBookUserInfoList(List<BookUserInfo> list) {
+    if (list.length < 5) {
+      if (_bookUserInfoList != null && _bookUserInfoList!.length != 5) {
+        insertDefaultBookUserInfoList();
+      }
+    }
     // list is subset of existing list, so update existing entries
     for (var newInfo in list) {
       var index = _bookUserInfoList!.indexWhere(

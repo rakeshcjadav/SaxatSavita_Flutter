@@ -11,6 +11,7 @@ import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
+import 'package:saxatsavita_flutter/services/analytics_service.dart';
 
 // Simple search history storage service
 class SearchHistoryService {
@@ -486,6 +487,13 @@ class _KiransearchpageState extends State<Kiransearchpage> {
           }
         }
       });
+
+      // Track search analytics
+      await AnalyticsService().logSearch(
+        query: query,
+        resultsCount: results.length,
+        category: 'kiran_search',
+      );
     } catch (e) {
       setState(() {
         _isLoading = false;

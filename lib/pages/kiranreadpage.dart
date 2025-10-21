@@ -15,6 +15,7 @@ import 'package:saxatsavita_flutter/pages/simple_note_editor_page.dart';
 import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
+import 'package:saxatsavita_flutter/services/analytics_service.dart';
 
 class KiranReadPage extends StatefulWidget {
   const KiranReadPage({
@@ -79,6 +80,14 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Add observer to detect app lifecycle changes
     WidgetsBinding.instance.addObserver(this);
+
+    // Track analytics for reading session start
+    AnalyticsService().logScreenView(screenName: 'reading_page');
+    AnalyticsService().logStartReading(
+      bookName: 'Sakshat Savita',
+      chapterName: widget.kiranInfo.title,
+      partName: 'Part ${widget.partNumber}',
+    );
 
     _startTimer();
   }
@@ -257,6 +266,13 @@ class _KiranReadPageState extends State<KiranReadPage>
       setState(() {
         _isAutoScrolling = true;
       });
+
+      // Track auto-scroll start analytics
+      AnalyticsService().logAutoScroll(
+        enabled: true,
+        bookName: 'Sakshat Savita',
+        chapterName: widget.kiranInfo.title,
+      );
     }
 
     // Calculate scroll speed (pixels per second)
@@ -308,6 +324,13 @@ class _KiranReadPageState extends State<KiranReadPage>
     _isAutoScrolling = false;
 
     debugPrint('Auto-scroll stopped');
+
+    // Track auto-scroll stop analytics
+    AnalyticsService().logAutoScroll(
+      enabled: false,
+      bookName: 'Sakshat Savita',
+      chapterName: widget.kiranInfo.title,
+    );
 
     if (mounted) {
       setState(() {
@@ -660,6 +683,15 @@ class _KiranReadPageState extends State<KiranReadPage>
 
                                             // Save reading history before finishing
                                             await _saveReadingHistory();
+
+                                            // Track reading completion analytics
+                                            final readingTimeSeconds = _stopwatch.elapsed.inSeconds;
+                                            await AnalyticsService().logCompleteReading(
+                                              bookName: 'Sakshat Savita',
+                                              chapterName: widget.kiranInfo.title,
+                                              partName: 'Part ${widget.partNumber}',
+                                              readingTimeSeconds: readingTimeSeconds,
+                                            );
 
                                             if (mounted) {
                                               setState(() {

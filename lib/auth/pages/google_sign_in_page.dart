@@ -7,6 +7,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
+import 'package:saxatsavita_flutter/services/analytics_service.dart';
 
 class GoogleSignInPage extends StatefulWidget {
   const GoogleSignInPage({super.key});
@@ -103,9 +104,18 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
 
       debugPrint('_handleAuthenticationEvent : $googleAuth');
 
-      await firebaseAuth.signInWithCredential(credential);
+      final userCredential = await firebaseAuth.signInWithCredential(credential);
 
       debugPrint('_handleAuthenticationEvent : $firebaseAuth');
+
+      // Track successful Google Sign-In
+      if (userCredential.user != null) {
+        await AnalyticsService().logSignIn('google');
+        await AnalyticsService().setUserProperties(
+          userId: userCredential.user!.uid,
+          provider: 'google',
+        );
+      }
 
       if (mounted) {
         setState(() {
@@ -365,6 +375,13 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
         final userInfoSummary = Utils.getUserInfoSummary();
         debugPrint('User info summary: $userInfoSummary');
 
+        // Track successful Apple Sign-In
+        await AnalyticsService().logSignIn('apple');
+        await AnalyticsService().setUserProperties(
+          userId: user.uid,
+          provider: 'apple',
+        );
+
         await onSuccessfulSignIn();
       }
     } catch (e) {
@@ -399,6 +416,13 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
         _errorMessage = errorMessage;
         debugPrint('_signInWithApple error: $_errorMessage');
       });
+
+      // Track Apple Sign-In error
+      await AnalyticsService().logError(
+        errorType: 'apple_sign_in_error',
+        errorMessage: errorMessage,
+        screen: 'google_sign_in_page',
+      );
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -15,6 +16,7 @@ import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
+import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -53,16 +55,24 @@ void main() async {
     }
   }
 
+  // Initialize Firebase Analytics
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  
+  // Initialize Analytics Service
+  AnalyticsService().initialize(analytics);
+  print('Firebase Analytics initialized successfully');
+  
   // Load JSON data
   await AppDataService().loadData('assets/jsons/data.json');
   await AppDataService().loadInfoContent('assets/jsons/infodata.json');
   Bookservice().loadBook('saxatsavita');
-  runApp(const SakshatSavitaApp());
+  runApp(SakshatSavitaApp(analytics: analytics));
 }
 
 class SakshatSavitaApp extends StatelessWidget {
-  const SakshatSavitaApp({super.key});
+  const SakshatSavitaApp({super.key, required this.analytics});
 
+  final FirebaseAnalytics analytics;
   final String titleText = 'Sakshat Savita';
   @override
   Widget build(BuildContext context) {
@@ -77,6 +87,9 @@ class SakshatSavitaApp extends StatelessWidget {
         );
         return MaterialApp(
           navigatorKey: NavigationService.navigatorKey, // Assign the key here
+          navigatorObservers: [
+            FirebaseAnalyticsObserver(analytics: analytics),
+          ],
           debugShowCheckedModeBanner: false,
           locale: Locale(settings.language, 'IN'),
           localizationsDelegates: [
