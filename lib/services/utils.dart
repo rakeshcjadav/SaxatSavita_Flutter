@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
@@ -309,5 +310,29 @@ class Utils {
     } else {
       debugPrint('Apple user cache is empty');
     }
+  }
+
+  static void showLoginWarningDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context)!.login_required),
+            content: Text(AppLocalizations.of(context)!.login_to_sync_progress),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(AppLocalizations.of(context)!.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pushNamed(context, '/login');
+                },
+                child: Text(AppLocalizations.of(context)!.login),
+              ),
+            ],
+          ),
+    );
   }
 }

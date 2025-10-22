@@ -109,20 +109,43 @@ class _DrawerState extends State<MyDrawer> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          UserAccountsDrawerHeader(
-            currentAccountPicture: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 2,
-                  color: Theme.of(context).colorScheme.onPrimary,
+          if (FirebaseAuth.instance.currentUser != null) ...[
+            UserAccountsDrawerHeader(
+              currentAccountPicture: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 2,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
                 ),
+                child: getAvatar(),
               ),
-              child: getAvatar(),
+              accountName: getAccountName(),
+              accountEmail: getAccountEmail(),
             ),
-            accountName: getAccountName(),
-            accountEmail: getAccountEmail(),
-          ),
+          ] else ...[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: Column(
+                children: [
+                  getAvatar(),
+                  Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.sakshatSavita,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.headlineSmall!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           ...?widget._drawerItems?.map((item) {
             return _buildDrawerItem(item);
           }).toList(),

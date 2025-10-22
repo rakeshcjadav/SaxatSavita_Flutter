@@ -688,29 +688,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     // If user is not logged in ask to login
     if (FirebaseAuth.instance.currentUser == null) {
       // Show dialog
-      showDialog(
-        context: context,
-        builder:
-            (context) => AlertDialog(
-              title: Text(AppLocalizations.of(context)!.login_required),
-              content: Text(
-                AppLocalizations.of(context)!.login_to_sync_progress,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations.of(context)!.cancel),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Close dialog
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: Text(AppLocalizations.of(context)!.login),
-                ),
-              ],
-            ),
-      );
+      Utils.showLoginWarningDialog(context);
       return;
     }
 

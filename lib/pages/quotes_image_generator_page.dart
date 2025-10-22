@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
@@ -164,12 +165,36 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             ),
           ],
           IconButton(
-            icon: const Icon(Icons.share),
-            onPressed: _shareImage,
+            icon: Stack(
+              children: [
+                Icon(Icons.share),
+                if (FirebaseAuth.instance.currentUser == null) ...[
+                  // Lock icon
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Icon(Icons.lock, size: 15, color: Colors.red),
+                  ),
+                ],
+              ],
+            ),
             tooltip: AppLocalizations.of(context)!.share_quote,
+            onPressed: _shareImage,
           ),
           IconButton(
-            icon: const Icon(Icons.download),
+            icon: Stack(
+              children: [
+                Icon(Icons.download),
+                if (FirebaseAuth.instance.currentUser == null) ...[
+                  // Lock icon
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Icon(Icons.lock, size: 15, color: Colors.red),
+                  ),
+                ],
+              ],
+            ),
             onPressed: _saveImage,
             tooltip: AppLocalizations.of(context)!.save_quote,
           ),
@@ -1847,6 +1872,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Future<void> _shareImage() async {
+    // If user is not logged in ask to login
+    if (FirebaseAuth.instance.currentUser == null) {
+      // Show dialog
+      Utils.showLoginWarningDialog(context);
+      return;
+    }
+
     try {
       final imageBytes = await _captureImage();
       if (imageBytes != null) {
@@ -1874,6 +1906,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Future<void> _saveImage() async {
+    // If user is not logged in ask to login
+    if (FirebaseAuth.instance.currentUser == null) {
+      // Show dialog
+      Utils.showLoginWarningDialog(context);
+      return;
+    }
+
     try {
       final imageBytes = await _captureImage();
       if (imageBytes != null) {
