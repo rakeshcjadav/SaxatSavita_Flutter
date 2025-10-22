@@ -131,7 +131,17 @@ class _DrawerState extends State<MyDrawer> {
               ),
               child: Column(
                 children: [
-                  getAvatar(),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 2,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    child: getAvatar(),
+                  ),
+                  const SizedBox(height: 12),
                   Center(
                     child: Text(
                       AppLocalizations.of(context)!.sakshatSavita,
