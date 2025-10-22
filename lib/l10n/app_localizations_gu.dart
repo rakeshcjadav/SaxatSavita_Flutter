@@ -915,6 +915,34 @@ class AppLocalizationsGu extends AppLocalizations {
   String get language_english => 'અંગ્રેજી';
 
   @override
+  String get account_and_privacy => 'એકાઉન્ટ અને ગોપનીયતા';
+
+  @override
+  String get delete_account => 'એકાઉન્ટ ડિલીટ કરો';
+
+  @override
+  String get delete_account_description =>
+      'આ એપ્લિકેશનમાંથી તમારું એકાઉન્ટ અને તમામ સંબંધિત ડેટા કાયમી રીતે ડિલીટ કરો.';
+
+  @override
+  String get delete_account_button => 'એકાઉન્ટ ડિલીટ કરો';
+
+  @override
+  String get confirm => 'પુષ્ટિ કરો';
+
+  @override
+  String get confirm_delete_account_message =>
+      'આ તમારું એકાઉન્ટ અને તમામ સંબંધિત ડેટા કાયમી રીતે ડિલીટ કરશે. આ ક્રિયા રદ કરી શકાશે નહીં.';
+
+  @override
+  String get delete_account_requires_relogin =>
+      'એકાઉન્ટ ડિલીટ કરવા માટે તમારે ફરીથી પ્રમાણીકરણ કરવાની જરૂર છે. કૃપા કરીને ફરી પ્રયાસ કરો.';
+
+  @override
+  String get delete_account_failed =>
+      'એકાઉન્ટ ડિલીટ કરવામાં નિષ્ફળ. કૃપા કરીને સપોર્ટનો સંપર્ક કરો.';
+
+  @override
   String get quote_preview => 'પૂર્વાવલોકન';
 
   @override

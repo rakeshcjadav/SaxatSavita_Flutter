@@ -210,8 +210,6 @@ class _DrawerState extends State<MyDrawer> {
                 // Clear all local cache before signing out
                 await CacheService().clearAllLocalCache();
 
-                appSettingsNotifier.value = appSettingsDefault;
-
                 // Sign out from Google
                 await GoogleSignIn.instance.signOut();
                 // Sign out from Firebase

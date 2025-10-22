@@ -685,13 +685,18 @@ class _KiranReadPageState extends State<KiranReadPage>
                                             await _saveReadingHistory();
 
                                             // Track reading completion analytics
-                                            final readingTimeSeconds = _stopwatch.elapsed.inSeconds;
-                                            await AnalyticsService().logCompleteReading(
-                                              bookName: 'Sakshat Savita',
-                                              chapterName: widget.kiranInfo.title,
-                                              partName: 'Part ${widget.partNumber}',
-                                              readingTimeSeconds: readingTimeSeconds,
-                                            );
+                                            final readingTimeSeconds =
+                                                _stopwatch.elapsed.inSeconds;
+                                            await AnalyticsService()
+                                                .logCompleteReading(
+                                                  bookName: 'Sakshat Savita',
+                                                  chapterName:
+                                                      widget.kiranInfo.title,
+                                                  partName:
+                                                      'Part ${widget.partNumber}',
+                                                  readingTimeSeconds:
+                                                      readingTimeSeconds,
+                                                );
 
                                             if (mounted) {
                                               setState(() {

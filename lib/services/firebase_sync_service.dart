@@ -643,4 +643,63 @@ class FirebaseSyncService {
       };
     }
   }
+
+  /// Delete entire user account and all associated Firebase data.
+  ///
+  /// Steps performed:
+  /// 1. Clear all subcollections under the user's document
+  /// 2. Delete the user document
+  /// 3. Delete the Firebase Auth user (may require reauthentication)
+  ///
+  /// Returns true on success, false on failure.
+  Future<bool> deleteAccount({AuthCredential? reauthCredential}) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      debugPrint('No authenticated user to delete');
+      return false;
+    }
+
+    try {
+      // If a reauth credential is provided, try reauthenticating first
+      if (reauthCredential != null) {
+        try {
+          await user.reauthenticateWithCredential(reauthCredential);
+          debugPrint('Reauthentication successful');
+        } catch (reauthErr) {
+          debugPrint('Reauthentication failed: $reauthErr');
+          // Continue; caller can handle prompting user
+          return false;
+        }
+      }
+
+      // 1) Clear subcollections (use existing clearAllUserData)
+      await clearAllUserData();
+
+      // 2) Delete user document
+      if (userDoc != null) {
+        try {
+          await userDoc!.delete();
+          debugPrint('User document deleted from Firestore');
+        } catch (e) {
+          debugPrint('Warning: failed to delete user document: $e');
+          // Proceed to attempt deleting auth user regardless
+        }
+      }
+
+      // 3) Delete Firebase Auth user
+      try {
+        await user.delete();
+        debugPrint('Firebase Auth user deleted');
+      } catch (authErr) {
+        debugPrint('Error deleting Firebase Auth user: $authErr');
+        // Commonly requires recent login. Return false so caller can prompt reauth.
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      debugPrint('Error deleting account: $e');
+      return false;
+    }
+  }
 }

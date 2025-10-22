@@ -1,10 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/services/first_time_user_service.dart';
+import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
+import 'package:saxatsavita_flutter/services/cache_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -176,6 +183,565 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Future<void> _confirmAndDeleteAccount() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context)!.confirm),
+            content: Text(
+              AppLocalizations.of(context)!.confirm_delete_account_message,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(AppLocalizations.of(context)!.cancel),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(AppLocalizations.of(context)!.delete),
+              ),
+            ],
+          ),
+    );
+
+    if (confirm == true) {
+      await _performAccountDeletion();
+    }
+  }
+
+  Future<void> _performAccountDeletion() async {
+    setState(() {
+      _isSaving = true;
+    });
+
+    final firebaseService = FirebaseSyncService();
+    final cacheService = CacheService();
+
+    bool deleted = false;
+    // Likely requires recent login. Prompt user to reauthenticate.
+    final reauthCredential = await _promptReauthentication();
+    if (reauthCredential == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.delete_account_requires_relogin,
+            ),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      setState(() {
+        _isSaving = false;
+      });
+      return;
+    }
+
+    deleted = await firebaseService.deleteAccount(
+      reauthCredential: reauthCredential,
+    );
+    if (!deleted) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.delete_account_failed),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      setState(() {
+        _isSaving = false;
+      });
+      return;
+    }
+
+    // Clear local cache and navigate to welcome screen
+    try {
+      await cacheService.clearAllLocalCache();
+    } catch (e) {
+      debugPrint('Warning: failed to clear cache after account deletion: $e');
+    }
+
+    if (mounted) {
+      // Navigate to Google Sign-In page and remove all previous routes
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const GoogleSignInPage()),
+        (route) => false,
+      );
+    }
+
+    setState(() {
+      _isSaving = false;
+    });
+  }
+
+  /// Prompt the user to reauthenticate using available providers (Google / Apple)
+  /// Returns an [AuthCredential] on success, or null if canceled/failed.
+  Future<AuthCredential?> _promptReauthentication() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+
+    // Determine the provider based on user's sign-in method
+    final providerData = user.providerData;
+    String? provider;
+    for (final userInfo in providerData) {
+      if (userInfo.providerId == 'google.com') {
+        provider = 'google';
+        break;
+      } else if (userInfo.providerId == 'apple.com') {
+        provider = 'apple';
+        break;
+      }
+    }
+
+    if (provider == null) {
+      // Fallback to opening sign-in screen
+      return _fallbackReauthentication();
+    }
+
+    return provider == 'google'
+        ? _reauthenticateWithGoogle()
+        : _reauthenticateWithApple();
+  }
+
+  Future<AuthCredential?> _reauthenticateWithGoogle() async {
+    try {
+      // Use the same Google Sign-In method as your app
+      final googleUser = await GoogleSignIn.instance.authenticate();
+
+      final googleAuth = googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      debugPrint('Google reauthentication credential obtained');
+      return credential;
+    } catch (e) {
+      debugPrint('Error during Google reauthentication: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Google reauthentication failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return null;
+    }
+  }
+
+  Future<AuthCredential?> _reauthenticateWithApple() async {
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      debugPrint('Apple reauthentication credential obtained');
+      return oauthCredential;
+    } catch (e) {
+      debugPrint('Error during Apple reauthentication: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Apple reauthentication failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return null;
+    }
+  }
+
+  Future<AuthCredential?> _fallbackReauthentication() async {
+    final openSignin = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Re-authentication required'),
+            content: const Text(
+              'For security reasons, deleting your account requires recent authentication. Please sign out and sign back in using your preferred method, then retry account deletion.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Open Sign-In'),
+              ),
+            ],
+          ),
+    );
+
+    if (openSignin != true) return null;
+
+    // Navigate to the sign-in page
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const WelcomeScreen()));
+    return null;
+  }
+
+  List<Widget> _buildAccountSection() {
+    return <Widget>[
+      // Account & Privacy Section
+      _buildSectionHeader(
+        context,
+        AppLocalizations.of(context)!.account_and_privacy,
+        Icons.lock,
+      ),
+
+      const SizedBox(height: 8),
+
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.delete_forever, color: Colors.red),
+          title: Text(AppLocalizations.of(context)!.delete_account),
+          subtitle: Column(
+            children: [
+              Text(AppLocalizations.of(context)!.delete_account_description),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: _confirmAndDeleteAccount,
+                child: Text(
+                  AppLocalizations.of(context)!.delete_account_button,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildTextSettingsSection() {
+    return <Widget>[
+      // Reading Preferences Section
+      _buildSectionHeader(
+        context,
+        AppLocalizations.of(context)!.reading_preferences,
+        Icons.chrome_reader_mode,
+      ),
+      const SizedBox(height: 8),
+
+      // Font Size
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.text_fields),
+          title: Text(
+            '${AppLocalizations.of(context)!.font_size}: ${_fontSize.round()}',
+          ),
+          subtitle: Slider(
+            min: 15,
+            max: 35,
+            divisions: 20,
+            value: _fontSize,
+            label: _fontSize.round().toString(),
+            onChanged: (value) {
+              setState(() {
+                _fontSize = value;
+              });
+              _updateHasUnsavedChanges();
+            },
+          ),
+        ),
+      ),
+
+      // Line Height
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.format_line_spacing),
+          title: Text(
+            '${AppLocalizations.of(context)!.line_height}: ${_lineHeight.toStringAsFixed(1)}x',
+          ),
+          subtitle: Slider(
+            min: 1.5,
+            max: 3.0,
+            divisions: 15,
+            value: _lineHeight,
+            label: _lineHeight.toStringAsFixed(1),
+            onChanged: (value) {
+              setState(() {
+                _lineHeight = value;
+              });
+              _updateHasUnsavedChanges();
+            },
+          ),
+        ),
+      ),
+
+      // Reading Speed
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.speed),
+          title: Text(
+            '${AppLocalizations.of(context)!.reading_speed}: ${_readingSpeed.round()} ${AppLocalizations.of(context)!.words_per_minute}',
+          ),
+          subtitle: Slider(
+            min: 50,
+            max: 300.0,
+            divisions: 25,
+            value: _readingSpeed,
+            label: '${_readingSpeed.round()}',
+            onChanged: (value) {
+              setState(() {
+                _readingSpeed = value;
+              });
+              _updateHasUnsavedChanges();
+            },
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildThemeSettingsSection() {
+    return <Widget>[
+      // Theme & Appearance Section
+      _buildSectionHeader(
+        context,
+        AppLocalizations.of(context)!.theme_appearance,
+        Icons.palette,
+      ),
+      const SizedBox(height: 8),
+
+      // Theme Color
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.color_lens),
+          title: Text(AppLocalizations.of(context)!.theme_color),
+          subtitle: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildColorOption(Colors.yellow),
+                _buildColorOption(Colors.orange),
+                _buildColorOption(Colors.deepOrange),
+                _buildColorOption(Colors.pink),
+                _buildColorOption(Colors.teal),
+                _buildColorOption(Colors.blue),
+                _buildColorOption(Colors.indigo),
+                _buildColorOption(Colors.deepPurple),
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      // Theme Mode (Light/Dark)
+      Card(
+        child: ListTile(
+          leading: Icon(
+            _brightness == Brightness.light
+                ? Icons.light_mode
+                : Icons.dark_mode,
+          ),
+          title: Text(AppLocalizations.of(context)!.theme_mode),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RadioListTile<Brightness>(
+                  title: Row(
+                    children: [
+                      const Icon(Icons.light_mode, size: 16),
+                      const SizedBox(width: 8),
+                      Text(AppLocalizations.of(context)!.light_mode_option),
+                    ],
+                  ),
+                  value: Brightness.light,
+                  groupValue: _brightness,
+                  onChanged: (Brightness? value) {
+                    setState(() {
+                      _brightness = value!;
+                    });
+                    _updateHasUnsavedChanges();
+                  },
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                RadioListTile<Brightness>(
+                  title: Row(
+                    children: [
+                      const Icon(Icons.dark_mode, size: 16),
+                      const SizedBox(width: 8),
+                      Text(AppLocalizations.of(context)!.dark_mode_option),
+                    ],
+                  ),
+                  value: Brightness.dark,
+                  groupValue: _brightness,
+                  onChanged: (Brightness? value) {
+                    setState(() {
+                      _brightness = value!;
+                    });
+                    _updateHasUnsavedChanges();
+                  },
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      // Theme Variant Selection
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.style),
+          title: Text(AppLocalizations.of(context)!.theme_variant),
+          subtitle: DropdownButton<DynamicSchemeVariant>(
+            value: appSettingsNotifier.value.themeVariant,
+            isExpanded: true,
+            items:
+                DynamicSchemeVariant.values.map((variant) {
+                  return DropdownMenuItem(
+                    value: variant,
+                    child: Text(
+                      variant.toString().split('.').last.toUpperCase(),
+                    ),
+                  );
+                }).toList(),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  _themeVariant = value;
+                });
+                _updateHasUnsavedChanges();
+              }
+            },
+          ),
+        ),
+      ),
+
+      // Theme Contrast Level
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.contrast),
+          title: Text(
+            '${AppLocalizations.of(context)!.theme_contrast}: ${_themeContrastLevel.toStringAsFixed(1)}',
+          ),
+          subtitle: Slider(
+            min: -1.0,
+            max: 1.0,
+            divisions: 4,
+            value: _themeContrastLevel,
+            label: _themeContrastLevel.toStringAsFixed(1),
+            onChanged: (value) {
+              setState(() {
+                _themeContrastLevel = value;
+              });
+              _updateHasUnsavedChanges();
+            },
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildLanguageSettingsSection() {
+    return <Widget>[
+      // Language & Localization Section
+      _buildSectionHeader(
+        context,
+        AppLocalizations.of(context)!.language_localization,
+        Icons.language,
+      ),
+      const SizedBox(height: 8),
+
+      // Language Selection
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.translate),
+          title: Text(AppLocalizations.of(context)!.language),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RadioListTile<String>(
+                  title: Row(
+                    children: [
+                      const Icon(Icons.language, size: 16),
+                      const SizedBox(width: 8),
+                      Text(AppLocalizations.of(context)!.language_gujarati),
+                    ],
+                  ),
+                  value: 'gu',
+                  groupValue: _language,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _language = value!;
+                    });
+                    _updateHasUnsavedChanges();
+                  },
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                RadioListTile<String>(
+                  title: Row(
+                    children: [
+                      const Icon(Icons.translate, size: 16),
+                      const SizedBox(width: 8),
+                      Text(AppLocalizations.of(context)!.language_english),
+                    ],
+                  ),
+                  value: 'en',
+                  groupValue: _language,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _language = value!;
+                    });
+                    _updateHasUnsavedChanges();
+                  },
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildDebugSection() {
+    return <Widget>[
+      // Debug Section (only show in debug mode)
+      if (kDebugMode) ...[
+        const SizedBox(height: 24),
+        _buildSectionHeader(context, 'Debug Options', Icons.bug_report),
+        const SizedBox(height: 8),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.restart_alt),
+            title: const Text('Reset Welcome Screen'),
+            subtitle: const Text('Show welcome screen on next app launch'),
+            onTap: _resetWelcomeScreen,
+          ),
+        ),
+      ],
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -255,341 +821,24 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               ),
+
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListView(
                   children: [
-                    // Reading Preferences Section
-                    _buildSectionHeader(
-                      context,
-                      AppLocalizations.of(context)!.reading_preferences,
-                      Icons.chrome_reader_mode,
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Font Size
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.text_fields),
-                        title: Text(
-                          '${AppLocalizations.of(context)!.font_size}: ${_fontSize.round()}',
-                        ),
-                        subtitle: Slider(
-                          min: 15,
-                          max: 35,
-                          divisions: 20,
-                          value: _fontSize,
-                          label: _fontSize.round().toString(),
-                          onChanged: (value) {
-                            setState(() {
-                              _fontSize = value;
-                            });
-                            _updateHasUnsavedChanges();
-                          },
-                        ),
-                      ),
-                    ),
-
-                    // Line Height
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.format_line_spacing),
-                        title: Text(
-                          '${AppLocalizations.of(context)!.line_height}: ${_lineHeight.toStringAsFixed(1)}x',
-                        ),
-                        subtitle: Slider(
-                          min: 1.5,
-                          max: 3.0,
-                          divisions: 15,
-                          value: _lineHeight,
-                          label: _lineHeight.toStringAsFixed(1),
-                          onChanged: (value) {
-                            setState(() {
-                              _lineHeight = value;
-                            });
-                            _updateHasUnsavedChanges();
-                          },
-                        ),
-                      ),
-                    ),
-
-                    // Reading Speed
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.speed),
-                        title: Text(
-                          '${AppLocalizations.of(context)!.reading_speed}: ${_readingSpeed.round()} ${AppLocalizations.of(context)!.words_per_minute}',
-                        ),
-                        subtitle: Slider(
-                          min: 50,
-                          max: 300.0,
-                          divisions: 25,
-                          value: _readingSpeed,
-                          label: '${_readingSpeed.round()}',
-                          onChanged: (value) {
-                            setState(() {
-                              _readingSpeed = value;
-                            });
-                            _updateHasUnsavedChanges();
-                          },
-                        ),
-                      ),
-                    ),
-
+                    // Text Settings Section
+                    ..._buildTextSettingsSection(),
                     const SizedBox(height: 24),
-
                     // Theme & Appearance Section
-                    _buildSectionHeader(
-                      context,
-                      AppLocalizations.of(context)!.theme_appearance,
-                      Icons.palette,
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Theme Color
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.color_lens),
-                        title: Text(AppLocalizations.of(context)!.theme_color),
-                        subtitle: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              _buildColorOption(Colors.yellow),
-                              _buildColorOption(Colors.orange),
-                              _buildColorOption(Colors.deepOrange),
-                              _buildColorOption(Colors.pink),
-                              _buildColorOption(Colors.teal),
-                              _buildColorOption(Colors.blue),
-                              _buildColorOption(Colors.indigo),
-                              _buildColorOption(Colors.deepPurple),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Theme Mode (Light/Dark)
-                    Card(
-                      child: ListTile(
-                        leading: Icon(
-                          _brightness == Brightness.light
-                              ? Icons.light_mode
-                              : Icons.dark_mode,
-                        ),
-                        title: Text(AppLocalizations.of(context)!.theme_mode),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RadioListTile<Brightness>(
-                                title: Row(
-                                  children: [
-                                    const Icon(Icons.light_mode, size: 16),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.light_mode_option,
-                                    ),
-                                  ],
-                                ),
-                                value: Brightness.light,
-                                groupValue: _brightness,
-                                onChanged: (Brightness? value) {
-                                  setState(() {
-                                    _brightness = value!;
-                                  });
-                                  _updateHasUnsavedChanges();
-                                },
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              RadioListTile<Brightness>(
-                                title: Row(
-                                  children: [
-                                    const Icon(Icons.dark_mode, size: 16),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.dark_mode_option,
-                                    ),
-                                  ],
-                                ),
-                                value: Brightness.dark,
-                                groupValue: _brightness,
-                                onChanged: (Brightness? value) {
-                                  setState(() {
-                                    _brightness = value!;
-                                  });
-                                  _updateHasUnsavedChanges();
-                                },
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Theme Variant Selection
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.style),
-                        title: Text(
-                          AppLocalizations.of(context)!.theme_variant,
-                        ),
-                        subtitle: DropdownButton<DynamicSchemeVariant>(
-                          value: appSettingsNotifier.value.themeVariant,
-                          isExpanded: true,
-                          items:
-                              DynamicSchemeVariant.values.map((variant) {
-                                return DropdownMenuItem(
-                                  value: variant,
-                                  child: Text(
-                                    variant
-                                        .toString()
-                                        .split('.')
-                                        .last
-                                        .toUpperCase(),
-                                  ),
-                                );
-                              }).toList(),
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _themeVariant = value;
-                              });
-                              _updateHasUnsavedChanges();
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-
-                    // Theme Contrast Level
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.contrast),
-                        title: Text(
-                          '${AppLocalizations.of(context)!.theme_contrast}: ${_themeContrastLevel.toStringAsFixed(1)}',
-                        ),
-                        subtitle: Slider(
-                          min: -1.0,
-                          max: 1.0,
-                          divisions: 4,
-                          value: _themeContrastLevel,
-                          label: _themeContrastLevel.toStringAsFixed(1),
-                          onChanged: (value) {
-                            setState(() {
-                              _themeContrastLevel = value;
-                            });
-                            _updateHasUnsavedChanges();
-                          },
-                        ),
-                      ),
-                    ),
-
+                    ..._buildThemeSettingsSection(),
                     const SizedBox(height: 24),
-
                     // Language & Localization Section
-                    _buildSectionHeader(
-                      context,
-                      AppLocalizations.of(context)!.language_localization,
-                      Icons.language,
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Language Selection
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.translate),
-                        title: Text(AppLocalizations.of(context)!.language),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RadioListTile<String>(
-                                title: Row(
-                                  children: [
-                                    const Icon(Icons.language, size: 16),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.language_gujarati,
-                                    ),
-                                  ],
-                                ),
-                                value: 'gu',
-                                groupValue: _language,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _language = value!;
-                                  });
-                                  _updateHasUnsavedChanges();
-                                },
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              RadioListTile<String>(
-                                title: Row(
-                                  children: [
-                                    const Icon(Icons.translate, size: 16),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.language_english,
-                                    ),
-                                  ],
-                                ),
-                                value: 'en',
-                                groupValue: _language,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _language = value!;
-                                  });
-                                  _updateHasUnsavedChanges();
-                                },
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Debug Section (only show in debug mode)
-                    if (kDebugMode) ...[
-                      const SizedBox(height: 24),
-                      _buildSectionHeader(
-                        context,
-                        'Debug Options',
-                        Icons.bug_report,
-                      ),
-                      const SizedBox(height: 8),
-                      Card(
-                        child: ListTile(
-                          leading: const Icon(Icons.restart_alt),
-                          title: const Text('Reset Welcome Screen'),
-                          subtitle: const Text(
-                            'Show welcome screen on next app launch',
-                          ),
-                          onTap: _resetWelcomeScreen,
-                        ),
-                      ),
-                    ],
-
-                    const SizedBox(height: 16),
+                    ..._buildLanguageSettingsSection(),
+                    const SizedBox(height: 24),
+                    ..._buildAccountSection(),
+                    // Debug Section
+                    ..._buildDebugSection(),
                   ],
                 ),
               ),

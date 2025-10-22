@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
@@ -71,6 +72,7 @@ class CacheService {
       AppDataService().clearUserInfoSummary();
       debugPrint('✅ App data user info summary cache cleared');
 
+      appSettingsNotifier.value = appSettingsDefault;
       // Note: AppSettings are stored in Firebase and cleared by _clearFirebaseCache()
       // No additional local settings clearing needed
 

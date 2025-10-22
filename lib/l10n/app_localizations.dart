@@ -1766,6 +1766,54 @@ abstract class AppLocalizations {
   /// **'English'**
   String get language_english;
 
+  /// No description provided for @account_and_privacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & Privacy'**
+  String get account_and_privacy;
+
+  /// No description provided for @delete_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get delete_account;
+
+  /// No description provided for @delete_account_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete your account and all associated data from this app.'**
+  String get delete_account_description;
+
+  /// No description provided for @delete_account_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get delete_account_button;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @confirm_delete_account_message.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete your account and all associated data. This action cannot be undone.'**
+  String get confirm_delete_account_message;
+
+  /// No description provided for @delete_account_requires_relogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion requires you to re-authenticate. Please try again.'**
+  String get delete_account_requires_relogin;
+
+  /// No description provided for @delete_account_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete account. Please contact support.'**
+  String get delete_account_failed;
+
   /// No description provided for @quote_preview.
   ///
   /// In en, this message translates to:

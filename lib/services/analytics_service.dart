@@ -2,7 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 
 /// Firebase Analytics Service
-/// 
+///
 /// This service provides a centralized way to track analytics events
 /// throughout the SakshatSavita app.
 class AnalyticsService {
@@ -62,7 +62,10 @@ class AnalyticsService {
         await _analytics.setUserProperty(name: 'language', value: language);
       }
       if (provider != null) {
-        await _analytics.setUserProperty(name: 'auth_provider', value: provider);
+        await _analytics.setUserProperty(
+          name: 'auth_provider',
+          value: provider,
+        );
       }
       debugPrint('Analytics: User properties set');
     } catch (e) {
@@ -114,7 +117,9 @@ class AnalyticsService {
           'timestamp': DateTime.now().millisecondsSinceEpoch,
         },
       );
-      debugPrint('Analytics: Completed reading $bookName - $chapterName (${readingTimeSeconds}s)');
+      debugPrint(
+        'Analytics: Completed reading $bookName - $chapterName (${readingTimeSeconds}s)',
+      );
     } catch (e) {
       debugPrint('Analytics error - logCompleteReading: $e');
     }
@@ -165,7 +170,9 @@ class AnalyticsService {
           'timestamp': DateTime.now().millisecondsSinceEpoch,
         },
       );
-      debugPrint('Analytics: Search performed - "$query" ($resultsCount results)');
+      debugPrint(
+        'Analytics: Search performed - "$query" ($resultsCount results)',
+      );
     } catch (e) {
       debugPrint('Analytics error - logSearch: $e');
     }
@@ -223,7 +230,10 @@ class AnalyticsService {
   }) async {
     if (!_initialized) return;
     try {
-      final itemId = bookName != null && chapterName != null ? '${bookName}_$chapterName' : 'unknown';
+      final itemId =
+          bookName != null && chapterName != null
+              ? '${bookName}_$chapterName'
+              : 'unknown';
       await _analytics.logShare(
         contentType: contentType,
         method: method,
@@ -270,9 +280,10 @@ class AnalyticsService {
         name: 'app_error',
         parameters: {
           'error_type': errorType,
-          'error_message': errorMessage.length > 100 
-              ? errorMessage.substring(0, 100) + '...' 
-              : errorMessage,
+          'error_message':
+              errorMessage.length > 100
+                  ? errorMessage.substring(0, 100) + '...'
+                  : errorMessage,
           if (screen != null) 'screen': screen,
           'timestamp': DateTime.now().millisecondsSinceEpoch,
         },

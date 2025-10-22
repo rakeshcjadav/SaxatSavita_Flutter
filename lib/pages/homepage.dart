@@ -18,7 +18,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+
     // Track screen view
     AnalyticsService().logScreenView(screenName: 'home_page');
   }

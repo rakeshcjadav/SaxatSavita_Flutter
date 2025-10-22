@@ -57,11 +57,11 @@ void main() async {
 
   // Initialize Firebase Analytics
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  
+
   // Initialize Analytics Service
   AnalyticsService().initialize(analytics);
   print('Firebase Analytics initialized successfully');
-  
+
   // Load JSON data
   await AppDataService().loadData('assets/jsons/data.json');
   await AppDataService().loadInfoContent('assets/jsons/infodata.json');
@@ -87,9 +87,7 @@ class SakshatSavitaApp extends StatelessWidget {
         );
         return MaterialApp(
           navigatorKey: NavigationService.navigatorKey, // Assign the key here
-          navigatorObservers: [
-            FirebaseAnalyticsObserver(analytics: analytics),
-          ],
+          navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
           debugShowCheckedModeBanner: false,
           locale: Locale(settings.language, 'IN'),
           localizationsDelegates: [
