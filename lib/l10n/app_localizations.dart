@@ -2239,6 +2239,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Inspire others'**
   String get welcome_feature_share_inspiration;
+
+  /// No description provided for @login_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Required'**
+  String get login_required;
+
+  /// No description provided for @login_to_sync_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Please login to sync your reading progress and access all features.'**
+  String get login_to_sync_progress;
+
+  /// No description provided for @recent_searches.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Searches'**
+  String get recent_searches;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
 }
 
 class _AppLocalizationsDelegate

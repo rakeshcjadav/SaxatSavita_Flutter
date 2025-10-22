@@ -40,7 +40,20 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         title: AppLocalizations.of(context)!.sakshatSavita,
         actionItems: [ActionOptions.info, ActionOptions.settings],
       ),
-      drawer: const MyDrawer(),
+      drawer: MyDrawer(
+        items: [
+          DrawerItem.aashirvachan,
+          DrawerItem.information,
+          DrawerItem.notes,
+          DrawerItem.search,
+          DrawerItem.readingPlans,
+          DrawerItem.readingHistory,
+          DrawerItem.quotesImageGenerator,
+          DrawerItem.welcomeTour,
+          DrawerItem.migration,
+          DrawerItem.logout,
+        ],
+      ),
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [

@@ -1194,4 +1194,20 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_feature_share_inspiration => 'અન્યોને પ્રેરણા આપો';
+
+  @override
+  String get login_required => 'Login જરૂરી છે';
+
+  @override
+  String get login_to_sync_progress =>
+      'કૃપા કરીને તમારી વાંચન પ્રગતિને સિંક કરવા અને તમામ સુવિધાઓ ઍક્સેસ કરવા માટે Login કરો.';
+
+  @override
+  String get recent_searches => 'તાજેતરની શોધ';
+
+  @override
+  String get clear => 'સાફ કરો';
+
+  @override
+  String get login => 'Login';
 }

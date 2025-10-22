@@ -587,5 +587,11 @@
     "welcome_feature_custom_reading_goals": "Set daily reading goals",
     "welcome_feature_progress_tracking": "Track your reading progress",
     "welcome_feature_beautiful_quotes": "Create beautiful quote images",
-    "welcome_feature_share_inspiration": "Inspire others"
+    "welcome_feature_share_inspiration": "Inspire others",
+    
+    "login_required": "Login Required",
+    "login_to_sync_progress": "Please login to sync your reading progress and access all features.",
+    "recent_searches": "Recent Searches",
+    "clear": "Clear",
+    "login": "Login"
 }

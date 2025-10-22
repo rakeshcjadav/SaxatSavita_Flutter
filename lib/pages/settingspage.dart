@@ -394,6 +394,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   List<Widget> _buildAccountSection() {
+    if (FirebaseAuth.instance.currentUser == null) return [];
     return <Widget>[
       // Account & Privacy Section
       _buildSectionHeader(
@@ -835,6 +836,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     const SizedBox(height: 24),
                     // Language & Localization Section
                     ..._buildLanguageSettingsSection(),
+
                     const SizedBox(height: 24),
                     ..._buildAccountSection(),
                     // Debug Section

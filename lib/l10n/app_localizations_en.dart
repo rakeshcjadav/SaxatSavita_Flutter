@@ -1188,4 +1188,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcome_feature_share_inspiration => 'Inspire others';
+
+  @override
+  String get login_required => 'Login Required';
+
+  @override
+  String get login_to_sync_progress =>
+      'Please login to sync your reading progress and access all features.';
+
+  @override
+  String get recent_searches => 'Recent Searches';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get login => 'Login';
 }

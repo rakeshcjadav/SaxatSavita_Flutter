@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -684,6 +685,35 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       isFavourite: 0,
     );
 
+    // If user is not logged in ask to login
+    if (FirebaseAuth.instance.currentUser == null) {
+      // Show dialog
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: Text(AppLocalizations.of(context)!.login_required),
+              content: Text(
+                AppLocalizations.of(context)!.login_to_sync_progress,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(AppLocalizations.of(context)!.cancel),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close dialog
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: Text(AppLocalizations.of(context)!.login),
+                ),
+              ],
+            ),
+      );
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -806,7 +836,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Recent Searches',
+                                AppLocalizations.of(context)!.recent_searches,
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodySmall?.copyWith(
@@ -826,7 +856,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                                       MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Text(
-                                  'Clear',
+                                  AppLocalizations.of(context)!.clear,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodySmall?.copyWith(

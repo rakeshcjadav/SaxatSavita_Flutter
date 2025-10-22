@@ -3,6 +3,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
@@ -247,6 +248,7 @@ class SakshatSavitaApp extends StatelessWidget {
                 (context) => const QuotesImageGeneratorPage(quote: null),
             '/migration': (context) => const ComprehensiveMigrationPage(),
             '/welcome': (context) => const WelcomeScreen(),
+            '/login': (context) => const GoogleSignInPage(),
           },
         );
       },
