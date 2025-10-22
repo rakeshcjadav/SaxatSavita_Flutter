@@ -7,7 +7,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';

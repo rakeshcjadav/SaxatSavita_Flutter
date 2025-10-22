@@ -626,7 +626,10 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                     rod,
                                     rodIndex,
                                   ) {
-                                    final day = progressSummary[groupIndex];
+                                    // Get data from reversed list to match chart
+                                    final reversedList =
+                                        progressSummary.reversed.toList();
+                                    final day = reversedList[group.x.toInt()];
                                     final date = day['date'] as DateTime;
                                     final seconds = day['seconds'] as int;
                                     final minutes = seconds ~/ 60;
@@ -653,9 +656,11 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                       if (value.toInt() >= 0 &&
                                           value.toInt() <
                                               progressSummary.length) {
+                                        // Get date from reversed list to match chart data
+                                        final reversedList =
+                                            progressSummary.reversed.toList();
                                         final date =
-                                            progressSummary[value
-                                                    .toInt()]['date']
+                                            reversedList[value.toInt()]['date']
                                                 as DateTime;
                                         return Text(
                                           '${date.day}',
@@ -713,34 +718,43 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                       strokeWidth: 1,
                                     ),
                               ),
+                              // Reverse data order: most recent (today) on left, oldest on right
                               barGroups:
-                                  progressSummary.asMap().entries.map((entry) {
-                                    final index = entry.key;
-                                    final day = entry.value;
-                                    final minutes =
-                                        (day['seconds'] as int) ~/ 60;
-                                    final seconds = day['seconds'] as int;
-                                    final targetMet =
-                                        seconds >= activePlan.targetSeconds;
+                                  progressSummary.reversed
+                                      .toList()
+                                      .asMap()
+                                      .entries
+                                      .map((entry) {
+                                        final index = entry.key;
+                                        final day = entry.value;
+                                        final minutes =
+                                            (day['seconds'] as int) ~/ 60;
+                                        final seconds = day['seconds'] as int;
+                                        final targetMet =
+                                            seconds >= activePlan.targetSeconds;
 
-                                    return BarChartGroupData(
-                                      x: index,
-                                      barRods: [
-                                        BarChartRodData(
-                                          toY: minutes.toDouble(),
-                                          color:
-                                              targetMet
-                                                  ? Colors.green
-                                                  : Colors.blue,
-                                          width: 16,
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4),
-                                            topRight: Radius.circular(4),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList(),
+                                        return BarChartGroupData(
+                                          x: index,
+                                          barRods: [
+                                            BarChartRodData(
+                                              toY: minutes.toDouble(),
+                                              color:
+                                                  targetMet
+                                                      ? Colors.green
+                                                      : Colors.blue,
+                                              width: 16,
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                    topLeft: Radius.circular(4),
+                                                    topRight: Radius.circular(
+                                                      4,
+                                                    ),
+                                                  ),
+                                            ),
+                                          ],
+                                        );
+                                      })
+                                      .toList(),
                               groupsSpace: 8,
                             ),
                           ),
@@ -838,7 +852,10 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                   rod,
                                   rodIndex,
                                 ) {
-                                  final day = progressSummary[groupIndex];
+                                  // Get data from reversed list to match chart
+                                  final reversedList =
+                                      progressSummary.reversed.toList();
+                                  final day = reversedList[group.x.toInt()];
                                   final date = day['date'] as DateTime;
                                   final kirans = day['kirans'] as int;
 
@@ -864,8 +881,11 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                     if (value.toInt() >= 0 &&
                                         value.toInt() <
                                             progressSummary.length) {
+                                      // Get date from reversed list to match chart data
+                                      final reversedList =
+                                          progressSummary.reversed.toList();
                                       final date =
-                                          progressSummary[value.toInt()]['date']
+                                          reversedList[value.toInt()]['date']
                                               as DateTime;
                                       return Text(
                                         '${date.day}',
@@ -930,32 +950,39 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                     strokeWidth: 1,
                                   ),
                             ),
+                            // Reverse data order: most recent (today) on left, oldest on right
                             barGroups:
-                                progressSummary.asMap().entries.map((entry) {
-                                  final index = entry.key;
-                                  final day = entry.value;
-                                  final kirans = day['kirans'] as int;
-                                  final targetMet =
-                                      kirans >= activePlan.targetKirans;
+                                progressSummary.reversed
+                                    .toList()
+                                    .asMap()
+                                    .entries
+                                    .map((entry) {
+                                      final index = entry.key;
+                                      final day = entry.value;
+                                      final kirans = day['kirans'] as int;
+                                      final targetMet =
+                                          kirans >= activePlan.targetKirans;
 
-                                  return BarChartGroupData(
-                                    x: index,
-                                    barRods: [
-                                      BarChartRodData(
-                                        toY: kirans.toDouble(),
-                                        color:
-                                            targetMet
-                                                ? Colors.green
-                                                : Colors.orange,
-                                        width: 16,
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(4),
-                                          topRight: Radius.circular(4),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }).toList(),
+                                      return BarChartGroupData(
+                                        x: index,
+                                        barRods: [
+                                          BarChartRodData(
+                                            toY: kirans.toDouble(),
+                                            color:
+                                                targetMet
+                                                    ? Colors.green
+                                                    : Colors.orange,
+                                            width: 16,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                  topLeft: Radius.circular(4),
+                                                  topRight: Radius.circular(4),
+                                                ),
+                                          ),
+                                        ],
+                                      );
+                                    })
+                                    .toList(),
                             groupsSpace: 8,
                           ),
                         ),

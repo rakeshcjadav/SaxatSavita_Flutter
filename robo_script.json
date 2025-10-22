@@ -1,0 +1,281 @@
+{
+  "crawlGuidance": {
+    "crawlActions": [
+      {
+        "action": "WAIT",
+        "delayTime": 3000,
+        "description": "Wait for app initialization and Firebase setup"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "Get Started"
+        },
+        "description": "Complete welcome screen onboarding",
+        "optional": true
+      },
+      {
+        "action": "CLICK", 
+        "elementMatcher": {
+          "text": "Next"
+        },
+        "description": "Navigate through welcome screens",
+        "optional": true
+      },
+      {
+        "action": "SWIPE",
+        "direction": "LEFT",
+        "description": "Swipe through welcome features",
+        "optional": true
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 2000,
+        "description": "Wait for main app to load"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "description": "Open navigation drawer"
+        },
+        "description": "Open main navigation menu"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "સાક્ષાત્ સવિતા"
+        },
+        "description": "Navigate to main book section",
+        "optional": true
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "Sakshat Savita"
+        },
+        "description": "Navigate to main book section (English)",
+        "optional": true
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 2000,
+        "description": "Wait for book content to load"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "ભાગ ૧"
+        },
+        "description": "Open Part 1 (Gujarati)",
+        "optional": true
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "Part 1"
+        },
+        "description": "Open Part 1 (English)",
+        "optional": true
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 2000,
+        "description": "Wait for part content to load"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "contentDescription": "વાંચો"
+        },
+        "description": "Start reading a kiran",
+        "optional": true
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "Read"
+        },
+        "description": "Start reading a kiran (English)",
+        "optional": true
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 3000,
+        "description": "Wait for reading page to load content"
+      },
+      {
+        "action": "SCROLL",
+        "direction": "DOWN",
+        "description": "Scroll through reading content"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "description": "બુકમાર્ક"
+        },
+        "description": "Test bookmark functionality",
+        "optional": true
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "description": "Bookmark"
+        },
+        "description": "Test bookmark functionality (English)",
+        "optional": true
+      },
+      {
+        "action": "KEY_EVENT",
+        "key": "BACK",
+        "description": "Navigate back from reading page"
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 1000,
+        "description": "Wait after navigation"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "description": "Open navigation drawer"
+        },
+        "description": "Open navigation menu again"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "શોધો"
+        },
+        "description": "Navigate to search (Gujarati)",
+        "optional": true
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "Search"
+        },
+        "description": "Navigate to search (English)",
+        "optional": true
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 2000,
+        "description": "Wait for search page to load"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "hint": "Search kiranas by title or content..."
+        },
+        "description": "Click search input field",
+        "optional": true
+      },
+      {
+        "action": "TYPE_TEXT",
+        "text": "સ્વામિ",
+        "description": "Search for spiritual content",
+        "optional": true
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 2000,
+        "description": "Wait for search results"
+      },
+      {
+        "action": "KEY_EVENT",
+        "key": "BACK",
+        "description": "Navigate back from search"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "description": "Open navigation drawer"
+        },
+        "description": "Open navigation for settings"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "સેટિંગ્સ"
+        },
+        "description": "Navigate to settings (Gujarati)",
+        "optional": true
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "Settings"
+        },
+        "description": "Navigate to settings (English)",
+        "optional": true
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 2000,
+        "description": "Wait for settings to load"
+      },
+      {
+        "action": "SCROLL",
+        "direction": "DOWN",
+        "description": "Scroll through settings options"
+      },
+      {
+        "action": "KEY_EVENT",
+        "key": "BACK",
+        "description": "Navigate back from settings"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "description": "Open navigation drawer"
+        },
+        "description": "Open navigation for aashirvachan"
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "આશીર્વચન"
+        },
+        "description": "Navigate to Aashirvachan (Gujarati)",
+        "optional": true
+      },
+      {
+        "action": "CLICK",
+        "elementMatcher": {
+          "text": "Aashirvachan"
+        },
+        "description": "Navigate to Aashirvachan (English)",
+        "optional": true
+      },
+      {
+        "action": "WAIT",
+        "delayTime": 1000,
+        "description": "Final wait to ensure app stability"
+      }
+    ]
+  },
+  "testTimeout": "15m",
+  "crawlTimeoutSec": 900,
+  "roboDirectives": [
+    {
+      "text": "Sign in with Google",
+      "directive": "IGNORE",
+      "description": "Skip Google sign-in during automated testing"
+    },
+    {
+      "text": "Sign in with Apple", 
+      "directive": "IGNORE",
+      "description": "Skip Apple sign-in during automated testing"
+    },
+    {
+      "text": "Delete Account",
+      "directive": "IGNORE", 
+      "description": "Skip account deletion during testing"
+    },
+    {
+      "className": "androidx.recyclerview.widget.RecyclerView",
+      "directive": "EXPLORE",
+      "description": "Explore all RecyclerView content (lists, grids)"
+    }
+  ]
+}
