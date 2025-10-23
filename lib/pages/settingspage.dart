@@ -34,6 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late double _themeContrastLevel;
   late double _readingSpeed;
   late String _language;
+  late bool _keepScreenOn;
 
   // Track saving state
   bool _isSaving = false;
@@ -54,6 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _themeContrastLevel = _originalSettings.themeContrastLevel;
     _readingSpeed = _originalSettings.readingSpeed;
     _language = _originalSettings.language;
+    _keepScreenOn = _originalSettings.keepScreenOn;
   }
 
   void _revertChanges() {
@@ -89,6 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _themeContrastLevel = _originalSettings.themeContrastLevel;
     _readingSpeed = _originalSettings.readingSpeed;
     _language = _originalSettings.language;
+    _keepScreenOn = _originalSettings.keepScreenOn;
   }
 
   bool get _settingsChanged {
@@ -100,7 +103,8 @@ class _SettingsPageState extends State<SettingsPage> {
         _originalSettings.brightness != current.brightness ||
         _originalSettings.themeContrastLevel != current.themeContrastLevel ||
         _originalSettings.readingSpeed != current.readingSpeed ||
-        _originalSettings.language != current.language;
+        _originalSettings.language != current.language ||
+        _originalSettings.keepScreenOn != current.keepScreenOn;
   }
 
   AppSettings _createCurrentSettings() {
@@ -113,6 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
       themeContrastLevel: _themeContrastLevel,
       readingSpeed: _readingSpeed,
       language: _language,
+      keepScreenOn: _keepScreenOn,
     );
   }
 
@@ -507,6 +512,22 @@ class _SettingsPageState extends State<SettingsPage> {
               _updateHasUnsavedChanges();
             },
           ),
+        ),
+      ),
+
+      // Keep Screen On Setting
+      Card(
+        child: SwitchListTile(
+          secondary: const Icon(Icons.screen_lock_portrait),
+          title: Text(AppLocalizations.of(context)!.keepScreenOn),
+          subtitle: Text(AppLocalizations.of(context)!.keepScreenOnDescription),
+          value: _keepScreenOn,
+          onChanged: (bool value) {
+            setState(() {
+              _keepScreenOn = value;
+              _updateHasUnsavedChanges();
+            });
+          },
         ),
       ),
     ];

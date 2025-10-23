@@ -620,5 +620,7 @@
     "app_settings": "એપ સેટિંગ્સ",
     "checkForUpdatesDescription": "એપ્લિકેશનનું નવું વર્ઝન ડાઉનલોડ માટે ઉપલબ્ધ છે કે કેમ તે તપાસો.",
     "app_version": "એપ વર્ઝન",
-    "loading": "લોડ થઈ રહ્યું છે..."
+    "loading": "લોડ થઈ રહ્યું છે...",
+    "keepScreenOn": "સ્ક્રીન ચાલુ રાખો",
+    "keepScreenOnDescription": "વાંચતી વખતે સ્ક્રીન બંધ થવાથી અટકાવો"
 }

@@ -1283,4 +1283,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loading => 'Loading...';
+
+  @override
+  String get keepScreenOn => 'Keep Screen On';
+
+  @override
+  String get keepScreenOnDescription =>
+      'Prevent screen from turning off while reading';
 }

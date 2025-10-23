@@ -1289,4 +1289,10 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get loading => 'લોડ થઈ રહ્યું છે...';
+
+  @override
+  String get keepScreenOn => 'સ્ક્રીન ચાલુ રાખો';
+
+  @override
+  String get keepScreenOnDescription => 'વાંચતી વખતે સ્ક્રીન બંધ થવાથી અટકાવો';
 }

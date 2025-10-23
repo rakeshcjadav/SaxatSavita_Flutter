@@ -2413,6 +2413,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
+
+  /// No description provided for @keepScreenOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Screen On'**
+  String get keepScreenOn;
+
+  /// No description provided for @keepScreenOnDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Prevent screen from turning off while reading'**
+  String get keepScreenOnDescription;
 }
 
 class _AppLocalizationsDelegate

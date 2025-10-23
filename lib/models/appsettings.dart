@@ -9,6 +9,7 @@ class AppSettings {
   double themeContrastLevel;
   double readingSpeed;
   String language;
+  bool keepScreenOn;
 
   AppSettings({
     required this.fontSize,
@@ -19,6 +20,7 @@ class AppSettings {
     required this.themeContrastLevel,
     required this.readingSpeed,
     required this.language,
+    required this.keepScreenOn,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class AppSettings {
       themeContrastLevel: json['themeContrastLevel']?.toDouble() ?? 0.5,
       readingSpeed: json['readingSpeed']?.toDouble() ?? 200.0,
       language: json['language'] ?? 'gu',
+      keepScreenOn: json['keepScreenOn'] ?? false,
     );
   }
 
@@ -45,6 +48,7 @@ class AppSettings {
       'themeContrastLevel': themeContrastLevel,
       'readingSpeed': readingSpeed,
       'language': language,
+      'keepScreenOn': keepScreenOn,
     };
   }
 
@@ -82,6 +86,7 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
     themeContrastLevel: 0.5,
     readingSpeed: 200.0,
     language: 'gu',
+    keepScreenOn: false,
   ),
 );
 
@@ -94,6 +99,7 @@ AppSettings appSettingsDefault = AppSettings(
   themeContrastLevel: 0.5,
   readingSpeed: 200.0,
   language: 'gu',
+  keepScreenOn: false,
 );
 
 AppSettings copyAppSettings(
@@ -106,6 +112,7 @@ AppSettings copyAppSettings(
   double? themeContrastLevel,
   double? readingSpeed,
   String? language,
+  bool? keepScreenOn,
 }) {
   return AppSettings(
     fontSize: fontSize ?? settings.fontSize,
@@ -116,5 +123,6 @@ AppSettings copyAppSettings(
     themeContrastLevel: themeContrastLevel ?? settings.themeContrastLevel,
     readingSpeed: readingSpeed ?? settings.readingSpeed,
     language: language ?? settings.language,
+    keepScreenOn: keepScreenOn ?? settings.keepScreenOn,
   );
 }

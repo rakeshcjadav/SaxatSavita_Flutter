@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
@@ -82,6 +84,12 @@ class _KiranReadPageState extends State<KiranReadPage>
     // Add observer to detect app lifecycle changes
     WidgetsBinding.instance.addObserver(this);
 
+    // Listen to app settings changes
+    appSettingsNotifier.addListener(_updateWakelock);
+
+    // Enable wakelock if setting is turned on
+    _updateWakelock();
+
     // Track analytics for reading session start
     AnalyticsService().logScreenView(screenName: 'reading_page');
     AnalyticsService().logStartReading(
@@ -100,6 +108,12 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Save reading history if session is long enough
     _saveReadingHistory();
+
+    // Disable wakelock when leaving the page
+    WakelockPlus.disable();
+
+    // Remove listeners
+    appSettingsNotifier.removeListener(_updateWakelock);
 
     // Remove observer
     WidgetsBinding.instance.removeObserver(this);
@@ -212,6 +226,14 @@ class _KiranReadPageState extends State<KiranReadPage>
           });
         }
       }
+    }
+  }
+
+  void _updateWakelock() {
+    if (appSettingsNotifier.value.keepScreenOn) {
+      WakelockPlus.enable();
+    } else {
+      WakelockPlus.disable();
     }
   }
 

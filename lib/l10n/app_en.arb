@@ -620,5 +620,7 @@
     "app_settings": "App Settings",
     "checkForUpdatesDescription": "Check if a newer version of the app is available for download.",
     "app_version": "App Version",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "keepScreenOn": "Keep Screen On",
+    "keepScreenOnDescription": "Prevent screen from turning off while reading"
 }
