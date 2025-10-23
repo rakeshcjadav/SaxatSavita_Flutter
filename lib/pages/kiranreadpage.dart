@@ -55,6 +55,7 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   bool _hasDataChanged = false;
   bool _isFinishButtonEnabled = false;
+  int _initialReadingProgress = 0;
 
   // Reading history tracking
   DateTime? _sessionStartTime;
@@ -190,7 +191,18 @@ class _KiranReadPageState extends State<KiranReadPage>
       widget.kiranInfo.wordCount,
     );
     if (estimatedReadingSeconds > 0 && !_isFinishButtonEnabledNotifier.value) {
-      final requiredSeconds = (estimatedReadingSeconds * 0.8).round();
+      final initialProgress = _initialReadingProgress / 100.0;
+      if (initialProgress >= 0.8) {
+        _isFinishButtonEnabledNotifier.value = true;
+        // Only call setState when the button state actually changes
+        if (!_isFinishButtonEnabled) {
+          setState(() {
+            _isFinishButtonEnabled = true;
+          });
+        }
+      }
+      final threshold = 0.8 - initialProgress;
+      final requiredSeconds = (estimatedReadingSeconds * threshold).round();
       if (seconds >= requiredSeconds) {
         _isFinishButtonEnabledNotifier.value = true;
         // Only call setState when the button state actually changes
@@ -207,6 +219,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     if (mounted &&
         _scrollController.hasClients &&
         widget.kiranUserInfo.progress > 0) {
+      _initialReadingProgress = widget.kiranUserInfo.progress;
       final maxScrollExtent = _scrollController.position.maxScrollExtent;
       final targetPosition =
           (widget.kiranUserInfo.progress / 100) * maxScrollExtent;
