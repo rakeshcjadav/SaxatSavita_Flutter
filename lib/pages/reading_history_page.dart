@@ -641,18 +641,35 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    Bookservice().getPartTitle(context, history.partNumber),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: Text(
+                      Bookservice().getPartTitle(context, history.partNumber),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 8.0),
                   Text(
                     history.readableDuration,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      size: 20.0,
+                      color: Colors.red.shade300,
+                    ),
+                    onPressed: () => _showDeleteConfirmation(history),
+                    tooltip: AppLocalizations.of(context)!.delete,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
                     ),
                   ),
                 ],
@@ -693,6 +710,113 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
         ),
       ),
     );
+  }
+
+  Future<void> _showDeleteConfirmation(ReadingHistory history) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.deleteReadingHistory),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(AppLocalizations.of(context)!.confirmDeleteReadingHistory),
+              const SizedBox(height: 12.0),
+              Container(
+                padding: const EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      Bookservice().getPartTitle(context, history.partNumber),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      _getKiranTitle(history),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    Text(
+                      '${AppLocalizations.of(context)!.duration}: ${history.readableDuration}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    Text(
+                      AppLocalizations.of(
+                        context,
+                      )!.last_read(history.createdAt, history.createdAt),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(AppLocalizations.of(context)!.cancel),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: Theme.of(context).colorScheme.onError,
+              ),
+              child: Text(AppLocalizations.of(context)!.delete),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true && mounted) {
+      await _deleteReadingHistory(history);
+    }
+  }
+
+  Future<void> _deleteReadingHistory(ReadingHistory history) async {
+    try {
+      final success = await ReadingHistoryService.deleteReadingHistory(history);
+      if (success && mounted) {
+        // Remove from local lists and refresh UI
+        setState(() {
+          _allHistory.remove(history);
+          _filteredHistory.remove(history);
+        });
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.readingHistoryDeleted),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+      } else if (mounted) {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorDeletingHistory),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${AppLocalizations.of(context)!.error}: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
   }
 
   // Chart Data Models
@@ -1024,14 +1148,12 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            Row(
+            Column(
               children: [
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context)!.weeklyChartDescription,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                Text(
+                  AppLocalizations.of(context)!.weeklyChartDescription,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 Container(

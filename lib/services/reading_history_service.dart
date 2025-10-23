@@ -95,4 +95,31 @@ class ReadingHistoryService {
       throw Exception('Error getting history for Kiran: $e');
     }
   }
+
+  /// Delete a specific reading history entry
+  static Future<bool> deleteReadingHistory(
+    ReadingHistory historyToDelete,
+  ) async {
+    try {
+      final service = ReadingHistoryService();
+      final index = service.readingHistoryList.indexWhere(
+        (history) =>
+            history.kiranIndex == historyToDelete.kiranIndex &&
+            history.createdAt == historyToDelete.createdAt &&
+            history.durationSeconds == historyToDelete.durationSeconds,
+      );
+
+      if (index != -1) {
+        service.readingHistoryList.removeAt(index);
+        // You might want to also sync this deletion with Firebase if needed
+        await FirebaseIntegrationHelper().onReadingHistoryDeleted(
+          historyToDelete,
+        );
+        return true;
+      }
+      return false;
+    } catch (e) {
+      throw Exception('Error deleting reading history: $e');
+    }
+  }
 }

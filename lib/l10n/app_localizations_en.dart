@@ -1204,4 +1204,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get login => 'Login';
+
+  @override
+  String get deleteReadingHistory => 'Delete Reading History';
+
+  @override
+  String get confirmDeleteReadingHistory =>
+      'Are you sure you want to delete this reading history entry? This action cannot be undone.';
+
+  @override
+  String get readingHistoryDeleted => 'Reading history deleted successfully';
+
+  @override
+  String get errorDeletingHistory => 'Error deleting reading history';
+
+  @override
+  String get error => 'Error';
 }

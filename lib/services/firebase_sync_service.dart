@@ -702,4 +702,19 @@ class FirebaseSyncService {
       return false;
     }
   }
+
+  Future<void> deleteReadingHistory(ReadingHistory historyToDelete) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot delete ReadingHistory');
+      return;
+    }
+
+    try {
+      final docId = historyToDelete.createdAt.millisecondsSinceEpoch.toString();
+      await userDoc!.collection('readingHistory').doc(docId).delete();
+      debugPrint('ReadingHistory entry deleted from Firebase successfully');
+    } catch (e) {
+      debugPrint('Error deleting ReadingHistory from Firebase: $e');
+    }
+  }
 }

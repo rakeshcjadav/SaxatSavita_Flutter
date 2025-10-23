@@ -1196,11 +1196,11 @@ class AppLocalizationsGu extends AppLocalizations {
   String get welcome_feature_share_inspiration => 'અન્યોને પ્રેરણા આપો';
 
   @override
-  String get login_required => 'Login જરૂરી છે';
+  String get login_required => 'લોગિન જરૂરી છે';
 
   @override
   String get login_to_sync_progress =>
-      'કૃપા કરીને તમારી વાંચન પ્રગતિને સિંક કરવા અને તમામ સુવિધાઓ ઍક્સેસ કરવા માટે Login કરો.';
+      'કૃપા કરીને તમારી વાંચન પ્રગતિને સિંક કરવા અને તમામ સુવિધાઓ ઍક્સેસ કરવા માટે લોગિન કરો.';
 
   @override
   String get recent_searches => 'તાજેતરની શોધ';
@@ -1209,5 +1209,21 @@ class AppLocalizationsGu extends AppLocalizations {
   String get clear => 'સાફ કરો';
 
   @override
-  String get login => 'Login';
+  String get login => 'લોગિન';
+
+  @override
+  String get deleteReadingHistory => 'વાંચન ઇતિહાસ કાઢી નાખો';
+
+  @override
+  String get confirmDeleteReadingHistory =>
+      'શું તમે ખરેખર આ વાંચન ઇતિહાસ કાઢી નાખવા માંગો છો? આ ક્રિયા પૂર્વવત્ કરી શકાતી નથી.';
+
+  @override
+  String get readingHistoryDeleted => 'વાંચન ઇતિહાસ સફળતાપૂર્વક કાઢી નાખ્યો';
+
+  @override
+  String get errorDeletingHistory => 'વાંચન ઇતિહાસ કાઢવામાં ભૂલ';
+
+  @override
+  String get error => 'ભૂલ';
 }

@@ -200,6 +200,10 @@ class FirebaseIntegrationHelper {
   Future<Map<String, String>> getUserInfoSummary() async {
     return await _firebaseSync.getUserInfoSummary();
   }
+
+  Future<void> onReadingHistoryDeleted(ReadingHistory historyToDelete) async {
+    await _firebaseSync.deleteReadingHistory(historyToDelete);
+  }
 }
 
 /// Extension methods to add Firebase sync to existing services

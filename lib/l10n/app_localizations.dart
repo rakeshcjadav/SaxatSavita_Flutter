@@ -2269,6 +2269,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login'**
   String get login;
+
+  /// No description provided for @deleteReadingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Reading History'**
+  String get deleteReadingHistory;
+
+  /// No description provided for @confirmDeleteReadingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this reading history entry? This action cannot be undone.'**
+  String get confirmDeleteReadingHistory;
+
+  /// No description provided for @readingHistoryDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading history deleted successfully'**
+  String get readingHistoryDeleted;
+
+  /// No description provided for @errorDeletingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting reading history'**
+  String get errorDeletingHistory;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate

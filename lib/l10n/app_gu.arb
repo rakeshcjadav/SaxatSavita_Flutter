@@ -589,9 +589,15 @@
     "welcome_feature_beautiful_quotes": "સુંદર સુવિચારોની છબીઓ(images) બનાવો",
     "welcome_feature_share_inspiration": "અન્યોને પ્રેરણા આપો",
     
-    "login_required": "Login જરૂરી છે",
-    "login_to_sync_progress": "કૃપા કરીને તમારી વાંચન પ્રગતિને સિંક કરવા અને તમામ સુવિધાઓ ઍક્સેસ કરવા માટે Login કરો.",
+    "login_required": "લોગિન જરૂરી છે",
+    "login_to_sync_progress": "કૃપા કરીને તમારી વાંચન પ્રગતિને સિંક કરવા અને તમામ સુવિધાઓ ઍક્સેસ કરવા માટે લોગિન કરો.",
     "recent_searches": "તાજેતરની શોધ",
     "clear": "સાફ કરો",
-    "login": "Login"
+    "login": "લોગિન",
+    
+    "deleteReadingHistory": "વાંચન ઇતિહાસ કાઢી નાખો",
+    "confirmDeleteReadingHistory": "શું તમે ખરેખર આ વાંચન ઇતિહાસ કાઢી નાખવા માંગો છો? આ ક્રિયા પૂર્વવત્ કરી શકાતી નથી.",
+    "readingHistoryDeleted": "વાંચન ઇતિહાસ સફળતાપૂર્વક કાઢી નાખ્યો",
+    "errorDeletingHistory": "વાંચન ઇતિહાસ કાઢવામાં ભૂલ",
+    "error": "ભૂલ"
 }

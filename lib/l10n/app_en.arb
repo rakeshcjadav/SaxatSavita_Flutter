@@ -593,5 +593,11 @@
     "login_to_sync_progress": "Please login to sync your reading progress and access all features.",
     "recent_searches": "Recent Searches",
     "clear": "Clear",
-    "login": "Login"
+    "login": "Login",
+    
+    "deleteReadingHistory": "Delete Reading History",
+    "confirmDeleteReadingHistory": "Are you sure you want to delete this reading history entry? This action cannot be undone.",
+    "readingHistoryDeleted": "Reading history deleted successfully",
+    "errorDeletingHistory": "Error deleting reading history",
+    "error": "Error"
 }
