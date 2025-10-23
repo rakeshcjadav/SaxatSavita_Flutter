@@ -2299,6 +2299,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get updateAvailable;
+
+  /// No description provided for @updateAvailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version of the app is available. Update now to enjoy the latest features and improvements.'**
+  String get updateAvailableMessage;
+
+  /// No description provided for @criticalUpdateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a critical update that is required to continue using the app.'**
+  String get criticalUpdateMessage;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get updateNow;
+
+  /// No description provided for @checkForUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get checkForUpdates;
+
+  /// No description provided for @iOSUpdateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit the App Store to check for the latest version of the app.'**
+  String get iOSUpdateMessage;
+
+  /// No description provided for @openAppStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Open App Store'**
+  String get openAppStore;
+
+  /// No description provided for @upToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to Date'**
+  String get upToDate;
+
+  /// No description provided for @noUpdateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re using the latest version of the app.'**
+  String get noUpdateAvailable;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @updateCheckFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Update check failed'**
+  String get updateCheckFailed;
+
+  /// No description provided for @updateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Ready'**
+  String get updateReady;
+
+  /// No description provided for @updateReadyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The update has been downloaded and is ready to install. Restart the app to complete the update.'**
+  String get updateReadyMessage;
+
+  /// No description provided for @restartNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart Now'**
+  String get restartNow;
+
+  /// No description provided for @app_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'App Settings'**
+  String get app_settings;
+
+  /// No description provided for @checkForUpdatesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Check if a newer version of the app is available for download.'**
+  String get checkForUpdatesDescription;
+
+  /// No description provided for @app_version.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version'**
+  String get app_version;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
 }
 
 class _AppLocalizationsDelegate

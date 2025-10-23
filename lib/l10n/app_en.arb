@@ -599,5 +599,26 @@
     "confirmDeleteReadingHistory": "Are you sure you want to delete this reading history entry? This action cannot be undone.",
     "readingHistoryDeleted": "Reading history deleted successfully",
     "errorDeletingHistory": "Error deleting reading history",
-    "error": "Error"
+    "error": "Error",
+    
+    "updateAvailable": "Update Available",
+    "updateAvailableMessage": "A new version of the app is available. Update now to enjoy the latest features and improvements.",
+    "criticalUpdateMessage": "This is a critical update that is required to continue using the app.",
+    "later": "Later",
+    "updateNow": "Update Now",
+    "checkForUpdates": "Check for Updates",
+    "iOSUpdateMessage": "Visit the App Store to check for the latest version of the app.",
+    "openAppStore": "Open App Store",
+    "upToDate": "Up to Date",
+    "noUpdateAvailable": "You're using the latest version of the app.",
+    "ok": "OK",
+    "updateCheckFailed": "Update check failed",
+    "updateReady": "Update Ready",
+    "updateReadyMessage": "The update has been downloaded and is ready to install. Restart the app to complete the update.",
+    "restartNow": "Restart Now",
+    
+    "app_settings": "App Settings",
+    "checkForUpdatesDescription": "Check if a newer version of the app is available for download.",
+    "app_version": "App Version",
+    "loading": "Loading..."
 }

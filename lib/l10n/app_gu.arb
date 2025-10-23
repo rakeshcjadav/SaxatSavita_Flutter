@@ -599,5 +599,26 @@
     "confirmDeleteReadingHistory": "શું તમે ખરેખર આ વાંચન ઇતિહાસ કાઢી નાખવા માંગો છો? આ ક્રિયા પૂર્વવત્ કરી શકાતી નથી.",
     "readingHistoryDeleted": "વાંચન ઇતિહાસ સફળતાપૂર્વક કાઢી નાખ્યો",
     "errorDeletingHistory": "વાંચન ઇતિહાસ કાઢવામાં ભૂલ",
-    "error": "ભૂલ"
+    "error": "ભૂલ",
+    
+    "updateAvailable": "અપડેટ ઉપલબ્ધ છે",
+    "updateAvailableMessage": "એપ્લિકેશનનું નવું વર્ઝન ઉપલબ્ધ છે. નવી સુવિધાઓ અને સુધારાઓનો આનંદ લેવા માટે હવે અપડેટ કરો.",
+    "criticalUpdateMessage": "આ એક મહત્વપૂર્ણ અપડેટ છે જે એપ્લિકેશનનો ઉપયોગ ચાલુ રાખવા માટે જરૂરી છે.",
+    "later": "પછી",
+    "updateNow": "હવે અપડેટ કરો",
+    "checkForUpdates": "અપડેટ માટે તપાસો",
+    "iOSUpdateMessage": "એપ્લિકેશનનું નવીનતમ વર્ઝન તપાસવા માટે App Store ની મુલાકાત લો.",
+    "openAppStore": "App Store ખોલો",
+    "upToDate": "અપ ટુ ડેટ",
+    "noUpdateAvailable": "તમે એપ્લિકેશનનું નવીનતમ વર્ઝન વાપરી રહ્યા છો.",
+    "ok": "બરાબર",
+    "updateCheckFailed": "અપડેટ તપાસ નિષ્ફળ",
+    "updateReady": "અપડેટ તૈયાર છે",
+    "updateReadyMessage": "અપડેટ ડાઉનલોડ થઈ ગયું છે અને ઇન્સ્ટોલ કરવા માટે તૈયાર છે. અપડેટ પૂર્ણ કરવા માટે એપ્લિકેશન ફરીથી શરૂ કરો.",
+    "restartNow": "હવે ફરીથી શરૂ કરો",
+    
+    "app_settings": "એપ સેટિંગ્સ",
+    "checkForUpdatesDescription": "એપ્લિકેશનનું નવું વર્ઝન ડાઉનલોડ માટે ઉપલબ્ધ છે કે કેમ તે તપાસો.",
+    "app_version": "એપ વર્ઝન",
+    "loading": "લોડ થઈ રહ્યું છે..."
 }

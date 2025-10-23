@@ -1220,4 +1220,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get updateAvailable => 'Update Available';
+
+  @override
+  String get updateAvailableMessage =>
+      'A new version of the app is available. Update now to enjoy the latest features and improvements.';
+
+  @override
+  String get criticalUpdateMessage =>
+      'This is a critical update that is required to continue using the app.';
+
+  @override
+  String get later => 'Later';
+
+  @override
+  String get updateNow => 'Update Now';
+
+  @override
+  String get checkForUpdates => 'Check for Updates';
+
+  @override
+  String get iOSUpdateMessage =>
+      'Visit the App Store to check for the latest version of the app.';
+
+  @override
+  String get openAppStore => 'Open App Store';
+
+  @override
+  String get upToDate => 'Up to Date';
+
+  @override
+  String get noUpdateAvailable =>
+      'You\'re using the latest version of the app.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get updateCheckFailed => 'Update check failed';
+
+  @override
+  String get updateReady => 'Update Ready';
+
+  @override
+  String get updateReadyMessage =>
+      'The update has been downloaded and is ready to install. Restart the app to complete the update.';
+
+  @override
+  String get restartNow => 'Restart Now';
+
+  @override
+  String get app_settings => 'App Settings';
+
+  @override
+  String get checkForUpdatesDescription =>
+      'Check if a newer version of the app is available for download.';
+
+  @override
+  String get app_version => 'App Version';
+
+  @override
+  String get loading => 'Loading...';
 }

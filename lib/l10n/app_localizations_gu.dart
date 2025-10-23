@@ -1226,4 +1226,67 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get error => 'ભૂલ';
+
+  @override
+  String get updateAvailable => 'અપડેટ ઉપલબ્ધ છે';
+
+  @override
+  String get updateAvailableMessage =>
+      'એપ્લિકેશનનું નવું વર્ઝન ઉપલબ્ધ છે. નવી સુવિધાઓ અને સુધારાઓનો આનંદ લેવા માટે હવે અપડેટ કરો.';
+
+  @override
+  String get criticalUpdateMessage =>
+      'આ એક મહત્વપૂર્ણ અપડેટ છે જે એપ્લિકેશનનો ઉપયોગ ચાલુ રાખવા માટે જરૂરી છે.';
+
+  @override
+  String get later => 'પછી';
+
+  @override
+  String get updateNow => 'હવે અપડેટ કરો';
+
+  @override
+  String get checkForUpdates => 'અપડેટ માટે તપાસો';
+
+  @override
+  String get iOSUpdateMessage =>
+      'એપ્લિકેશનનું નવીનતમ વર્ઝન તપાસવા માટે App Store ની મુલાકાત લો.';
+
+  @override
+  String get openAppStore => 'App Store ખોલો';
+
+  @override
+  String get upToDate => 'અપ ટુ ડેટ';
+
+  @override
+  String get noUpdateAvailable =>
+      'તમે એપ્લિકેશનનું નવીનતમ વર્ઝન વાપરી રહ્યા છો.';
+
+  @override
+  String get ok => 'બરાબર';
+
+  @override
+  String get updateCheckFailed => 'અપડેટ તપાસ નિષ્ફળ';
+
+  @override
+  String get updateReady => 'અપડેટ તૈયાર છે';
+
+  @override
+  String get updateReadyMessage =>
+      'અપડેટ ડાઉનલોડ થઈ ગયું છે અને ઇન્સ્ટોલ કરવા માટે તૈયાર છે. અપડેટ પૂર્ણ કરવા માટે એપ્લિકેશન ફરીથી શરૂ કરો.';
+
+  @override
+  String get restartNow => 'હવે ફરીથી શરૂ કરો';
+
+  @override
+  String get app_settings => 'એપ સેટિંગ્સ';
+
+  @override
+  String get checkForUpdatesDescription =>
+      'એપ્લિકેશનનું નવું વર્ઝન ડાઉનલોડ માટે ઉપલબ્ધ છે કે કેમ તે તપાસો.';
+
+  @override
+  String get app_version => 'એપ વર્ઝન';
+
+  @override
+  String get loading => 'લોડ થઈ રહ્યું છે...';
 }

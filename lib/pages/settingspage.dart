@@ -8,6 +8,7 @@ import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/services/first_time_user_service.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
+import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -724,6 +725,52 @@ class _SettingsPageState extends State<SettingsPage> {
     ];
   }
 
+  List<Widget> _buildAppSettingsSection() {
+    return <Widget>[
+      // App Settings Section
+      _buildSectionHeader(
+        context,
+        AppLocalizations.of(context)!.app_settings,
+        Icons.settings_applications,
+      ),
+      const SizedBox(height: 8),
+
+      // Version Information
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.info_outline),
+          title: Text(AppLocalizations.of(context)!.app_version),
+          subtitle: FutureBuilder<String>(
+            future: InAppUpdateService().getCurrentVersion(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data!);
+              }
+              return Text(AppLocalizations.of(context)!.loading);
+            },
+          ),
+        ),
+      ),
+
+      // Check for Updates
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.system_update),
+          title: Text(AppLocalizations.of(context)!.checkForUpdates),
+          subtitle: Text(
+            AppLocalizations.of(context)!.checkForUpdatesDescription,
+          ),
+          onTap: () async {
+            await InAppUpdateService().checkForUpdate(
+              context,
+              isManualCheck: true,
+            );
+          },
+        ),
+      ),
+    ];
+  }
+
   List<Widget> _buildDebugSection() {
     return <Widget>[
       // Debug Section (only show in debug mode)
@@ -737,6 +784,18 @@ class _SettingsPageState extends State<SettingsPage> {
             title: const Text('Reset Welcome Screen'),
             subtitle: const Text('Show welcome screen on next app launch'),
             onTap: _resetWelcomeScreen,
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.error_outline),
+            title: const Text('Test Update Error Dialog'),
+            subtitle: const Text(
+              'Test the enhanced error handling for updates',
+            ),
+            onTap: () {
+              InAppUpdateService().testErrorDialog(context);
+            },
           ),
         ),
       ],
@@ -836,6 +895,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     const SizedBox(height: 24),
                     // Language & Localization Section
                     ..._buildLanguageSettingsSection(),
+
+                    const SizedBox(height: 24),
+                    // App Settings Section
+                    ..._buildAppSettingsSection(),
 
                     const SizedBox(height: 24),
                     ..._buildAccountSection(),
