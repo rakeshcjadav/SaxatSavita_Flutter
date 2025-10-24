@@ -158,7 +158,7 @@ class _DrawerState extends State<MyDrawer> {
           ],
           ...?widget._drawerItems?.map((item) {
             return _buildDrawerItem(item);
-          }).toList(),
+          }),
           const Divider(),
           FutureBuilder<PackageInfo>(
             future: PackageInfo.fromPlatform(),
@@ -180,7 +180,7 @@ class _DrawerState extends State<MyDrawer> {
     );
   }
 
-  _buildDrawerItem(DrawerItem item) {
+  Widget _buildDrawerItem(DrawerItem item) {
     return switch (item) {
       DrawerItem.aashirvachan => ListTile(
         leading: const Icon(Icons.description),

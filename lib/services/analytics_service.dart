@@ -282,7 +282,7 @@ class AnalyticsService {
           'error_type': errorType,
           'error_message':
               errorMessage.length > 100
-                  ? errorMessage.substring(0, 100) + '...'
+                  ? '${errorMessage.substring(0, 100)}...'
                   : errorMessage,
           if (screen != null) 'screen': screen,
           'timestamp': DateTime.now().millisecondsSinceEpoch,
