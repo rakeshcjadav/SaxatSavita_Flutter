@@ -800,7 +800,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 8.0),
+                              const SizedBox(height: 64.0),
                             ],
                           ),
                         ),
