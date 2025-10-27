@@ -7,11 +7,12 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
-import 'package:saxatsavita_flutter/services/appdataservice.dart';
+import 'package:saxatsavita_flutter/models/user_profile_model.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_info_migration_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_history_migration_service.dart';
+import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils {
@@ -191,22 +192,18 @@ class Utils {
     }
   }
 
-  static Future<void> saveUserDetailsToFirebase() async {
-    await FirebaseIntegrationHelper().saveUserDetailsToFirebase();
-  }
-
-  static Future<void> saveAppleUserDetailsToFirebase(
+  static Future<void> saveUserDetailsToFirebase(
     String displayName,
     String email,
   ) async {
-    await FirebaseIntegrationHelper().saveAppleUserDetailsToFirebase(
+    await FirebaseIntegrationHelper().saveUserDetailsToFirebase(
       displayName,
       email,
     );
   }
 
-  static Future<Map<String, String>> getUserInfoSummary() async {
-    return await AppDataService().getUserInfoSummary();
+  static Future<UserProfile> getUserProfile() async {
+    return await UserProfileService().getUserProfile();
   }
 
   static Future<void> checkAndPerformMigration() async {
@@ -334,5 +331,26 @@ class Utils {
             ],
           ),
     );
+  }
+
+  static Future<bool> shouldNavigateToProfile() async {
+    try {
+      final profileService = UserProfileService();
+      final profile = await profileService.getUserProfile();
+
+      // Check if profile has essential information (name fields)
+      if (profile.firstName.isNotEmpty && profile.lastName.isNotEmpty) {
+        debugPrint('User has complete profile - going to HomePage');
+        return false; // Has profile, go to HomePage
+      } else {
+        debugPrint('User profile incomplete - going to Profile Page');
+        return true; // No or incomplete profile, go to Profile Page
+      }
+    } catch (e) {
+      debugPrint(
+        'Error checking profile, assuming new user - going to Profile Page: $e',
+      );
+      return true; // Error or no profile, go to Profile Page for setup
+    }
   }
 }

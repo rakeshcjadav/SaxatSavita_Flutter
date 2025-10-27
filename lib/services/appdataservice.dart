@@ -10,17 +10,6 @@ class AppDataService {
 
   Map<String, dynamic>? _data;
 
-  Map<String, String>? get userInfoSummary => _userInfoSummary;
-  Map<String, String>? _userInfoSummary;
-
-  Future<Map<String, String>> getUserInfoSummary() async {
-    if (_userInfoSummary != null && _userInfoSummary!.isNotEmpty) {
-      return _userInfoSummary!;
-    }
-    _userInfoSummary = await FirebaseIntegrationHelper().getUserInfoSummary();
-    return _userInfoSummary!;
-  }
-
   Future<void> loadData(String path) async {
     final jsonString = await rootBundle.loadString(path);
     _data = json.decode(jsonString) as Map<String, dynamic>;
@@ -55,9 +44,5 @@ class AppDataService {
       (item) => item.key == key,
       orElse: () => InfoContentModel(key: '', title: '', content: ''),
     );
-  }
-
-  void clearUserInfoSummary() {
-    _userInfoSummary = null;
   }
 }

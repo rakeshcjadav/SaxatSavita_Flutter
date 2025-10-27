@@ -1363,4 +1363,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profile_update_failed =>
       'Failed to update profile. Please try again.';
+
+  @override
+  String get incomplete_profile => 'Incomplete Profile';
+
+  @override
+  String get please_complete_profile =>
+      'Please complete all required fields to continue.';
+
+  @override
+  String get continue_editing => 'Continue Editing';
+
+  @override
+  String get exit_anyway => 'Exit Anyway';
 }

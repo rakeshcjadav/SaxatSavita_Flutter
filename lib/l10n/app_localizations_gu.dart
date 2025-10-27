@@ -1368,4 +1368,17 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get profile_update_failed =>
       'પ્રોફાઇલ અપડેટ કરવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો.';
+
+  @override
+  String get incomplete_profile => 'અધૂરો પ્રોફાઇલ';
+
+  @override
+  String get please_complete_profile =>
+      'ચાલુ રાખવા માટે કૃપા કરીને બધી આવશ્યક માહિતી ભરો.';
+
+  @override
+  String get continue_editing => 'ભરવાનું ચાલુ રાખો';
+
+  @override
+  String get exit_anyway => 'ગમે તેમ બહાર નીકળો';
 }

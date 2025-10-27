@@ -647,5 +647,9 @@
     "city_required": "શહેર આવશ્યક છે",
     "save_profile": "પ્રોફાઇલ સેવ કરો",
     "profile_updated_successfully": "પ્રોફાઇલ સફળતાપૂર્વક અપડેટ થઈ",
-    "profile_update_failed": "પ્રોફાઇલ અપડેટ કરવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો."
+    "profile_update_failed": "પ્રોફાઇલ અપડેટ કરવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો.",
+    "incomplete_profile": "અધૂરો પ્રોફાઇલ",
+    "please_complete_profile": "ચાલુ રાખવા માટે કૃપા કરીને બધી આવશ્યક માહિતી ભરો.",
+    "continue_editing": "ભરવાનું ચાલુ રાખો",
+    "exit_anyway": "ગમે તેમ બહાર નીકળો"
 }

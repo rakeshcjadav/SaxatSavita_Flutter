@@ -247,7 +247,8 @@ class SakshatSavitaApp extends StatelessWidget {
             '/reading_plans': (context) => const ReadingPlanPage(),
             '/quotes_generator':
                 (context) => const QuotesImageGeneratorPage(quote: null),
-            '/profile': (context) => const ProfilePage(),
+            '/profile':
+                (context) => const ProfilePage(continueAfterProfile: false),
             '/migration': (context) => const ComprehensiveMigrationPage(),
             '/welcome': (context) => const WelcomeScreen(),
             '/login': (context) => const GoogleSignInPage(),

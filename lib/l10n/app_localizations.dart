@@ -2563,6 +2563,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to update profile. Please try again.'**
   String get profile_update_failed;
+
+  /// No description provided for @incomplete_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete Profile'**
+  String get incomplete_profile;
+
+  /// No description provided for @please_complete_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete all required fields to continue.'**
+  String get please_complete_profile;
+
+  /// No description provided for @continue_editing.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Editing'**
+  String get continue_editing;
+
+  /// No description provided for @exit_anyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Anyway'**
+  String get exit_anyway;
 }
 
 class _AppLocalizationsDelegate

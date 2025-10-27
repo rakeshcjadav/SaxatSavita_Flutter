@@ -186,19 +186,11 @@ class FirebaseIntegrationHelper {
     debugPrint('Auto-sync listeners configured');
   }
 
-  Future<void> saveUserDetailsToFirebase() async {
-    await _firebaseSync.saveUserDetailsToFirebase();
-  }
-
-  Future<void> saveAppleUserDetailsToFirebase(
+  Future<void> saveUserDetailsToFirebase(
     String displayName,
     String email,
   ) async {
-    await _firebaseSync.saveAppleUserDetailsToFirebase(displayName, email);
-  }
-
-  Future<Map<String, String>> getUserInfoSummary() async {
-    return await _firebaseSync.getUserInfoSummary();
+    await _firebaseSync.saveUserDetailsToFirebase(displayName, email);
   }
 
   Future<void> onReadingHistoryDeleted(ReadingHistory historyToDelete) async {

@@ -38,20 +38,13 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _DrawerState extends State<MyDrawer> {
-  Map<String, String> _userInfoSummary = {};
   UserProfile? _userProfile;
   final UserProfileService _profileService = UserProfileService();
 
   @override
   void initState() {
     super.initState();
-    getUserInfoSummary();
     _loadUserProfile();
-  }
-
-  Future<void> getUserInfoSummary() async {
-    _userInfoSummary = await Utils.getUserInfoSummary();
-    setState(() {});
   }
 
   Future<void> _loadUserProfile() async {
@@ -70,11 +63,7 @@ class _DrawerState extends State<MyDrawer> {
   }
 
   Widget getAvatar() {
-    if (_userInfoSummary['platform'] == 'apple') {
-      return CircleAvatar(
-        backgroundImage: AssetImage('assets/res/z_jogi_swami_avatar.png'),
-      );
-    } else if (FirebaseAuth.instance.currentUser?.photoURL == null ||
+    if (FirebaseAuth.instance.currentUser?.photoURL == null ||
         FirebaseAuth.instance.currentUser!.photoURL!.isEmpty) {
       return CircleAvatar(
         backgroundImage: AssetImage('assets/res/z_jogi_swami_avatar.png'),
@@ -99,44 +88,35 @@ class _DrawerState extends State<MyDrawer> {
           color: Theme.of(context).colorScheme.onPrimary,
         ),
       );
-    }
-
-    // Fall back to existing logic
-    if (Platform.isIOS) {
+    } else {
+      // Fall back to Firebase Auth display name
       return Text(
-        _userInfoSummary['displayName'] ??
-            FirebaseAuth.instance.currentUser?.displayName ??
-            AppLocalizations.of(context)!.sakshatSavita,
+        FirebaseAuth.instance.currentUser?.displayName ?? '',
         style: Theme.of(context).textTheme.titleSmall!.copyWith(
           color: Theme.of(context).colorScheme.onPrimary,
         ),
       );
     }
-    return Text(
-      FirebaseAuth.instance.currentUser?.displayName ??
-          AppLocalizations.of(context)!.sakshatSavita,
-      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-        color: Theme.of(context).colorScheme.onPrimary,
-      ),
-    );
   }
 
   Widget getAccountEmail() {
-    if (Platform.isIOS) {
+    // Prioritize profile data if available and both names are filled
+    if (_userProfile != null && _userProfile!.email.isNotEmpty) {
       return Text(
-        _userInfoSummary['email'] ?? '',
+        _userProfile!.email,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+      );
+    } else {
+      // Fall back to Firebase Auth email
+      return Text(
+        FirebaseAuth.instance.currentUser?.email ?? '',
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
           color: Theme.of(context).colorScheme.onPrimary,
         ),
       );
     }
-    return Text(
-      FirebaseAuth.instance.currentUser?.email ??
-          AppLocalizations.of(context)!.sakshatSavita,
-      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-        color: Theme.of(context).colorScheme.onPrimary,
-      ),
-    );
   }
 
   @override

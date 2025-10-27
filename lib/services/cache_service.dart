@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
-import 'package:saxatsavita_flutter/services/appdataservice.dart';
+import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
@@ -69,8 +69,8 @@ class CacheService {
       Bookservice().bookUserInfoList = [];
       debugPrint('✅ Book user info cache cleared');
 
-      AppDataService().clearUserInfoSummary();
-      debugPrint('✅ App data user info summary cache cleared');
+      UserProfileService().clearCache();
+      debugPrint('✅ User profile cache cleared');
 
       appSettingsNotifier.value = appSettingsDefault;
       // Note: AppSettings are stored in Firebase and cleared by _clearFirebaseCache()

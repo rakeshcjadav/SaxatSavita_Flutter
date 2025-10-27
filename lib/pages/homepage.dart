@@ -6,6 +6,7 @@ import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,6 +28,21 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       InAppUpdateService().checkForUpdateOnAppStart(context);
     });
+
+    _checkProfileAndNavigate();
+  }
+
+  Future<void> _checkProfileAndNavigate() async {
+    // Check if user has profile data to determine navigation
+    bool shouldGoToProfile = await Utils.shouldNavigateToProfile();
+
+    // Navigate based on profile completeness
+    if (shouldGoToProfile && mounted) {
+      debugPrint('_handleAuthenticationEvent : Routing to Profile Page');
+      await Navigator.pushNamed(context, '/profile');
+    } else {
+      debugPrint('_handleAuthenticationEvent : Staying on Home Page');
+    }
   }
 
   @override
@@ -61,128 +77,130 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           DrawerItem.logout,
         ],
       ),
-      body: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          ClipRRect(
-            child: Image(
-              image: AssetImage('assets/res/z_jogi_swami_tallest_2.jpg'),
-              fit: BoxFit.cover,
-              width: double.infinity,
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 1.0),
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.0),
-                ],
-              ),
-            ),
-            height: 200,
+      body: _buildHomePage(context),
+      //bottomNavigationBar: const Navigationbar(),
+    );
+  }
+
+  Stack _buildHomePage(BuildContext context) {
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        ClipRRect(
+          child: Image(
+            image: AssetImage('assets/res/z_jogi_swami_tallest_2.jpg'),
+            fit: BoxFit.cover,
             width: double.infinity,
           ),
-          SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(bottom: 100),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 1.0),
-                        Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.0),
-                      ],
-                    ),
-                  ),
-                  //color: Theme.of(
-                  //  context,
-                  //).colorScheme.primary.withValues(alpha: 1.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.header_slok,
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Theme.of(context).colorScheme.primary.withValues(alpha: 1.0),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.0),
+              ],
+            ),
+          ),
+          height: 200,
+          width: double.infinity,
+        ),
+        SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.only(bottom: 100),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 1.0),
+                      Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.0),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.jogi_swami,
+                //color: Theme.of(
+                //  context,
+                //).colorScheme.primary.withValues(alpha: 1.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.header_slok,
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const BookMainpage(),
-                            ),
-                          );
-                        },
-                        iconAlignment: IconAlignment.start,
-                        icon: Icon(
-                          Icons.menu_book,
-                          size: appSettingsNotifier.value.fontSize,
-                        ),
-                        style: ButtonStyle(
-                          padding: const WidgetStatePropertyAll(
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          ),
-                          textStyle: WidgetStatePropertyAll(
-                            Theme.of(context).textTheme.titleMedium,
-                          ),
-                          elevation: WidgetStatePropertyAll(10),
-                        ),
-                        label: Text(
-                          "  ${AppLocalizations.of(context)!.sakshatSavita}",
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        AppLocalizations.of(context)!.sampRakhjo,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 8),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.jogi_swami,
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BookMainpage(),
+                          ),
+                        );
+                      },
+                      iconAlignment: IconAlignment.start,
+                      icon: Icon(
+                        Icons.menu_book,
+                        size: appSettingsNotifier.value.fontSize,
+                      ),
+                      style: ButtonStyle(
+                        padding: const WidgetStatePropertyAll(
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        ),
+                        textStyle: WidgetStatePropertyAll(
+                          Theme.of(context).textTheme.titleMedium,
+                        ),
+                        elevation: WidgetStatePropertyAll(10),
+                      ),
+                      label: Text(
+                        "  ${AppLocalizations.of(context)!.sakshatSavita}",
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      AppLocalizations.of(context)!.sampRakhjo,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
-      //bottomNavigationBar: const Navigationbar(),
+        ),
+      ],
     );
   }
 }

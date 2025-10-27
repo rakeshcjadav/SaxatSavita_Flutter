@@ -647,5 +647,9 @@
     "city_required": "City is required",
     "save_profile": "Save Profile",
     "profile_updated_successfully": "Profile updated successfully",
-    "profile_update_failed": "Failed to update profile. Please try again."
+    "profile_update_failed": "Failed to update profile. Please try again.",
+    "incomplete_profile": "Incomplete Profile",
+    "please_complete_profile": "Please complete all required fields to continue.",
+    "continue_editing": "Continue Editing",
+    "exit_anyway": "Exit Anyway"
 }

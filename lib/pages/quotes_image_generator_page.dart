@@ -816,10 +816,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                 fit: BoxFit.cover,
                                 errorBuilder:
                                     (context, error, stackTrace) =>
-                                        _buildDefaultAvatar(),
+                                        _buildDefaultAvatar(size: 60),
                               ),
                             )
-                            : _buildDefaultAvatar(),
+                            : _buildDefaultAvatar(size: 60),
                   ),
                 if (showAvatar && showName) const SizedBox(width: 16),
                 // User Info
@@ -1306,13 +1306,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 ? Colors.white.withValues(alpha: 0.2)
                 : _textColor.withValues(alpha: 0.1),
       ),
-      child: Icon(
-        Icons.person,
-        size: size * 0.6,
-        color:
-            isStory
-                ? Colors.white.withValues(alpha: 0.8)
-                : _textColor.withValues(alpha: 0.6),
+      child: CircleAvatar(
+        backgroundImage: AssetImage('assets/res/z_jogi_swami_avatar.png'),
       ),
     );
   }
@@ -1370,7 +1365,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       (context, error, stackTrace) => _buildDefaultAvatar(),
                 ),
               )
-              : _buildDefaultAvatar(),
+              : _buildDefaultAvatar(size: 40),
         const SizedBox(width: 16),
       ],
     );
@@ -1778,10 +1773,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 Spacer(),
                 Switch(
                   value: _showUserAvatar,
-                  onChanged:
-                      hasUserData && user.photoURL != null
-                          ? (value) => setState(() => _showUserAvatar = value)
-                          : null,
+                  onChanged: (value) => setState(() => _showUserAvatar = value),
                 ),
               ],
             ),

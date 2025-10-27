@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/models/user_profile_model.dart';
 
@@ -89,6 +90,11 @@ class UserProfileService {
 
       // Save to local storage as backup
       await _saveToLocalStorage(updatedProfile);
+
+      await Utils.saveUserDetailsToFirebase(
+        '${updatedProfile.firstName} ${updatedProfile.lastName}'.trim(),
+        updatedProfile.email,
+      );
 
       // Update cache
       _cachedProfile = updatedProfile;
