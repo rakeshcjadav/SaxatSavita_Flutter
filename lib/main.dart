@@ -19,6 +19,7 @@ import 'package:saxatsavita_flutter/pages/profile_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
+import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -63,6 +64,10 @@ void main() async {
   // Initialize Analytics Service
   AnalyticsService().initialize(analytics);
   print('Firebase Analytics initialized successfully');
+
+  // Initialize In-App Review Service
+  await InAppReviewService().initialize();
+  print('In-App Review Service initialized successfully');
 
   // Load JSON data
   await AppDataService().loadData('assets/jsons/data.json');

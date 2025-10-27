@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import '../models/infocontent_model.dart';
 
 class AppDataService {

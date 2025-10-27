@@ -54,6 +54,7 @@ dependencies:
   fl_chart: ^1.1.1
   scrollable_positioned_list: ^0.3.8
   in_app_update: ^4.2.5
+  in_app_review: ^2.0.11
   url_launcher: ^6.3.2
   wakelock_plus: ^1.4.0
 

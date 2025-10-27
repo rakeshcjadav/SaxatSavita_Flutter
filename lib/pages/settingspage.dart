@@ -8,6 +8,7 @@ import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/services/first_time_user_service.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
+import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -816,6 +817,16 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             onTap: () {
               InAppUpdateService().testErrorDialog(context);
+            },
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.error_outline),
+            title: const Text('Test In-App review'),
+            subtitle: const Text('Test the in-app review prompt dialog'),
+            onTap: () {
+              InAppReviewService().forcePromptForReview();
             },
           ),
         ),

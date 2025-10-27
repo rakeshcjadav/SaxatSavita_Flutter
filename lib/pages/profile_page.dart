@@ -156,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -220,8 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   AppLocalizations.of(
                                     context,
                                   )!.personal_information,
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 const SizedBox(height: 16),
 

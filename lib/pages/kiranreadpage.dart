@@ -18,6 +18,7 @@ import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
+import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 
 class KiranReadPage extends StatefulWidget {
   const KiranReadPage({
@@ -732,6 +733,10 @@ class _KiranReadPageState extends State<KiranReadPage>
                                                   readingTimeSeconds:
                                                       readingTimeSeconds,
                                                 );
+
+                                            // Increment reading session count for review prompts
+                                            await InAppReviewService()
+                                                .incrementReadingSessionCount();
 
                                             if (mounted) {
                                               setState(() {
