@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
@@ -9,7 +7,6 @@ import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
-import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:saxatsavita_flutter/models/user_profile_model.dart';
 

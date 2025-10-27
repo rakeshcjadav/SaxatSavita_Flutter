@@ -184,6 +184,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
     debugPrint('_handleAuthenticationEvent : Navigation completed');
   }
 
+  /*
   // Debug method to test Apple Sign-In capability
   Future<void> _testAppleSignInCapability() async {
     debugPrint('=== Testing Apple Sign-In Capability ===');
@@ -231,7 +232,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
       }
     }
   }
-
+ 
   Future<void> _handleSignOut() async {
     try {
       // Show loading indicator
@@ -281,7 +282,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
       }
       debugPrint('Sign out error: $e');
     }
-  }
+  }*/
 
   void _handleAuthenticationError(Object e) async {
     debugPrint('_handleAuthenticationError : start');
@@ -663,36 +664,5 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
         child: _buildBody(),
       ),
     );
-  }
-
-  Future<void> _syncUserDataToFirebase({
-    required String userIdentifier,
-    String? email,
-    String? givenName,
-    String? familyName,
-  }) async {
-    // Implement the logic to sync the Apple user data to Firebase
-    // For example, you might want to save the userIdentifier, email, givenName, and familyName to Firebase
-    // You can access the Firebase Authentication instance using FirebaseAuth.instance
-    final user = firebaseAuth.currentUser;
-    if (user == null) {
-      debugPrint('No authenticated user to sync Apple data for.');
-      return;
-    }
-    debugPrint('Syncing Apple user data to Firebase for user: ${user.uid}');
-
-    await user.reload(); // Ensure we have the latest user data
-    // Here, you would typically update the user's profile or a Firestore document
-    // with the Apple user data. This is just a placeholder implementation.
-    debugPrint('Apple User Data to sync:');
-    debugPrint('- User Identifier: $userIdentifier');
-    debugPrint('- Email: $email');
-    debugPrint('- Given Name: $givenName');
-    debugPrint('- Family Name: $familyName');
-    await Utils.saveUserDetailsToFirebase(
-      '${givenName!} ${familyName!}'.trim(),
-      email!,
-    );
-    debugPrint('Apple user data synced to Firebase successfully.');
   }
 }
