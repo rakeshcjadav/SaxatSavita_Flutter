@@ -37,7 +37,8 @@
     "reading_speed": "વાંચવાની ગતિ",
     "select_language": "ભાષા પસંદ કરો",
     "reading_count": "{count} વખત વાંચ્યું",
-    "kiran_read_finished" : "કિરણ વાંચી લીધું",
+    "kiran_read_finished" : "કિરણ વંચાય જાય પછી આ બટન દબાવો",
+    "kiran_read_finished_message" : "આ કિરણ તમે {count} વખત વાંચ્યું.",
     "@reading_count": {
         "description": "Indicates how many times the user has read a particular item.",
         "placeholders": {

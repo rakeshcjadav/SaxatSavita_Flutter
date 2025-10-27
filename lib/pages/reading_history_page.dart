@@ -1784,9 +1784,9 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
 
   String _getIntuitiveDateLabel(DateTime date) {
     if (_isToday(date)) {
-      return 'Today';
+      return AppLocalizations.of(context)!.today;
     } else if (_isYesterday(date)) {
-      return 'Yesterday';
+      return AppLocalizations.of(context)!.yesterday;
     } else {
       final now = DateTime.now();
       final difference = now.difference(date).inDays;
@@ -1811,9 +1811,9 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
     }
 
     if (_isToday(date)) {
-      return 'Latest (Today)';
+      return 'Latest (${AppLocalizations.of(context)!.today})';
     } else if (_isYesterday(date)) {
-      return 'Latest (Yesterday)';
+      return 'Latest (${AppLocalizations.of(context)!.yesterday})';
     } else {
       final now = DateTime.now();
       final difference = now.difference(date).inDays;

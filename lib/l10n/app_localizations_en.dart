@@ -122,6 +122,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kiran_read_finished => 'Read the kiran';
 
   @override
+  String kiran_read_finished_message(Object count) {
+    return 'You have read this kiran $count times.';
+  }
+
+  @override
   String get not_yet_read => 'Not yet read';
 
   @override

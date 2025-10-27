@@ -119,7 +119,12 @@ class AppLocalizationsGu extends AppLocalizations {
   }
 
   @override
-  String get kiran_read_finished => 'કિરણ વાંચી લીધું';
+  String get kiran_read_finished => 'કિરણ વંચાય જાય પછી આ બટન દબાવો';
+
+  @override
+  String kiran_read_finished_message(Object count) {
+    return 'આ કિરણ તમે $count વખત વાંચ્યું.';
+  }
 
   @override
   String get not_yet_read => 'હજી વાંચ્યું નથી';

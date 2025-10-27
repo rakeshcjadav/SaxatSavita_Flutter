@@ -46,7 +46,7 @@ class _BookmarkwidgetState extends State<Bookmarkwidget> {
           },
           icon: const Icon(Icons.bookmark, color: Colors.amber),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Row(
           children: [
             const SizedBox(width: 18),

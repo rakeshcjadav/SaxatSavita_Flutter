@@ -663,7 +663,8 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                             reversedList[value.toInt()]['date']
                                                 as DateTime;
                                         return Text(
-                                          '${date.day}',
+                                          // Display 'Today' for current day
+                                          _getIntuitiveDateLabel(date),
                                           style: const TextStyle(fontSize: 10),
                                         );
                                       }
@@ -888,7 +889,8 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                                           reversedList[value.toInt()]['date']
                                               as DateTime;
                                       return Text(
-                                        '${date.day}',
+                                        // Display 'Today' for current day
+                                        _getIntuitiveDateLabel(date),
                                         style: const TextStyle(fontSize: 10),
                                       );
                                     }
@@ -1331,5 +1333,19 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
             ],
           ),
     );
+  }
+
+  String _getIntuitiveDateLabel(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final dateToCheck = DateTime(date.year, date.month, date.day);
+
+    if (dateToCheck == today) {
+      return AppLocalizations.of(context)!.today;
+    } else if (dateToCheck == today.subtract(const Duration(days: 1))) {
+      return AppLocalizations.of(context)!.yesterday;
+    } else {
+      return '${date.day}';
+    }
   }
 }

@@ -763,7 +763,11 @@ class _KiranReadPageState extends State<KiranReadPage>
                                                 SnackBar(
                                                   content: Text(
                                                     localizations
-                                                        .kiran_read_finished,
+                                                        .kiran_read_finished_message(
+                                                          widget
+                                                              .kiranUserInfo
+                                                              .readCount,
+                                                        ),
                                                   ),
                                                   duration: const Duration(
                                                     seconds: 2,

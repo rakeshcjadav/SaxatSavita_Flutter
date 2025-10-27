@@ -38,6 +38,7 @@
     "select_language": "Select Language",
     "reading_count": "Read {count} times",
     "kiran_read_finished" : "Read the kiran",
+    "kiran_read_finished_message" : "You have read this kiran {count} times.",
     "@reading_count": {
         "description": "Indicates how many times the user has read a particular item.",
         "placeholders": {

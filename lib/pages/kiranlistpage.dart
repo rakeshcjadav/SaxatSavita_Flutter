@@ -363,12 +363,32 @@ class _KiranlistpageState extends State<Kiranlistpage> {
           ),
         ),
         const SizedBox(height: 8),
+        Row(
+          children: [
+            Icon(
+              kiranUserInfo.readCount == 0
+                  ? Icons.visibility_off
+                  : Icons.remove_red_eye,
+              size: Theme.of(context).textTheme.bodySmall!.fontSize,
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.3),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              getReadCount(kiranUserInfo),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
         // Any other KiranUserInfo fields
         Row(
           children: [
             if (kiranUserInfo.updatedAt != null) ...[
               Icon(
                 Icons.history,
+                size: Theme.of(context).textTheme.bodySmall!.fontSize,
                 color: Theme.of(
                   context,
                 ).colorScheme.primary.withValues(alpha: 0.3),
@@ -382,10 +402,6 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 ),
               ),
             ],
-            Text(
-              getReadCount(kiranUserInfo),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
           ],
         ),
       ],
