@@ -1332,4 +1332,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get personal_information => 'Personal Information';
+
+  @override
+  String get first_name => 'First Name';
+
+  @override
+  String get last_name => 'Last Name';
+
+  @override
+  String get city => 'City';
+
+  @override
+  String get first_name_required => 'First name is required';
+
+  @override
+  String get last_name_required => 'Last name is required';
+
+  @override
+  String get city_required => 'City is required';
+
+  @override
+  String get save_profile => 'Save Profile';
+
+  @override
+  String get profile_updated_successfully => 'Profile updated successfully';
+
+  @override
+  String get profile_update_failed =>
+      'Failed to update profile. Please try again.';
 }

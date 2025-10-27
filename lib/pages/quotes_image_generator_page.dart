@@ -10,6 +10,8 @@ import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
+import 'package:saxatsavita_flutter/services/user_profile_service.dart';
+import 'package:saxatsavita_flutter/models/user_profile_model.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
@@ -46,6 +48,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   // User info options (optional)
   bool _showUserAvatar = false;
   bool _showUserName = false;
+
+  // Profile service and data
+  UserProfile? _userProfile;
+  final UserProfileService _profileService = UserProfileService();
 
   // Current quote reference
   InspirationalQuote? _currentSelectedQuote;
@@ -102,6 +108,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   void initState() {
     super.initState();
     _customizationTabController = TabController(length: 4, vsync: this);
+    _loadUserProfile();
     // Set first predefined quote as default
     if (widget.quote != null) {
       _currentSelectedQuote = widget.quote;
@@ -112,6 +119,34 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       hasEnableEditing = true;
       // Don't call _getRandomQuote() here since localization isn't ready yet
     }
+  }
+
+  Future<void> _loadUserProfile() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      try {
+        final profile = await _profileService.getUserProfile();
+        if (mounted) {
+          setState(() {
+            _userProfile = profile;
+          });
+        }
+      } catch (e) {
+        // Handle error silently, will fall back to Firebase Auth display name
+      }
+    }
+  }
+
+  String _getDisplayName() {
+    // Prioritize profile data if available and both names are filled
+    if (_userProfile != null && 
+        _userProfile!.firstName.isNotEmpty && 
+        _userProfile!.lastName.isNotEmpty) {
+      return _userProfile!.fullName;
+    }
+    
+    // Fall back to Firebase Auth display name
+    return FirebaseAuth.instance.currentUser?.displayName ??
+           AppLocalizations.of(context)!.spiritual_seeker;
   }
 
   @override
@@ -134,7 +169,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       _currentSelectedQuote = randomQuote;
       _currentSelectedQuote!.setAuthor =
           author.isEmpty
-              ? (FirebaseAuth.instance.currentUser?.displayName ?? '')
+              ? _getDisplayName()
               : author;
       _quoteController.text = randomQuote.quote;
       _authorController.text = _currentSelectedQuote!.author;
@@ -796,8 +831,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user?.displayName ??
-                              AppLocalizations.of(context)!.spiritual_seeker,
+                          _getDisplayName(),
                           style: TextStyle(
                             color: _textColor,
                             fontSize: 18,
@@ -910,8 +944,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        user?.displayName ??
-                            AppLocalizations.of(context)!.spiritual_seeker,
+                        _getDisplayName(),
                         style: TextStyle(
                           color: _textColor,
                           fontSize: 14,
@@ -1012,8 +1045,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user?.displayName ??
-                              AppLocalizations.of(context)!.spiritual_seeker,
+                          _getDisplayName(),
                           style: TextStyle(
                             color: _textColor,
                             fontSize: 14,
@@ -1161,8 +1193,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
                     if (_showUserName)
                       Text(
-                        user?.displayName ??
-                            AppLocalizations.of(context)!.spiritual_seeker,
+                        _getDisplayName(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -1315,9 +1346,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        if (_showUserName && user.displayName != null) ...[
+        if (_showUserName) ...[
           Text(
-            user.displayName!,
+            _getDisplayName(),
             style: TextStyle(
               color: _authorColor,
               fontSize: _authorFontSize,
@@ -1716,8 +1747,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildUserInfoTab() {
     final user = FirebaseAuth.instance.currentUser;
-    final hasUserData =
-        user != null && (user.displayName != null || user.photoURL != null);
+    final hasUserData = user != null && 
+        (user.displayName != null || user.photoURL != null || 
+         (_userProfile != null && _userProfile!.firstName.isNotEmpty && _userProfile!.lastName.isNotEmpty));
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -1760,8 +1792,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 Spacer(),
                 Switch(
                   value: _showUserName,
-                  onChanged:
-                      hasUserData && user.displayName != null
+                  onChanged: hasUserData &&
+                      (user.displayName != null || 
+                       (_userProfile != null && _userProfile!.firstName.isNotEmpty && _userProfile!.lastName.isNotEmpty))
                           ? (value) => setState(() => _showUserName = value)
                           : null,
                 ),

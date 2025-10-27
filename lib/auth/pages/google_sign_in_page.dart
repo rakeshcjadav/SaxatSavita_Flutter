@@ -665,6 +665,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
           DrawerItem.information,
           DrawerItem.search,
           DrawerItem.quotesImageGenerator,
+          DrawerItem.profile,
           DrawerItem.settings,
           DrawerItem.migration,
         ],

@@ -10,6 +10,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
+import 'package:saxatsavita_flutter/services/user_profile_service.dart';
+import 'package:saxatsavita_flutter/models/user_profile_model.dart';
 
 enum DrawerItem {
   aashirvachan,
@@ -19,6 +21,7 @@ enum DrawerItem {
   readingPlans,
   readingHistory,
   quotesImageGenerator,
+  profile,
   settings,
   welcomeTour,
   migration,
@@ -36,16 +39,34 @@ class MyDrawer extends StatefulWidget {
 
 class _DrawerState extends State<MyDrawer> {
   Map<String, String> _userInfoSummary = {};
+  UserProfile? _userProfile;
+  final UserProfileService _profileService = UserProfileService();
+
   @override
   void initState() {
     super.initState();
-
     getUserInfoSummary();
+    _loadUserProfile();
   }
 
   Future<void> getUserInfoSummary() async {
     _userInfoSummary = await Utils.getUserInfoSummary();
     setState(() {});
+  }
+
+  Future<void> _loadUserProfile() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      try {
+        final profile = await _profileService.getUserProfile();
+        if (mounted) {
+          setState(() {
+            _userProfile = profile;
+          });
+        }
+      } catch (e) {
+        // Handle error silently, will fall back to Firebase Auth display name
+      }
+    }
   }
 
   Widget getAvatar() {
@@ -68,9 +89,24 @@ class _DrawerState extends State<MyDrawer> {
   }
 
   Widget getAccountName() {
+    // Prioritize profile data if available and both names are filled
+    if (_userProfile != null &&
+        _userProfile!.firstName.isNotEmpty &&
+        _userProfile!.lastName.isNotEmpty) {
+      return Text(
+        _userProfile!.fullName,
+        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+      );
+    }
+
+    // Fall back to existing logic
     if (Platform.isIOS) {
       return Text(
-        _userInfoSummary['displayName'] ?? '',
+        _userInfoSummary['displayName'] ??
+            FirebaseAuth.instance.currentUser?.displayName ??
+            AppLocalizations.of(context)!.sakshatSavita,
         style: Theme.of(context).textTheme.titleSmall!.copyWith(
           color: Theme.of(context).colorScheme.onPrimary,
         ),
@@ -236,6 +272,16 @@ class _DrawerState extends State<MyDrawer> {
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/quotes_generator', arguments: {null});
+        },
+      ),
+      DrawerItem.profile => ListTile(
+        leading: const Icon(Icons.person),
+        title: Text(AppLocalizations.of(context)!.profile),
+        onTap: () async {
+          Navigator.pop(context);
+          await Navigator.pushNamed(context, '/profile');
+          // Refresh profile data when returning from profile page
+          _loadUserProfile();
         },
       ),
       DrawerItem.settings => ListTile(

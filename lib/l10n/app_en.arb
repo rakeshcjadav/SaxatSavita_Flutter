@@ -636,5 +636,16 @@
     "goals_achieved": "Goals Achieved",
     "completion_rate": "Completion Rate",
     "streak_days": "Streak Days",
-    "close": "Close"
+    "close": "Close",
+    
+    "personal_information": "Personal Information",
+    "first_name": "First Name",
+    "last_name": "Last Name", 
+    "city": "City",
+    "first_name_required": "First name is required",
+    "last_name_required": "Last name is required",
+    "city_required": "City is required",
+    "save_profile": "Save Profile",
+    "profile_updated_successfully": "Profile updated successfully",
+    "profile_update_failed": "Failed to update profile. Please try again."
 }

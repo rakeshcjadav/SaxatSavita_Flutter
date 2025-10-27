@@ -636,5 +636,16 @@
     "goals_achieved": "હાંસલ કરેલા લક્ષ્યો",
     "completion_rate": "પૂર્ણતાનો દર",
     "streak_days": "સતત દિવસો",
-    "close": "બંધ કરો"
+    "close": "બંધ કરો",
+    
+    "personal_information": "વ્યક્તિગત માહિતી",
+    "first_name": "નામ",
+    "last_name": "અટક",
+    "city": "શહેર",
+    "first_name_required": "નામ આવશ્યક છે",
+    "last_name_required": "અટક આવશ્યક છે",
+    "city_required": "શહેર આવશ્યક છે",
+    "save_profile": "પ્રોફાઇલ સેવ કરો",
+    "profile_updated_successfully": "પ્રોફાઇલ સફળતાપૂર્વક અપડેટ થઈ",
+    "profile_update_failed": "પ્રોફાઇલ અપડેટ કરવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો."
 }

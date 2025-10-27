@@ -2503,6 +2503,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
+
+  /// No description provided for @personal_information.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get personal_information;
+
+  /// No description provided for @first_name.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get first_name;
+
+  /// No description provided for @last_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get last_name;
+
+  /// No description provided for @city.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get city;
+
+  /// No description provided for @first_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'First name is required'**
+  String get first_name_required;
+
+  /// No description provided for @last_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name is required'**
+  String get last_name_required;
+
+  /// No description provided for @city_required.
+  ///
+  /// In en, this message translates to:
+  /// **'City is required'**
+  String get city_required;
+
+  /// No description provided for @save_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Profile'**
+  String get save_profile;
+
+  /// No description provided for @profile_updated_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profile_updated_successfully;
+
+  /// No description provided for @profile_update_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update profile. Please try again.'**
+  String get profile_update_failed;
 }
 
 class _AppLocalizationsDelegate

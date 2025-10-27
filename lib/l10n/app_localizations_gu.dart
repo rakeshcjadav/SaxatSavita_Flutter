@@ -1337,4 +1337,35 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get close => 'બંધ કરો';
+
+  @override
+  String get personal_information => 'વ્યક્તિગત માહિતી';
+
+  @override
+  String get first_name => 'નામ';
+
+  @override
+  String get last_name => 'અટક';
+
+  @override
+  String get city => 'શહેર';
+
+  @override
+  String get first_name_required => 'નામ આવશ્યક છે';
+
+  @override
+  String get last_name_required => 'અટક આવશ્યક છે';
+
+  @override
+  String get city_required => 'શહેર આવશ્યક છે';
+
+  @override
+  String get save_profile => 'પ્રોફાઇલ સેવ કરો';
+
+  @override
+  String get profile_updated_successfully => 'પ્રોફાઇલ સફળતાપૂર્વક અપડેટ થઈ';
+
+  @override
+  String get profile_update_failed =>
+      'પ્રોફાઇલ અપડેટ કરવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો.';
 }

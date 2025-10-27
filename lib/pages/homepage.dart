@@ -55,6 +55,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           DrawerItem.readingPlans,
           DrawerItem.readingHistory,
           DrawerItem.quotesImageGenerator,
+          DrawerItem.profile,
           DrawerItem.welcomeTour,
           DrawerItem.migration,
           DrawerItem.logout,
