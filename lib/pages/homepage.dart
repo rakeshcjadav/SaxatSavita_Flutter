@@ -65,7 +65,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       drawer: MyDrawer(
         items: [
           DrawerItem.aashirvachan,
-          DrawerItem.information,
           DrawerItem.notes,
           DrawerItem.search,
           DrawerItem.readingPlans,
