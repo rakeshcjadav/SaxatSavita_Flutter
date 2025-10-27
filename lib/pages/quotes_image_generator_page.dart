@@ -138,15 +138,15 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   String _getDisplayName() {
     // Prioritize profile data if available and both names are filled
-    if (_userProfile != null && 
-        _userProfile!.firstName.isNotEmpty && 
+    if (_userProfile != null &&
+        _userProfile!.firstName.isNotEmpty &&
         _userProfile!.lastName.isNotEmpty) {
       return _userProfile!.fullName;
     }
-    
+
     // Fall back to Firebase Auth display name
     return FirebaseAuth.instance.currentUser?.displayName ??
-           AppLocalizations.of(context)!.spiritual_seeker;
+        AppLocalizations.of(context)!.spiritual_seeker;
   }
 
   @override
@@ -168,9 +168,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       String author = _authorController.text;
       _currentSelectedQuote = randomQuote;
       _currentSelectedQuote!.setAuthor =
-          author.isEmpty
-              ? _getDisplayName()
-              : author;
+          author.isEmpty ? _getDisplayName() : author;
       _quoteController.text = randomQuote.quote;
       _authorController.text = _currentSelectedQuote!.author;
       setState(() {});
@@ -1747,9 +1745,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildUserInfoTab() {
     final user = FirebaseAuth.instance.currentUser;
-    final hasUserData = user != null && 
-        (user.displayName != null || user.photoURL != null || 
-         (_userProfile != null && _userProfile!.firstName.isNotEmpty && _userProfile!.lastName.isNotEmpty));
+    final hasUserData =
+        user != null &&
+        (user.displayName != null ||
+            user.photoURL != null ||
+            (_userProfile != null &&
+                _userProfile!.firstName.isNotEmpty &&
+                _userProfile!.lastName.isNotEmpty));
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -1792,9 +1794,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 Spacer(),
                 Switch(
                   value: _showUserName,
-                  onChanged: hasUserData &&
-                      (user.displayName != null || 
-                       (_userProfile != null && _userProfile!.firstName.isNotEmpty && _userProfile!.lastName.isNotEmpty))
+                  onChanged:
+                      hasUserData &&
+                              (user.displayName != null ||
+                                  (_userProfile != null &&
+                                      _userProfile!.firstName.isNotEmpty &&
+                                      _userProfile!.lastName.isNotEmpty))
                           ? (value) => setState(() => _showUserName = value)
                           : null,
                 ),

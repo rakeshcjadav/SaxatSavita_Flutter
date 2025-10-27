@@ -7,8 +7,10 @@ import 'package:saxatsavita_flutter/components/drawer.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/pages/profile_page.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
+import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 
 class GoogleSignInPage extends StatefulWidget {
   const GoogleSignInPage({super.key});
@@ -142,27 +144,64 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   }
 
   Future<void> onSuccessfulSignIn() async {
-    debugPrint('_handleAuthenticationEvent : Rounte : HomePage()');
+    debugPrint('_handleAuthenticationEvent : Route determination started');
 
     await Utils.loadUserdatafromFirebase();
-
-    await Utils.saveUserDetailsToFirebase();
 
     // Check if migration is needed and perform it
     await Utils.checkAndPerformMigration();
 
     debugPrint('_handleAuthenticationEvent : Migration done');
 
-    setState(() {
-      _errorMessage = 'Navigation to HomePage';
-    });
-    // Navigate after state is updated
-    await Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
+    // Check if user has profile data to determine navigation
+    bool shouldGoToProfile = await _shouldNavigateToProfile();
 
-    debugPrint('_handleAuthenticationEvent : Rounted : HomePage()');
+    setState(() {
+      _errorMessage =
+          shouldGoToProfile
+              ? 'Navigation to Profile'
+              : 'Navigation to HomePage';
+    });
+
+    // Navigate based on profile completeness
+    if (mounted) {
+      if (shouldGoToProfile) {
+        debugPrint('_handleAuthenticationEvent : Routing to Profile Page');
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        );
+      } else {
+        debugPrint('_handleAuthenticationEvent : Routing to HomePage');
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      }
+    }
+
+    debugPrint('_handleAuthenticationEvent : Navigation completed');
+  }
+
+  Future<bool> _shouldNavigateToProfile() async {
+    try {
+      final profileService = UserProfileService();
+      final profile = await profileService.getUserProfile();
+
+      // Check if profile has essential information (name fields)
+      if (profile.firstName.isNotEmpty && profile.lastName.isNotEmpty) {
+        debugPrint('User has complete profile - going to HomePage');
+        return false; // Has profile, go to HomePage
+      } else {
+        debugPrint('User profile incomplete - going to Profile Page');
+        return true; // No or incomplete profile, go to Profile Page
+      }
+    } catch (e) {
+      debugPrint(
+        'Error checking profile, assuming new user - going to Profile Page: $e',
+      );
+      return true; // Error or no profile, go to Profile Page for setup
+    }
   }
 
   // Debug method to test Apple Sign-In capability
@@ -355,22 +394,6 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
 
         if (isFirstSignIn) {
           debugPrint('FIRST Apple Sign-In detected - caching user data');
-
-          // Cache the user data for subsequent sign-ins
-          // Sync this to firebase for future use
-          // This will allow us to use the cached data for subsequent sign-ins
-          await _syncAppleUserDataToFirebase(
-            userIdentifier: userIdentifier,
-            email: appleCredential.email,
-            givenName: appleCredential.givenName,
-            familyName: appleCredential.familyName,
-          );
-          await Utils.cacheAppleUserData(
-            userIdentifier: userIdentifier,
-            email: appleCredential.email,
-            givenName: appleCredential.givenName,
-            familyName: appleCredential.familyName,
-          );
         } else {
           debugPrint('SUBSEQUENT Apple Sign-In detected - using cached data');
         }
