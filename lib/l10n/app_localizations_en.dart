@@ -1343,7 +1343,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get last_name => 'Last Name';
 
   @override
-  String get city => 'City';
+  String get city_or_village => 'City/Village';
 
   @override
   String get first_name_required => 'First name is required';
@@ -1352,7 +1352,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get last_name_required => 'Last name is required';
 
   @override
-  String get city_required => 'City is required';
+  String get city_or_village_required => 'City or village is required';
 
   @override
   String get save_profile => 'Save Profile';

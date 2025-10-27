@@ -1348,7 +1348,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get last_name => 'અટક';
 
   @override
-  String get city => 'શહેર';
+  String get city_or_village => 'શહેર/ગામ';
 
   @override
   String get first_name_required => 'નામ આવશ્યક છે';
@@ -1357,7 +1357,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get last_name_required => 'અટક આવશ્યક છે';
 
   @override
-  String get city_required => 'શહેર આવશ્યક છે';
+  String get city_or_village_required => 'શહેર અથવા ગામ આવશ્યક છે';
 
   @override
   String get save_profile => 'પ્રોફાઇલ સેવ કરો';

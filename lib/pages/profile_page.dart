@@ -275,7 +275,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   controller: _cityController,
                                   decoration: InputDecoration(
                                     labelText:
-                                        AppLocalizations.of(context)!.city,
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.city_or_village,
                                     prefixIcon: const Icon(Icons.location_city),
                                     border: const OutlineInputBorder(),
                                   ),
@@ -283,7 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     if (value == null || value.trim().isEmpty) {
                                       return AppLocalizations.of(
                                         context,
-                                      )!.city_required;
+                                      )!.city_or_village_required;
                                     }
                                     return null;
                                   },

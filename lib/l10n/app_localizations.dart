@@ -2522,11 +2522,11 @@ abstract class AppLocalizations {
   /// **'Last Name'**
   String get last_name;
 
-  /// No description provided for @city.
+  /// No description provided for @city_or_village.
   ///
   /// In en, this message translates to:
-  /// **'City'**
-  String get city;
+  /// **'City/Village'**
+  String get city_or_village;
 
   /// No description provided for @first_name_required.
   ///
@@ -2540,11 +2540,11 @@ abstract class AppLocalizations {
   /// **'Last name is required'**
   String get last_name_required;
 
-  /// No description provided for @city_required.
+  /// No description provided for @city_or_village_required.
   ///
   /// In en, this message translates to:
-  /// **'City is required'**
-  String get city_required;
+  /// **'City or village is required'**
+  String get city_or_village_required;
 
   /// No description provided for @save_profile.
   ///
