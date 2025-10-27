@@ -345,6 +345,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favoriteKiranSuccess => 'Kiran favorited successfully';
 
   @override
+  String get showFavoritesOnly => 'Show Favorites Only';
+
+  @override
+  String get showAllKirans => 'Show All Kirans';
+
+  @override
+  String get noFavoriteKirans => 'No Favorite Kirans';
+
+  @override
+  String get noFavoriteKiransMessage =>
+      'Tap the heart icon on any Kiran to add it to favorites';
+
+  @override
   String get readingHistoryTitle => 'Reading History';
 
   @override

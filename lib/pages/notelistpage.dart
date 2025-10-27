@@ -100,29 +100,35 @@ class _NoteListPageState extends State<NoteListPage> {
 
               try {
                 // Try to parse as Quill Delta JSON
-                final deltaJson = jsonDecode(kiranUserInfo.note!);
-                List<dynamic>? ops;
+                // First check if the note string is valid JSON
+                final noteContent = kiranUserInfo.note!.trim();
+                if (noteContent.isEmpty) {
+                  plainTextPreview = '';
+                } else {
+                  final deltaJson = jsonDecode(noteContent);
+                  List<dynamic>? ops;
 
-                if (deltaJson is Map && deltaJson.containsKey('ops')) {
-                  // Standard Quill Delta format: {"ops": [...]}
-                  ops = deltaJson['ops'] as List;
-                } else if (deltaJson is List) {
-                  // Direct ops array format: [...]
-                  ops = deltaJson;
-                }
+                  if (deltaJson is Map && deltaJson.containsKey('ops')) {
+                    // Standard Quill Delta format: {"ops": [...]}
+                    ops = deltaJson['ops'] as List;
+                  } else if (deltaJson is List) {
+                    // Direct ops array format: [...]
+                    ops = deltaJson;
+                  }
 
-                if (ops != null) {
-                  // Extract plain text from Quill Delta operations
-                  final textBuffer = StringBuffer();
-                  for (final op in ops) {
-                    if (op is Map && op.containsKey('insert')) {
-                      final insert = op['insert'];
-                      if (insert is String) {
-                        textBuffer.write(insert);
+                  if (ops != null) {
+                    // Extract plain text from Quill Delta operations
+                    final textBuffer = StringBuffer();
+                    for (final op in ops) {
+                      if (op is Map && op.containsKey('insert')) {
+                        final insert = op['insert'];
+                        if (insert is String) {
+                          textBuffer.write(insert);
+                        }
                       }
                     }
+                    plainTextPreview = textBuffer.toString().trim();
                   }
-                  plainTextPreview = textBuffer.toString().trim();
                 }
               } catch (e) {
                 // If not valid JSON, treat as plain text

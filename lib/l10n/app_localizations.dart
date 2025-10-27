@@ -698,6 +698,30 @@ abstract class AppLocalizations {
   /// **'Kiran favorited successfully'**
   String get favoriteKiranSuccess;
 
+  /// No description provided for @showFavoritesOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Favorites Only'**
+  String get showFavoritesOnly;
+
+  /// No description provided for @showAllKirans.
+  ///
+  /// In en, this message translates to:
+  /// **'Show All Kirans'**
+  String get showAllKirans;
+
+  /// No description provided for @noFavoriteKirans.
+  ///
+  /// In en, this message translates to:
+  /// **'No Favorite Kirans'**
+  String get noFavoriteKirans;
+
+  /// No description provided for @noFavoriteKiransMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the heart icon on any Kiran to add it to favorites'**
+  String get noFavoriteKiransMessage;
+
   /// No description provided for @readingHistoryTitle.
   ///
   /// In en, this message translates to:

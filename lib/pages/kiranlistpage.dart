@@ -33,6 +33,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
 
   late BookUserInfo bookUserInfo;
   int? _expandedIndex;
+  bool _showFavoritesOnly = false;
 
   @override
   void initState() {
@@ -142,7 +143,35 @@ class _KiranlistpageState extends State<Kiranlistpage> {
           ActionOptions.info,
           ActionOptions.notes,
           ActionOptions.search,
-          ActionOptions.settings,
+        ],
+        extraActions: [
+          IconButton(
+            icon: Stack(
+              children: [
+                Icon(
+                  _showFavoritesOnly ? Icons.favorite : Icons.favorite_border,
+                  color: _showFavoritesOnly ? Colors.pink : null,
+                ),
+                if (_showFavoritesOnly) ...[
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Icon(Icons.filter_alt, size: 15),
+                  ),
+                ],
+              ],
+            ),
+            tooltip:
+                _showFavoritesOnly
+                    ? AppLocalizations.of(context)!.showAllKirans
+                    : AppLocalizations.of(context)!.showFavoritesOnly,
+            onPressed: () {
+              setState(() {
+                _showFavoritesOnly = !_showFavoritesOnly;
+                _expandedIndex = null; // Reset expanded state when filtering
+              });
+            },
+          ),
         ],
       ),
       body: PopScope(
@@ -165,7 +194,58 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
                   return const Center(child: Text('No kirans found.'));
                 }
-                final kirans = snapshot.data!.list;
+
+                // Filter kirans based on favorites toggle
+                final allKirans = snapshot.data!.list;
+                final kirans =
+                    _showFavoritesOnly
+                        ? allKirans.where((kiran) {
+                          final kiranUserInfo = KiranUserService()
+                              .getKiranUserInfo(kiran.index);
+                          return kiranUserInfo.isFavourite == 1;
+                        }).toList()
+                        : allKirans;
+
+                // Show message when no favorites found
+                if (_showFavoritesOnly && kirans.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.favorite_border,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context)!.noFavoriteKirans,
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(color: Colors.grey[600]),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.noFavoriteKiransMessage,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.grey[500]),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        TextButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              _showFavoritesOnly = false;
+                            });
+                          },
+                          icon: const Icon(Icons.list),
+                          label: Text(
+                            AppLocalizations.of(context)!.showAllKirans,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
                 return ScrollablePositionedList.builder(
                   itemScrollController: _itemScrollController,
                   itemPositionsListener: _itemPositionsListener,
@@ -338,7 +418,11 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               ),
             ],
             const Spacer(),
-            Icon(Icons.timer, color: Colors.grey.withValues(alpha: 0.3)),
+            Icon(
+              Icons.timer,
+              size: Theme.of(context).textTheme.bodySmall!.fontSize,
+              color: Colors.grey.withValues(alpha: 0.3),
+            ),
             const SizedBox(width: 4),
             Text(
               AppLocalizations.of(
@@ -381,11 +465,11 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        // Any other KiranUserInfo fields
-        Row(
-          children: [
-            if (kiranUserInfo.updatedAt != null) ...[
+        if (kiranUserInfo.updatedAt != null) ...[
+          const SizedBox(height: 8),
+          // Any other KiranUserInfo fields
+          Row(
+            children: [
               Icon(
                 Icons.history,
                 size: Theme.of(context).textTheme.bodySmall!.fontSize,
@@ -402,8 +486,8 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 ),
               ),
             ],
-          ],
-        ),
+          ),
+        ],
       ],
     );
   }

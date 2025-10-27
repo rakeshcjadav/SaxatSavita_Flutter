@@ -347,6 +347,19 @@ class AppLocalizationsGu extends AppLocalizations {
   String get favoriteKiranSuccess => 'કિરણ સફળતાપૂર્વક ફેવરિટ કરવામાં આવ્યું.';
 
   @override
+  String get showFavoritesOnly => 'માત્ર ફેવરિટ બતાવો';
+
+  @override
+  String get showAllKirans => 'બધા કિરણો બતાવો';
+
+  @override
+  String get noFavoriteKirans => 'કોઈ ફેવરિટ કિરણો નથી';
+
+  @override
+  String get noFavoriteKiransMessage =>
+      'કોઈપણ કિરણને ફેવરિટ માં ઉમેરવા માટે હૃદયના આઇકન પર ટેપ કરો';
+
+  @override
   String get readingHistoryTitle => 'વાંચન ઇતિહાસ';
 
   @override
