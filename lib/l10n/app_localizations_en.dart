@@ -1132,7 +1132,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcome_spiritual_reading =>
-      'P.P. Sad. Jogiswami explained the secrets of Vachanamrut and transformed souls into Brahmarup. Shastri Balkrishndasji compiled these divine discourses under the name \'Sakshat Savita\'.';
+      'P.P. Sad. Jogiswami explained the secrets of Vachanamrut and transformed souls into Brahmarup. Shastri Balkrishndasji Swami compiled these divine discourses under the name \'Sakshat Savita\'.';
 
   @override
   String get welcome_aashirvachan_desc =>
@@ -1308,4 +1308,28 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get keepScreenOnDescription =>
       'Prevent screen from turning off while reading';
+
+  @override
+  String get plan_name => 'Plan Name';
+
+  @override
+  String get start_date => 'Start Date';
+
+  @override
+  String get end_date => 'End Date';
+
+  @override
+  String get total_kirans => 'Total Kirans';
+
+  @override
+  String get goals_achieved => 'Goals Achieved';
+
+  @override
+  String get completion_rate => 'Completion Rate';
+
+  @override
+  String get streak_days => 'Streak Days';
+
+  @override
+  String get close => 'Close';
 }

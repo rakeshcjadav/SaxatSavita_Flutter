@@ -2147,7 +2147,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcome_spiritual_reading.
   ///
   /// In en, this message translates to:
-  /// **'P.P. Sad. Jogiswami explained the secrets of Vachanamrut and transformed souls into Brahmarup. Shastri Balkrishndasji compiled these divine discourses under the name \'Sakshat Savita\'.'**
+  /// **'P.P. Sad. Jogiswami explained the secrets of Vachanamrut and transformed souls into Brahmarup. Shastri Balkrishndasji Swami compiled these divine discourses under the name \'Sakshat Savita\'.'**
   String get welcome_spiritual_reading;
 
   /// No description provided for @welcome_aashirvachan_desc.
@@ -2455,6 +2455,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prevent screen from turning off while reading'**
   String get keepScreenOnDescription;
+
+  /// No description provided for @plan_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Name'**
+  String get plan_name;
+
+  /// No description provided for @start_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get start_date;
+
+  /// No description provided for @end_date.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get end_date;
+
+  /// No description provided for @total_kirans.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Kirans'**
+  String get total_kirans;
+
+  /// No description provided for @goals_achieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals Achieved'**
+  String get goals_achieved;
+
+  /// No description provided for @completion_rate.
+  ///
+  /// In en, this message translates to:
+  /// **'Completion Rate'**
+  String get completion_rate;
+
+  /// No description provided for @streak_days.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak Days'**
+  String get streak_days;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate

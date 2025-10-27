@@ -1135,7 +1135,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_spiritual_reading =>
-      'પ.પૂ. સદ્. જોગીસ્વામીએ વચનામૃતના રહસ્યો સમજાવીને જીવાત્માઓને બ્રહ્મરૂપ કર્યા. શાસ્ત્રી બાલકૃષ્ણદાસજીએ આ દિવ્ય કથા-વાર્તાઓને \"સાક્ષાત્ સવિતા\" નામે સંકલિત કર્યા.';
+      'પ.પૂ. સદ્. જોગીસ્વામીએ વચનામૃતના રહસ્યો સમજાવીને જીવાત્માઓને બ્રહ્મરૂપ કર્યા. શાસ્ત્રી બાલકૃષ્ણદાસજી સ્વામીએ આ દિવ્ય કથા-વાર્તાઓને \"સાક્ષાત્ સવિતા\" નામે સંકલિત કર્યા.';
 
   @override
   String get welcome_aashirvachan_desc =>
@@ -1313,4 +1313,28 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get keepScreenOnDescription => 'વાંચતી વખતે સ્ક્રીન બંધ થવાથી અટકાવો';
+
+  @override
+  String get plan_name => 'યોજનાનું નામ';
+
+  @override
+  String get start_date => 'શરૂઆતની તારીખ';
+
+  @override
+  String get end_date => 'અંતની તારીખ';
+
+  @override
+  String get total_kirans => 'કુલ કિરણો';
+
+  @override
+  String get goals_achieved => 'હાંસલ કરેલા લક્ષ્યો';
+
+  @override
+  String get completion_rate => 'પૂર્ણતાનો દર';
+
+  @override
+  String get streak_days => 'સતત દિવસો';
+
+  @override
+  String get close => 'બંધ કરો';
 }

@@ -89,17 +89,66 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                   ],
                 ),
               ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "add",
-            onPressed: () => _navigateToCreatePlan(),
-            child: const Icon(Icons.add),
-          ),
-        ],
+      floatingActionButton: AnimatedBuilder(
+        animation: _tabController,
+        builder: (context, child) => _buildFloatingActionButton(),
       ),
     );
+  }
+
+  Widget _buildFloatingActionButton() {
+    final currentIndex = _tabController.index;
+
+    switch (currentIndex) {
+      case 0: // Today Tab
+        final activePlan = _readingPlanService.activePlan;
+        if (activePlan == null) {
+          return FloatingActionButton(
+            heroTag: "add_plan",
+            onPressed: () => _navigateToCreatePlan(),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: const Icon(Icons.add),
+          );
+        }
+        return FloatingActionButton(
+          heroTag: "start_reading",
+          onPressed: () => _startReading(),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: const Icon(Icons.play_arrow),
+        );
+
+      case 1: // My Plans Tab
+        return FloatingActionButton(
+          heroTag: "add_plan",
+          onPressed: () => _navigateToCreatePlan(),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: const Icon(Icons.add),
+        );
+
+      case 2: // Progress Tab
+        final activePlan = _readingPlanService.activePlan;
+        if (activePlan == null) {
+          return FloatingActionButton(
+            heroTag: "add_plan",
+            onPressed: () => _navigateToCreatePlan(),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: const Icon(Icons.add),
+          );
+        }
+        return FloatingActionButton(
+          heroTag: "view_stats",
+          onPressed: () => _showProgressSummary(),
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          child: const Icon(Icons.analytics),
+        );
+
+      default:
+        return FloatingActionButton(
+          heroTag: "default",
+          onPressed: () => _navigateToCreatePlan(),
+          child: const Icon(Icons.add),
+        );
+    }
   }
 
   Widget _buildTodayTab() {
@@ -1333,6 +1382,81 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
             ],
           ),
     );
+  }
+
+  void _showProgressSummary() {
+    final activePlan = _readingPlanService.activePlan;
+    if (activePlan == null) return;
+
+    final statistics = _readingPlanService.getReadingStatistics();
+
+    final goalsAchieved = statistics['goalsAchieved'];
+    final completionRatePercent = (statistics['completionRate'] * 100)
+        .toStringAsFixed(1);
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context)!.reading_plans_progress),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${AppLocalizations.of(context)!.plan_name}: ${activePlan.title}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(
+                  '${AppLocalizations.of(context)!.start_date}: ${activePlan.startDate.toLocal().toString().split(' ')[0]}',
+                ),
+                const SizedBox(height: 12),
+
+                Text(
+                  '${AppLocalizations.of(context)!.totalReadingTime}: ${_getTotalReadingTime(statistics['totalSeconds'])}',
+                ),
+                Text(
+                  '${AppLocalizations.of(context)!.total_kirans}: ${statistics['totalKirans']}',
+                ),
+                Text(
+                  '${AppLocalizations.of(context)!.goals_achieved}: $goalsAchieved',
+                ),
+                Text(
+                  '${AppLocalizations.of(context)!.completion_rate}: $completionRatePercent%',
+                ),
+                Text(
+                  '${AppLocalizations.of(context)!.streak_days}: ${statistics['streakDays']}',
+                ),
+                const SizedBox(height: 12),
+                if (activePlan.endDate != null)
+                  Text(
+                    '${AppLocalizations.of(context)!.end_date}: ${activePlan.endDate!.toLocal().toString().split(' ')[0]}',
+                  ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(AppLocalizations.of(context)!.close),
+              ),
+            ],
+          ),
+    );
+  }
+
+  String _getTotalReadingTime(int totalSeconds) {
+    final duration = Duration(seconds: totalSeconds);
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+
+    if (hours > 0) {
+      return '${hours}h : ${minutes}m : ${seconds}s';
+    } else if (minutes > 0) {
+      return '${minutes}m : ${seconds}s';
+    } else {
+      return '${seconds}s';
+    }
   }
 
   String _getIntuitiveDateLabel(DateTime date) {

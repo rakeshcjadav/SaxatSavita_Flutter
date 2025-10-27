@@ -571,7 +571,7 @@
     "get_started": "Get Started",
     
     "welcome_tour": "Welcome!",
-    "welcome_spiritual_reading": "P.P. Sad. Jogiswami explained the secrets of Vachanamrut and transformed souls into Brahmarup. Shastri Balkrishndasji compiled these divine discourses under the name 'Sakshat Savita'.",
+    "welcome_spiritual_reading": "P.P. Sad. Jogiswami explained the secrets of Vachanamrut and transformed souls into Brahmarup. Shastri Balkrishndasji Swami compiled these divine discourses under the name 'Sakshat Savita'.",
     "welcome_aashirvachan_desc": "Receive divine blessings and spiritual guidance through the sacred words of P.P.Pr.Br.Sw. Sad. Jogiswami and Vachanamrut expert P.P. Sad. Shastri Shri Balkrishndasji Swami.",
     "welcome_search_desc": "Quickly search for specific Kirans, verses, or topics with powerful search functionality.",
     "welcome_notes_desc": "Capture your spiritual insights and create personal notes to enhance your learning and meditation practice.",
@@ -627,5 +627,14 @@
     "app_version": "App Version",
     "loading": "Loading...",
     "keepScreenOn": "Keep Screen On",
-    "keepScreenOnDescription": "Prevent screen from turning off while reading"
+    "keepScreenOnDescription": "Prevent screen from turning off while reading",
+    
+    "plan_name": "Plan Name",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "total_kirans": "Total Kirans",
+    "goals_achieved": "Goals Achieved",
+    "completion_rate": "Completion Rate",
+    "streak_days": "Streak Days",
+    "close": "Close"
 }
