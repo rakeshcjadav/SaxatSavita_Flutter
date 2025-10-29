@@ -22,7 +22,6 @@ class _MarketingShowcasePageState extends State<MarketingShowcasePage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final loc = AppLocalizations.of(context)!;
 
     final features = [
