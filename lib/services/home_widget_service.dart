@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
 
 /// Service to manage home screen widgets for Android and iOS
@@ -139,13 +138,6 @@ class HomeWidgetService {
       );
 
       debugPrint('Reading progress widget updated successfully');
-      await AnalyticsService().logCustomEvent(
-        name: 'widget_reading_progress_updated',
-        parameters: {
-          'progress_percentage': progress['progressPercentage'],
-          'goal_achieved': progress['goalAchieved'],
-        },
-      );
     } catch (e) {
       debugPrint('Error updating reading progress widget: $e');
     }
@@ -154,11 +146,6 @@ class HomeWidgetService {
   /// Update all widgets
   Future<void> updateAllWidgets() async {
     await updateReadingProgressWidget();
-
-    await AnalyticsService().logCustomEvent(
-      name: 'reading_progress_widget_updated',
-      parameters: {'timestamp': DateTime.now().millisecondsSinceEpoch},
-    );
   }
 
   /// Get current reading progress
@@ -251,11 +238,6 @@ class HomeWidgetService {
       await HomeWidget.requestPinWidget(
         androidName: widgetName,
         qualifiedAndroidName: 'com.saxatsavita.flutter.$widgetName',
-      );
-
-      await AnalyticsService().logCustomEvent(
-        name: 'widget_pinned',
-        parameters: {'widget_name': widgetName},
       );
 
       return true;
