@@ -22,6 +22,7 @@ enum DrawerItem {
   settings,
   welcomeTour,
   migration,
+  marketingShowcase,
   logout,
 }
 
@@ -280,6 +281,19 @@ class _DrawerState extends State<MyDrawer> {
           );
         },
       ),
+      DrawerItem.marketingShowcase =>
+        kDebugMode
+            ? ListTile(
+              leading: const Icon(Icons.star),
+              title: Text(
+                '${AppLocalizations.of(context)!.sakshatSavita} (Debug)',
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/marketing_showcase');
+              },
+            )
+            : const SizedBox.shrink(),
       DrawerItem.migration =>
         kDebugMode
             ? ListTile(

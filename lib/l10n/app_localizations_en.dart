@@ -1163,6 +1163,39 @@ class AppLocalizationsEn extends AppLocalizations {
       'Get detailed information about P.P.Pr.Br.Sw. Sad. Jogiswami\'s biography, the origin of Sakshat Savita, and Shri Sahjanand Sanskardham Mahamantrapith - Fareni.';
 
   @override
+  String get welcome_book_parts_desc =>
+      'Access all five parts of Sakshat Savita, including the preface and divine discourses.';
+
+  @override
+  String get welcome_book_parts_title => 'All Five Parts';
+
+  @override
+  String get welcome_kiran_list_title => 'Kiran List';
+
+  @override
+  String get welcome_kiran_list_desc =>
+      'Easily navigate through the Kiran List to get detailed insights on each Kiran.';
+
+  @override
+  String get welcome_kiran_reading_title => 'Kiran Reading';
+
+  @override
+  String get welcome_kiran_reading_desc =>
+      'Enjoy a seamless reading experience with customizable font sizes, themes, and reading speeds.';
+
+  @override
+  String get welcome_kiran_reading_plan_desc =>
+      'Create custom reading plans, track your daily progress, and build consistent reading habits with streak tracking.';
+
+  @override
+  String get welcome_kiran_favorites_desc =>
+      'Save favorites and bookmarks for quick access to Kirans.';
+
+  @override
+  String get welcome_kiran_settings_desc =>
+      'Customize your reading experience with customizable font sizes, themes, and reading speeds.';
+
+  @override
   String get welcome_feature_spiritual_texts => 'Understand \"Vachanamrut\"';
 
   @override

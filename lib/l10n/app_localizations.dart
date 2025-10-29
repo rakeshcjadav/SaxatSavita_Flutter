@@ -2192,6 +2192,60 @@ abstract class AppLocalizations {
   /// **'Get detailed information about P.P.Pr.Br.Sw. Sad. Jogiswami\'s biography, the origin of Sakshat Savita, and Shri Sahjanand Sanskardham Mahamantrapith - Fareni.'**
   String get welcome_information_desc;
 
+  /// No description provided for @welcome_book_parts_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Access all five parts of Sakshat Savita, including the preface and divine discourses.'**
+  String get welcome_book_parts_desc;
+
+  /// No description provided for @welcome_book_parts_title.
+  ///
+  /// In en, this message translates to:
+  /// **'All Five Parts'**
+  String get welcome_book_parts_title;
+
+  /// No description provided for @welcome_kiran_list_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran List'**
+  String get welcome_kiran_list_title;
+
+  /// No description provided for @welcome_kiran_list_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Easily navigate through the Kiran List to get detailed insights on each Kiran.'**
+  String get welcome_kiran_list_desc;
+
+  /// No description provided for @welcome_kiran_reading_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran Reading'**
+  String get welcome_kiran_reading_title;
+
+  /// No description provided for @welcome_kiran_reading_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy a seamless reading experience with customizable font sizes, themes, and reading speeds.'**
+  String get welcome_kiran_reading_desc;
+
+  /// No description provided for @welcome_kiran_reading_plan_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create custom reading plans, track your daily progress, and build consistent reading habits with streak tracking.'**
+  String get welcome_kiran_reading_plan_desc;
+
+  /// No description provided for @welcome_kiran_favorites_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Save favorites and bookmarks for quick access to Kirans.'**
+  String get welcome_kiran_favorites_desc;
+
+  /// No description provided for @welcome_kiran_settings_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize your reading experience with customizable font sizes, themes, and reading speeds.'**
+  String get welcome_kiran_settings_desc;
+
   /// No description provided for @welcome_feature_spiritual_texts.
   ///
   /// In en, this message translates to:

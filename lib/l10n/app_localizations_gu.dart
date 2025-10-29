@@ -1135,7 +1135,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_spiritual_reading =>
-      'પ.પૂ. સદ્. જોગીસ્વામીએ વચનામૃતના રહસ્યો સમજાવીને જીવાત્માઓને બ્રહ્મરૂપ કર્યા. શાસ્ત્રી બાલકૃષ્ણદાસજી સ્વામીએ આ દિવ્ય કથા-વાર્તાઓને \"સાક્ષાત્ સવિતા\" નામે સંકલિત કર્યા.';
+      'પ.પૂ. સદ્. જોગીસ્વામીએ સમજાવેલાં વચનામૃતના રહસ્યો ને શાસ્ત્રી શ્રી બાલકૃષ્ણદાસજી સ્વામીએ સ્વઅક્ષરે \"સાક્ષાત્ સવિતા\" નામે સંકલિત કર્યા.';
 
   @override
   String get welcome_aashirvachan_desc =>
@@ -1147,7 +1147,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_notes_desc =>
-      'તમારી આધ્યાત્મિક અંતર્દૃષ્ટિઓ મેળવો અને તમારા શીખવા અને ધ્યાન અભ્યાસને વધારવા માટે વ્યક્તિગત નોંધો બનાવો.';
+      'તમારી આધ્યાત્મિક અંતર્દૃષ્ટિઓ મેળવો અને શીખવા તથા ધ્યાન અભ્યાસને વધારવા માટે નોંધ બનાવો.';
 
   @override
   String get welcome_reading_plans_desc =>
@@ -1159,11 +1159,44 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get welcome_quotes_generator_desc =>
-      'પ્રેરણાદાયક આધ્યાત્મિક ગ્રંથોમાંથી સુંદર, શેર કરી શકાય તેવા સુવિચારોની છબીઓ બનાવો જ્ઞાન અને હકારાત્મકતા ફેલાવવા માટે.';
+      'પ્રેરણાદાયક આધ્યાત્મિક ગ્રંથોમાંથી સુંદર, શેર કરી શકાય તેવા સુવિચારોની છબીઓ બનાવો.';
 
   @override
   String get welcome_information_desc =>
       'પ.પૂ.પ્ર.બ્ર.સ્વ. સદ્. જોગીસ્વામીનું જીવનવૃતાંત, સાક્ષાત્ સવિતા નો ઉદય અને શ્રી સહજાનંદ સંસ્કારધામ મહામંત્રપીઠ - ફરેણી વિશેની વિગતવાર માહિતી મેળવો.';
+
+  @override
+  String get welcome_book_parts_desc =>
+      'આ એપ્લિકેશનમાં સાક્ષાત્ સવિતા ગ્રંથ ના પાંચે પાંચ ભાગ ઉપલબ્ધ છે.';
+
+  @override
+  String get welcome_book_parts_title => 'પાંચ ભાગો';
+
+  @override
+  String get welcome_kiran_list_title => 'કિરણો ની યાદી';
+
+  @override
+  String get welcome_kiran_list_desc =>
+      'દરેક કિરણ વિશે વિગતવાર માહિતી મેળવવા માટે કિરણ સૂચિમાં સરળતાથી નેવિગેટ કરો.';
+
+  @override
+  String get welcome_kiran_reading_title => 'વાંચન અનુભવ';
+
+  @override
+  String get welcome_kiran_reading_desc =>
+      'સરળતાથી વાંચી શકાય તેવા અક્ષરની સાઇઝ અને આકર્ષક થીમ સાથે વાંચન અનુભવનો આનંદ લો.';
+
+  @override
+  String get welcome_kiran_reading_plan_desc =>
+      'વ્યક્તિગત વાંચન યોજનાઓ બનાવો, તમારી દૈનિક પ્રગતિને ટ્રૅક કરો, અને સતત વાંચન આદતો વિકસાવો.';
+
+  @override
+  String get welcome_kiran_favorites_desc =>
+      'કિરણો ઝડપથી શોધવા તથા વાંચવા માટે ફેવરીટ અને બુકમાર્ક્સ કરો.';
+
+  @override
+  String get welcome_kiran_settings_desc =>
+      'તમારા વ્યક્તિગત વાંચન અનુભવને સારો કરવા માટે અક્ષરની સાઇઝ, થીમ અને વાંચનની ગતિને સેટ કરો.';
 
   @override
   String get welcome_feature_spiritual_texts => 'વચનામૃતના રહસ્યોને સમજો';

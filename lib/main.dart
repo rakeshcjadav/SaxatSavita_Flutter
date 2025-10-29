@@ -16,6 +16,7 @@ import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import 'package:saxatsavita_flutter/pages/profile_page.dart';
+import 'package:saxatsavita_flutter/pages/marketing_showcase_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
@@ -262,6 +263,7 @@ class SakshatSavitaApp extends StatelessWidget {
             '/migration': (context) => const ComprehensiveMigrationPage(),
             '/welcome': (context) => const WelcomeScreen(),
             '/login': (context) => const GoogleSignInPage(),
+            '/marketing_showcase': (context) => const MarketingShowcasePage(),
           },
         );
       },
