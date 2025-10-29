@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/notification_service.dart';
+import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 
 class ReadingPlanService {
   static final ReadingPlanService _instance = ReadingPlanService._internal();
@@ -196,6 +197,13 @@ class ReadingPlanService {
     // Check if goal is achieved and show encouraging notification
     if (updatedPlan.todayGoalAchieved && !activePlan!.todayGoalAchieved) {
       await NotificationService().showGoalAchievedNotification(updatedPlan);
+    }
+
+    // Update widgets with new progress data
+    try {
+      await HomeWidgetService().onReadingProgressChanged();
+    } catch (e) {
+      debugPrint('Error updating widgets after progress: $e');
     }
 
     debugPrint(

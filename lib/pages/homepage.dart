@@ -6,6 +6,7 @@ import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
+import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,6 +24,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     // Track screen view
     AnalyticsService().logScreenView(screenName: 'home_page');
+
+    // Update home widgets
+    HomeWidgetService().scheduleWidgetUpdates();
 
     // Check for app updates automatically
     WidgetsBinding.instance.addPostFrameCallback((_) {
