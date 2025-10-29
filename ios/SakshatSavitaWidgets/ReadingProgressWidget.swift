@@ -72,7 +72,9 @@ struct ReadingProgressProvider: TimelineProvider {
         )
         entries.append(entry)
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        // Refresh widget every 15 minutes to stay up to date
+        let refreshDate = Calendar.current.date(byAdding: .minute, value: 15, to: currentDate)!
+        let timeline = Timeline(entries: entries, policy: .after(refreshDate))
         completion(timeline)
     }
 }
@@ -125,8 +127,8 @@ struct ReadingProgressWidgetEntryView : View {
                             .foregroundColor(.white)
                     }
                     
-                    // Progress bar
-                    ProgressView(value: entry.progressPercentage)
+                    // Progress bar - convert percentage from 0-100 to 0-1
+                    ProgressView(value: min(entry.progressPercentage / 100.0, 1.0))
                         .progressViewStyle(LinearProgressViewStyle(tint: Color.green))
                         .scaleEffect(x: 1, y: 2, anchor: .center)
                     
@@ -160,5 +162,6 @@ struct ReadingProgressWidgetEntryView : View {
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 16))
+        .widgetURL(URL(string: "saxatsavita://widget/viewProgress"))
     }
 }

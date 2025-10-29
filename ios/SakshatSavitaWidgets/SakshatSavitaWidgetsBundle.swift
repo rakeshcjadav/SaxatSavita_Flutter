@@ -11,8 +11,6 @@ import SwiftUI
 @main
 struct SakshatSavitaWidgetsBundle: WidgetBundle {
     var body: some Widget {
-        SakshatSavitaWidgets()
-        SakshatSavitaWidgetsControl()
-        SakshatSavitaWidgetsLiveActivity()
+        ReadingProgressWidget()
     }
 }
