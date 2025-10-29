@@ -20,6 +20,7 @@ import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
+import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -68,6 +69,10 @@ void main() async {
   // Initialize In-App Review Service
   await InAppReviewService().initialize();
   print('In-App Review Service initialized successfully');
+
+  // Initialize Home Widget Service
+  await HomeWidgetService().initialize();
+  print('Home Widget Service initialized successfully');
 
   // Load JSON data
   await AppDataService().loadData('assets/jsons/data.json');

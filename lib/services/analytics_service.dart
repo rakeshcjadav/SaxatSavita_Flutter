@@ -303,13 +303,40 @@ class AnalyticsService {
   }) async {
     if (!_initialized) return;
     try {
-      await _analytics.logEvent(
-        name: name,
-        parameters: parameters?.cast<String, Object>(),
-      );
+      // Sanitize parameters to ensure Firebase compatibility
+      Map<String, Object>? sanitizedParams;
+      if (parameters != null) {
+        sanitizedParams = _sanitizeParameters(parameters);
+      }
+
+      await _analytics.logEvent(name: name, parameters: sanitizedParams);
       debugPrint('Analytics: Custom event - $name');
     } catch (e) {
       debugPrint('Analytics error - logCustomEvent: $e');
     }
+  }
+
+  /// Sanitize parameters to ensure Firebase Analytics compatibility
+  /// Converts booleans to strings, ensures all values are String or num
+  Map<String, Object> _sanitizeParameters(Map<String, Object?> parameters) {
+    final sanitized = <String, Object>{};
+
+    for (final entry in parameters.entries) {
+      if (entry.value != null) {
+        final value = entry.value!;
+        if (value is bool) {
+          // Convert booleans to strings for Firebase Analytics compatibility
+          sanitized[entry.key] = value.toString();
+        } else if (value is String || value is num) {
+          // Keep strings and numbers as-is
+          sanitized[entry.key] = value;
+        } else {
+          // Convert other types to strings
+          sanitized[entry.key] = value.toString();
+        }
+      }
+    }
+
+    return sanitized;
   }
 }

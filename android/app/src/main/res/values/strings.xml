@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sakshat Savita</string>
+    <string name="reading_progress_widget_description">Track your daily reading progress and goals</string>
+</resources>

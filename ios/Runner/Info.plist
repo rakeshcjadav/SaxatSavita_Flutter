@@ -34,6 +34,16 @@
 					<string>com.googleusercontent.apps.39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia</string>
 				</array>
 			</dict>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>com.saxatsavita.flutter</string>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>saxatsavita</string>
+				</array>
+			</dict>
 		</array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>

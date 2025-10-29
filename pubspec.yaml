@@ -57,6 +57,7 @@ dependencies:
   in_app_review: ^2.0.11
   url_launcher: ^6.3.2
   wakelock_plus: ^1.4.0
+  home_widget: ^0.8.0
 
 dev_dependencies:
   flutter_test:
