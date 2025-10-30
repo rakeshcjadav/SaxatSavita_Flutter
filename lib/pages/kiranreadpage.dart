@@ -960,10 +960,19 @@ class _KiranReadPageState extends State<KiranReadPage>
     final lowerContent = plainContent.toLowerCase();
     final lowerQuery = query.toLowerCase();
 
-    int index = lowerContent.indexOf(lowerQuery);
-    while (index != -1) {
-      matches.add(index);
-      index = lowerContent.indexOf(lowerQuery, index + 1);
+    String strQuery = lowerQuery.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
+    List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
+
+    String strPattern = "(\\s+[^.!?]*";
+    for (String str in listQuery) {
+      strPattern += "$str[^.!?]*";
+    }
+    strPattern += "[.!?])";
+
+    final pattern = RegExp(strPattern);
+    Iterable<RegExpMatch> matchesIterable = pattern.allMatches(lowerContent);
+    for (RegExpMatch match in matchesIterable) {
+      matches.add(match.start);
     }
 
     setState(() {
@@ -984,25 +993,46 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     String highlighted = content;
     final query = _searchController.text.trim();
-    int matchCounter = 0;
+    String strQuery = query.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
+    List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
 
-    // Use case-insensitive replacement with HTML highlighting
-    highlighted = highlighted.replaceAllMapped(
-      RegExp(RegExp.escape(query), caseSensitive: false),
-      (match) {
-        final isCurrentMatch = matchCounter == _currentMatchIndex;
-        final matchId = 'search-match-$matchCounter';
-        final highlightClass =
-            isCurrentMatch ? 'current-highlight' : 'search-highlight';
-        final backgroundColor = isCurrentMatch ? '#ff9800' : '#ffeb3b';
-
-        matchCounter++;
-
-        return '<span id="$matchId" class="$highlightClass" style="background-color: $backgroundColor; color: black; padding: 2px; border-radius: 2px;">${match.group(0)}</span>';
-      },
+    // Build a pattern that matches any of the words (case-insensitive)
+    final pattern = RegExp(
+      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
+      caseSensitive: false,
     );
 
-    return highlighted;
+    // Find all matches and store their positions
+    final matches = pattern.allMatches(highlighted).toList();
+    if (matches.isEmpty) return content;
+
+    // Build the highlighted string
+    final buffer = StringBuffer();
+    int lastMatchEnd = 0;
+    int matchCounter = 0;
+
+    for (final match in matches) {
+      // Add text before the match
+      buffer.write(highlighted.substring(lastMatchEnd, match.start));
+
+      final isCurrentMatch = matchCounter == _currentMatchIndex;
+      final matchId = 'search-match-$matchCounter';
+      final highlightClass =
+          isCurrentMatch ? 'current-highlight' : 'search-highlight';
+      final backgroundColor = isCurrentMatch ? '#ff9800' : '#ffeb3b';
+
+      // Add the highlighted match
+      buffer.write(
+        '<span id="$matchId" class="$highlightClass" style="background-color: $backgroundColor; color: black; padding: 2px; border-radius: 2px;">${match.group(0)}</span>',
+      );
+
+      lastMatchEnd = match.end;
+      matchCounter++;
+    }
+    // Add any remaining text after the last match
+    buffer.write(highlighted.substring(lastMatchEnd));
+
+    return buffer.toString();
   }
 
   void _previousMatch() {
