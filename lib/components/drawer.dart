@@ -180,7 +180,7 @@ class _DrawerState extends State<MyDrawer> {
               if (!snapshot.hasData) return SizedBox();
               final version = snapshot.data!.version;
               return Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 8.0, bottom: 60.0),
                 child: Text(
                   'Version: $version + ${snapshot.data!.buildNumber}',
                   textAlign: TextAlign.center,

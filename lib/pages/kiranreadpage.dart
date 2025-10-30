@@ -783,7 +783,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                                           }
                                           : null,
                                   icon: Icon(
-                                    Icons.check_box,
+                                    Icons.check_box_outline_blank,
                                     color:
                                         _isFinishButtonEnabled
                                             ? null
@@ -795,6 +795,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                                       AppLocalizations.of(
                                         context,
                                       )!.kiran_read_finished,
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color:
                                             _isFinishButtonEnabled
