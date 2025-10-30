@@ -700,6 +700,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               partNumber: "part${result.partNumber}",
               kiranInfo: result.kiranInfo,
               kiranUserInfo: kiranUserInfo,
+              searchQuery: _searchController.text.trim(),
             ),
       ),
     );

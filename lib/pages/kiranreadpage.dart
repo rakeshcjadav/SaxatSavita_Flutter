@@ -26,10 +26,12 @@ class KiranReadPage extends StatefulWidget {
     required this.partNumber,
     required this.kiranInfo,
     required this.kiranUserInfo,
+    this.searchQuery,
   });
   final String partNumber;
   final KiranInfo kiranInfo;
   final KiranUserInfo kiranUserInfo;
+  final String? searchQuery;
 
   @override
   State<KiranReadPage> createState() => _KiranReadPageState();
@@ -100,6 +102,31 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
 
     _startTimer();
+
+    // If searchQuery is provided, open search mode and perform search
+    if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
+      searchKiranContent(widget.searchQuery!);
+    }
+  }
+
+  Future<void> searchKiranContent(String query) async {
+    await _futureKiranContent.then((contentData) {
+      if (mounted) {
+        setState(() {
+          getKiranContent(contentData);
+        });
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _isSearchMode = true;
+        _searchController.text = widget.searchQuery!;
+        _performSearch(widget.searchQuery!);
+        _pauseTimer();
+        _performScrollToMatch();
+      });
+    });
   }
 
   @override
