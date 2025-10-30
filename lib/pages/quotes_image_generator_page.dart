@@ -59,6 +59,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   double _imageWidth = 370.0;
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
+  int _selectedTab = 0;
+  double _tabViewHeight = 10;
 
   // User info options (optional)
   bool _showUserAvatar = false;
@@ -135,7 +137,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   @override
   void initState() {
     super.initState();
-    _customizationTabController = TabController(length: 6, vsync: this);
     _loadUserProfile();
     // Set first predefined quote as default
     if (widget.quote != null) {
@@ -146,6 +147,25 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     } else {
       hasEnableEditing = true;
       // Don't call _getRandomQuote() here since localization isn't ready yet
+    }
+
+    _customizationTabController = TabController(
+      length: hasEnableEditing ? 7 : 6,
+      vsync: this,
+    );
+    _customizationTabController.addListener(_handleTabChange);
+  }
+
+  void _handleTabChange() {
+    if (_customizationTabController.indexIsChanging) {
+      setState(() {
+        if (_customizationTabController.index == 0 && hasEnableEditing) {
+          _tabViewHeight = 10;
+        } else {
+          _tabViewHeight = 120;
+        }
+        _selectedTab = _customizationTabController.index;
+      });
     }
   }
 
@@ -262,7 +282,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         ],
         bottom: TabBar(
           controller: _customizationTabController,
+          isScrollable: true,
           tabs: [
+            if (hasEnableEditing) ...[
+              Tab(
+                icon: Icon(Icons.message),
+                text: AppLocalizations.of(context)!.quote_text,
+              ),
+            ],
             Tab(
               icon: Icon(Icons.dashboard_customize),
               text: AppLocalizations.of(context)!.tab_templates,
@@ -291,32 +318,20 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         ),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Customization Section
-            _buildCustomizationSection(),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Customization Section
+              _buildCustomizationSection(),
+              // Preview Section
+              _buildPreviewSectionSimplified(),
 
-            // Preview Section
-            _buildPreviewSectionSimplified(),
-            const SizedBox(height: 12),
-            if (hasEnableEditing) ...[
-              // Text Input Section
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildTextInputSection(),
-                      const SizedBox(height: 12),
-
-                      // Predefined Quotes Section
-                      _buildPredefinedQuotesSection(),
-                    ],
-                  ),
-                ),
-              ),
+              if (hasEnableEditing && _selectedTab == 0) ...[
+                _buildMessageTab(),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -470,25 +485,32 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           ),
         ),
         const SizedBox(height: 16),
-        Center(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: RepaintBoundary(
-              key: _repaintBoundaryKey,
-              child: _buildQuoteImageForTemplate(_selectedTemplate),
+        // Interactive scrollable preview
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: RepaintBoundary(
+                key: _repaintBoundaryKey,
+                child: _buildQuoteImageForTemplate(_selectedTemplate),
+              ),
             ),
           ),
         ),
+        const SizedBox(height: 16),
       ],
     );
   }
@@ -523,160 +545,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           _buildQuoteContentForTemplate(templateIndex),
 
           // Stickers overlay
-          ..._stickers.asMap().entries.map((entry) {
-            final index = entry.key;
-            final sticker = entry.value;
-            return Positioned(
-              left: sticker.position.dx,
-              top: sticker.position.dy,
-              child: GestureDetector(
-                onPanUpdate: (details) {
-                  setState(() {
-                    _stickers[index].position = Offset(
-                      (_stickers[index].position.dx + details.delta.dx).clamp(
-                        0.0,
-                        _imageWidth - sticker.size,
-                      ),
-                      (_stickers[index].position.dy + details.delta.dy).clamp(
-                        0.0,
-                        _imageHeight - sticker.size,
-                      ),
-                    );
-                  });
-                },
-                child: Transform.rotate(
-                  angle: sticker.rotation,
-                  child: Stack(
-                    children: [
-                      FutureBuilder(
-                        future: _checkAssetExists(sticker.assetPath),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData && snapshot.data == true) {
-                            return Image.asset(
-                              sticker.assetPath,
-                              width: sticker.size,
-                              height: sticker.size,
-                              fit: BoxFit.contain,
-                            );
-                          } else {
-                            return Container(
-                              width: sticker.size,
-                              height: sticker.size,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                Icons.image,
-                                color: Colors.grey.shade600,
-                                size: sticker.size * 0.5,
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      // Control buttons
-                      Positioned(
-                        right: -5,
-                        top: -5,
-                        child: GestureDetector(
-                          onTap: () => _removeSticker(index),
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Resize handle
-                      Positioned(
-                        right: -5,
-                        bottom: -5,
-                        child: GestureDetector(
-                          onPanUpdate: (details) {
-                            setState(() {
-                              final newSize = (_stickers[index].size +
-                                      details.delta.dx)
-                                  .clamp(30.0, 150.0);
-                              _stickers[index].size = newSize;
-                            });
-                          },
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.open_in_full,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Rotate handle
-                      Positioned(
-                        left: -5,
-                        bottom: -5,
-                        child: GestureDetector(
-                          onPanUpdate: (details) {
-                            setState(() {
-                              _stickers[index].rotation +=
-                                  details.delta.dx * 0.02;
-                            });
-                          },
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.rotate_right,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
+          // Move sticker to method
+          _buildStickersOverlay(),
         ],
       ),
     );
@@ -1847,10 +1717,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildCustomizationSection() {
     return SizedBox(
-      height: _imageHeight * 0.3, // Dynamic height based on image height
+      height: _tabViewHeight, // Dynamic height based on image height
       child: TabBarView(
         controller: _customizationTabController,
         children: [
+          if (hasEnableEditing) ...[SizedBox(height: 10)],
           _buildTemplatesTab(),
           _buildColorTab(),
           _buildFontSizeTab(),
@@ -1862,18 +1733,34 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     );
   }
 
+  Widget _buildMessageTab() {
+    // Text Input Section
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildTextInputSection(),
+          // Predefined Quotes Section
+          _buildPredefinedQuotesSection(),
+        ],
+      ),
+    );
+  }
+
   Widget _buildColorTab() {
     return Padding(
       padding: const EdgeInsets.only(
         top: 8.0,
         bottom: 8.0,
-        left: 16.0,
-        right: 16.0,
+        left: 8.0,
+        right: 8.0,
       ),
-      child: Wrap(
-        spacing: 4.0,
-        children:
-            _gradients.keys.map((key) => _buildGradientOption(key)).toList(),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          spacing: 4.0,
+          children:
+              _gradients.keys.map((key) => _buildGradientOption(key)).toList(),
+        ),
       ),
     );
   }
@@ -1952,9 +1839,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               Expanded(
                 child: Slider(
                   value: _imageHeight,
-                  min: 300.0,
+                  min: 200.0,
                   max: 800.0,
-                  divisions: 50,
+                  divisions: 60,
                   onChanged: (value) => setState(() => _imageHeight = value),
                 ),
               ),
@@ -1970,9 +1857,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               Expanded(
                 child: Slider(
                   value: _imageWidth,
-                  min: 300.0,
+                  min: 200.0,
                   max: 800.0,
-                  divisions: 50,
+                  divisions: 60,
                   onChanged: (value) => setState(() => _imageWidth = value),
                 ),
               ),
@@ -2329,6 +2216,166 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       debugPrint('Error capturing image: $e');
       return null;
     }
+  }
+
+  Widget _buildStickersOverlay() {
+    return Stack(
+      children:
+          _stickers.asMap().entries.map((entry) {
+            final index = entry.key;
+            final sticker = entry.value;
+            return Positioned(
+              left: sticker.position.dx,
+              top: sticker.position.dy,
+              child: GestureDetector(
+                onPanUpdate: (details) {
+                  setState(() {
+                    _stickers[index].position = Offset(
+                      (_stickers[index].position.dx + details.delta.dx).clamp(
+                        0.0,
+                        _imageWidth - sticker.size,
+                      ),
+                      (_stickers[index].position.dy + details.delta.dy).clamp(
+                        0.0,
+                        _imageHeight - sticker.size,
+                      ),
+                    );
+                  });
+                },
+                child: Transform.rotate(
+                  angle: sticker.rotation,
+                  child: Stack(
+                    children: [
+                      FutureBuilder(
+                        future: _checkAssetExists(sticker.assetPath),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData && snapshot.data == true) {
+                            return Image.asset(
+                              sticker.assetPath,
+                              width: sticker.size,
+                              height: sticker.size,
+                              fit: BoxFit.contain,
+                            );
+                          } else {
+                            return Container(
+                              width: sticker.size,
+                              height: sticker.size,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.image,
+                                color: Colors.grey.shade600,
+                                size: sticker.size * 0.5,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      // Control buttons
+                      Positioned(
+                        right: -5,
+                        top: -5,
+                        child: GestureDetector(
+                          onTap: () => _removeSticker(index),
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Resize handle
+                      Positioned(
+                        right: -5,
+                        bottom: -5,
+                        child: GestureDetector(
+                          onPanUpdate: (details) {
+                            setState(() {
+                              final newSize = (_stickers[index].size +
+                                      details.delta.dx)
+                                  .clamp(30.0, 150.0);
+                              _stickers[index].size = newSize;
+                            });
+                          },
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.open_in_full,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Rotate handle
+                      Positioned(
+                        left: -5,
+                        bottom: -5,
+                        child: GestureDetector(
+                          onPanUpdate: (details) {
+                            setState(() {
+                              _stickers[index].rotation +=
+                                  details.delta.dx * 0.02;
+                            });
+                          },
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.rotate_right,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+    );
   }
 }
 
