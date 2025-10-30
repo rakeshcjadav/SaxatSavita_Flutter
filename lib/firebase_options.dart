@@ -24,15 +24,6 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
-      case TargetPlatform.macOS:
-        return macos;
-      case TargetPlatform.windows:
-        return windows;
-      case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -46,7 +37,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '39080773295',
     projectId: 'saxat-savita-crashanalytics',
     authDomain: 'saxat-savita-crashanalytics.firebaseapp.com',
-    databaseURL: 'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
     measurementId: 'G-CKN0171NWV',
   );
@@ -56,7 +48,8 @@ class DefaultFirebaseOptions {
     appId: '1:39080773295:android:34dd117ce8c4e76351f65a',
     messagingSenderId: '39080773295',
     projectId: 'saxat-savita-crashanalytics',
-    databaseURL: 'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
   );
 
@@ -65,34 +58,13 @@ class DefaultFirebaseOptions {
     appId: '1:39080773295:ios:4e8e19d9e7db917051f65a',
     messagingSenderId: '39080773295',
     projectId: 'saxat-savita-crashanalytics',
-    databaseURL: 'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
-    androidClientId: '39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com',
-    iosClientId: '39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia.apps.googleusercontent.com',
+    androidClientId:
+        '39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com',
+    iosClientId:
+        '39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia.apps.googleusercontent.com',
     iosBundleId: 'com.astound.SaxatSavita',
   );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCVZ0aibkjqCH12L0ZOpIe_Z0Tgz7JPWMA',
-    appId: '1:39080773295:ios:4e8e19d9e7db917051f65a',
-    messagingSenderId: '39080773295',
-    projectId: 'saxat-savita-crashanalytics',
-    databaseURL: 'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
-    androidClientId: '39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com',
-    iosClientId: '39080773295-fedihdmhcam4ihnkvjspv3olacdvl9ia.apps.googleusercontent.com',
-    iosBundleId: 'com.astound.SaxatSavita',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBoaqkdcr4QjPCC0RCeXBkHs1_o4S7TDAU',
-    appId: '1:39080773295:web:22b0a57cfad3de1651f65a',
-    messagingSenderId: '39080773295',
-    projectId: 'saxat-savita-crashanalytics',
-    authDomain: 'saxat-savita-crashanalytics.firebaseapp.com',
-    databaseURL: 'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
-    measurementId: 'G-J5EEYEL2WS',
-  );
-
 }

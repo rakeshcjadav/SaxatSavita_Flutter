@@ -36,7 +36,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   }
 
   Future<void> _checkAppleSignInAvailability() async {
-    if (Platform.isIOS || Platform.isMacOS) {
+    if (Platform.isIOS) {
       try {
         final isAvailable = await SignInWithApple.isAvailable();
         debugPrint('Apple Sign-In isAvailable: $isAvailable');
@@ -190,8 +190,8 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
     debugPrint('=== Testing Apple Sign-In Capability ===');
     debugPrint('Platform: ${Platform.operatingSystem}');
 
-    if (!Platform.isIOS && !Platform.isMacOS) {
-      debugPrint('Apple Sign-In only available on iOS/macOS');
+    if (!Platform.isIOS) {
+      debugPrint('Apple Sign-In only available on iOS');
       return;
     }
 

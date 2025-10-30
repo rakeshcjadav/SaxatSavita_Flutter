@@ -144,7 +144,7 @@ class NotificationService {
 
   /// Request notification permissions
   Future<bool> _requestPermissions() async {
-    if (Platform.isIOS || Platform.isMacOS) {
+    if (Platform.isIOS) {
       final result = await _flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin
