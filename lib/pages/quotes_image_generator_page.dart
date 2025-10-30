@@ -291,28 +291,32 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(0.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Customization Section
-              _buildCustomizationSection(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Customization Section
+            _buildCustomizationSection(),
 
-              // Preview Section
-              _buildPreviewSectionSimplified(),
-              const SizedBox(height: 12),
+            // Preview Section
+            _buildPreviewSectionSimplified(),
+            const SizedBox(height: 12),
+            if (hasEnableEditing) ...[
+              // Text Input Section
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildTextInputSection(),
+                      const SizedBox(height: 12),
 
-              if (hasEnableEditing) ...[
-                // Text Input Section
-                _buildTextInputSection(),
-                const SizedBox(height: 12),
-
-                // Predefined Quotes Section
-                _buildPredefinedQuotesSection(),
-              ],
+                      // Predefined Quotes Section
+                      _buildPredefinedQuotesSection(),
+                    ],
+                  ),
+                ),
+              ),
             ],
-          ),
+          ],
         ),
       ),
     );
@@ -335,8 +339,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
     return Padding(
       padding: const EdgeInsets.only(
-        top: 8.0,
-        bottom: 8.0,
+        top: 0.0,
+        bottom: 0.0,
         left: 0.0,
         right: 0.0,
       ),
@@ -355,6 +359,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
                 return Padding(
                   padding: EdgeInsets.only(
+                    top: 8.0,
+                    bottom: 8.0,
                     left: index == 0 ? 16 : 8,
                     right: index == templates.length - 1 ? 16 : 8,
                   ),
@@ -366,8 +372,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       children: [
                         // Template preview (static image)
                         Container(
-                          width: 80,
-                          height: 80,
+                          width: 60,
+                          height: 60,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
@@ -1841,7 +1847,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildCustomizationSection() {
     return SizedBox(
-      height: _imageHeight * 0.4, // Dynamic height based on image height
+      height: _imageHeight * 0.3, // Dynamic height based on image height
       child: TabBarView(
         controller: _customizationTabController,
         children: [
@@ -2140,8 +2146,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     return InkWell(
       onTap: () => setState(() => _selectedGradient = key),
       child: Container(
-        width: 40,
-        height: 40,
+        width: 60,
+        height: 60,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: _gradients[key]!,
