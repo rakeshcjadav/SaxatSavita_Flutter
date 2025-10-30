@@ -61,6 +61,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   String _selectedGradient = 'orange';
   int _selectedTab = 0;
   double _tabViewHeight = 10;
+  bool _enableStickers = false;
 
   // User info options (optional)
   bool _showUserAvatar = false;
@@ -149,8 +150,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       // Don't call _getRandomQuote() here since localization isn't ready yet
     }
 
+    int tabCount = 5;
+    if (_enableStickers) {
+      tabCount += 1;
+    }
+    // Initialize TabController
     _customizationTabController = TabController(
-      length: hasEnableEditing ? 7 : 6,
+      length: hasEnableEditing ? tabCount + 1 : tabCount,
       vsync: this,
     );
     _customizationTabController.addListener(_handleTabChange);
@@ -310,10 +316,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               icon: Icon(Icons.person),
               text: AppLocalizations.of(context)!.tab_user_info,
             ),
-            Tab(
-              icon: Icon(Icons.add_photo_alternate),
-              text: AppLocalizations.of(context)!.tab_stickers,
-            ),
+            if (_enableStickers) ...[
+              Tab(
+                icon: Icon(Icons.add_photo_alternate),
+                text: AppLocalizations.of(context)!.tab_stickers,
+              ),
+            ],
           ],
         ),
       ),
@@ -1727,7 +1735,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           _buildFontSizeTab(),
           _buildImageSizeTab(),
           _buildUserInfoTab(),
-          _buildStickersTab(),
+          if (_enableStickers) _buildStickersTab(),
         ],
       ),
     );
@@ -1905,7 +1913,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 Spacer(),
                 Switch(
                   value: _showUserAvatar,
-                  onChanged: (value) => setState(() => _showUserAvatar = value),
+                  onChanged:
+                      (value) => setState(() {
+                        _showUserAvatar = value;
+                        _imageHeight += value ? 60 : -60;
+                      }),
                 ),
               ],
             ),
@@ -1924,7 +1936,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                   (_userProfile != null &&
                                       _userProfile!.firstName.isNotEmpty &&
                                       _userProfile!.lastName.isNotEmpty))
-                          ? (value) => setState(() => _showUserName = value)
+                          ? (value) => setState(() {
+                            _showUserName = value;
+                            if (!_showUserAvatar) {
+                              _imageHeight += value ? 50 : -50;
+                            }
+                          })
                           : null,
                 ),
               ],
