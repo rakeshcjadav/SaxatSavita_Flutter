@@ -1892,6 +1892,18 @@ abstract class AppLocalizations {
   /// **'User'**
   String get tab_user_info;
 
+  /// No description provided for @tab_stickers.
+  ///
+  /// In en, this message translates to:
+  /// **'Stickers'**
+  String get tab_stickers;
+
+  /// No description provided for @tab_templates.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get tab_templates;
+
   /// No description provided for @sign_in_to_show_profile.
   ///
   /// In en, this message translates to:
@@ -1909,6 +1921,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show Name'**
   String get show_name;
+
+  /// No description provided for @template_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get template_profile;
+
+  /// No description provided for @template_card.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get template_card;
+
+  /// No description provided for @template_simple.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple'**
+  String get template_simple;
+
+  /// No description provided for @template_geometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Geometric'**
+  String get template_geometric;
+
+  /// No description provided for @template_spiritual.
+  ///
+  /// In en, this message translates to:
+  /// **'Spiritual'**
+  String get template_spiritual;
+
+  /// No description provided for @template_mandala.
+  ///
+  /// In en, this message translates to:
+  /// **'Mandala'**
+  String get template_mandala;
+
+  /// No description provided for @template_elegant.
+  ///
+  /// In en, this message translates to:
+  /// **'Elegant'**
+  String get template_elegant;
+
+  /// No description provided for @template_modern.
+  ///
+  /// In en, this message translates to:
+  /// **'Modern'**
+  String get template_modern;
+
+  /// No description provided for @template_classic.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get template_classic;
+
+  /// No description provided for @template_social.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get template_social;
+
+  /// No description provided for @template_story.
+  ///
+  /// In en, this message translates to:
+  /// **'Story'**
+  String get template_story;
 
   /// No description provided for @predefined_quotes.
   ///

@@ -985,6 +985,12 @@ class AppLocalizationsGu extends AppLocalizations {
   String get tab_user_info => 'વાચક';
 
   @override
+  String get tab_stickers => 'સ્ટીકર';
+
+  @override
+  String get tab_templates => 'ટેમ્પલેટ્સ';
+
+  @override
   String get sign_in_to_show_profile =>
       'તમારી પ્રોફાઇલ માહિતી બતાવવા માટે સાઇન ઇન કરો';
 
@@ -993,6 +999,39 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get show_name => 'નામ બતાવો';
+
+  @override
+  String get template_profile => 'પ્રોફાઇલ';
+
+  @override
+  String get template_card => 'કાર્ડ';
+
+  @override
+  String get template_simple => 'સાદું';
+
+  @override
+  String get template_geometric => 'ભૌમિતિક';
+
+  @override
+  String get template_spiritual => 'આધ્યાત્મિક';
+
+  @override
+  String get template_mandala => 'મંડલા';
+
+  @override
+  String get template_elegant => 'ભવ્ય';
+
+  @override
+  String get template_modern => 'આધુનિક';
+
+  @override
+  String get template_classic => 'ક્લાસિક';
+
+  @override
+  String get template_social => 'સોશિયલ';
+
+  @override
+  String get template_story => 'સ્ટોરી';
 
   @override
   String get predefined_quotes => 'પૂર્વનિર્ધારિત આધ્યાત્મિક સુવિચારો';

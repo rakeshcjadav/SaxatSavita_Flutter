@@ -95,6 +95,8 @@ flutter:
       - assets/book/saxatsavita/part4/
       - assets/book/saxatsavita/part5/
       - assets/saxat_savita/
+      - assets/stickers/
+      - assets/template_previews/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

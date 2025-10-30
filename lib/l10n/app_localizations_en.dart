@@ -981,6 +981,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tab_user_info => 'User';
 
   @override
+  String get tab_stickers => 'Stickers';
+
+  @override
+  String get tab_templates => 'Templates';
+
+  @override
   String get sign_in_to_show_profile => 'Sign in to show your profile info';
 
   @override
@@ -988,6 +994,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get show_name => 'Show Name';
+
+  @override
+  String get template_profile => 'Profile';
+
+  @override
+  String get template_card => 'Card';
+
+  @override
+  String get template_simple => 'Simple';
+
+  @override
+  String get template_geometric => 'Geometric';
+
+  @override
+  String get template_spiritual => 'Spiritual';
+
+  @override
+  String get template_mandala => 'Mandala';
+
+  @override
+  String get template_elegant => 'Elegant';
+
+  @override
+  String get template_modern => 'Modern';
+
+  @override
+  String get template_classic => 'Classic';
+
+  @override
+  String get template_social => 'Social';
+
+  @override
+  String get template_story => 'Story';
 
   @override
   String get predefined_quotes => 'Predefined Spiritual Quotes';
