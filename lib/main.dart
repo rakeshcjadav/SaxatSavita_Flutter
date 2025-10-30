@@ -16,7 +16,6 @@ import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import 'package:saxatsavita_flutter/pages/profile_page.dart';
-import 'package:saxatsavita_flutter/pages/marketing_showcase_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
@@ -27,8 +26,12 @@ import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'pages/settingspage.dart';
 import 'pages/aashirvachanlistpage.dart';
-import 'pages/comprehensive_migration_page.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter/foundation.dart';
+
+// Conditional imports for debug-only pages
+import 'pages/marketing_showcase_page_conditional.dart';
+import 'pages/comprehensive_migration_page_conditional.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -260,10 +263,16 @@ class SakshatSavitaApp extends StatelessWidget {
                 (context) => const QuotesImageGeneratorPage(quote: null),
             '/profile':
                 (context) => const ProfilePage(continueAfterProfile: false),
-            '/migration': (context) => const ComprehensiveMigrationPage(),
             '/welcome': (context) => const WelcomeScreen(),
             '/login': (context) => const GoogleSignInPage(),
-            '/marketing_showcase': (context) => const MarketingShowcasePage(),
+            // Debug-only routes (excluded from release builds)
+            ...kDebugMode
+                ? {
+                  '/migration': (context) => const ComprehensiveMigrationPage(),
+                  '/marketing_showcase':
+                      (context) => const MarketingShowcasePage(),
+                }
+                : {},
           },
         );
       },

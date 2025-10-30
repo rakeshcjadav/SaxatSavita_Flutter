@@ -61,7 +61,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   String _selectedGradient = 'orange';
   int _selectedTab = 0;
   double _tabViewHeight = 10;
-  bool _enableStickers = false;
+  final bool _enableStickers = false;
 
   // User info options (optional)
   bool _showUserAvatar = false;
@@ -160,6 +160,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       vsync: this,
     );
     _customizationTabController.addListener(_handleTabChange);
+
+    if (hasEnableEditing) {
+      _tabViewHeight = 10;
+    } else {
+      _tabViewHeight = 120;
+    }
   }
 
   void _handleTabChange() {
