@@ -1022,60 +1022,56 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               Row(
                 children: [
                   Text(
-                    '${AppLocalizations.of(context)!.match_type} :',
+                    '${AppLocalizations.of(context)!.match_type} : ',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
-                  Expanded(
-                    child: FilterChip(
-                      selected: _showTitleMatches,
-                      onSelected: (_) => _toggleMatchTypeFilter(false),
-                      label: Text(AppLocalizations.of(context)!.title_match),
-                      labelStyle: Theme.of(
-                        context,
-                      ).textTheme.labelSmall!.copyWith(
-                        color:
-                            _showTitleMatches
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurface,
-                      ),
-                      avatar:
+                  FilterChip(
+                    selected: _showTitleMatches,
+                    onSelected: (_) => _toggleMatchTypeFilter(false),
+                    label: Text(AppLocalizations.of(context)!.title_match),
+                    labelStyle: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(
+                      color:
                           _showTitleMatches
-                              ? const Icon(Icons.check)
-                              : const Icon(Icons.title),
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      selectedColor:
-                          Theme.of(context).colorScheme.primaryContainer,
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.onSurface,
                     ),
+                    avatar:
+                        _showTitleMatches
+                            ? const Icon(Icons.check)
+                            : const Icon(Icons.title),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    selectedColor:
+                        Theme.of(context).colorScheme.primaryContainer,
                   ),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: FilterChip(
-                      selected: _showContentMatches,
-                      onSelected: (_) => _toggleMatchTypeFilter(true),
-                      label: Text(AppLocalizations.of(context)!.content_match),
-                      labelStyle: Theme.of(
-                        context,
-                      ).textTheme.labelSmall!.copyWith(
-                        color:
-                            _showContentMatches
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurface,
-                      ),
-                      avatar:
+                  FilterChip(
+                    selected: _showContentMatches,
+                    onSelected: (_) => _toggleMatchTypeFilter(true),
+                    label: Text(AppLocalizations.of(context)!.content_match),
+                    labelStyle: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(
+                      color:
                           _showContentMatches
-                              ? const Icon(Icons.check)
-                              : const Icon(Icons.article),
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      selectedColor:
-                          Theme.of(context).colorScheme.primaryContainer,
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.onSurface,
                     ),
+                    avatar:
+                        _showContentMatches
+                            ? const Icon(Icons.check)
+                            : const Icon(Icons.article),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    selectedColor:
+                        Theme.of(context).colorScheme.primaryContainer,
                   ),
                 ],
               ),
 
               // Part Filters
               Text(
-                '${AppLocalizations.of(context)!.book_parts}:',
+                '${AppLocalizations.of(context)!.book_parts}: ',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 8),

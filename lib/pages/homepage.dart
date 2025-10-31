@@ -97,6 +97,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       children: [
         Column(
           children: [
+            Expanded(
+              child: ClipRRect(
+                child: Image(
+                  image: AssetImage('assets/res/z_jogi_swami_small.png'),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(
@@ -105,14 +113,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 textAlign: TextAlign.center,
-              ),
-            ),
-            Expanded(
-              child: ClipRRect(
-                child: Image(
-                  image: AssetImage('assets/res/z_jogi_swami.png'),
-                  fit: BoxFit.fill,
-                ),
               ),
             ),
           ],

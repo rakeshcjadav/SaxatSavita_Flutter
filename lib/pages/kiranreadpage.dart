@@ -965,6 +965,14 @@ class _KiranReadPageState extends State<KiranReadPage>
       caseSensitive: false,
     );
 
+    // Split content into segments outside and inside <a>...</a>
+    final anchorRegExp = RegExp(
+      r'(<a\b[^>]*>)',
+      caseSensitive: false,
+      dotAll: true,
+    );
+    final anchorMatches = anchorRegExp.allMatches(highlighted).toList();
+
     // Find all matches and store their positions
     final matches = pattern.allMatches(highlighted).toList();
     if (matches.isEmpty) return content;
@@ -977,6 +985,27 @@ class _KiranReadPageState extends State<KiranReadPage>
     for (final match in matches) {
       // Add text before the match
       buffer.write(highlighted.substring(lastMatchEnd, match.start));
+
+      bool isInsideAnchor = false;
+      for (final anchorMatch in anchorMatches) {
+        if (match.start >= anchorMatch.start && match.end <= anchorMatch.end) {
+          debugPrint(
+            'Found match: ${match.group(0)} at ${match.start}-${match.end}',
+          );
+          debugPrint(
+            'Anchor found match: ${anchorMatch.group(0)} at ${anchorMatch.start}-${anchorMatch.end}',
+          );
+          // Match is inside an anchor tag, skip highlighting
+          buffer.write(highlighted.substring(match.start, match.end));
+          lastMatchEnd = match.end;
+          isInsideAnchor = true;
+          break;
+        }
+      }
+
+      if (isInsideAnchor) {
+        continue; // Skip to next match
+      }
 
       final isCurrentMatch = matchCounter == _currentMatchIndex;
       final matchId = 'search-match-$matchCounter';
