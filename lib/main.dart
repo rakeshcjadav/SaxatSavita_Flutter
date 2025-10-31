@@ -8,6 +8,7 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
@@ -251,6 +252,10 @@ class SakshatSavitaApp extends StatelessWidget {
           home: const SplashPage(),
           routes: {
             '/info': (context) => const Infolistpage(),
+            '/preface':
+                (context) => Infodetailspage(
+                  infoItem: AppDataService().getInfoValue("preface")!,
+                ),
             '/search': (context) => const Kiransearchpage(),
             '/settings': (context) => const SettingsPage(),
             '/aashirvachan': (context) => const Aashirvachanpage(),

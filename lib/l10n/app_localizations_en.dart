@@ -153,6 +153,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String word_count(int count) {
+    return 'Number of words : $count';
+  }
+
+  @override
   String get words_per_minute => 'words per min';
 
   @override

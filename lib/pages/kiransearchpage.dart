@@ -1333,8 +1333,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                     overflow: TextOverflow.ellipsis,
                   )
                   : _buildHighlightedTitle(
-                    '${result.kiranInfo.number} ${result.kiranInfo.title}',
-                    result.snippet,
+                    '${result.kiranInfo.number} ${result.snippet}',
                   ),
               const SizedBox(height: 8),
               _buildHighlightedSnippet(result.snippet),
@@ -1406,7 +1405,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     );
   }
 
-  Widget _buildHighlightedTitle(String title, String highlightedSnippet) {
+  Widget _buildHighlightedTitle(String highlightedSnippet) {
     // Extract the highlighted part from the snippet for title highlighting
     final parts = highlightedSnippet.split('**');
     final spans = <TextSpan>[];

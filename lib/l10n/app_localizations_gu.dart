@@ -153,6 +153,11 @@ class AppLocalizationsGu extends AppLocalizations {
   }
 
   @override
+  String word_count(int count) {
+    return 'શબ્દોની સંખ્યા : $count';
+  }
+
+  @override
   String get words_per_minute => 'શબ્દો પ્રતિ મિનિટ';
 
   @override

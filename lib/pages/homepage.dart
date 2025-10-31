@@ -81,12 +81,106 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           DrawerItem.logout,
         ],
       ),
-      body: _buildHomePage(context),
+      body: OrientationBuilder(
+        builder:
+            (context, orientation) =>
+                orientation == Orientation.portrait
+                    ? _buildPortraitHomePage(context)
+                    : _buildLandScapeHomePage(context),
+      ),
       //bottomNavigationBar: const Navigationbar(),
     );
   }
 
-  Stack _buildHomePage(BuildContext context) {
+  Widget _buildLandScapeHomePage(BuildContext context) {
+    return Row(
+      children: [
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                AppLocalizations.of(context)!.jogi_swami,
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Expanded(
+              child: ClipRRect(
+                child: Image(
+                  image: AssetImage('assets/res/z_jogi_swami.png'),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.header_slok,
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: EdgeInsets.only(bottom: 10),
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BookMainpage(),
+                      ),
+                    );
+                  },
+                  iconAlignment: IconAlignment.start,
+                  icon: Icon(
+                    Icons.menu_book,
+                    size: appSettingsNotifier.value.fontSize,
+                  ),
+                  style: ButtonStyle(
+                    padding: const WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    ),
+                    textStyle: WidgetStatePropertyAll(
+                      Theme.of(context).textTheme.titleMedium,
+                    ),
+                    elevation: WidgetStatePropertyAll(10),
+                  ),
+                  label: Text(
+                    "  ${AppLocalizations.of(context)!.sakshatSavita}",
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text(
+                  AppLocalizations.of(context)!.sampRakhjo,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Stack _buildPortraitHomePage(BuildContext context) {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [

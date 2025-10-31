@@ -60,126 +60,145 @@ class _BookmainpageState extends State<BookMainpage> {
 
   @override
   Widget build(BuildContext context) {
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
     return Scaffold(
-      appBar: buildAppBar(
-        context,
-        title: AppLocalizations.of(context)!.sakshatSavita,
-        actionItems: [
-          ActionOptions.notes,
-          ActionOptions.search,
-          ActionOptions.settings,
-        ],
-      ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              height: 300,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 1.0),
-                    Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.0),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+      appBar:
+          isPortrait
+              ? buildAppBar(
+                context,
+                title: AppLocalizations.of(context)!.sakshatSavita,
+                actionItems: [
+                  ActionOptions.notes,
+                  ActionOptions.search,
+                  ActionOptions.settings,
+                ],
+              )
+              : buildAppBar(
+                context,
+                title: AppLocalizations.of(context)!.sakshatSavita,
+                actionItems: [
+                  ActionOptions.aashirvachan,
+                  ActionOptions.preface,
+                  ActionOptions.notes,
+                  ActionOptions.search,
+                  ActionOptions.settings,
+                ],
               ),
-            ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Aashirvachanpage(),
-                            ),
-                          );
-                        },
-                        style: ButtonStyle(
-                          elevation: WidgetStatePropertyAll(5),
-                          backgroundColor: WidgetStatePropertyAll(
-                            Theme.of(context).colorScheme.surfaceContainer,
-                          ),
-                          shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                        //icon: const Icon(Icons.topic),
-                        child: Text(
-                          AppLocalizations.of(context)!.aashirvachan,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          final infoItem = AppDataService().getInfoValue(
-                            "preface",
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) =>
-                                      Infodetailspage(infoItem: infoItem!),
-                            ),
-                          );
-                        },
-                        style: ButtonStyle(
-                          elevation: WidgetStatePropertyAll(5),
-                          backgroundColor: WidgetStatePropertyAll(
-                            Theme.of(context).colorScheme.surfaceContainer,
-                          ),
-                          shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                        //icon: const Icon(Icons.article),
-                        child: Text(
-                          AppLocalizations.of(context)!.preface,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Image(
-                    image: const AssetImage(
-                      'assets/res/z_swami_aashirvad.webp',
-                    ),
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-                Text(
-                  AppLocalizations.of(context)!.tag_line,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                Expanded(child: bookPartsWidget()),
-              ],
-            ),
-          ],
-        ),
+      body: OrientationBuilder(
+        builder:
+            (context, orientation) =>
+                orientation == Orientation.portrait
+                    ? _buildPotraitPage(context)
+                    : _buildLandscapePage(context),
       ),
     );
   }
 
-  Widget bookPartsWidget() {
+  SafeArea _buildLandscapePage(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          Text(
+            AppLocalizations.of(context)!.tag_line,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          Expanded(child: _buildBookPartsWidget()),
+        ],
+      ),
+    );
+  }
+
+  SafeArea _buildPotraitPage(BuildContext context) {
+    return SafeArea(
+      child: Stack(
+        children: [
+          Container(
+            height: 300,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 1.0),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.0),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        await Navigator.pushNamed(context, '/aashirvachan');
+                      },
+                      style: ButtonStyle(
+                        elevation: WidgetStatePropertyAll(5),
+                        backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.surfaceContainer,
+                        ),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                      //icon: const Icon(Icons.topic),
+                      child: Text(
+                        AppLocalizations.of(context)!.aashirvachan,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await Navigator.pushNamed(context, '/preface');
+                      },
+                      style: ButtonStyle(
+                        elevation: WidgetStatePropertyAll(5),
+                        backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.surfaceContainer,
+                        ),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                      //icon: const Icon(Icons.article),
+                      child: Text(
+                        AppLocalizations.of(context)!.preface,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(20.0),
+                child: Image(
+                  image: const AssetImage('assets/res/z_swami_aashirvad.webp'),
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+              Text(
+                AppLocalizations.of(context)!.tag_line,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              Expanded(child: _buildBookPartsWidget()),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBookPartsWidget() {
     return ValueListenableBuilder<AppSettings>(
       valueListenable: appSettingsNotifier,
       builder: (context, appSettings, child) {

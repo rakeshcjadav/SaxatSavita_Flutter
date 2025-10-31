@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
@@ -723,115 +725,48 @@ class _KiranReadPageState extends State<KiranReadPage>
                                 },
                               ),
                               const SizedBox(height: 8.0),
-                              Tooltip(
-                                message:
-                                    _isFinishButtonEnabled
-                                        ? AppLocalizations.of(
-                                          context,
-                                        )!.kiran_read_finished
-                                        : 'Complete 80% of estimated reading time to enable',
-                                child: ElevatedButton.icon(
-                                  onPressed:
-                                      _isFinishButtonEnabled
-                                          ? () async {
-                                            // Store context before async operation
-                                            final scaffoldMessenger =
-                                                ScaffoldMessenger.of(context);
-                                            final localizations =
-                                                AppLocalizations.of(context)!;
-
-                                            // Stop stopwatch to capture correct elapsed time
-                                            _stopwatch.stop();
-                                            _timer?.cancel();
-
-                                            // Save reading history before finishing
-                                            await _saveReadingHistory();
-
-                                            // Track reading completion analytics
-                                            final readingTimeSeconds =
-                                                _stopwatch.elapsed.inSeconds;
-                                            await AnalyticsService()
-                                                .logCompleteReading(
-                                                  bookName: 'Sakshat Savita',
-                                                  chapterName:
-                                                      widget.kiranInfo.title,
-                                                  partName:
-                                                      'Part ${widget.partNumber}',
-                                                  readingTimeSeconds:
-                                                      readingTimeSeconds,
-                                                );
-
-                                            // Increment reading session count for review prompts
-                                            await InAppReviewService()
-                                                .incrementReadingSessionCount();
-
-                                            if (mounted) {
-                                              setState(() {
-                                                widget.kiranUserInfo.progress =
-                                                    0;
-                                                widget
-                                                    .kiranUserInfo
-                                                    .readCount += 1;
-                                                widget.kiranUserInfo.updatedAt =
-                                                    DateTime.now();
-                                                Utils.updateKiranUserInfo(
-                                                  widget.kiranUserInfo,
-                                                );
-                                                _hasDataChanged = true;
-                                                _pauseTimer();
-                                                _isFinishButtonEnabled = false;
-                                                _isFinishButtonEnabledNotifier
-                                                    .value = false;
-                                                // Stop auto-scroll if active
-                                                if (_isAutoScrolling) {
-                                                  _stopAutoScroll();
-                                                }
-                                                Utils.applyBookmarkToNextKiran(
-                                                  widget.kiranUserInfo,
-                                                );
-                                              });
-
-                                              scaffoldMessenger.showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    localizations
-                                                        .kiran_read_finished_message(
-                                                          widget
-                                                              .kiranUserInfo
-                                                              .readCount,
-                                                        ),
-                                                  ),
-                                                  duration: const Duration(
-                                                    seconds: 2,
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          }
-                                          : null,
-                                  icon: Icon(
-                                    Icons.check_box_outline_blank,
-                                    color:
-                                        _isFinishButtonEnabled
-                                            ? null
-                                            : Colors.grey,
+                              // Finish button
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                  label: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.kiran_read_finished,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color:
-                                            _isFinishButtonEnabled
-                                                ? null
-                                                : Colors.grey,
-                                      ),
+                                ),
+                                onPressed:
+                                    _isFinishButtonEnabled
+                                        ? () async {
+                                          _onFinishReadingPressed();
+                                        }
+                                        : null,
+
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.kiran_read_finished,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color:
+                                          _isFinishButtonEnabled
+                                              ? null
+                                              : Colors.grey,
                                     ),
                                   ),
                                 ),
+                              ),
+                              const SizedBox(height: 16.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (_hasPreviousKiran()) ...[
+                                    _buildPreviousKiranButton(),
+                                  ],
+                                  const Spacer(),
+                                  if (_hasNextKiran()) ...[
+                                    _buildNextKiranButton(),
+                                  ],
+                                ],
                               ),
                               const SizedBox(height: 64.0),
                             ],
@@ -1296,6 +1231,214 @@ class _KiranReadPageState extends State<KiranReadPage>
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _onFinishReadingPressed() async {
+    // Store context before async operation
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final localizations = AppLocalizations.of(context)!;
+
+    // Stop stopwatch to capture correct elapsed time
+    _stopwatch.stop();
+    _timer?.cancel();
+
+    // Save reading history before finishing
+    await _saveReadingHistory();
+
+    // Track reading completion analytics
+    final readingTimeSeconds = _stopwatch.elapsed.inSeconds;
+    await AnalyticsService().logCompleteReading(
+      bookName: 'Sakshat Savita',
+      chapterName: widget.kiranInfo.title,
+      partName: 'Part ${widget.partNumber}',
+      readingTimeSeconds: readingTimeSeconds,
+    );
+
+    // Increment reading session count for review prompts
+    await InAppReviewService().incrementReadingSessionCount();
+
+    if (mounted) {
+      setState(() {
+        widget.kiranUserInfo.progress = 0;
+        widget.kiranUserInfo.readCount += 1;
+        widget.kiranUserInfo.updatedAt = DateTime.now();
+        Utils.updateKiranUserInfo(widget.kiranUserInfo);
+        _hasDataChanged = true;
+        _pauseTimer();
+        _isFinishButtonEnabled = false;
+        _isFinishButtonEnabledNotifier.value = false;
+        // Stop auto-scroll if active
+        if (_isAutoScrolling) {
+          _stopAutoScroll();
+        }
+        Utils.applyBookmarkToNextKiran(widget.kiranUserInfo);
+      });
+
+      final durationSeconds = _stopwatch.elapsed.inSeconds;
+      final minutes = durationSeconds ~/ 60;
+      final secs = durationSeconds % 60;
+      final timeString =
+          "${minutes.toString().padLeft(2, '0')}m:${secs.toString().padLeft(2, '0')}s";
+
+      // Show Dialog
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              localizations.kiran_read_finished_message(
+                widget.kiranUserInfo.readCount,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+                Text(localizations.word_count(widget.kiranInfo.wordCount)),
+                Text('${localizations.reading_time} : $timeString'),
+                const SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    // Previous Kiran button
+                    if (_hasPreviousKiran()) _buildPreviousKiranButton(),
+                    const Spacer(),
+                    // Next Kiran button
+                    if (_hasNextKiran()) _buildNextKiranButton(),
+                  ],
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(localizations.ok),
+              ),
+            ],
+          );
+        },
+      );
+
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            localizations.kiran_read_finished_message(
+              widget.kiranUserInfo.readCount,
+            ),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  bool _hasPreviousKiran() {
+    return KiranListService().hasPreviousKiran(
+      widget.kiranUserInfo.partNumber,
+      widget.kiranInfo.index,
+    );
+  }
+
+  bool _hasNextKiran() {
+    return KiranListService().hasNextKiran(
+      widget.kiranUserInfo.partNumber,
+      widget.kiranInfo.index,
+    );
+  }
+
+  Widget _buildPreviousKiranButton() {
+    KiranInfo previousKiranInfo = KiranListService().getKiranInfo(
+      widget.kiranUserInfo.partNumber,
+      widget.kiranInfo.index - 1,
+    );
+    String strButtonText =
+        '${AppLocalizations.of(context)!.kiran} ${previousKiranInfo.number.replaceAll(".", "")}';
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (_) => KiranReadPage(
+                  partNumber: widget.partNumber,
+                  kiranInfo: previousKiranInfo,
+                  kiranUserInfo: KiranUserService().getKiranUserInfo(
+                    widget.kiranUserInfo.kiranIndex - 1,
+                  ),
+                ),
+          ),
+        );
+      },
+      child: Material(
+        elevation: 1.0,
+        borderRadius: BorderRadius.circular(20.0),
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Theme.of(context).colorScheme.surfaceContainer,
+          ),
+          child: Column(
+            children: [
+              const Icon(Icons.arrow_back),
+              const SizedBox(height: 8),
+              Text(
+                strButtonText,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNextKiranButton() {
+    KiranInfo nextKiranInfo = KiranListService().getKiranInfo(
+      widget.kiranUserInfo.partNumber,
+      widget.kiranInfo.index + 1,
+    );
+    String strButtonText =
+        '${AppLocalizations.of(context)!.kiran} ${nextKiranInfo.number.replaceAll(".", "")}';
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (_) => KiranReadPage(
+                  partNumber: widget.partNumber,
+                  kiranInfo: nextKiranInfo,
+                  kiranUserInfo: KiranUserService().getKiranUserInfo(
+                    widget.kiranUserInfo.kiranIndex + 1,
+                  ),
+                ),
+          ),
+        );
+      },
+      child: Material(
+        elevation: 1.0,
+        borderRadius: BorderRadius.circular(20.0),
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Theme.of(context).colorScheme.surfaceContainer,
+          ),
+          child: Column(
+            children: [
+              const Icon(Icons.arrow_forward),
+              const SizedBox(height: 8),
+              Text(
+                strButtonText,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

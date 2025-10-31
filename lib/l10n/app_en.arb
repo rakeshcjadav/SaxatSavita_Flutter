@@ -83,6 +83,16 @@
             }
         }
     },
+    "word_count": "Number of words : {count}",
+    "@word_count": {
+        "description": "Indicates the number of words in a particular item.",
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
     "words_per_minute": "words per min",
     "header_slok": "।। શ્રી સ્વામિનારાયણો વિજયતેતરામ્‌ ।।\n\nશ્રી સહજાનંદ સંસ્કારધામ\nમહામંત્રપીઠ - ફરેણી",
     

@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
-enum ActionOptions { info, settings, notes, search, favorite }
+enum ActionOptions {
+  info,
+  settings,
+  notes,
+  search,
+  favorite,
+  aashirvachan,
+  preface,
+}
 
 AppBar buildAppBar(
   BuildContext context, {
@@ -17,6 +25,22 @@ AppBar buildAppBar(
     ),
     elevation: 5,
     actions: [
+      if (actionItems?.contains(ActionOptions.aashirvachan) ?? false)
+        IconButton(
+          icon: const Icon(Icons.volunteer_activism),
+          tooltip: AppLocalizations.of(context)!.aashirvachan,
+          onPressed: () {
+            Navigator.pushNamed(context, '/aashirvachan');
+          },
+        ),
+      if (actionItems?.contains(ActionOptions.preface) ?? false)
+        IconButton(
+          icon: const Icon(Icons.book),
+          tooltip: AppLocalizations.of(context)!.preface,
+          onPressed: () {
+            Navigator.pushNamed(context, '/preface');
+          },
+        ),
       if (actionItems?.contains(ActionOptions.info) ?? false)
         IconButton(
           icon: const Icon(Icons.info),

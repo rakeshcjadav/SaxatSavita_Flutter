@@ -55,4 +55,20 @@ class KiranListService {
     KiranInfo kiranInfo = getKiranInfo(partNumber, kiranIndex);
     return '${kiranInfo.number} ${kiranInfo.title}';
   }
+
+  bool hasPreviousKiran(int partNumber, int kiranIndex) {
+    KiranList? kiranList = getKiranListFromPartNumber(partNumber);
+    if (kiranList == null) {
+      return false;
+    }
+    return kiranList.list.any((kiran) => kiran.index == kiranIndex - 1);
+  }
+
+  bool hasNextKiran(int partNumber, int kiranIndex) {
+    KiranList? kiranList = getKiranListFromPartNumber(partNumber);
+    if (kiranList == null) {
+      return false;
+    }
+    return kiranList.list.any((kiran) => kiran.index == kiranIndex + 1);
+  }
 }

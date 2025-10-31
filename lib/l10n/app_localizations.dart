@@ -350,6 +350,12 @@ abstract class AppLocalizations {
   /// **'{time}'**
   String time_to_read(String time);
 
+  /// Indicates the number of words in a particular item.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of words : {count}'**
+  String word_count(int count);
+
   /// No description provided for @words_per_minute.
   ///
   /// In en, this message translates to:
