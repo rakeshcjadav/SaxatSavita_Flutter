@@ -476,7 +476,7 @@ class _KiranReadPageState extends State<KiranReadPage>
         '<p><footer>${contentData['main']['footer'] ?? ''}</footer></p>';
 
     // Cache the content for search functionality
-    _currentKiranContent = content;
+    _currentKiranContent = _getPlainTextFromHtml(content);
 
     return content;
   }
@@ -661,12 +661,16 @@ class _KiranReadPageState extends State<KiranReadPage>
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                 ),
@@ -856,17 +860,13 @@ class _KiranReadPageState extends State<KiranReadPage>
           ),
           if (_searchController.text.isNotEmpty) ...[
             const SizedBox(height: 8),
-            Row(
-              children: [
-                Text(
-                  _searchMatches.isEmpty
-                      ? AppLocalizations.of(context)!.no_match_found
-                      : '${_currentMatchIndex + 1} of ${_searchMatches.length}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                ),
-              ],
+            Text(
+              _searchMatches.isEmpty
+                  ? AppLocalizations.of(context)!.no_match_found
+                  : '${_currentMatchIndex + 1} of ${_searchMatches.length}',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: Colors.grey),
             ),
           ],
         ],
@@ -898,13 +898,11 @@ class _KiranReadPageState extends State<KiranReadPage>
     String strQuery = lowerQuery.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
     List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
 
-    String strPattern = "(\\s+[^.!?]*";
-    for (String str in listQuery) {
-      strPattern += "$str[^.!?]*";
-    }
-    strPattern += "[.!?])";
+    final pattern = RegExp(
+      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
+      caseSensitive: false,
+    );
 
-    final pattern = RegExp(strPattern);
     Iterable<RegExpMatch> matchesIterable = pattern.allMatches(lowerContent);
     for (RegExpMatch match in matchesIterable) {
       matches.add(match.start);
@@ -918,7 +916,8 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   String _getPlainTextFromHtml(String html) {
     // Simple HTML tag removal - could be improved with proper HTML parsing
-    return html.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+    // Remove all HTML tags using regex
+    return html.replaceAll(RegExp(r'<[^>]*>', multiLine: true), '').trim();
   }
 
   String _getHighlightedContent(String content) {
@@ -1016,7 +1015,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     try {
       // Get the position of the current match in the text
       final matchPosition = _searchMatches[_currentMatchIndex];
-      final plainText = _getPlainTextFromHtml(_currentKiranContent);
+      final plainText = _currentKiranContent;
 
       if (plainText.isEmpty || matchPosition >= plainText.length) return;
 
@@ -1028,7 +1027,7 @@ class _KiranReadPageState extends State<KiranReadPage>
       final maxScrollExtent = _scrollController.position.maxScrollExtent;
       final viewportHeight = _scrollController.position.viewportDimension;
 
-      // Calculate target position - aim to put the match in the upper third of the viewport
+      // Calculate target position - aim to put the match in the center of the viewport
       final targetScrollOffset =
           (maxScrollExtent * matchRatio) - (viewportHeight * 0.2);
       final clampedOffset = targetScrollOffset.clamp(0.0, maxScrollExtent);
