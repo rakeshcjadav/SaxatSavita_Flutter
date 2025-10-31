@@ -54,6 +54,7 @@ class _KiranReadPageState extends State<KiranReadPage>
       ValueNotifier<bool>(false);
 
   // Auto-scroll variables
+  bool _isAutoScrollEnabled = false;
   bool _isAutoScrolling = false;
   Timer? _autoScrollTimer;
   Timer? _autoScrollDelayTimer; // Timer for 5-second delay
@@ -151,6 +152,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     _timer = null;
 
     // Stop auto-scroll and cleanup
+    _isAutoScrollEnabled = false;
     _isAutoScrolling = false;
     _autoScrollTimer?.cancel();
     _autoScrollTimer = null;
@@ -364,6 +366,7 @@ class _KiranReadPageState extends State<KiranReadPage>
             curve: Curves.easeOut,
           );
         }
+        _isAutoScrollEnabled = false;
         _stopAutoScroll();
       } else {
         if (mounted && _scrollController.hasClients) {
@@ -435,6 +438,7 @@ class _KiranReadPageState extends State<KiranReadPage>
       // Start 5-second countdown when play button is pressed
       _startAutoScrollWithDelay();
     }
+    _isAutoScrollEnabled = !_isAutoScrollEnabled;
   }
 
   void _startAutoScrollWithDelay() {
@@ -697,83 +701,108 @@ class _KiranReadPageState extends State<KiranReadPage>
                           _isInitialized = true;
                         });
                       }
-                      return Scrollbar(
-                        controller: _scrollController,
-                        interactive: true,
-                        child: SingleChildScrollView(
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification is UserScrollNotification) {
+                            // User started scrolling manually
+                            if (_isAutoScrollEnabled && _isAutoScrolling) {
+                              _stopAutoScroll();
+                            }
+                          } else if (notification is ScrollEndNotification) {
+                            // User stopped scrolling
+                            if (_isAutoScrollEnabled &&
+                                !_isAutoScrolling &&
+                                _autoScrollDelayTimer == null) {
+                              // Optionally, resume auto-scroll after a short delay
+                              Future.delayed(const Duration(seconds: 1), () {
+                                if (mounted &&
+                                    !_isAutoScrolling &&
+                                    _autoScrollDelayTimer == null) {
+                                  _startAutoScrollWithDelay();
+                                }
+                              });
+                            }
+                          }
+                          return false;
+                        },
+                        child: Scrollbar(
                           controller: _scrollController,
-                          child: Column(
-                            children: [
-                              CustomHtmlWidget(
-                                htmlContent:
-                                    _isSearchMode &&
-                                            _searchController.text.isNotEmpty
-                                        ? _getHighlightedContent(
-                                          getKiranContent(contentData),
-                                        )
-                                        : getKiranContent(contentData),
+                          interactive: true,
+                          child: SingleChildScrollView(
+                            controller: _scrollController,
+                            child: Column(
+                              children: [
+                                CustomHtmlWidget(
+                                  htmlContent:
+                                      _isSearchMode &&
+                                              _searchController.text.isNotEmpty
+                                          ? _getHighlightedContent(
+                                            getKiranContent(contentData),
+                                          )
+                                          : getKiranContent(contentData),
 
-                                onAddNote: (selectedText) async {
-                                  _pauseTimer();
-                                  await _openNoteEditor(
-                                    selectedText: selectedText,
-                                  );
-                                  _resumeTimer();
-                                },
-                                onCreateQuoteImage: (selectedText) async {
-                                  _pauseTimer();
-                                  await _openQuoteEditor(
-                                    selectedText: selectedText,
-                                  );
-                                  _resumeTimer();
-                                },
-                              ),
-                              const SizedBox(height: 8.0),
-                              // Finish button
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
+                                  onAddNote: (selectedText) async {
+                                    _pauseTimer();
+                                    await _openNoteEditor(
+                                      selectedText: selectedText,
+                                    );
+                                    _resumeTimer();
+                                  },
+                                  onCreateQuoteImage: (selectedText) async {
+                                    _pauseTimer();
+                                    await _openQuoteEditor(
+                                      selectedText: selectedText,
+                                    );
+                                    _resumeTimer();
+                                  },
                                 ),
-                                onPressed:
-                                    _isFinishButtonEnabled
-                                        ? () async {
-                                          _onFinishReadingPressed();
-                                        }
-                                        : null,
+                                const SizedBox(height: 8.0),
+                                // Finish button
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                  ),
+                                  onPressed:
+                                      _isFinishButtonEnabled
+                                          ? () async {
+                                            _onFinishReadingPressed();
+                                          }
+                                          : null,
 
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    AppLocalizations.of(
-                                      context,
-                                    )!.kiran_read_finished,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color:
-                                          _isFinishButtonEnabled
-                                              ? null
-                                              : Colors.grey,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.kiran_read_finished,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color:
+                                            _isFinishButtonEnabled
+                                                ? null
+                                                : Colors.grey,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  if (_hasPreviousKiran()) ...[
-                                    _buildPreviousKiranButton(),
+                                const SizedBox(height: 16.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (_hasPreviousKiran()) ...[
+                                      _buildPreviousKiranButton(),
+                                    ],
+                                    const Spacer(),
+                                    if (_hasNextKiran()) ...[
+                                      _buildNextKiranButton(),
+                                    ],
                                   ],
-                                  const Spacer(),
-                                  if (_hasNextKiran()) ...[
-                                    _buildNextKiranButton(),
-                                  ],
-                                ],
-                              ),
-                              const SizedBox(height: 64.0),
-                            ],
+                                ),
+                                const SizedBox(height: 64.0),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -1272,6 +1301,7 @@ class _KiranReadPageState extends State<KiranReadPage>
         if (_isAutoScrolling) {
           _stopAutoScroll();
         }
+        _isAutoScrollEnabled = false;
         Utils.applyBookmarkToNextKiran(widget.kiranUserInfo);
       });
 
