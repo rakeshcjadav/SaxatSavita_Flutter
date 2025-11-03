@@ -120,7 +120,7 @@ class ReadingHistoryMigrationService {
         await _deleteLegacyData(userId);
       }
 
-      return MigrationResult(
+      final result = MigrationResult(
         success: errorCount == 0,
         migratedCount: migratedCount,
         skippedCount: skippedCount,
@@ -132,9 +132,36 @@ class ReadingHistoryMigrationService {
         ),
         errors: errors,
       );
+
+      // Write migration log to Firebase
+      await writeMigrationLog(
+        userId,
+        migrationType: 'reading_history',
+        result: result,
+        additionalData: {
+          'totalLegacyEntries': legacyEntries.length,
+          'deletedLegacyData': deleteAfterMigration && errorCount == 0,
+        },
+      );
+
+      // Update migration status
+      await writeMigrationStatus(
+        userId,
+        migrationType: 'reading_history',
+        status: result.success ? 'completed' : 'failed',
+        message: result.message,
+        metadata: {
+          'completedAt': DateTime.now().toIso8601String(),
+          'migratedCount': migratedCount,
+          'skippedCount': skippedCount,
+          'errorCount': errorCount,
+        },
+      );
+
+      return result;
     } catch (e) {
       debugPrint('Migration failed: $e');
-      return MigrationResult(
+      final result = MigrationResult(
         success: false,
         migratedCount: 0,
         skippedCount: 0,
@@ -142,6 +169,23 @@ class ReadingHistoryMigrationService {
         message: 'Migration failed: $e',
         errors: [e.toString()],
       );
+
+      // Write error log to Firebase
+      await writeMigrationLog(
+        userId,
+        migrationType: 'reading_history',
+        result: result,
+      );
+
+      // Update migration status as failed
+      await writeMigrationStatus(
+        userId,
+        migrationType: 'reading_history',
+        status: 'failed',
+        message: 'Migration encountered an error: $e',
+      );
+
+      return result;
     }
   }
 
@@ -307,5 +351,73 @@ class DateRange {
     final startStr = '${start.day}/${start.month}/${start.year}';
     final endStr = '${end.day}/${end.month}/${end.year}';
     return '$startStr - $endStr';
+  }
+}
+
+/// Write migration log to Firebase under user's document
+Future<void> writeMigrationLog(
+  String userId, {
+  required String migrationType,
+  required MigrationResult result,
+  Map<String, dynamic>? additionalData,
+}) async {
+  try {
+    final logData = {
+      'migrationType':
+          migrationType, // e.g., 'reading_history', 'kiran_user_info'
+      'timestamp': FieldValue.serverTimestamp(),
+      'success': result.success,
+      'migratedCount': result.migratedCount,
+      'skippedCount': result.skippedCount,
+      'errorCount': result.errorCount,
+      'message': result.message,
+      'errors': result.errors,
+      'appVersion':
+          'flutter', // You can add package_info_plus to get actual version
+      'platform': defaultTargetPlatform.name,
+      ...?additionalData,
+    };
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('migration_logs')
+        .add(logData);
+
+    debugPrint('Migration log written to Firebase for user: $userId');
+  } catch (e) {
+    debugPrint('Error writing migration log to Firebase: $e');
+  }
+}
+
+/// Write a simple migration status message to user's metadata
+Future<void> writeMigrationStatus(
+  String userId, {
+  required String migrationType,
+  required String status,
+  String? message,
+  Map<String, dynamic>? metadata,
+}) async {
+  try {
+    final statusData = {
+      'migrations.$migrationType': {
+        'status':
+            status, // e.g., 'pending', 'in_progress', 'completed', 'failed'
+        'lastUpdated': FieldValue.serverTimestamp(),
+        'message': message,
+        ...?metadata,
+      },
+    };
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .set(statusData, SetOptions(merge: true));
+
+    debugPrint(
+      'Migration status updated for user $userId: $migrationType = $status',
+    );
+  } catch (e) {
+    debugPrint('Error writing migration status to Firebase: $e');
   }
 }

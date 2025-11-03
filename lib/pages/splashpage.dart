@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/pages/profile_page.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/services/first_time_user_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
@@ -53,23 +54,48 @@ class _MyWidgetState extends State<SplashPage> {
 
         Utils.loadUserdatafromFirebase();
 
+        // Check if   tion is needed and perform it
+        await Utils.checkAndPerformMigration();
+
+        debugPrint('_handleAuthenticationEvent : Migration done');
+
+        // Check if user has profile data to determine navigation
+        bool shouldGoToProfile = await Utils.shouldNavigateToProfile();
+
         // Check if this is the first time user
         final isFirstTime = await FirstTimeUserService.isFirstTimeUser();
 
         FlutterNativeSplash.remove(); // remove splash after init
 
+        if (shouldGoToProfile) {
+          if (mounted) {
+            debugPrint('_handleAuthenticationEvent : Routing to Profile Page');
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => const ProfilePage(continueAfterProfile: true),
+              ),
+            );
+          }
+        }
+
         if (isFirstTime) {
-          // Show welcome screen for first-time users
-          await Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-          );
+          if (mounted) {
+            // Show welcome screen for first-time users
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          }
         } else {
-          // Go directly to homepage for returning users
-          await Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
-          );
+          if (mounted) {
+            // Go directly to homepage for returning users
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }
         }
       } else {
         if (!mounted) return;

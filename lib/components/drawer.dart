@@ -100,6 +100,15 @@ class _DrawerState extends State<MyDrawer> {
   Widget getAccountEmail() {
     // Prioritize profile data if available and both names are filled
     if (_userProfile != null && _userProfile!.email.isNotEmpty) {
+      if (_userProfile!.email.contains('appleid.com')) {
+        // Handle Apple ID email case
+        return Text(
+          'Apple ID',
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        );
+      }
       return Text(
         _userProfile!.email,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
