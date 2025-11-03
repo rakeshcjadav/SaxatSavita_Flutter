@@ -571,9 +571,9 @@ class _SettingsPageState extends State<SettingsPage> {
             width: 200,
             child: Slider(
               value: _edgePadding,
-              min: 8.0,
-              max: 32.0,
-              divisions: 12,
+              min: 0.0,
+              max: 16.0,
+              divisions: 8,
               label: _edgePadding.toStringAsFixed(0),
               onChanged: (double value) {
                 setState(() {

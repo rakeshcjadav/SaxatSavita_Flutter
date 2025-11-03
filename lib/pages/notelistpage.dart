@@ -532,7 +532,18 @@ class _NoteListPageState extends State<NoteListPage> {
                               label: Text(
                                 Bookservice().getPartTitle(context, partNumber),
                               ),
-                              labelStyle: Theme.of(context).textTheme.bodySmall,
+                              labelStyle: Theme.of(
+                                context,
+                              ).textTheme.labelSmall!.copyWith(
+                                color:
+                                    isSelected
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimary
+                                        : Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                              ),
                               avatar:
                                   isSelected
                                       ? Icon(Icons.check, size: 16)

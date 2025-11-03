@@ -96,7 +96,7 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
     language: 'gu',
     keepScreenOn: false,
     showEdgeNavButtons: false,
-    edgePadding: 16.0,
+    edgePadding: 0.0,
   ),
 );
 
@@ -111,7 +111,7 @@ AppSettings appSettingsDefault = AppSettings(
   language: 'gu',
   keepScreenOn: false,
   showEdgeNavButtons: false,
-  edgePadding: 16.0,
+  edgePadding: 0.0,
 );
 
 AppSettings copyAppSettings(

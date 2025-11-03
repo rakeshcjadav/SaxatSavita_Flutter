@@ -627,257 +627,270 @@ class _KiranReadPageState extends State<KiranReadPage>
             _resumeTimer();
           },
         ),
-        body: Padding(
-          padding: EdgeInsets.only(
-            left: appSettingsNotifier.value.edgePadding,
-            right: appSettingsNotifier.value.edgePadding,
-            top: 0,
-            bottom: 16.0,
-          ),
-          child: Column(
-            children: [
-              displayExtraInfos(context),
-              // Search bar
-              if (_isSearchMode) _buildSearchBar(),
-              LinearProgressIndicator(
-                value: widget.kiranUserInfo.progress.toDouble() / 100.0,
-                minHeight: 3,
-                borderRadius: BorderRadius.circular(3),
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.1),
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
-                ),
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 0,
+                bottom: 16.0,
               ),
-              Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(20.0),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4.0,
-                      offset: Offset(0, 2),
+              child: Column(
+                children: [
+                  displayExtraInfos(context),
+                  // Search bar
+                  if (_isSearchMode) _buildSearchBar(),
+                  LinearProgressIndicator(
+                    value: widget.kiranUserInfo.progress.toDouble() / 100.0,
+                    minHeight: 3,
+                    borderRadius: BorderRadius.circular(3),
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.1),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.5),
                     ),
-                  ],
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        overflow: TextOverflow.ellipsis,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.vertical(
+                        bottom: Radius.circular(20.0),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 4.0,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: Stack(
-                  children: [
-                    SafeArea(
-                      child: FutureBuilder<Map<String, dynamic>>(
-                        future: _futureKiranContent,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Center(
-                              child: Text('Error: ${snapshot.error}'),
-                            );
-                          } else if (!snapshot.hasData) {
-                            return const Center(
-                              child: Text('No content found.'),
-                            );
-                          }
-                          final contentData = snapshot.data!;
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: appSettingsNotifier.value.edgePadding,
+                        right: appSettingsNotifier.value.edgePadding,
+                        top: 0,
+                        bottom: 0.0,
+                      ),
+                      child: SafeArea(
+                        child: FutureBuilder<Map<String, dynamic>>(
+                          future: _futureKiranContent,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text('Error: ${snapshot.error}'),
+                              );
+                            } else if (!snapshot.hasData) {
+                              return const Center(
+                                child: Text('No content found.'),
+                              );
+                            }
+                            final contentData = snapshot.data!;
 
-                          // Initialize auto-scroll and set initial position after content is loaded (only once)
-                          if (!_isInitialized) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _initializeAutoScroll();
-                              _setInitialScrollPosition();
-                              _isInitialized = true;
-                            });
-                          }
-                          return NotificationListener<ScrollNotification>(
-                            onNotification: (notification) {
-                              if (notification is UserScrollNotification) {
-                                // User started scrolling manually
-                                if (_isAutoScrollEnabled && _isAutoScrolling) {
-                                  _stopAutoScroll();
-                                }
-                              } else if (notification
-                                  is ScrollEndNotification) {
-                                // User stopped scrolling
-                                if (_isAutoScrollEnabled &&
-                                    !_isAutoScrolling &&
-                                    _autoScrollDelayTimer == null) {
-                                  // Optionally, resume auto-scroll after a short delay
-                                  Future.delayed(
-                                    const Duration(seconds: 1),
-                                    () {
-                                      if (mounted &&
-                                          !_isAutoScrolling &&
-                                          _autoScrollDelayTimer == null) {
-                                        _startAutoScrollWithDelay();
-                                      }
-                                    },
-                                  );
-                                }
-                              }
-                              return false;
-                            },
-                            child: Scrollbar(
-                              controller: _scrollController,
-                              interactive: true,
-                              child: SingleChildScrollView(
-                                controller: _scrollController,
-                                child: Column(
-                                  children: [
-                                    CustomHtmlWidget(
-                                      htmlContent:
-                                          _isSearchMode &&
-                                                  _searchController
-                                                      .text
-                                                      .isNotEmpty
-                                              ? _getHighlightedContent(
-                                                getKiranContent(contentData),
-                                              )
-                                              : getKiranContent(contentData),
-
-                                      onAddNote: (selectedText) async {
-                                        _pauseTimer();
-                                        await _openNoteEditor(
-                                          selectedText: selectedText,
-                                        );
-                                        _resumeTimer();
-                                      },
-                                      onCreateQuoteImage: (selectedText) async {
-                                        _pauseTimer();
-                                        await _openQuoteEditor(
-                                          selectedText: selectedText,
-                                        );
-                                        _resumeTimer();
-                                      },
-                                      onSingleTap: () {
-                                        // Toggle edge nav buttons setting
-                                        if (mounted) {
-                                          final currentValue =
-                                              appSettingsNotifier
-                                                  .value
-                                                  .showEdgeNavButtons;
-                                          appSettingsNotifier
-                                              .value = copyAppSettings(
-                                            appSettingsNotifier.value,
-                                            showEdgeNavButtons: !currentValue,
-                                          );
-                                          debugPrint(
-                                            'Edge nav buttons toggled: ${!currentValue}',
-                                          );
+                            // Initialize auto-scroll and set initial position after content is loaded (only once)
+                            if (!_isInitialized) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _initializeAutoScroll();
+                                _setInitialScrollPosition();
+                                _isInitialized = true;
+                              });
+                            }
+                            return NotificationListener<ScrollNotification>(
+                              onNotification: (notification) {
+                                if (notification is UserScrollNotification) {
+                                  // User started scrolling manually
+                                  if (_isAutoScrollEnabled &&
+                                      _isAutoScrolling) {
+                                    _stopAutoScroll();
+                                  }
+                                } else if (notification
+                                    is ScrollEndNotification) {
+                                  // User stopped scrolling
+                                  if (_isAutoScrollEnabled &&
+                                      !_isAutoScrolling &&
+                                      _autoScrollDelayTimer == null) {
+                                    // Optionally, resume auto-scroll after a short delay
+                                    Future.delayed(
+                                      const Duration(seconds: 1),
+                                      () {
+                                        if (mounted &&
+                                            !_isAutoScrolling &&
+                                            _autoScrollDelayTimer == null) {
+                                          _startAutoScrollWithDelay();
                                         }
                                       },
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    // Finish button
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            20.0,
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed:
-                                          _isFinishButtonEnabled
-                                              ? () async {
-                                                _onFinishReadingPressed();
-                                              }
-                                              : null,
+                                    );
+                                  }
+                                }
+                                return false;
+                              },
+                              child: Scrollbar(
+                                controller: _scrollController,
+                                interactive: true,
+                                child: SingleChildScrollView(
+                                  controller: _scrollController,
+                                  child: Column(
+                                    children: [
+                                      CustomHtmlWidget(
+                                        htmlContent:
+                                            _isSearchMode &&
+                                                    _searchController
+                                                        .text
+                                                        .isNotEmpty
+                                                ? _getHighlightedContent(
+                                                  getKiranContent(contentData),
+                                                )
+                                                : getKiranContent(contentData),
 
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.kiran_read_finished,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color:
-                                                _isFinishButtonEnabled
-                                                    ? null
-                                                    : Colors.grey,
+                                        onAddNote: (selectedText) async {
+                                          _pauseTimer();
+                                          await _openNoteEditor(
+                                            selectedText: selectedText,
+                                          );
+                                          _resumeTimer();
+                                        },
+                                        onCreateQuoteImage: (
+                                          selectedText,
+                                        ) async {
+                                          _pauseTimer();
+                                          await _openQuoteEditor(
+                                            selectedText: selectedText,
+                                          );
+                                          _resumeTimer();
+                                        },
+                                        onSingleTap: () {
+                                          // Toggle edge nav buttons setting
+                                          if (mounted) {
+                                            final currentValue =
+                                                appSettingsNotifier
+                                                    .value
+                                                    .showEdgeNavButtons;
+                                            appSettingsNotifier
+                                                .value = copyAppSettings(
+                                              appSettingsNotifier.value,
+                                              showEdgeNavButtons: !currentValue,
+                                            );
+                                            debugPrint(
+                                              'Edge nav buttons toggled: ${!currentValue}',
+                                            );
+                                          }
+                                        },
+                                      ),
+                                      const SizedBox(height: 8.0),
+                                      // Finish button
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              20.0,
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed:
+                                            _isFinishButtonEnabled
+                                                ? () async {
+                                                  _onFinishReadingPressed();
+                                                }
+                                                : null,
+
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.kiran_read_finished,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color:
+                                                  _isFinishButtonEnabled
+                                                      ? null
+                                                      : Colors.grey,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 16.0),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        if (_hasPreviousKiran()) ...[
-                                          _buildPreviousKiranButton(),
+                                      const SizedBox(height: 16.0),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          if (_hasPreviousKiran()) ...[
+                                            _buildPreviousKiranButton(),
+                                          ],
+                                          const Spacer(),
+                                          if (_hasNextKiran()) ...[
+                                            _buildNextKiranButton(),
+                                          ],
                                         ],
-                                        const Spacer(),
-                                        if (_hasNextKiran()) ...[
-                                          _buildNextKiranButton(),
-                                        ],
-                                      ],
-                                    ),
-                                    const SizedBox(height: 64.0),
-                                  ],
+                                      ),
+                                      const SizedBox(height: 64.0),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
                     ),
-
-                    // Previous button (left edge, vertically centered)
-                    if (appSettingsNotifier.value.showEdgeNavButtons &&
-                        _hasPreviousKiran())
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        child: Center(
-                          child: _buildEdgeNavButton(
-                            icon: Icons.arrow_back_ios_new_rounded,
-                            onTap: _navigateToPreviousKiran,
-                          ),
-                        ),
-                      ),
-                    // Next button (right edge, vertically centered)
-                    if (appSettingsNotifier.value.showEdgeNavButtons &&
-                        _hasNextKiran())
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        child: Center(
-                          child: _buildEdgeNavButton(
-                            icon: Icons.arrow_forward_ios_rounded,
-                            onTap: _navigateToNextKiran,
-                          ),
-                        ),
-                      ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            // Previous button (left edge, vertically centered)
+            if (appSettingsNotifier.value.showEdgeNavButtons &&
+                _hasPreviousKiran())
+              Positioned(
+                left: 4,
+                top: 0,
+                bottom: 0,
+                child: Center(
+                  child: _buildEdgeNavButton(
+                    icon: Icons.arrow_circle_left_outlined,
+                    onTap: _navigateToPreviousKiran,
+                  ),
                 ),
               ),
-            ],
-          ),
+            // Next button (right edge, vertically centered)
+            if (appSettingsNotifier.value.showEdgeNavButtons && _hasNextKiran())
+              Positioned(
+                right: 4,
+                top: 0,
+                bottom: 0,
+                child: Center(
+                  child: _buildEdgeNavButton(
+                    icon: Icons.arrow_circle_right_outlined,
+                    onTap: _navigateToNextKiran,
+                  ),
+                ),
+              ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
@@ -901,13 +914,21 @@ class _KiranReadPageState extends State<KiranReadPage>
         borderRadius: BorderRadius.circular(32),
         onTap: onTap,
         child: Container(
-          width: 48,
-          height: 48,
+          width: 32,
+          height: 32,
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.15),
+            color: Theme.of(
+              context,
+            ).colorScheme.primary.withValues(alpha: 0.05),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, color: Colors.white, size: 28),
+          child: Icon(
+            icon,
+            color: Theme.of(
+              context,
+            ).colorScheme.primary.withValues(alpha: 0.25),
+            size: 32,
+          ),
         ),
       ),
     );
