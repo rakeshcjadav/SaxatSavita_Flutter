@@ -11,6 +11,7 @@ class AppSettings {
   String language;
   bool keepScreenOn;
   bool showEdgeNavButtons;
+  double edgePadding;
 
   AppSettings({
     required this.fontSize,
@@ -23,6 +24,7 @@ class AppSettings {
     required this.language,
     required this.keepScreenOn,
     required this.showEdgeNavButtons,
+    required this.edgePadding,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -38,6 +40,7 @@ class AppSettings {
       language: json['language'] ?? 'gu',
       keepScreenOn: json['keepScreenOn'] ?? false,
       showEdgeNavButtons: json['showEdgeNavButtons'] ?? true,
+      edgePadding: json['edgePadding']?.toDouble() ?? 16.0,
     );
   }
 
@@ -53,6 +56,7 @@ class AppSettings {
       'language': language,
       'keepScreenOn': keepScreenOn,
       'showEdgeNavButtons': showEdgeNavButtons,
+      'edgePadding': edgePadding,
     };
   }
 
@@ -92,6 +96,7 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
     language: 'gu',
     keepScreenOn: false,
     showEdgeNavButtons: false,
+    edgePadding: 16.0,
   ),
 );
 
@@ -106,6 +111,7 @@ AppSettings appSettingsDefault = AppSettings(
   language: 'gu',
   keepScreenOn: false,
   showEdgeNavButtons: false,
+  edgePadding: 16.0,
 );
 
 AppSettings copyAppSettings(
@@ -120,6 +126,7 @@ AppSettings copyAppSettings(
   String? language,
   bool? keepScreenOn,
   bool? showEdgeNavButtons,
+  double? edgePadding,
 }) {
   return AppSettings(
     fontSize: fontSize ?? settings.fontSize,
@@ -132,5 +139,6 @@ AppSettings copyAppSettings(
     language: language ?? settings.language,
     keepScreenOn: keepScreenOn ?? settings.keepScreenOn,
     showEdgeNavButtons: showEdgeNavButtons ?? settings.showEdgeNavButtons,
+    edgePadding: edgePadding ?? settings.edgePadding,
   );
 }

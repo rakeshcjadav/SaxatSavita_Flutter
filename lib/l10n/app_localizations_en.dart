@@ -1394,6 +1394,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Show left/right navigation buttons on page edges';
 
   @override
+  String get edgePadding => 'Page left/right margin';
+
+  @override
+  String get edgePaddingDescription => 'Horizontal padding';
+
+  @override
   String get plan_name => 'Plan Name';
 
   @override

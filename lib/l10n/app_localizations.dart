@@ -2606,6 +2606,18 @@ abstract class AppLocalizations {
   /// **'Show left/right navigation buttons on page edges'**
   String get showEdgeNavButtonsDescription;
 
+  /// No description provided for @edgePadding.
+  ///
+  /// In en, this message translates to:
+  /// **'Page left/right margin'**
+  String get edgePadding;
+
+  /// No description provided for @edgePaddingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizontal padding'**
+  String get edgePaddingDescription;
+
   /// No description provided for @plan_name.
   ///
   /// In en, this message translates to:

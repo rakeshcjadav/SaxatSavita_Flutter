@@ -37,6 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late String _language;
   late bool _keepScreenOn;
   late bool _showEdgeNavButtons;
+  late double _edgePadding;
 
   // Track saving state
   bool _isSaving = false;
@@ -59,6 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _language = _originalSettings.language;
     _keepScreenOn = _originalSettings.keepScreenOn;
     _showEdgeNavButtons = _originalSettings.showEdgeNavButtons;
+    _edgePadding = _originalSettings.edgePadding;
   }
 
   void _revertChanges() {
@@ -96,6 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _language = _originalSettings.language;
     _keepScreenOn = _originalSettings.keepScreenOn;
     _showEdgeNavButtons = _originalSettings.showEdgeNavButtons;
+    _edgePadding = _originalSettings.edgePadding;
   }
 
   bool get _settingsChanged {
@@ -109,7 +112,8 @@ class _SettingsPageState extends State<SettingsPage> {
         _originalSettings.readingSpeed != current.readingSpeed ||
         _originalSettings.language != current.language ||
         _originalSettings.keepScreenOn != current.keepScreenOn ||
-        _originalSettings.showEdgeNavButtons != current.showEdgeNavButtons;
+        _originalSettings.showEdgeNavButtons != current.showEdgeNavButtons ||
+        _originalSettings.edgePadding != current.edgePadding;
   }
 
   AppSettings _createCurrentSettings() {
@@ -124,6 +128,7 @@ class _SettingsPageState extends State<SettingsPage> {
       language: _language,
       keepScreenOn: _keepScreenOn,
       showEdgeNavButtons: _showEdgeNavButtons,
+      edgePadding: _edgePadding,
     );
   }
 
@@ -552,6 +557,32 @@ class _SettingsPageState extends State<SettingsPage> {
               _updateHasUnsavedChanges();
             });
           },
+        ),
+      ),
+
+      // Edge Padding Setting
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.border_horizontal),
+          title: Text(
+            '${AppLocalizations.of(context)!.edgePadding}: ${_edgePadding.toStringAsFixed(0)} px',
+          ),
+          subtitle: SizedBox(
+            width: 200,
+            child: Slider(
+              value: _edgePadding,
+              min: 8.0,
+              max: 32.0,
+              divisions: 12,
+              label: _edgePadding.toStringAsFixed(0),
+              onChanged: (double value) {
+                setState(() {
+                  _edgePadding = value;
+                  _updateHasUnsavedChanges();
+                });
+              },
+            ),
+          ),
         ),
       ),
     ];

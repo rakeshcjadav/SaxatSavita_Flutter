@@ -661,8 +661,10 @@
     "loading": "લોડ થઈ રહ્યું છે...",
     "keepScreenOn": "સ્ક્રીન ચાલુ રાખો",
     "keepScreenOnDescription": "વાંચતી વખતે સ્ક્રીન બંધ થવાથી અટકાવો",
-    "showEdgeNavButtons": "કિરણ નેવિગેશન બટન બતાવો",
-    "showEdgeNavButtonsDescription": "કિરણની બાજુઓ પર previous/next નેવિગેશન બટન બતાવો",
+        "showEdgeNavButtons": "એજ નેવિગેશન બટન બતાવો",
+    "showEdgeNavButtonsDescription": "પૃષ્ઠની બાજુઓ પર ડાબું/જમણું નેવિગેશન બટન બતાવો",
+    "edgePadding": "પેજનું ડાબું/જમણું પેડિંગ",
+    "edgePaddingDescription": "આડી પેડિંગ",
     
     "plan_name": "યોજનાનું નામ",
     "start_date": "શરૂઆતની તારીખ",

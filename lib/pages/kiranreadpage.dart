@@ -628,9 +628,9 @@ class _KiranReadPageState extends State<KiranReadPage>
           },
         ),
         body: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
+          padding: EdgeInsets.only(
+            left: appSettingsNotifier.value.edgePadding,
+            right: appSettingsNotifier.value.edgePadding,
             top: 0,
             bottom: 16.0,
           ),
