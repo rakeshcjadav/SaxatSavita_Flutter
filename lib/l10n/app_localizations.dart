@@ -2594,6 +2594,18 @@ abstract class AppLocalizations {
   /// **'Prevent screen from turning off while reading'**
   String get keepScreenOnDescription;
 
+  /// No description provided for @showEdgeNavButtons.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Edge Navigation Buttons'**
+  String get showEdgeNavButtons;
+
+  /// No description provided for @showEdgeNavButtonsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Show left/right navigation buttons on page edges'**
+  String get showEdgeNavButtonsDescription;
+
   /// No description provided for @plan_name.
   ///
   /// In en, this message translates to:

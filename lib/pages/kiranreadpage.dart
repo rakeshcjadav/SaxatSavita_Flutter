@@ -680,134 +680,200 @@ class _KiranReadPageState extends State<KiranReadPage>
                 ),
               ),
               Expanded(
-                child: SafeArea(
-                  child: FutureBuilder<Map<String, dynamic>>(
-                    future: _futureKiranContent,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData) {
-                        return const Center(child: Text('No content found.'));
-                      }
-                      final contentData = snapshot.data!;
+                child: Stack(
+                  children: [
+                    SafeArea(
+                      child: FutureBuilder<Map<String, dynamic>>(
+                        future: _futureKiranContent,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ${snapshot.error}'),
+                            );
+                          } else if (!snapshot.hasData) {
+                            return const Center(
+                              child: Text('No content found.'),
+                            );
+                          }
+                          final contentData = snapshot.data!;
 
-                      // Initialize auto-scroll and set initial position after content is loaded (only once)
-                      if (!_isInitialized) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          _initializeAutoScroll();
-                          _setInitialScrollPosition();
-                          _isInitialized = true;
-                        });
-                      }
-                      return NotificationListener<ScrollNotification>(
-                        onNotification: (notification) {
-                          if (notification is UserScrollNotification) {
-                            // User started scrolling manually
-                            if (_isAutoScrollEnabled && _isAutoScrolling) {
-                              _stopAutoScroll();
-                            }
-                          } else if (notification is ScrollEndNotification) {
-                            // User stopped scrolling
-                            if (_isAutoScrollEnabled &&
-                                !_isAutoScrolling &&
-                                _autoScrollDelayTimer == null) {
-                              // Optionally, resume auto-scroll after a short delay
-                              Future.delayed(const Duration(seconds: 1), () {
-                                if (mounted &&
+                          // Initialize auto-scroll and set initial position after content is loaded (only once)
+                          if (!_isInitialized) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _initializeAutoScroll();
+                              _setInitialScrollPosition();
+                              _isInitialized = true;
+                            });
+                          }
+                          return NotificationListener<ScrollNotification>(
+                            onNotification: (notification) {
+                              if (notification is UserScrollNotification) {
+                                // User started scrolling manually
+                                if (_isAutoScrollEnabled && _isAutoScrolling) {
+                                  _stopAutoScroll();
+                                }
+                              } else if (notification
+                                  is ScrollEndNotification) {
+                                // User stopped scrolling
+                                if (_isAutoScrollEnabled &&
                                     !_isAutoScrolling &&
                                     _autoScrollDelayTimer == null) {
-                                  _startAutoScrollWithDelay();
+                                  // Optionally, resume auto-scroll after a short delay
+                                  Future.delayed(
+                                    const Duration(seconds: 1),
+                                    () {
+                                      if (mounted &&
+                                          !_isAutoScrolling &&
+                                          _autoScrollDelayTimer == null) {
+                                        _startAutoScrollWithDelay();
+                                      }
+                                    },
+                                  );
                                 }
-                              });
-                            }
-                          }
-                          return false;
-                        },
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          interactive: true,
-                          child: SingleChildScrollView(
-                            controller: _scrollController,
-                            child: Column(
-                              children: [
-                                CustomHtmlWidget(
-                                  htmlContent:
-                                      _isSearchMode &&
-                                              _searchController.text.isNotEmpty
-                                          ? _getHighlightedContent(
-                                            getKiranContent(contentData),
-                                          )
-                                          : getKiranContent(contentData),
+                              }
+                              return false;
+                            },
+                            child: Scrollbar(
+                              controller: _scrollController,
+                              interactive: true,
+                              child: SingleChildScrollView(
+                                controller: _scrollController,
+                                child: Column(
+                                  children: [
+                                    CustomHtmlWidget(
+                                      htmlContent:
+                                          _isSearchMode &&
+                                                  _searchController
+                                                      .text
+                                                      .isNotEmpty
+                                              ? _getHighlightedContent(
+                                                getKiranContent(contentData),
+                                              )
+                                              : getKiranContent(contentData),
 
-                                  onAddNote: (selectedText) async {
-                                    _pauseTimer();
-                                    await _openNoteEditor(
-                                      selectedText: selectedText,
-                                    );
-                                    _resumeTimer();
-                                  },
-                                  onCreateQuoteImage: (selectedText) async {
-                                    _pauseTimer();
-                                    await _openQuoteEditor(
-                                      selectedText: selectedText,
-                                    );
-                                    _resumeTimer();
-                                  },
-                                ),
-                                const SizedBox(height: 8.0),
-                                // Finish button
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
+                                      onAddNote: (selectedText) async {
+                                        _pauseTimer();
+                                        await _openNoteEditor(
+                                          selectedText: selectedText,
+                                        );
+                                        _resumeTimer();
+                                      },
+                                      onCreateQuoteImage: (selectedText) async {
+                                        _pauseTimer();
+                                        await _openQuoteEditor(
+                                          selectedText: selectedText,
+                                        );
+                                        _resumeTimer();
+                                      },
+                                      onSingleTap: () {
+                                        // Toggle edge nav buttons setting
+                                        if (mounted) {
+                                          final currentValue =
+                                              appSettingsNotifier
+                                                  .value
+                                                  .showEdgeNavButtons;
+                                          appSettingsNotifier
+                                              .value = copyAppSettings(
+                                            appSettingsNotifier.value,
+                                            showEdgeNavButtons: !currentValue,
+                                          );
+                                          debugPrint(
+                                            'Edge nav buttons toggled: ${!currentValue}',
+                                          );
+                                        }
+                                      },
                                     ),
-                                  ),
-                                  onPressed:
-                                      _isFinishButtonEnabled
-                                          ? () async {
-                                            _onFinishReadingPressed();
-                                          }
-                                          : null,
+                                    const SizedBox(height: 8.0),
+                                    // Finish button
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20.0,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed:
+                                          _isFinishButtonEnabled
+                                              ? () async {
+                                                _onFinishReadingPressed();
+                                              }
+                                              : null,
 
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.kiran_read_finished,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color:
-                                            _isFinishButtonEnabled
-                                                ? null
-                                                : Colors.grey,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.kiran_read_finished,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color:
+                                                _isFinishButtonEnabled
+                                                    ? null
+                                                    : Colors.grey,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(height: 16.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    if (_hasPreviousKiran()) ...[
-                                      _buildPreviousKiranButton(),
-                                    ],
-                                    const Spacer(),
-                                    if (_hasNextKiran()) ...[
-                                      _buildNextKiranButton(),
-                                    ],
+                                    const SizedBox(height: 16.0),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        if (_hasPreviousKiran()) ...[
+                                          _buildPreviousKiranButton(),
+                                        ],
+                                        const Spacer(),
+                                        if (_hasNextKiran()) ...[
+                                          _buildNextKiranButton(),
+                                        ],
+                                      ],
+                                    ),
+                                    const SizedBox(height: 64.0),
                                   ],
                                 ),
-                                const SizedBox(height: 64.0),
-                              ],
+                              ),
                             ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    // Previous button (left edge, vertically centered)
+                    if (appSettingsNotifier.value.showEdgeNavButtons &&
+                        _hasPreviousKiran())
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: Center(
+                          child: _buildEdgeNavButton(
+                            icon: Icons.arrow_back_ios_new_rounded,
+                            onTap: _navigateToPreviousKiran,
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    // Next button (right edge, vertically centered)
+                    if (appSettingsNotifier.value.showEdgeNavButtons &&
+                        _hasNextKiran())
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: Center(
+                          child: _buildEdgeNavButton(
+                            icon: Icons.arrow_forward_ios_rounded,
+                            onTap: _navigateToNextKiran,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],
@@ -820,6 +886,28 @@ class _KiranReadPageState extends State<KiranReadPage>
             _resumeTimer();
           },
           child: Icon(Icons.note_add),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEdgeNavButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(32),
+        onTap: onTap,
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.15),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: Colors.white, size: 28),
         ),
       ),
     );
@@ -1416,19 +1504,7 @@ class _KiranReadPageState extends State<KiranReadPage>
         '${AppLocalizations.of(context)!.kiran} ${previousKiranInfo.number.replaceAll(".", "")}';
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder:
-                (_) => KiranReadPage(
-                  partNumber: widget.partNumber,
-                  kiranInfo: previousKiranInfo,
-                  kiranUserInfo: KiranUserService().getKiranUserInfo(
-                    widget.kiranUserInfo.kiranIndex - 1,
-                  ),
-                ),
-          ),
-        );
+        _navigateToPreviousKiran();
       },
       child: Material(
         elevation: 1.0,
@@ -1454,6 +1530,46 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
   }
 
+  void _navigateToPreviousKiran() {
+    KiranInfo previousKiranInfo = KiranListService().getKiranInfo(
+      widget.kiranUserInfo.partNumber,
+      widget.kiranInfo.index - 1,
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => KiranReadPage(
+              partNumber: widget.partNumber,
+              kiranInfo: previousKiranInfo,
+              kiranUserInfo: KiranUserService().getKiranUserInfo(
+                widget.kiranUserInfo.kiranIndex - 1,
+              ),
+            ),
+      ),
+    );
+  }
+
+  void _navigateToNextKiran() {
+    KiranInfo nextKiranInfo = KiranListService().getKiranInfo(
+      widget.kiranUserInfo.partNumber,
+      widget.kiranInfo.index + 1,
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => KiranReadPage(
+              partNumber: widget.partNumber,
+              kiranInfo: nextKiranInfo,
+              kiranUserInfo: KiranUserService().getKiranUserInfo(
+                widget.kiranUserInfo.kiranIndex + 1,
+              ),
+            ),
+      ),
+    );
+  }
+
   Widget _buildNextKiranButton() {
     KiranInfo nextKiranInfo = KiranListService().getKiranInfo(
       widget.kiranUserInfo.partNumber,
@@ -1463,19 +1579,7 @@ class _KiranReadPageState extends State<KiranReadPage>
         '${AppLocalizations.of(context)!.kiran} ${nextKiranInfo.number.replaceAll(".", "")}';
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder:
-                (_) => KiranReadPage(
-                  partNumber: widget.partNumber,
-                  kiranInfo: nextKiranInfo,
-                  kiranUserInfo: KiranUserService().getKiranUserInfo(
-                    widget.kiranUserInfo.kiranIndex + 1,
-                  ),
-                ),
-          ),
-        );
+        _navigateToNextKiran();
       },
       child: Material(
         elevation: 1.0,

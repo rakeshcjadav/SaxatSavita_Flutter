@@ -40,56 +40,62 @@ void main() async {
   // Keep splash until initialization completes
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  // Initialize Firebase with comprehensive error handling
-  try {
-    // Check if Firebase is already initialized
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    } else {
-      // Firebase already initialized, use the existing app
-      Firebase.app();
-    }
-  } catch (e) {
-    // Handle any Firebase initialization errors
-    print('Firebase initialization error: $e');
-    // If it's a duplicate app error, try to get the existing app
-    if (e.toString().contains('duplicate-app')) {
-      try {
+  if (!kIsWeb) {
+    // Initialize Firebase with comprehensive error handling
+    try {
+      // Check if Firebase is already initialized
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      } else {
+        // Firebase already initialized, use the existing app
         Firebase.app();
-      } catch (getAppError) {
-        print('Could not get existing Firebase app: $getAppError');
+      }
+    } catch (e) {
+      // Handle any Firebase initialization errors
+      print('Firebase initialization error: $e');
+      // If it's a duplicate app error, try to get the existing app
+      if (e.toString().contains('duplicate-app')) {
+        try {
+          Firebase.app();
+        } catch (getAppError) {
+          print('Could not get existing Firebase app: $getAppError');
+        }
       }
     }
+
+    // Initialize Firebase Analytics
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+    // Initialize Analytics Service
+    AnalyticsService().initialize(analytics);
+    print('Firebase Analytics initialized successfully');
+
+    // Initialize In-App Review Service
+    await InAppReviewService().initialize();
+    print('In-App Review Service initialized successfully');
+
+    // Initialize Home Widget Service
+    await HomeWidgetService().initialize();
+    print('Home Widget Service initialized successfully');
   }
-
-  // Initialize Firebase Analytics
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-
-  // Initialize Analytics Service
-  AnalyticsService().initialize(analytics);
-  print('Firebase Analytics initialized successfully');
-
-  // Initialize In-App Review Service
-  await InAppReviewService().initialize();
-  print('In-App Review Service initialized successfully');
-
-  // Initialize Home Widget Service
-  await HomeWidgetService().initialize();
-  print('Home Widget Service initialized successfully');
 
   // Load JSON data
   await AppDataService().loadData('assets/jsons/data.json');
   await AppDataService().loadInfoContent('assets/jsons/infodata.json');
   Bookservice().loadBook('saxatsavita');
-  runApp(SakshatSavitaApp(analytics: analytics));
+
+  // Pass analytics only if not on web
+  runApp(
+    SakshatSavitaApp(analytics: kIsWeb ? null : FirebaseAnalytics.instance),
+  );
 }
 
 class SakshatSavitaApp extends StatelessWidget {
-  const SakshatSavitaApp({super.key, required this.analytics});
+  const SakshatSavitaApp({super.key, this.analytics});
 
-  final FirebaseAnalytics analytics;
+  final FirebaseAnalytics? analytics;
   final String titleText = 'Sakshat Savita';
   @override
   Widget build(BuildContext context) {
@@ -104,7 +110,10 @@ class SakshatSavitaApp extends StatelessWidget {
         );
         return MaterialApp(
           navigatorKey: NavigationService.navigatorKey, // Assign the key here
-          navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
+          navigatorObservers:
+              analytics != null
+                  ? [FirebaseAnalyticsObserver(analytics: analytics!)]
+                  : [],
           debugShowCheckedModeBanner: false,
           locale: Locale(settings.language, 'IN'),
           localizationsDelegates: [

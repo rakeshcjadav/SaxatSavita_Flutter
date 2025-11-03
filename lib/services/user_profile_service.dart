@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
@@ -10,7 +11,6 @@ class UserProfileService {
   factory UserProfileService() => _instance;
   UserProfileService._internal();
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _localStorageKey = 'user_profile';
 
   UserProfile? _cachedProfile;
@@ -22,6 +22,13 @@ class UserProfileService {
       return _cachedProfile!;
     }
 
+    // For web, only use local storage
+    if (kIsWeb) {
+      final profile = await _loadFromLocalStorage();
+      _cachedProfile = profile;
+      return profile;
+    }
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       throw Exception('User not authenticated');
@@ -30,7 +37,7 @@ class UserProfileService {
     try {
       // Try to get from Firebase first
       final doc =
-          await _firestore
+          await FirebaseFirestore.instance
               .collection('users')
               .doc(user.uid)
               .collection('profile')
@@ -69,6 +76,14 @@ class UserProfileService {
 
   /// Update user profile
   Future<void> updateUserProfile(UserProfile profile) async {
+    // For web, only save to local storage
+    if (kIsWeb) {
+      final updatedProfile = profile.copyWith(updatedAt: DateTime.now());
+      await _saveToLocalStorage(updatedProfile);
+      _cachedProfile = updatedProfile;
+      return;
+    }
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       throw Exception('User not authenticated');
@@ -81,7 +96,7 @@ class UserProfileService {
 
     try {
       // Save to Firebase
-      await _firestore
+      await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .collection('profile')
@@ -110,6 +125,16 @@ class UserProfileService {
 
   /// Load profile from local storage
   Future<UserProfile> _loadFromLocalStorage() async {
+    if (kIsWeb) {
+      // For web, skip Firebase and return empty profile
+      return UserProfile(
+        firstName: 'Rakesh',
+        lastName: 'Jadav',
+        city: 'Banglore',
+        email: 'rakeshcjadav@gmail.com',
+        createdAt: DateTime.now(),
+      );
+    }
     try {
       final prefs = await SharedPreferences.getInstance();
       final profileJson = prefs.getString(_localStorageKey);
@@ -176,12 +201,24 @@ class UserProfileService {
 
   /// Delete user profile (for account deletion)
   Future<void> deleteUserProfile() async {
+    // For web, only delete from local storage
+    if (kIsWeb) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove(_localStorageKey);
+      } catch (e) {
+        // Ignore local storage errors
+      }
+      clearCache();
+      return;
+    }
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
     try {
       // Delete from Firebase
-      await _firestore
+      await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .collection('profile')
@@ -205,12 +242,17 @@ class UserProfileService {
 
   /// Sync profile from Firebase (useful for multi-device sync)
   Future<UserProfile?> syncFromFirebase() async {
+    // For web, return null as Firebase sync is not available
+    if (kIsWeb) {
+      return null;
+    }
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return null;
 
     try {
       final doc =
-          await _firestore
+          await FirebaseFirestore.instance
               .collection('users')
               .doc(user.uid)
               .collection('profile')

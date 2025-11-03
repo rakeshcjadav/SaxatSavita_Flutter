@@ -1392,6 +1392,13 @@ class AppLocalizationsGu extends AppLocalizations {
   String get keepScreenOnDescription => 'વાંચતી વખતે સ્ક્રીન બંધ થવાથી અટકાવો';
 
   @override
+  String get showEdgeNavButtons => 'કિરણ નેવિગેશન બટન બતાવો';
+
+  @override
+  String get showEdgeNavButtonsDescription =>
+      'કિરણની બાજુઓ પર previous/next નેવિગેશન બટન બતાવો';
+
+  @override
   String get plan_name => 'યોજનાનું નામ';
 
   @override

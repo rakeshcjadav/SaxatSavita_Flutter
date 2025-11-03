@@ -10,6 +10,7 @@ class AppSettings {
   double readingSpeed;
   String language;
   bool keepScreenOn;
+  bool showEdgeNavButtons;
 
   AppSettings({
     required this.fontSize,
@@ -21,6 +22,7 @@ class AppSettings {
     required this.readingSpeed,
     required this.language,
     required this.keepScreenOn,
+    required this.showEdgeNavButtons,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class AppSettings {
       readingSpeed: json['readingSpeed']?.toDouble() ?? 200.0,
       language: json['language'] ?? 'gu',
       keepScreenOn: json['keepScreenOn'] ?? false,
+      showEdgeNavButtons: json['showEdgeNavButtons'] ?? true,
     );
   }
 
@@ -49,6 +52,7 @@ class AppSettings {
       'readingSpeed': readingSpeed,
       'language': language,
       'keepScreenOn': keepScreenOn,
+      'showEdgeNavButtons': showEdgeNavButtons,
     };
   }
 
@@ -87,6 +91,7 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
     readingSpeed: 200.0,
     language: 'gu',
     keepScreenOn: false,
+    showEdgeNavButtons: false,
   ),
 );
 
@@ -100,6 +105,7 @@ AppSettings appSettingsDefault = AppSettings(
   readingSpeed: 200.0,
   language: 'gu',
   keepScreenOn: false,
+  showEdgeNavButtons: false,
 );
 
 AppSettings copyAppSettings(
@@ -113,6 +119,7 @@ AppSettings copyAppSettings(
   double? readingSpeed,
   String? language,
   bool? keepScreenOn,
+  bool? showEdgeNavButtons,
 }) {
   return AppSettings(
     fontSize: fontSize ?? settings.fontSize,
@@ -124,5 +131,6 @@ AppSettings copyAppSettings(
     readingSpeed: readingSpeed ?? settings.readingSpeed,
     language: language ?? settings.language,
     keepScreenOn: keepScreenOn ?? settings.keepScreenOn,
+    showEdgeNavButtons: showEdgeNavButtons ?? settings.showEdgeNavButtons,
   );
 }

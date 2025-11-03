@@ -2158,6 +2158,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       return;
     }
 
+    final localisation = AppLocalizations.of(context)!;
+
     try {
       final imageBytes = await _captureImage();
       if (imageBytes != null) {
@@ -2167,9 +2169,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         final imageFile = File(imagePath);
         await imageFile.writeAsBytes(imageBytes);
 
-        await Share.shareXFiles([
-          XFile(imagePath),
-        ], text: AppLocalizations.of(context)!.share_text);
+        final shareParams = ShareParams(
+          text: localisation.share_text,
+          files: [XFile(imagePath)],
+        );
+        await SharePlus.instance.share(shareParams);
       }
     } catch (e) {
       if (mounted) {

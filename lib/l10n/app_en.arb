@@ -660,6 +660,8 @@
     "loading": "Loading...",
     "keepScreenOn": "Keep Screen On",
     "keepScreenOnDescription": "Prevent screen from turning off while reading",
+    "showEdgeNavButtons": "Show Edge Navigation Buttons",
+    "showEdgeNavButtonsDescription": "Show left/right navigation buttons on page edges",
     
     "plan_name": "Plan Name",
     "start_date": "Start Date",

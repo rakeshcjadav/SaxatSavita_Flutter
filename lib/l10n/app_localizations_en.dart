@@ -1387,6 +1387,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Prevent screen from turning off while reading';
 
   @override
+  String get showEdgeNavButtons => 'Show Edge Navigation Buttons';
+
+  @override
+  String get showEdgeNavButtonsDescription =>
+      'Show left/right navigation buttons on page edges';
+
+  @override
   String get plan_name => 'Plan Name';
 
   @override

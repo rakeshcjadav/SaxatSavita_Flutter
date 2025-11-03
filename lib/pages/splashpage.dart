@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
@@ -27,6 +28,19 @@ class _MyWidgetState extends State<SplashPage> {
       await Future.delayed(const Duration(seconds: 1));
 
       if (!mounted) return;
+
+      // For web, skip Firebase Auth and go directly to homepage
+      if (kIsWeb) {
+        FlutterNativeSplash.remove();
+
+        if (!mounted) return;
+
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+        return;
+      }
 
       final User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {

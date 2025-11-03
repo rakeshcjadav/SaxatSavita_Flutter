@@ -410,6 +410,8 @@ class InAppUpdateService {
 
   /// Check for updates automatically on app start (background check)
   Future<void> checkForUpdateOnAppStart(BuildContext context) async {
+    if (kIsWeb) return;
+
     // Only check automatically on Android, and only if app has been running for a while
     if (Platform.isAndroid) {
       await Future.delayed(const Duration(seconds: 3));

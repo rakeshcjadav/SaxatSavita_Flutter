@@ -36,6 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late double _readingSpeed;
   late String _language;
   late bool _keepScreenOn;
+  late bool _showEdgeNavButtons;
 
   // Track saving state
   bool _isSaving = false;
@@ -57,6 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _readingSpeed = _originalSettings.readingSpeed;
     _language = _originalSettings.language;
     _keepScreenOn = _originalSettings.keepScreenOn;
+    _showEdgeNavButtons = _originalSettings.showEdgeNavButtons;
   }
 
   void _revertChanges() {
@@ -93,6 +95,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _readingSpeed = _originalSettings.readingSpeed;
     _language = _originalSettings.language;
     _keepScreenOn = _originalSettings.keepScreenOn;
+    _showEdgeNavButtons = _originalSettings.showEdgeNavButtons;
   }
 
   bool get _settingsChanged {
@@ -105,7 +108,8 @@ class _SettingsPageState extends State<SettingsPage> {
         _originalSettings.themeContrastLevel != current.themeContrastLevel ||
         _originalSettings.readingSpeed != current.readingSpeed ||
         _originalSettings.language != current.language ||
-        _originalSettings.keepScreenOn != current.keepScreenOn;
+        _originalSettings.keepScreenOn != current.keepScreenOn ||
+        _originalSettings.showEdgeNavButtons != current.showEdgeNavButtons;
   }
 
   AppSettings _createCurrentSettings() {
@@ -119,6 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
       readingSpeed: _readingSpeed,
       language: _language,
       keepScreenOn: _keepScreenOn,
+      showEdgeNavButtons: _showEdgeNavButtons,
     );
   }
 
@@ -526,6 +531,24 @@ class _SettingsPageState extends State<SettingsPage> {
           onChanged: (bool value) {
             setState(() {
               _keepScreenOn = value;
+              _updateHasUnsavedChanges();
+            });
+          },
+        ),
+      ),
+
+      // Show Edge Navigation Buttons Setting
+      Card(
+        child: SwitchListTile(
+          secondary: const Icon(Icons.touch_app),
+          title: Text(AppLocalizations.of(context)!.showEdgeNavButtons),
+          subtitle: Text(
+            AppLocalizations.of(context)!.showEdgeNavButtonsDescription,
+          ),
+          value: _showEdgeNavButtons,
+          onChanged: (bool value) {
+            setState(() {
+              _showEdgeNavButtons = value;
               _updateHasUnsavedChanges();
             });
           },
