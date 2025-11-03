@@ -26,6 +26,8 @@ class _BookmainpageState extends State<BookMainpage> {
   final ItemPositionsListener _itemPositionsListener =
       ItemPositionsListener.create();
 
+  final List<String> bookNumbers = ['૧', '૨', '૩', '૪', '૫'];
+
   @override
   void initState() {
     super.initState();
@@ -142,7 +144,7 @@ class _BookmainpageState extends State<BookMainpage> {
                         ),
                         shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(12.0),
                           ),
                         ),
                       ),
@@ -163,7 +165,7 @@ class _BookmainpageState extends State<BookMainpage> {
                         ),
                         shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(12.0),
                           ),
                         ),
                       ),
@@ -231,25 +233,51 @@ class _BookmainpageState extends State<BookMainpage> {
   }
 
   Widget bookPartWidget(List<Bookpartmodel> bookparts, int index) {
+    final partNumber = bookparts[index].partNumber;
+    final partColor = Utils.getPartColor(partNumber, context);
+    final accentColor = Utils.getPartAccentColor(partNumber, context);
+    final isCurrentPart = Bookservice().currentPartNumber == partNumber;
+
     return GestureDetector(
       onTap: () => navigateToKiranList(bookparts, index),
       child: Card(
+        color: partColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
           side:
-              Bookservice().currentPartNumber == bookparts[index].partNumber
-                  ? BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 1.0,
-                  )
-                  : BorderSide.none,
+              isCurrentPart
+                  ? BorderSide(color: accentColor, width: 2.5)
+                  : BorderSide(color: accentColor, width: 0.5),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               ListTile(
+                tileColor: partColor,
                 //onTap: () => navigateToKiranList(bookparts, index),
+                leading: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: accentColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(
+                      color: accentColor.withOpacity(0.3),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      bookNumbers[partNumber - 1],
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: accentColor,
+                      ),
+                    ),
+                  ),
+                ),
                 title: Text(bookparts[index].displayname.toString()),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

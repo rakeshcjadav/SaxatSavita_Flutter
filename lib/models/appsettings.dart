@@ -12,6 +12,7 @@ class AppSettings {
   bool keepScreenOn;
   bool showEdgeNavButtons;
   double edgePadding;
+  bool useColorfulPartStyle;
 
   AppSettings({
     required this.fontSize,
@@ -25,6 +26,7 @@ class AppSettings {
     required this.keepScreenOn,
     required this.showEdgeNavButtons,
     required this.edgePadding,
+    required this.useColorfulPartStyle,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class AppSettings {
       keepScreenOn: json['keepScreenOn'] ?? false,
       showEdgeNavButtons: json['showEdgeNavButtons'] ?? true,
       edgePadding: json['edgePadding']?.toDouble() ?? 16.0,
+      useColorfulPartStyle: json['useColorfulPartStyle'] ?? false,
     );
   }
 
@@ -57,6 +60,7 @@ class AppSettings {
       'keepScreenOn': keepScreenOn,
       'showEdgeNavButtons': showEdgeNavButtons,
       'edgePadding': edgePadding,
+      'useColorfulPartStyle': useColorfulPartStyle,
     };
   }
 
@@ -97,6 +101,7 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
     keepScreenOn: false,
     showEdgeNavButtons: false,
     edgePadding: 0.0,
+    useColorfulPartStyle: false,
   ),
 );
 
@@ -112,6 +117,7 @@ AppSettings appSettingsDefault = AppSettings(
   keepScreenOn: false,
   showEdgeNavButtons: false,
   edgePadding: 0.0,
+  useColorfulPartStyle: false,
 );
 
 AppSettings copyAppSettings(
@@ -127,6 +133,7 @@ AppSettings copyAppSettings(
   bool? keepScreenOn,
   bool? showEdgeNavButtons,
   double? edgePadding,
+  bool? useColorfulPartStyle,
 }) {
   return AppSettings(
     fontSize: fontSize ?? settings.fontSize,
@@ -140,5 +147,6 @@ AppSettings copyAppSettings(
     keepScreenOn: keepScreenOn ?? settings.keepScreenOn,
     showEdgeNavButtons: showEdgeNavButtons ?? settings.showEdgeNavButtons,
     edgePadding: edgePadding ?? settings.edgePadding,
+    useColorfulPartStyle: useColorfulPartStyle ?? settings.useColorfulPartStyle,
   );
 }

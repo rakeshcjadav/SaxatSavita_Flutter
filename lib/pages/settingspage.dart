@@ -38,6 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late bool _keepScreenOn;
   late bool _showEdgeNavButtons;
   late double _edgePadding;
+  late bool _useColorfulPartStyle;
 
   // Track saving state
   bool _isSaving = false;
@@ -61,6 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _keepScreenOn = _originalSettings.keepScreenOn;
     _showEdgeNavButtons = _originalSettings.showEdgeNavButtons;
     _edgePadding = _originalSettings.edgePadding;
+    _useColorfulPartStyle = _originalSettings.useColorfulPartStyle;
   }
 
   void _revertChanges() {
@@ -99,6 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _keepScreenOn = _originalSettings.keepScreenOn;
     _showEdgeNavButtons = _originalSettings.showEdgeNavButtons;
     _edgePadding = _originalSettings.edgePadding;
+    _useColorfulPartStyle = _originalSettings.useColorfulPartStyle;
   }
 
   bool get _settingsChanged {
@@ -113,7 +116,8 @@ class _SettingsPageState extends State<SettingsPage> {
         _originalSettings.language != current.language ||
         _originalSettings.keepScreenOn != current.keepScreenOn ||
         _originalSettings.showEdgeNavButtons != current.showEdgeNavButtons ||
-        _originalSettings.edgePadding != current.edgePadding;
+        _originalSettings.edgePadding != current.edgePadding ||
+        _originalSettings.useColorfulPartStyle != current.useColorfulPartStyle;
   }
 
   AppSettings _createCurrentSettings() {
@@ -129,6 +133,7 @@ class _SettingsPageState extends State<SettingsPage> {
       keepScreenOn: _keepScreenOn,
       showEdgeNavButtons: _showEdgeNavButtons,
       edgePadding: _edgePadding,
+      useColorfulPartStyle: _useColorfulPartStyle,
     );
   }
 
@@ -526,6 +531,32 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
 
+      // Edge Padding Setting
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.border_horizontal),
+          title: Text(
+            '${AppLocalizations.of(context)!.edgePadding}: ${_edgePadding.toStringAsFixed(0)} px',
+          ),
+          subtitle: SizedBox(
+            width: 200,
+            child: Slider(
+              value: _edgePadding,
+              min: 0.0,
+              max: 16.0,
+              divisions: 8,
+              label: _edgePadding.toStringAsFixed(0),
+              onChanged: (double value) {
+                setState(() {
+                  _edgePadding = value;
+                  _updateHasUnsavedChanges();
+                });
+              },
+            ),
+          ),
+        ),
+      ),
+
       // Keep Screen On Setting
       Card(
         child: SwitchListTile(
@@ -557,32 +588,6 @@ class _SettingsPageState extends State<SettingsPage> {
               _updateHasUnsavedChanges();
             });
           },
-        ),
-      ),
-
-      // Edge Padding Setting
-      Card(
-        child: ListTile(
-          leading: const Icon(Icons.border_horizontal),
-          title: Text(
-            '${AppLocalizations.of(context)!.edgePadding}: ${_edgePadding.toStringAsFixed(0)} px',
-          ),
-          subtitle: SizedBox(
-            width: 200,
-            child: Slider(
-              value: _edgePadding,
-              min: 0.0,
-              max: 16.0,
-              divisions: 8,
-              label: _edgePadding.toStringAsFixed(0),
-              onChanged: (double value) {
-                setState(() {
-                  _edgePadding = value;
-                  _updateHasUnsavedChanges();
-                });
-              },
-            ),
-          ),
         ),
       ),
     ];
@@ -729,6 +734,24 @@ class _SettingsPageState extends State<SettingsPage> {
               _updateHasUnsavedChanges();
             },
           ),
+        ),
+      ),
+
+      // Colorful Part Style Setting
+      Card(
+        child: SwitchListTile(
+          secondary: const Icon(Icons.palette),
+          title: Text(AppLocalizations.of(context)!.useColorfulPartStyle),
+          subtitle: Text(
+            AppLocalizations.of(context)!.useColorfulPartStyleDescription,
+          ),
+          value: _useColorfulPartStyle,
+          onChanged: (bool value) {
+            setState(() {
+              _useColorfulPartStyle = value;
+              _updateHasUnsavedChanges();
+            });
+          },
         ),
       ),
     ];

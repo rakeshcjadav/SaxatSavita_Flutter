@@ -16,6 +16,80 @@ import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils {
+  /// Get subtle background color for each part (theme-aware)
+  static Color getPartColor(
+    int partNumber,
+    BuildContext context, {
+    bool forceColorfulStyle = false,
+  }) {
+    if (!forceColorfulStyle) {
+      // If colorful style is disabled, return transparent
+      if (!appSettingsNotifier.value.useColorfulPartStyle) {
+        return Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).colorScheme.surfaceContainer
+            : Theme.of(context).colorScheme.surfaceContainer;
+      }
+    }
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final lightColors = [
+      const Color(0xFFE3F2FD), // Light Blue
+      const Color(0xFFF3E5F5), // Light Purple
+      const Color(0xFFE8F5E9), // Light Green
+      const Color(0xFFFFF3E0), // Light Orange
+      const Color(0xFFFCE4EC), // Light Pink
+    ];
+
+    final darkColors = [
+      const Color(0xFF1A237E), // Dark Blue
+      const Color(0xFF4A148C), // Dark Purple
+      const Color(0xFF1B5E20), // Dark Green
+      const Color(0xFFE65100), // Dark Orange
+      const Color(0xFF880E4F), // Dark Pink
+    ];
+
+    final colors = isDark ? darkColors : lightColors;
+    return colors[(partNumber - 1) % colors.length];
+  }
+
+  /// Get accent color for each part (theme-aware)
+  static Color getPartAccentColor(
+    int partNumber,
+    BuildContext context, {
+    bool forceColorfulStyle = false,
+  }) {
+    if (!forceColorfulStyle) {
+      // If colorful style is disabled, return the primary color from theme
+      if (!appSettingsNotifier.value.useColorfulPartStyle) {
+        return Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).colorScheme.onPrimary
+            : Theme.of(context).colorScheme.primary;
+      }
+    }
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final lightColors = [
+      const Color(0xFF2196F3), // Blue
+      const Color(0xFF9C27B0), // Purple
+      const Color(0xFF4CAF50), // Green
+      const Color(0xFFFF9800), // Orange
+      const Color(0xFFE91E63), // Pink
+    ];
+
+    final darkColors = [
+      const Color(0xFF64B5F6), // Light Blue
+      const Color(0xFFBA68C8), // Light Purple
+      const Color(0xFF81C784), // Light Green
+      const Color(0xFFFFB74D), // Light Orange
+      const Color(0xFFF06292), // Light Pink
+    ];
+
+    final colors = isDark ? darkColors : lightColors;
+    return colors[(partNumber - 1) % colors.length];
+  }
+
   static Color oppositeColor(Color color) {
     final hsl = HSLColor.fromColor(color);
     final oppositeHue = (hsl.hue + 180.0) % 360.0;

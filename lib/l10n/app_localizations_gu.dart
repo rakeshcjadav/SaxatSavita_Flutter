@@ -1405,6 +1405,13 @@ class AppLocalizationsGu extends AppLocalizations {
   String get edgePaddingDescription => 'આડી પેડિંગ';
 
   @override
+  String get useColorfulPartStyle => 'રંગબેરંગી ભાગ શૈલી';
+
+  @override
+  String get useColorfulPartStyleDescription =>
+      'દરેક ભાગ માટે અલગ અલગ રંગો વાપરો';
+
+  @override
   String get plan_name => 'યોજનાનું નામ';
 
   @override

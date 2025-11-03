@@ -664,6 +664,8 @@
     "showEdgeNavButtonsDescription": "Show left/right navigation buttons on page edges",
     "edgePadding": "Page left/right margin",
     "edgePaddingDescription": "Horizontal padding",
+    "useColorfulPartStyle": "Colorful Part Style",
+    "useColorfulPartStyleDescription": "Use colorful theme for each part",
     
     "plan_name": "Plan Name",
     "start_date": "Start Date",

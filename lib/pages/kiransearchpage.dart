@@ -1092,16 +1092,21 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                         ).textTheme.labelSmall!.copyWith(
                           color:
                               isSelected
-                                  ? Theme.of(context).colorScheme.onPrimary
-                                  : Theme.of(context).colorScheme.onSurface,
+                                  ? Utils.getPartColor(partNumber, context)
+                                  : Utils.getPartAccentColor(
+                                    partNumber,
+                                    context,
+                                  ),
                         ),
                         avatar:
                             isSelected
                                 ? const Icon(Icons.check)
                                 : const Icon(Icons.book),
                         backgroundColor: Theme.of(context).colorScheme.surface,
-                        selectedColor:
-                            Theme.of(context).colorScheme.primaryContainer,
+                        selectedColor: Utils.getPartAccentColor(
+                          partNumber,
+                          context,
+                        ),
                       );
                     }).toList(),
               ),
@@ -1257,8 +1262,16 @@ class _KiransearchpageState extends State<Kiransearchpage> {
   }
 
   Widget _buildSearchResultCard(SearchResult result) {
+    final partColor = Utils.getPartColor(result.partNumber, context);
+    final accentColor = Utils.getPartAccentColor(result.partNumber, context);
+
     return Card(
       elevation: 2,
+      color: partColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: accentColor.withOpacity(0.3), width: 1),
+      ),
       child: InkWell(
         onTap: () => _navigateToKiran(result),
         borderRadius: BorderRadius.circular(8),
@@ -1275,15 +1288,17 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1),
+                      color: accentColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: accentColor.withOpacity(0.3),
+                        width: 1.5,
+                      ),
                     ),
                     child: Text(
                       Bookservice().getPartTitle(context, result.partNumber),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: accentColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

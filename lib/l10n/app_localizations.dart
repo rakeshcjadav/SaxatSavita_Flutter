@@ -2618,6 +2618,18 @@ abstract class AppLocalizations {
   /// **'Horizontal padding'**
   String get edgePaddingDescription;
 
+  /// No description provided for @useColorfulPartStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Colorful Part Style'**
+  String get useColorfulPartStyle;
+
+  /// No description provided for @useColorfulPartStyleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Use colorful theme for each part'**
+  String get useColorfulPartStyleDescription;
+
   /// No description provided for @plan_name.
   ///
   /// In en, this message translates to:

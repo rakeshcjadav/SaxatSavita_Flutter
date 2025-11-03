@@ -911,7 +911,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(32.0),
         onTap: onTap,
         child: Container(
           width: 32,

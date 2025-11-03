@@ -8,6 +8,7 @@ import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
+import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 
@@ -628,8 +629,16 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
   }
 
   Widget _buildHistoryCard(ReadingHistory history) {
+    final partColor = Utils.getPartColor(history.partNumber, context);
+    final accentColor = Utils.getPartAccentColor(history.partNumber, context);
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
+      color: partColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        side: BorderSide(color: accentColor.withOpacity(0.3), width: 1.0),
+      ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12.0),
         onTap: () => _navigateToKiran(history.kiranIndex, history.partNumber),
@@ -642,11 +651,31 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(
-                      Bookservice().getPartTitle(context, history.partNumber),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0,
+                            vertical: 4.0,
+                          ),
+                          decoration: BoxDecoration(
+                            color: accentColor,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Text(
+                            Bookservice().getPartTitle(
+                              context,
+                              history.partNumber,
+                            ),
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(width: 8.0),
@@ -654,7 +683,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                     history.readableDuration,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: accentColor,
                     ),
                   ),
                   const SizedBox(width: 8.0),
@@ -674,6 +703,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                   ),
                 ],
               ),
+              const SizedBox(height: 8.0),
               Text(
                 _getKiranTitle(history),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -1375,11 +1405,31 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                               final index = entry.key;
                               final data = entry.value;
                               final colors = [
-                                Colors.blue,
-                                Colors.green,
-                                Colors.orange,
-                                Colors.purple,
-                                Colors.red,
+                                Utils.getPartAccentColor(
+                                  1,
+                                  context,
+                                  forceColorfulStyle: true,
+                                ),
+                                Utils.getPartAccentColor(
+                                  2,
+                                  context,
+                                  forceColorfulStyle: true,
+                                ),
+                                Utils.getPartAccentColor(
+                                  3,
+                                  context,
+                                  forceColorfulStyle: true,
+                                ),
+                                Utils.getPartAccentColor(
+                                  4,
+                                  context,
+                                  forceColorfulStyle: true,
+                                ),
+                                Utils.getPartAccentColor(
+                                  5,
+                                  context,
+                                  forceColorfulStyle: true,
+                                ),
                               ];
 
                               return PieChartSectionData(
@@ -1408,11 +1458,31 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                             final index = entry.key;
                             final data = entry.value;
                             final colors = [
-                              Colors.blue,
-                              Colors.green,
-                              Colors.orange,
-                              Colors.purple,
-                              Colors.red,
+                              Utils.getPartAccentColor(
+                                1,
+                                context,
+                                forceColorfulStyle: true,
+                              ),
+                              Utils.getPartAccentColor(
+                                2,
+                                context,
+                                forceColorfulStyle: true,
+                              ),
+                              Utils.getPartAccentColor(
+                                3,
+                                context,
+                                forceColorfulStyle: true,
+                              ),
+                              Utils.getPartAccentColor(
+                                4,
+                                context,
+                                forceColorfulStyle: true,
+                              ),
+                              Utils.getPartAccentColor(
+                                5,
+                                context,
+                                forceColorfulStyle: true,
+                              ),
                             ];
 
                             return Padding(

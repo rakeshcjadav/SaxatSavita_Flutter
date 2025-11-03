@@ -1400,6 +1400,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edgePaddingDescription => 'Horizontal padding';
 
   @override
+  String get useColorfulPartStyle => 'Colorful Part Style';
+
+  @override
+  String get useColorfulPartStyleDescription =>
+      'Use colorful theme for each part';
+
+  @override
   String get plan_name => 'Plan Name';
 
   @override

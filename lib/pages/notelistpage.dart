@@ -537,12 +537,14 @@ class _NoteListPageState extends State<NoteListPage> {
                               ).textTheme.labelSmall!.copyWith(
                                 color:
                                     isSelected
-                                        ? Theme.of(
+                                        ? Utils.getPartColor(
+                                          partNumber,
                                           context,
-                                        ).colorScheme.onPrimary
-                                        : Theme.of(
+                                        )
+                                        : Utils.getPartAccentColor(
+                                          partNumber,
                                           context,
-                                        ).colorScheme.onSurface,
+                                        ),
                               ),
                               avatar:
                                   isSelected
@@ -550,10 +552,10 @@ class _NoteListPageState extends State<NoteListPage> {
                                       : Icon(Icons.book, size: 16),
                               backgroundColor:
                                   Theme.of(context).colorScheme.surface,
-                              selectedColor:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.primaryContainer,
+                              selectedColor: Utils.getPartAccentColor(
+                                partNumber,
+                                context,
+                              ),
                             );
                           }).toList(),
                     ),
@@ -700,8 +702,16 @@ class _NoteListPageState extends State<NoteListPage> {
             ? '${noteItem.plainTextPreview.substring(0, 150)}...'
             : noteItem.plainTextPreview;
 
+    final partColor = Utils.getPartColor(noteItem.partNumber, context);
+    final accentColor = Utils.getPartAccentColor(noteItem.partNumber, context);
+
     return Card(
       elevation: 2,
+      color: partColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: accentColor.withOpacity(0.3), width: 1),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -709,7 +719,7 @@ class _NoteListPageState extends State<NoteListPage> {
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainer,
+              color: accentColor.withOpacity(0.1),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),
@@ -723,15 +733,17 @@ class _NoteListPageState extends State<NoteListPage> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.1),
+                    color: accentColor.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: accentColor.withOpacity(0.3),
+                      width: 1.5,
+                    ),
                   ),
                   child: Text(
                     Bookservice().getPartTitle(context, noteItem.partNumber),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: accentColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
