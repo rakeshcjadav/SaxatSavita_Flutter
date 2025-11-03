@@ -273,7 +273,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     if (mounted &&
         _scrollController.hasClients &&
         widget.kiranUserInfo.progress > 0) {
-      _initialReadingProgress = widget.kiranUserInfo.progress;
+      _initialReadingProgress = 0;
       final maxScrollExtent = _scrollController.position.maxScrollExtent;
       final targetPosition =
           (widget.kiranUserInfo.progress / 100) * maxScrollExtent;
