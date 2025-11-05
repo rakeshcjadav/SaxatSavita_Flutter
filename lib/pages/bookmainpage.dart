@@ -241,20 +241,23 @@ class _BookmainpageState extends State<BookMainpage> {
     return GestureDetector(
       onTap: () => navigateToKiranList(bookparts, index),
       child: Card(
-        color: partColor,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
           side:
               isCurrentPart
-                  ? BorderSide(color: accentColor, width: 2.5)
-                  : BorderSide(color: accentColor, width: 0.5),
+                  ? BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 2,
+                  )
+                  : BorderSide.none,
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               ListTile(
-                tileColor: partColor,
+                tileColor: Theme.of(context).colorScheme.surfaceContainer,
                 //onTap: () => navigateToKiranList(bookparts, index),
                 leading: Container(
                   width: 48,

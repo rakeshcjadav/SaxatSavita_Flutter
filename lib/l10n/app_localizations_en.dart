@@ -189,10 +189,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_min_chars => 'Enter at least 2 characters to search';
 
   @override
-  String get content_match => 'Content';
+  String get content_match => 'Kiran Content';
 
   @override
-  String get title_match => 'Title';
+  String get title_match => 'Kiran Title';
 
   @override
   String get filters => 'Filters';

@@ -712,7 +712,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.search,
-        actionItems: [],
+        actionItems: [ActionOptions.settings],
       ),
       body: Column(
         children: [
@@ -1248,7 +1248,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               child: ListView.separated(
                 primary: true,
                 itemCount: _filteredResults.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                separatorBuilder: (context, index) => const SizedBox(height: 0),
                 itemBuilder: (context, index) {
                   final result = _filteredResults[index];
                   return _buildSearchResultCard(result);
@@ -1275,12 +1275,19 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       child: InkWell(
         onTap: () => _navigateToKiran(result),
         borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: accentColor.withOpacity(0.2),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
+              ),
+              child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -1307,58 +1314,80 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                   Icon(
                     result.isContentMatch ? Icons.article : Icons.title,
                     size: 16,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.primary.withAlpha(127),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     result.isContentMatch
                         ? AppLocalizations.of(context)!.content_match
                         : AppLocalizations.of(context)!.title_match,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              result.isContentMatch
-                  ? Text(
-                    '${result.kiranInfo.number} ${result.kiranInfo.title}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withAlpha(127),
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                  : _buildHighlightedTitle(
-                    '${result.kiranInfo.number} ${result.snippet}',
                   ),
-              const SizedBox(height: 8),
-              _buildHighlightedSnippet(result.snippet),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.timer, size: 16, color: Colors.grey),
-                  const SizedBox(width: 4),
-                  Text(
-                    Utils.getEstimatedReadingTime(result.kiranInfo.wordCount),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                  ),
-                  const Spacer(),
-                  Text(
-                    result.relevanceScore.toString(),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                  ),
-                  const Spacer(),
-                  Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
                 ],
               ),
-            ],
-          ),
+            ),
+            ColoredBox(
+              color: accentColor.withOpacity(0.1),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 8.0,
+                  bottom: 16.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    result.isContentMatch
+                        ? Text(
+                          '${result.kiranInfo.number} ${result.kiranInfo.title}',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                        : _buildHighlightedTitle(
+                          '${result.kiranInfo.number} ${result.snippet}',
+                        ),
+                    const SizedBox(height: 8),
+                    _buildHighlightedSnippet(result.snippet),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.timer, size: 16, color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Text(
+                          Utils.getEstimatedReadingTime(
+                            result.kiranInfo.wordCount,
+                          ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                        ),
+                        const Spacer(),
+                        Text(
+                          result.relevanceScore.toString(),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

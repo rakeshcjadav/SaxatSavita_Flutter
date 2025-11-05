@@ -189,10 +189,10 @@ class AppLocalizationsGu extends AppLocalizations {
   String get search_min_chars => 'શોધવા માટે ઓછામાં ઓછા 2 અક્ષરો દાખલ કરો';
 
   @override
-  String get content_match => 'સામગ્રી';
+  String get content_match => 'કિરણ સામગ્રી';
 
   @override
-  String get title_match => 'શીર્ષક';
+  String get title_match => 'કિરણ શીર્ષક';
 
   @override
   String get filters => 'ફિલ્ટર્સ';
@@ -1409,7 +1409,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get useColorfulPartStyleDescription =>
-      'દરેક ભાગ માટે અલગ અલગ રંગો વાપરો';
+      'સાક્ષાત્ સવિતા ના દરેક ભાગ માટે અલગ અલગ રંગો વાપરો';
 
   @override
   String get plan_name => 'યોજનાનું નામ';

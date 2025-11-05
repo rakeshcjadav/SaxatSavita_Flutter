@@ -111,8 +111,8 @@
         }
     },
     "search_min_chars": "શોધવા માટે ઓછામાં ઓછા 2 અક્ષરો દાખલ કરો",
-    "content_match": "સામગ્રી",
-    "title_match": "શીર્ષક",
+    "content_match": "કિરણ સામગ્રી",
+    "title_match": "કિરણ શીર્ષક",
     
     "filters": "ફિલ્ટર્સ",
     "clear_all_filters": "બધા સાફ કરો",
@@ -666,7 +666,7 @@
     "edgePadding": "પેજનું ડાબું/જમણું પેડિંગ",
     "edgePaddingDescription": "આડી પેડિંગ",
     "useColorfulPartStyle": "રંગબેરંગી ભાગ શૈલી",
-    "useColorfulPartStyleDescription": "દરેક ભાગ માટે અલગ અલગ રંગો વાપરો",
+    "useColorfulPartStyleDescription": "સાક્ષાત્ સવિતા ના દરેક ભાગ માટે અલગ અલગ રંગો વાપરો",
     
     "plan_name": "યોજનાનું નામ",
     "start_date": "શરૂઆતની તારીખ",

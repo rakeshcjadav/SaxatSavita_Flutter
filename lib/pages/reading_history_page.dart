@@ -636,18 +636,25 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
       margin: const EdgeInsets.only(bottom: 12.0),
       color: partColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(8.0),
         side: BorderSide(color: accentColor.withOpacity(0.3), width: 1.0),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(8.0),
         onTap: () => _navigateToKiran(history.kiranIndex, history.partNumber),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: accentColor.withOpacity(0.2),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0),
+                ),
+              ),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
@@ -655,12 +662,16 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0,
-                            vertical: 4.0,
+                            horizontal: 8,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: accentColor,
-                            borderRadius: BorderRadius.circular(12.0),
+                            color: accentColor.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: accentColor.withOpacity(0.3),
+                              width: 1.5,
+                            ),
                           ),
                           child: Text(
                             Bookservice().getPartTitle(
@@ -669,9 +680,9 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                             ),
                             style: Theme.of(
                               context,
-                            ).textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                            ).textTheme.bodySmall?.copyWith(
+                              color: accentColor,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -687,31 +698,62 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                     ),
                   ),
                   const SizedBox(width: 8.0),
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      size: 20.0,
-                      color: Colors.red.shade300,
-                    ),
-                    onPressed: () => _showDeleteConfirmation(history),
-                    tooltip: AppLocalizations.of(context)!.delete,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 32,
-                      minHeight: 32,
-                    ),
+                  PopupMenuButton(
+                    icon: Icon(Icons.more_vert),
+                    itemBuilder:
+                        (context) => [
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.delete,
+                                  size: 18,
+                                  color: Colors.red.shade300,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.deleteReadingHistory,
+                                  style: TextStyle(color: Colors.red.shade300),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'delete':
+                          _showDeleteConfirmation(history);
+                          break;
+                      }
+                    },
                   ),
                 ],
               ),
-              const SizedBox(height: 8.0),
-              Text(
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                top: 16.0,
+                bottom: 16.0,
+              ),
+              child: Text(
                 _getKiranTitle(history),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 12.0),
-              Row(
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                bottom: 16.0,
+              ),
+              child: Row(
                 children: [
                   Icon(
                     Icons.schedule,
@@ -735,8 +777,8 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -25,9 +25,7 @@ class Utils {
     if (!forceColorfulStyle) {
       // If colorful style is disabled, return transparent
       if (!appSettingsNotifier.value.useColorfulPartStyle) {
-        return Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).colorScheme.surfaceContainer
-            : Theme.of(context).colorScheme.surfaceContainer;
+        return Theme.of(context).colorScheme.surface;
       }
     }
 
@@ -42,11 +40,11 @@ class Utils {
     ];
 
     final darkColors = [
-      const Color(0xFF1A237E), // Dark Blue
-      const Color(0xFF4A148C), // Dark Purple
-      const Color(0xFF1B5E20), // Dark Green
-      const Color(0xFFE65100), // Dark Orange
-      const Color(0xFF880E4F), // Dark Pink
+      const Color.fromARGB(255, 9, 12, 43), // Dark Blue
+      const Color.fromARGB(255, 29, 8, 56), // Dark Purple
+      const Color.fromARGB(255, 7, 37, 9), // Dark Green
+      const Color.fromARGB(255, 73, 27, 2), // Dark Orange
+      const Color.fromARGB(255, 49, 6, 29), // Dark Pink
     ];
 
     final colors = isDark ? darkColors : lightColors;
@@ -62,9 +60,7 @@ class Utils {
     if (!forceColorfulStyle) {
       // If colorful style is disabled, return the primary color from theme
       if (!appSettingsNotifier.value.useColorfulPartStyle) {
-        return Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).colorScheme.onPrimary
-            : Theme.of(context).colorScheme.primary;
+        return Theme.of(context).colorScheme.primary;
       }
     }
 

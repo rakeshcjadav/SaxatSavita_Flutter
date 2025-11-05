@@ -20,6 +20,14 @@ class HomeWidgetService {
   /// Initialize the home widget service
   Future<void> initialize() async {
     try {
+      // Skip initialization for web platform
+      if (kIsWeb) {
+        debugPrint(
+          'HomeWidgetService: Skipping initialization on web platform',
+        );
+        return;
+      }
+
       // Register widget update callback
       HomeWidget.setAppGroupId(_widgetGroupId);
       HomeWidget.registerInteractivityCallback(_backgroundCallback);
@@ -71,6 +79,12 @@ class HomeWidgetService {
   /// Update reading progress widget
   Future<void> updateReadingProgressWidget() async {
     try {
+      // Skip widget updates for web platform
+      if (kIsWeb) {
+        debugPrint('HomeWidgetService: Skipping widget update on web platform');
+        return;
+      }
+
       final progress = await _getReadingProgress();
       final todayDate = DateTime.now().toIso8601String().split('T').first;
 
@@ -224,6 +238,11 @@ class HomeWidgetService {
   /// Check if widgets are supported on this platform
   Future<bool> areWidgetsSupported() async {
     try {
+      // Web platform doesn't support widgets
+      if (kIsWeb) {
+        return false;
+      }
+
       // Check if platform supports widgets
       return await HomeWidget.isRequestPinWidgetSupported() ?? false;
     } catch (e) {
@@ -262,6 +281,12 @@ class HomeWidgetService {
   /// Schedule automatic widget updates (call this from app lifecycle)
   Future<void> scheduleWidgetUpdates() async {
     try {
+      // Skip widget updates for web platform
+      if (kIsWeb) {
+        debugPrint('Widget updates scheduled successfully (skipped on web)');
+        return;
+      }
+
       // Update widgets when app becomes active
       await updateAllWidgets();
 

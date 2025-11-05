@@ -46,7 +46,7 @@ class _DrawerState extends State<MyDrawer> {
   }
 
   Future<void> _loadUserProfile() async {
-    if (FirebaseAuth.instance.currentUser != null) {
+    {
       try {
         final profile = await _profileService.getUserProfile();
         if (mounted) {
@@ -54,14 +54,41 @@ class _DrawerState extends State<MyDrawer> {
             _userProfile = profile;
           });
         }
+      } on FirebaseAuthException catch (e) {
+        // Handle Firebase Auth specific errors
+        debugPrint(
+          'Firebase Auth error loading user profile: ${e.code} - ${e.message}',
+        );
+        if (mounted) {
+          setState(() {
+            _userProfile = null;
+          });
+        }
+      } on FirebaseException catch (e) {
+        // Handle general Firebase errors
+        debugPrint(
+          'Firebase error loading user profile: ${e.code} - ${e.message}',
+        );
+        if (mounted) {
+          setState(() {
+            _userProfile = null;
+          });
+        }
       } catch (e) {
-        // Handle error silently, will fall back to Firebase Auth display name
+        // Handle any other errors
+        debugPrint('Error loading user profile: $e');
+        if (mounted) {
+          setState(() {
+            _userProfile = null;
+          });
+        }
       }
     }
   }
 
   Widget getAvatar() {
-    if (FirebaseAuth.instance.currentUser?.photoURL == null ||
+    if (kIsWeb ||
+        FirebaseAuth.instance.currentUser?.photoURL == null ||
         FirebaseAuth.instance.currentUser!.photoURL!.isEmpty) {
       return CircleAvatar(
         backgroundImage: AssetImage('assets/res/z_jogi_swami_avatar.png'),
@@ -132,7 +159,7 @@ class _DrawerState extends State<MyDrawer> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          if (FirebaseAuth.instance.currentUser != null) ...[
+          if (!kIsWeb && FirebaseAuth.instance.currentUser != null) ...[
             UserAccountsDrawerHeader(
               currentAccountPicture: Container(
                 decoration: BoxDecoration(
@@ -349,11 +376,39 @@ class _DrawerState extends State<MyDrawer> {
                 ),
               );
             }
+          } on FirebaseAuthException catch (e) {
+            // Pop the loading indicator
+            if (mounted) {
+              navigator.pop();
+              // Show Firebase Auth specific error
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  content: Text('Authentication error: ${e.message ?? e.code}'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+            debugPrint(
+              'Firebase Auth sign out error: ${e.code} - ${e.message}',
+            );
+          } on FirebaseException catch (e) {
+            // Pop the loading indicator
+            if (mounted) {
+              navigator.pop();
+              // Show Firebase specific error
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  content: Text('Firebase error: ${e.message ?? e.code}'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+            debugPrint('Firebase sign out error: ${e.code} - ${e.message}');
           } catch (e) {
             // Pop the loading indicator
             if (mounted) {
               navigator.pop();
-              // Show error
+              // Show general error
               scaffoldMessenger.showSnackBar(
                 SnackBar(
                   content: Text('Error signing out: ${e.toString()}'),

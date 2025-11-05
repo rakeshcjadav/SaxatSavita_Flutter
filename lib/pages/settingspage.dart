@@ -416,7 +416,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   List<Widget> _buildAccountSection() {
-    if (FirebaseAuth.instance.currentUser == null) return [];
+    if (kIsWeb || FirebaseAuth.instance.currentUser == null) return [];
     return <Widget>[
       // Account & Privacy Section
       _buildSectionHeader(

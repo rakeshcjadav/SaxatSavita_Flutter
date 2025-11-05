@@ -4,5 +4,6 @@
     "kotlin.languageServer.enabled": true,
     "files.associations": {
         "*.kt": "kotlin"
-    }
+    },
+    "svn.ignoreMissingSvnWarning": true
 }

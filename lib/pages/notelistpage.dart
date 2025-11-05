@@ -348,7 +348,7 @@ class _NoteListPageState extends State<NoteListPage> {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.notes,
-        actionItems: [],
+        actionItems: [ActionOptions.settings],
         extraActions: [
           IconButton(
             icon: Icon(
@@ -687,7 +687,7 @@ class _NoteListPageState extends State<NoteListPage> {
       child: ListView.separated(
         padding: const EdgeInsets.all(16.0),
         itemCount: _filteredNotes.length,
-        separatorBuilder: (context, index) => SizedBox(height: 12),
+        separatorBuilder: (context, index) => SizedBox(height: 0),
         itemBuilder: (context, index) {
           final noteItem = _filteredNotes[index];
           return _buildNoteCard(noteItem);
@@ -719,7 +719,7 @@ class _NoteListPageState extends State<NoteListPage> {
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: accentColor.withOpacity(0.1),
+              color: accentColor.withOpacity(0.2),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),

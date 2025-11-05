@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -182,21 +183,21 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Future<void> _loadUserProfile() async {
-    if (FirebaseAuth.instance.currentUser != null) {
-      try {
-        final profile = await _profileService.getUserProfile();
-        if (mounted) {
-          setState(() {
-            _userProfile = profile;
-          });
-        }
-      } catch (e) {
-        // Handle error silently, will fall back to Firebase Auth display name
+    try {
+      final profile = await _profileService.getUserProfile();
+      if (mounted) {
+        setState(() {
+          _userProfile = profile;
+        });
       }
+    } catch (e) {
+      // Handle error silently, will fall back to Firebase Auth display name
     }
   }
 
   String _getDisplayName() {
+    if (kIsWeb) return AppLocalizations.of(context)!.spiritual_seeker;
+
     // Prioritize profile data if available and both names are filled
     if (_userProfile != null &&
         _userProfile!.firstName.isNotEmpty &&
@@ -261,7 +262,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             icon: Stack(
               children: [
                 Icon(Icons.share),
-                if (FirebaseAuth.instance.currentUser == null) ...[
+                if (kIsWeb || FirebaseAuth.instance.currentUser == null) ...[
                   // Lock icon
                   Positioned(
                     right: 0,
@@ -278,7 +279,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             icon: Stack(
               children: [
                 Icon(Icons.download),
-                if (FirebaseAuth.instance.currentUser == null) ...[
+                if (kIsWeb || FirebaseAuth.instance.currentUser == null) ...[
                   // Lock icon
                   Positioned(
                     right: 0,
@@ -906,8 +907,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildProfileLayout() {
-    final user = FirebaseAuth.instance.currentUser;
-
     // For profile layout, show user info unless explicitly disabled
     final showAvatar = _showUserAvatar;
     final showName = _showUserName;
@@ -934,10 +933,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       color: _textColor.withValues(alpha: 0.1),
                     ),
                     child:
-                        user?.photoURL != null
+                        FirebaseAuth.instance.currentUser?.photoURL != null
                             ? ClipOval(
                               child: Image.network(
-                                user!.photoURL!,
+                                FirebaseAuth.instance.currentUser!.photoURL!,
                                 width: 60,
                                 height: 60,
                                 fit: BoxFit.cover,
@@ -1019,7 +1018,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildCardLayout() {
-    final user = FirebaseAuth.instance.currentUser;
+    //if (kIsWeb) return const SizedBox.shrink();
+    //final user = FirebaseAuth.instance.currentUser;
     return Container(
       margin: const EdgeInsets.all(24.0),
       padding: const EdgeInsets.all(28.0),
@@ -1047,10 +1047,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     ),
                   ),
                   child:
-                      user?.photoURL != null
+                      FirebaseAuth.instance.currentUser?.photoURL != null
                           ? ClipOval(
                             child: Image.network(
-                              user!.photoURL!,
+                              FirebaseAuth.instance.currentUser!.photoURL!,
                               width: 48,
                               height: 48,
                               fit: BoxFit.cover,
@@ -1125,7 +1125,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildSocialLayout() {
-    final user = FirebaseAuth.instance.currentUser;
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -1148,10 +1147,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       ),
                     ),
                     child:
-                        user?.photoURL != null
+                        FirebaseAuth.instance.currentUser?.photoURL != null
                             ? ClipOval(
                               child: Image.network(
-                                user!.photoURL!,
+                                FirebaseAuth.instance.currentUser!.photoURL!,
                                 width: 40,
                                 height: 40,
                                 fit: BoxFit.cover,
@@ -1257,7 +1256,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildStoryLayout() {
-    final user = FirebaseAuth.instance.currentUser;
     return SizedBox(
       width: _imageWidth,
       height: _imageHeight,
@@ -1296,10 +1294,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                           border: Border.all(color: Colors.white, width: 2),
                         ),
                         child:
-                            user?.photoURL != null
+                            FirebaseAuth.instance.currentUser?.photoURL != null
                                 ? ClipOval(
                                   child: Image.network(
-                                    user!.photoURL!,
+                                    FirebaseAuth
+                                        .instance
+                                        .currentUser!
+                                        .photoURL!,
                                     width: 36,
                                     height: 36,
                                     fit: BoxFit.cover,
@@ -1457,6 +1458,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildUserInfo() {
+    if (kIsWeb) return const SizedBox.shrink();
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null || (!_showUserAvatar && !_showUserName)) {
@@ -1885,6 +1887,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildUserInfoTab() {
+    if (kIsWeb) return const SizedBox.shrink();
     final user = FirebaseAuth.instance.currentUser;
     final hasUserData =
         user != null &&
@@ -2128,7 +2131,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                         String author = _authorController.text;
                         _currentSelectedQuote = quote;
                         _currentSelectedQuote!.setAuthor =
-                            author.isEmpty
+                            !kIsWeb && author.isEmpty
                                 ? (FirebaseAuth
                                         .instance
                                         .currentUser
@@ -2152,7 +2155,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Future<void> _shareImage() async {
     // If user is not logged in ask to login
-    if (FirebaseAuth.instance.currentUser == null) {
+    if (kIsWeb || FirebaseAuth.instance.currentUser == null) {
       // Show dialog
       Utils.showLoginWarningDialog(context);
       return;
@@ -2190,7 +2193,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Future<void> _saveImage() async {
     // If user is not logged in ask to login
-    if (FirebaseAuth.instance.currentUser == null) {
+    if (kIsWeb || FirebaseAuth.instance.currentUser == null) {
       // Show dialog
       Utils.showLoginWarningDialog(context);
       return;

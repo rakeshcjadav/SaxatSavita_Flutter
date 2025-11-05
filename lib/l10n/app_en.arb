@@ -111,8 +111,8 @@
         }
     },
     "search_min_chars": "Enter at least 2 characters to search",
-    "content_match": "Content",
-    "title_match": "Title",
+    "content_match": "Kiran Content",
+    "title_match": "Kiran Title",
     
     "filters": "Filters",
     "clear_all_filters": "Clear All",
