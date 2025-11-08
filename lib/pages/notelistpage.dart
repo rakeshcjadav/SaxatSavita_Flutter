@@ -685,7 +685,7 @@ class _NoteListPageState extends State<NoteListPage> {
     return RefreshIndicator(
       onRefresh: _loadAllNotes,
       child: ListView.separated(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         itemCount: _filteredNotes.length,
         separatorBuilder: (context, index) => SizedBox(height: 0),
         itemBuilder: (context, index) {
