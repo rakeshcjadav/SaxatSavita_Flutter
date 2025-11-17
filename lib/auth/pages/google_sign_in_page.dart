@@ -657,6 +657,7 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
           DrawerItem.profile,
           DrawerItem.settings,
           DrawerItem.migration,
+          DrawerItem.adminpanel,
         ],
       ),
       body: ConstrainedBox(

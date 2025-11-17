@@ -41,6 +41,8 @@ class DefaultFirebaseOptions {
         'https://saxat-savita-crashanalytics-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'saxat-savita-crashanalytics.firebasestorage.app',
     measurementId: 'G-CKN0171NWV',
+    // Add client ID for web Google Sign-In
+    androidClientId: '39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(

@@ -23,6 +23,7 @@ enum DrawerItem {
   welcomeTour,
   migration,
   marketingShowcase,
+  adminpanel,
   logout,
 }
 
@@ -338,6 +339,17 @@ class _DrawerState extends State<MyDrawer> {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/migration');
+              },
+            )
+            : const SizedBox.shrink(),
+      DrawerItem.adminpanel =>
+        kDebugMode && kIsWeb
+            ? ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: Text("Admin Panel (Debug)"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/admin');
               },
             )
             : const SizedBox.shrink(),

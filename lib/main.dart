@@ -34,38 +34,42 @@ import 'package:flutter/foundation.dart';
 import 'pages/marketing_showcase_page_conditional.dart';
 import 'pages/comprehensive_migration_page_conditional.dart';
 
+// Admin panel imports
+import 'package:saxatsavita_flutter/admin/admin_login_page.dart';
+import 'package:saxatsavita_flutter/admin/admin_panel_page.dart';
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   // Keep splash until initialization completes
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  if (!kIsWeb) {
-    // Initialize Firebase with comprehensive error handling
-    try {
-      // Check if Firebase is already initialized
-      if (Firebase.apps.isEmpty) {
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        );
-      } else {
-        // Firebase already initialized, use the existing app
+  // Initialize Firebase with comprehensive error handling
+  try {
+    // Check if Firebase is already initialized
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } else {
+      // Firebase already initialized, use the existing app
+      Firebase.app();
+    }
+  } catch (e) {
+    // Handle any Firebase initialization errors
+    print('Firebase initialization error: $e');
+    // If it's a duplicate app error, try to get the existing app
+    if (e.toString().contains('duplicate-app')) {
+      try {
         Firebase.app();
-      }
-    } catch (e) {
-      // Handle any Firebase initialization errors
-      print('Firebase initialization error: $e');
-      // If it's a duplicate app error, try to get the existing app
-      if (e.toString().contains('duplicate-app')) {
-        try {
-          Firebase.app();
-        } catch (getAppError) {
-          print('Could not get existing Firebase app: $getAppError');
-        }
+      } catch (getAppError) {
+        print('Could not get existing Firebase app: $getAppError');
       }
     }
+  }
 
-    // Initialize Firebase Analytics
+  if (!kIsWeb) {
+    // Initialize Firebase Analytics (only on mobile)
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
     // Initialize Analytics Service
@@ -86,7 +90,7 @@ void main() async {
   await AppDataService().loadInfoContent('assets/jsons/infodata.json');
   Bookservice().loadBook('saxatsavita');
 
-  // Pass analytics only if not on web
+  // Pass analytics only if not on web (Analytics not supported on web in this setup)
   runApp(
     SakshatSavitaApp(analytics: kIsWeb ? null : FirebaseAnalytics.instance),
   );
@@ -279,6 +283,13 @@ class SakshatSavitaApp extends StatelessWidget {
                 (context) => const ProfilePage(continueAfterProfile: false),
             '/welcome': (context) => const WelcomeScreen(),
             '/login': (context) => const GoogleSignInPage(),
+
+            // Admin routes (only available on web)
+            if (kIsWeb) ...{
+              '/admin': (context) => const AdminLoginPage(),
+              '/admin/panel': (context) => const AdminPanelPage(),
+            },
+
             // Debug-only routes (excluded from release builds)
             ...kDebugMode
                 ? {
