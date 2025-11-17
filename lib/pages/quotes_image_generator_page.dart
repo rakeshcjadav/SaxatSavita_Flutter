@@ -1144,139 +1144,140 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildSocialLayout() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        _buildSocialPattern(),
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child:
-          // Quote content
-          Container(
-            width: _imageWidth,
-            padding: const EdgeInsets.all(24.0),
-            decoration: BoxDecoration(
-              color: _textColor.withValues(alpha: 0.03),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: _textColor.withValues(alpha: 0.1),
-                width: 1,
+    return SizedBox(
+      width: _imageWidth,
+      child: Stack(
+        children: [
+          Positioned.fill(child: _buildSocialPattern()),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+              width: _imageWidth,
+              padding: const EdgeInsets.all(24.0),
+              decoration: BoxDecoration(
+                color: _textColor.withValues(alpha: 0.03),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _textColor.withValues(alpha: 0.1),
+                  width: 1,
+                ),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Social media header - only show if user info is enabled
-                if (_showUserAvatar || _showUserName)
-                  Row(
-                    children: [
-                      if (_showUserAvatar)
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                _textColor.withValues(alpha: 0.2),
-                                _textColor.withValues(alpha: 0.1),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Social media header - only show if user info is enabled
+                  if (_showUserAvatar || _showUserName)
+                    Row(
+                      children: [
+                        if (_showUserAvatar)
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  _textColor.withValues(alpha: 0.2),
+                                  _textColor.withValues(alpha: 0.1),
+                                ],
+                              ),
+                            ),
+                            child:
+                                FirebaseAuth.instance.currentUser?.photoURL !=
+                                        null
+                                    ? ClipOval(
+                                      child: Image.network(
+                                        FirebaseAuth
+                                            .instance
+                                            .currentUser!
+                                            .photoURL!,
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                _buildDefaultAvatar(size: 40),
+                                      ),
+                                    )
+                                    : _buildDefaultAvatar(size: 40),
+                          ),
+                        if (_showUserAvatar && _showUserName)
+                          const SizedBox(width: 12),
+
+                        if (_showUserName)
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _getDisplayName(),
+                                  style: TextStyle(
+                                    color: _textColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: _selectedFont,
+                                  ),
+                                ),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.shared_spiritual_thought,
+                                  style: TextStyle(
+                                    color: _textColor.withValues(alpha: 0.6),
+                                    fontSize: 11,
+                                    fontFamily: _selectedFont,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          child:
-                              FirebaseAuth.instance.currentUser?.photoURL !=
-                                      null
-                                  ? ClipOval(
-                                    child: Image.network(
-                                      FirebaseAuth
-                                          .instance
-                                          .currentUser!
-                                          .photoURL!,
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              _buildDefaultAvatar(size: 40),
-                                    ),
-                                  )
-                                  : _buildDefaultAvatar(size: 40),
-                        ),
-                      if (_showUserAvatar && _showUserName)
-                        const SizedBox(width: 12),
 
-                      if (_showUserName)
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _getDisplayName(),
-                                style: TextStyle(
-                                  color: _textColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: _selectedFont,
-                                ),
-                              ),
-                              Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.shared_spiritual_thought,
-                                style: TextStyle(
-                                  color: _textColor.withValues(alpha: 0.6),
-                                  fontSize: 11,
-                                  fontFamily: _selectedFont,
-                                ),
-                              ),
-                            ],
+                        if (_showUserAvatar && _showUserName)
+                          Icon(
+                            Icons.more_horiz,
+                            color: _textColor.withValues(alpha: 0.5),
+                            size: 20,
                           ),
-                        ),
+                      ],
+                    ),
 
-                      if (_showUserAvatar && _showUserName)
-                        Icon(
-                          Icons.more_horiz,
-                          color: _textColor.withValues(alpha: 0.5),
-                          size: 20,
-                        ),
+                  if (_showUserAvatar || _showUserName)
+                    const SizedBox(height: 8),
+
+                  Text(
+                    _quoteController.text.isNotEmpty
+                        ? _quoteController.text
+                        : '${AppLocalizations.of(context)!.enter_quote}...',
+                    style: TextStyle(
+                      color: _textColor,
+                      fontSize: _fontSize,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: _selectedFont,
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 20),
+                  _buildAuthorAndSource(CrossAxisAlignment.center),
+
+                  const SizedBox(height: 16),
+
+                  // Social actions
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildSocialAction(Icons.favorite_border, 'Like'),
+                      _buildSocialAction(Icons.comment_outlined, 'Comment'),
+                      _buildSocialAction(Icons.share_outlined, 'Share'),
                     ],
                   ),
-
-                if (_showUserAvatar || _showUserName) const SizedBox(height: 8),
-
-                Text(
-                  _quoteController.text.isNotEmpty
-                      ? _quoteController.text
-                      : '${AppLocalizations.of(context)!.enter_quote}...',
-                  style: TextStyle(
-                    color: _textColor,
-                    fontSize: _fontSize,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: _selectedFont,
-                    height: 1.5,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 20),
-                _buildAuthorAndSource(CrossAxisAlignment.center),
-
-                const SizedBox(height: 16),
-
-                // Social actions
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildSocialAction(Icons.favorite_border, 'Like'),
-                    _buildSocialAction(Icons.comment_outlined, 'Comment'),
-                    _buildSocialAction(Icons.share_outlined, 'Share'),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -1286,6 +1287,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       child: IntrinsicHeight(
         child: Stack(
           children: [
+            _buildStoryPattern(),
             // Background overlay for better text readability
             Container(
               decoration: BoxDecoration(
@@ -1638,9 +1640,29 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildSocialPattern() {
-    return CustomPaint(
-      painter: SocialPatternPainter(_textColor.withValues(alpha: 0.04)),
-      child: Container(),
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: RadialGradient(
+              center: Alignment.topLeft,
+              radius: 1.8,
+              colors: [
+                _textColor.withValues(alpha: 0.12),
+                _textColor.withValues(alpha: 0.06),
+                Colors.transparent,
+              ],
+              stops: [0.0, 0.4, 1.0],
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: CustomPaint(
+            painter: SocialPatternPainter(_textColor.withValues(alpha: 0.08)),
+          ),
+        ),
+      ],
     );
   }
 
@@ -1652,11 +1674,18 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            _textColor.withValues(alpha: 0.1),
+            _textColor.withValues(alpha: 0.15),
+            _textColor.withValues(alpha: 0.08),
             Colors.transparent,
-            _textColor.withValues(alpha: 0.05),
+            _textColor.withValues(alpha: 0.06),
+            _textColor.withValues(alpha: 0.12),
           ],
+          stops: [0.0, 0.25, 0.5, 0.75, 1.0],
         ),
+      ),
+      child: CustomPaint(
+        painter: StoryPatternPainter(_textColor.withValues(alpha: 0.08)),
+        child: Container(),
       ),
     );
   }
@@ -2736,7 +2765,7 @@ class ProfilePatternPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// Custom painter for social pattern
+// Custom painter for social pattern - Modern social media inspired
 class SocialPatternPainter extends CustomPainter {
   final Color color;
 
@@ -2749,42 +2778,176 @@ class SocialPatternPainter extends CustomPainter {
           ..color = color
           ..style = PaintingStyle.fill;
 
-    // Draw social network nodes
-    final nodePositions = [
-      Offset(size.width * 0.2, size.height * 0.3),
-      Offset(size.width * 0.8, size.height * 0.2),
-      Offset(size.width * 0.1, size.height * 0.7),
-      Offset(size.width * 0.9, size.height * 0.8),
-      Offset(size.width * 0.5, size.height * 0.1),
-      Offset(size.width * 0.3, size.height * 0.9),
+    // Draw floating hearts (likes)
+    _drawHeart(canvas, Offset(size.width * 0.15, size.height * 0.2), 12, paint);
+    _drawHeart(
+      canvas,
+      Offset(size.width * 0.88, size.height * 0.15),
+      10,
+      paint,
+    );
+    _drawHeart(
+      canvas,
+      Offset(size.width * 0.12, size.height * 0.85),
+      14,
+      paint,
+    );
+    _drawHeart(
+      canvas,
+      Offset(size.width * 0.85, size.height * 0.78),
+      11,
+      paint,
+    );
+
+    // Draw chat bubbles (comments)
+    paint.style = PaintingStyle.stroke;
+    paint.strokeWidth = 1.5;
+    _drawChatBubble(
+      canvas,
+      Offset(size.width * 0.25, size.height * 0.12),
+      16,
+      paint,
+    );
+    _drawChatBubble(
+      canvas,
+      Offset(size.width * 0.78, size.height * 0.88),
+      14,
+      paint,
+    );
+
+    // Draw share arrows
+    _drawShareArrow(
+      canvas,
+      Offset(size.width * 0.92, size.height * 0.35),
+      15,
+      paint,
+    );
+    _drawShareArrow(
+      canvas,
+      Offset(size.width * 0.08, size.height * 0.65),
+      13,
+      paint,
+    );
+
+    // Draw decorative rings (engagement circles)
+    paint.style = PaintingStyle.stroke;
+    paint.strokeWidth = 1.0;
+    final ringPositions = [
+      {'x': 0.18, 'y': 0.45, 'r': 20.0},
+      {'x': 0.82, 'y': 0.52, 'r': 18.0},
+      {'x': 0.45, 'y': 0.18, 'r': 16.0},
+      {'x': 0.55, 'y': 0.9, 'r': 19.0},
     ];
 
-    // Draw connections
-    paint.style = PaintingStyle.stroke;
-    paint.strokeWidth = 0.5;
-    for (int i = 0; i < nodePositions.length; i++) {
-      for (int j = i + 1; j < nodePositions.length; j++) {
-        if ((nodePositions[i] - nodePositions[j]).distance < size.width * 0.4) {
-          canvas.drawLine(nodePositions[i], nodePositions[j], paint);
-        }
-      }
-    }
-
-    // Draw nodes
-    paint.style = PaintingStyle.fill;
-    for (final position in nodePositions) {
-      canvas.drawCircle(position, 3, paint);
+    for (final ring in ringPositions) {
+      final center = Offset(
+        size.width * (ring['x'] as double),
+        size.height * (ring['y'] as double),
+      );
+      final radius = ring['r'] as double;
+      canvas.drawCircle(center, radius, paint);
+      canvas.drawCircle(center, radius * 0.6, paint);
     }
 
     // Draw hashtag symbols
+    paint.strokeWidth = 1.5;
+    _drawHashtag(canvas, Offset(size.width * 0.12, size.height * 0.15), paint);
+    _drawHashtag(canvas, Offset(size.width * 0.88, size.height * 0.85), paint);
+    _drawHashtag(canvas, Offset(size.width * 0.5, size.height * 0.08), paint);
+
+    // Draw at (@) symbols
+    _drawAtSymbol(
+      canvas,
+      Offset(size.width * 0.15, size.height * 0.92),
+      8,
+      paint,
+    );
+    _drawAtSymbol(
+      canvas,
+      Offset(size.width * 0.9, size.height * 0.65),
+      7,
+      paint,
+    );
+
+    // Draw floating plus icons (add/follow)
     paint.style = PaintingStyle.stroke;
-    paint.strokeWidth = 1;
-    _drawHashtag(canvas, Offset(size.width * 0.15, size.height * 0.15), paint);
-    _drawHashtag(canvas, Offset(size.width * 0.85, size.height * 0.85), paint);
+    paint.strokeWidth = 1.5;
+    _drawPlusIcon(
+      canvas,
+      Offset(size.width * 0.25, size.height * 0.85),
+      10,
+      paint,
+    );
+    _drawPlusIcon(
+      canvas,
+      Offset(size.width * 0.75, size.height * 0.25),
+      9,
+      paint,
+    );
+  }
+
+  void _drawHeart(Canvas canvas, Offset center, double size, Paint paint) {
+    final path = Path();
+    final halfSize = size / 2;
+
+    path.moveTo(center.dx, center.dy + halfSize * 0.8);
+
+    // Left curve
+    path.cubicTo(
+      center.dx - halfSize * 1.2,
+      center.dy - halfSize * 0.3,
+      center.dx - halfSize * 1.5,
+      center.dy + halfSize * 0.5,
+      center.dx,
+      center.dy + halfSize * 1.3,
+    );
+
+    // Right curve
+    path.cubicTo(
+      center.dx + halfSize * 1.5,
+      center.dy + halfSize * 0.5,
+      center.dx + halfSize * 1.2,
+      center.dy - halfSize * 0.3,
+      center.dx,
+      center.dy + halfSize * 0.8,
+    );
+
+    paint.style = PaintingStyle.fill;
+    canvas.drawPath(path, paint);
+  }
+
+  void _drawChatBubble(Canvas canvas, Offset center, double size, Paint paint) {
+    final rect = RRect.fromRectAndRadius(
+      Rect.fromCenter(center: center, width: size * 1.2, height: size),
+      Radius.circular(size * 0.3),
+    );
+    canvas.drawRRect(rect, paint);
+
+    // Draw tail
+    final tailPath = Path();
+    tailPath.moveTo(center.dx - size * 0.3, center.dy + size * 0.4);
+    tailPath.lineTo(center.dx - size * 0.4, center.dy + size * 0.7);
+    tailPath.lineTo(center.dx - size * 0.15, center.dy + size * 0.5);
+    canvas.drawPath(tailPath, paint);
+  }
+
+  void _drawShareArrow(Canvas canvas, Offset center, double size, Paint paint) {
+    final path = Path();
+    // Arrow shaft
+    path.moveTo(center.dx - size * 0.5, center.dy + size * 0.3);
+    path.lineTo(center.dx + size * 0.5, center.dy - size * 0.3);
+
+    // Arrow head
+    path.moveTo(center.dx + size * 0.5, center.dy - size * 0.3);
+    path.lineTo(center.dx + size * 0.2, center.dy - size * 0.25);
+    path.moveTo(center.dx + size * 0.5, center.dy - size * 0.3);
+    path.lineTo(center.dx + size * 0.45, center.dy);
+
+    canvas.drawPath(path, paint);
   }
 
   void _drawHashtag(Canvas canvas, Offset center, Paint paint) {
-    final size = 8.0;
+    final size = 10.0;
     // Vertical lines
     canvas.drawLine(
       Offset(center.dx - size / 3, center.dy - size / 2),
@@ -2805,6 +2968,158 @@ class SocialPatternPainter extends CustomPainter {
     canvas.drawLine(
       Offset(center.dx - size / 2, center.dy + size / 3),
       Offset(center.dx + size / 2, center.dy + size / 3),
+      paint,
+    );
+  }
+
+  void _drawAtSymbol(Canvas canvas, Offset center, double radius, Paint paint) {
+    // Outer circle
+    canvas.drawCircle(center, radius, paint);
+
+    // Inner 'a' shape
+    final innerCircle = Offset(center.dx + radius * 0.15, center.dy);
+    canvas.drawCircle(innerCircle, radius * 0.45, paint);
+
+    // Vertical line of 'a'
+    paint.style = PaintingStyle.stroke;
+    canvas.drawLine(
+      Offset(center.dx + radius * 0.55, center.dy - radius * 0.3),
+      Offset(center.dx + radius * 0.55, center.dy + radius * 0.45),
+      paint,
+    );
+    paint.style = PaintingStyle.fill;
+  }
+
+  void _drawPlusIcon(Canvas canvas, Offset center, double size, Paint paint) {
+    // Horizontal line
+    canvas.drawLine(
+      Offset(center.dx - size * 0.5, center.dy),
+      Offset(center.dx + size * 0.5, center.dy),
+      paint,
+    );
+    // Vertical line
+    canvas.drawLine(
+      Offset(center.dx, center.dy - size * 0.5),
+      Offset(center.dx, center.dy + size * 0.5),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// Custom painter for story pattern - Instagram story style
+class StoryPatternPainter extends CustomPainter {
+  final Color color;
+
+  StoryPatternPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
+
+    // Draw animated circles pattern (bokeh effect)
+    final circles = [
+      {'x': 0.1, 'y': 0.15, 'r': 40.0},
+      {'x': 0.85, 'y': 0.2, 'r': 60.0},
+      {'x': 0.2, 'y': 0.75, 'r': 50.0},
+      {'x': 0.9, 'y': 0.85, 'r': 45.0},
+      {'x': 0.5, 'y': 0.1, 'r': 35.0},
+      {'x': 0.15, 'y': 0.5, 'r': 55.0},
+      {'x': 0.75, 'y': 0.6, 'r': 40.0},
+    ];
+
+    for (final circle in circles) {
+      final center = Offset(
+        size.width * (circle['x'] as double),
+        size.height * (circle['y'] as double),
+      );
+      final radius = circle['r'] as double;
+
+      // Create gradient effect for each circle
+      final gradient = RadialGradient(
+        colors: [
+          color.withValues(alpha: 0.15),
+          color.withValues(alpha: 0.05),
+          Colors.transparent,
+        ],
+        stops: [0.0, 0.5, 1.0],
+      );
+
+      paint.shader = gradient.createShader(
+        Rect.fromCircle(center: center, radius: radius),
+      );
+      canvas.drawCircle(center, radius, paint);
+    }
+
+    // Draw decorative sparkles
+    paint.shader = null;
+    paint.color = color.withValues(alpha: 0.2);
+    paint.style = PaintingStyle.stroke;
+    paint.strokeWidth = 1.5;
+
+    final sparkles = [
+      Offset(size.width * 0.3, size.height * 0.2),
+      Offset(size.width * 0.7, size.height * 0.3),
+      Offset(size.width * 0.25, size.height * 0.6),
+      Offset(size.width * 0.8, size.height * 0.7),
+    ];
+
+    for (final sparkle in sparkles) {
+      _drawSparkle(canvas, sparkle, paint);
+    }
+
+    // Draw curved lines (story frame decoration)
+    paint.style = PaintingStyle.stroke;
+    paint.strokeWidth = 2;
+    paint.color = color.withValues(alpha: 0.1);
+
+    final path1 = Path();
+    path1.moveTo(0, size.height * 0.3);
+    path1.quadraticBezierTo(
+      size.width * 0.3,
+      size.height * 0.2,
+      size.width * 0.6,
+      size.height * 0.35,
+    );
+    canvas.drawPath(path1, paint);
+
+    final path2 = Path();
+    path2.moveTo(size.width, size.height * 0.7);
+    path2.quadraticBezierTo(
+      size.width * 0.7,
+      size.height * 0.75,
+      size.width * 0.4,
+      size.height * 0.65,
+    );
+    canvas.drawPath(path2, paint);
+  }
+
+  void _drawSparkle(Canvas canvas, Offset center, Paint paint) {
+    final size = 6.0;
+    // Draw four-pointed star
+    canvas.drawLine(
+      Offset(center.dx, center.dy - size),
+      Offset(center.dx, center.dy + size),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(center.dx - size, center.dy),
+      Offset(center.dx + size, center.dy),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(center.dx - size * 0.7, center.dy - size * 0.7),
+      Offset(center.dx + size * 0.7, center.dy + size * 0.7),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(center.dx - size * 0.7, center.dy + size * 0.7),
+      Offset(center.dx + size * 0.7, center.dy - size * 0.7),
       paint,
     );
   }

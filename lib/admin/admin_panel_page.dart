@@ -316,22 +316,27 @@ class _AdminPanelPageState extends State<AdminPanelPage> {
                 columns: [
                   DataColumn(
                     label: const Text('Email'),
-                    onSort: (columnIndex, ascending) => _changeSortCriteria('email'),
+                    onSort:
+                        (columnIndex, ascending) =>
+                            _changeSortCriteria('email'),
                   ),
                   DataColumn(
                     label: const Text('Display Name'),
                     onSort:
-                        (columnIndex, ascending) => _changeSortCriteria('displayName'),
+                        (columnIndex, ascending) =>
+                            _changeSortCriteria('displayName'),
                   ),
                   DataColumn(
                     label: const Text('Created'),
                     onSort:
-                        (columnIndex, ascending) => _changeSortCriteria('createdAt'),
+                        (columnIndex, ascending) =>
+                            _changeSortCriteria('createdAt'),
                   ),
                   DataColumn(
                     label: const Text('Last Activity'),
                     onSort:
-                        (columnIndex, ascending) => _changeSortCriteria('lastActivity'),
+                        (columnIndex, ascending) =>
+                            _changeSortCriteria('lastActivity'),
                   ),
                   DataColumn(
                     label: const Text('Readings'),
@@ -353,7 +358,9 @@ class _AdminPanelPageState extends State<AdminPanelPage> {
                           ),
                           DataCell(
                             Text(
-                              user.displayName.isEmpty ? 'N/A' : user.displayName,
+                              user.displayName.isEmpty
+                                  ? 'N/A'
+                                  : user.displayName,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),

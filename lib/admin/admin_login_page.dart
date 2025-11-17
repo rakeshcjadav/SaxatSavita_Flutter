@@ -73,21 +73,23 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
         final GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider.addScope('email');
         googleProvider.addScope('profile');
-        
+
         // Use signInWithPopup for web
-        final UserCredential result = await FirebaseAuth.instance.signInWithPopup(googleProvider);
-        
+        final UserCredential result = await FirebaseAuth.instance
+            .signInWithPopup(googleProvider);
+
         if (result.user?.email == null) {
           throw Exception('No email found in Google account');
         }
-        
+
         await _checkAdminAccessAndNavigate();
       } else {
         // Mobile approach (existing code)
         await GoogleSignIn.instance.signOut();
         await FirebaseAuth.instance.signOut();
 
-        final GoogleSignInAccount? googleUser = await GoogleSignIn.instance.authenticate();
+        final GoogleSignInAccount? googleUser =
+            await GoogleSignIn.instance.authenticate();
         if (googleUser == null) {
           setState(() {
             _isLoading = false;
