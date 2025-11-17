@@ -785,49 +785,51 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildModernLayout() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        //_buildModernPattern(),
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: SizedBox(
-            width: _imageWidth,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Minimalist quote
-                Text(
-                  _quoteController.text.isNotEmpty
-                      ? _quoteController.text
-                      : '${AppLocalizations.of(context)!.enter_quote}...',
-                  style: TextStyle(
-                    color: _textColor,
-                    fontSize: _fontSize * 1.1,
-                    fontWeight: FontWeight.w300,
-                    fontFamily: _selectedFont,
-                    height: 1.5,
-                    letterSpacing: 0,
+    return SizedBox(
+      width: _imageWidth,
+      child: Stack(
+        children: [
+          Positioned.fill(child: _buildModernPattern()),
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: SizedBox(
+              width: _imageWidth,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Minimalist quote
+                  Text(
+                    _quoteController.text.isNotEmpty
+                        ? _quoteController.text
+                        : '${AppLocalizations.of(context)!.enter_quote}...',
+                    style: TextStyle(
+                      color: _textColor,
+                      fontSize: _fontSize * 1.1,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: _selectedFont,
+                      height: 1.5,
+                      letterSpacing: 0,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
 
-                const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                // Simple line separator
-                Container(
-                  width: 100,
-                  height: 2,
-                  color: _textColor.withValues(alpha: 0.4),
-                ),
+                  // Simple line separator
+                  Container(
+                    width: 100,
+                    height: 2,
+                    color: _textColor.withValues(alpha: 0.4),
+                  ),
 
-                const SizedBox(height: 16),
-                _buildAuthorAndSource(CrossAxisAlignment.center),
-              ],
+                  const SizedBox(height: 16),
+                  _buildAuthorAndSource(CrossAxisAlignment.center),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -1592,9 +1594,29 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildModernPattern() {
-    return CustomPaint(
-      painter: ModernPatternPainter(_textColor.withValues(alpha: 0.06)),
-      child: Container(),
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                _textColor.withValues(alpha: 0.08),
+                Colors.transparent,
+                _textColor.withValues(alpha: 0.05),
+              ],
+              stops: [0.0, 0.5, 1.0],
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: CustomPaint(
+            painter: ModernPatternPainter(_textColor.withValues(alpha: 0.06)),
+          ),
+        ),
+      ],
     );
   }
 
@@ -2672,6 +2694,7 @@ class ElegantBorderPainter extends CustomPainter {
 }
 
 // Custom painter for modern pattern
+// Custom painter for modern pattern - Minimalist geometric design
 class ModernPatternPainter extends CustomPainter {
   final Color color;
 
@@ -2682,41 +2705,161 @@ class ModernPatternPainter extends CustomPainter {
     final paint =
         Paint()
           ..color = color
-          ..style = PaintingStyle.fill;
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.0;
 
-    // Draw modern geometric shapes
-    for (int i = 0; i < 15; i++) {
-      final x = (i * 50.0) % size.width;
-      final y = ((i * 37.0) % size.height);
+    // Draw diagonal lines pattern
+    final lineCount = 8;
+    final spacing = size.width / lineCount;
 
-      // Alternate between different shapes
-      switch (i % 4) {
-        case 0:
-          canvas.drawRect(Rect.fromLTWH(x, y, 20, 20), paint);
-          break;
-        case 1:
-          canvas.drawCircle(Offset(x + 10, y + 10), 8, paint);
-          break;
-        case 2:
-          final path = Path();
-          path.moveTo(x + 10, y);
-          path.lineTo(x + 20, y + 20);
-          path.lineTo(x, y + 20);
-          path.close();
-          canvas.drawPath(path, paint);
-          break;
-        case 3:
-          final rect = Rect.fromLTWH(x, y, 15, 15);
-          canvas.drawArc(
-            rect,
-            0,
-            3.14159,
-            false,
-            paint..style = PaintingStyle.stroke,
-          );
-          paint.style = PaintingStyle.fill;
-          break;
-      }
+    for (int i = 0; i < lineCount; i++) {
+      final x = i * spacing;
+
+      // Diagonal lines from top-left to bottom-right
+      canvas.drawLine(
+        Offset(x, 0),
+        Offset(x + size.height * 0.3, size.height * 0.3),
+        paint..strokeWidth = 0.5,
+      );
+
+      // Diagonal lines from bottom-left to top-right
+      canvas.drawLine(
+        Offset(x, size.height),
+        Offset(x + size.height * 0.3, size.height * 0.7),
+        paint..strokeWidth = 0.5,
+      );
+    }
+
+    // Draw modern geometric corners
+    paint.style = PaintingStyle.stroke;
+    paint.strokeWidth = 2.0;
+
+    // Top-left corner
+    _drawCornerLines(
+      canvas,
+      Offset(size.width * 0.1, size.height * 0.1),
+      40,
+      paint,
+      true,
+    );
+
+    // Top-right corner
+    _drawCornerLines(
+      canvas,
+      Offset(size.width * 0.9, size.height * 0.1),
+      40,
+      paint,
+      false,
+    );
+
+    // Bottom-left corner
+    _drawCornerLines(
+      canvas,
+      Offset(size.width * 0.1, size.height * 0.9),
+      40,
+      paint,
+      true,
+    );
+
+    // Bottom-right corner
+    _drawCornerLines(
+      canvas,
+      Offset(size.width * 0.9, size.height * 0.9),
+      40,
+      paint,
+      false,
+    );
+
+    // Draw minimalist dots pattern
+    paint.style = PaintingStyle.fill;
+    final dotPositions = [
+      {'x': 0.15, 'y': 0.25, 'r': 2.0},
+      {'x': 0.85, 'y': 0.3, 'r': 3.0},
+      {'x': 0.2, 'y': 0.75, 'r': 2.5},
+      {'x': 0.8, 'y': 0.7, 'r': 2.0},
+      {'x': 0.5, 'y': 0.15, 'r': 2.0},
+      {'x': 0.5, 'y': 0.85, 'r': 2.5},
+    ];
+
+    for (final dot in dotPositions) {
+      canvas.drawCircle(
+        Offset(
+          size.width * (dot['x'] as double),
+          size.height * (dot['y'] as double),
+        ),
+        dot['r'] as double,
+        paint,
+      );
+    }
+
+    // Draw abstract rectangles
+    paint.style = PaintingStyle.stroke;
+    paint.strokeWidth = 1.0;
+
+    final rects = [
+      {'x': 0.12, 'y': 0.4, 'w': 0.08, 'h': 0.12},
+      {'x': 0.8, 'y': 0.5, 'w': 0.1, 'h': 0.08},
+      {'x': 0.45, 'y': 0.12, 'w': 0.06, 'h': 0.1},
+    ];
+
+    for (final rect in rects) {
+      canvas.drawRect(
+        Rect.fromLTWH(
+          size.width * (rect['x'] as double),
+          size.height * (rect['y'] as double),
+          size.width * (rect['w'] as double),
+          size.height * (rect['h'] as double),
+        ),
+        paint,
+      );
+    }
+
+    // Draw connecting lines (modern network effect)
+    paint.strokeWidth = 0.5;
+    canvas.drawLine(
+      Offset(size.width * 0.15, size.height * 0.25),
+      Offset(size.width * 0.5, size.height * 0.15),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.85, size.height * 0.3),
+      Offset(size.width * 0.8, size.height * 0.5),
+      paint,
+    );
+  }
+
+  void _drawCornerLines(
+    Canvas canvas,
+    Offset center,
+    double length,
+    Paint paint,
+    bool isLeft,
+  ) {
+    final horizontalStart = isLeft ? center.dx : center.dx - length;
+    final horizontalEnd = isLeft ? center.dx + length : center.dx;
+
+    // Horizontal line
+    canvas.drawLine(
+      Offset(horizontalStart, center.dy),
+      Offset(horizontalEnd, center.dy),
+      paint,
+    );
+
+    // Vertical line
+    if (center.dy < canvas.getSaveCount() * 100) {
+      // Top corners
+      canvas.drawLine(
+        Offset(center.dx, center.dy),
+        Offset(center.dx, center.dy + length),
+        paint,
+      );
+    } else {
+      // Bottom corners
+      canvas.drawLine(
+        Offset(center.dx, center.dy - length),
+        Offset(center.dx, center.dy),
+        paint,
+      );
     }
   }
 
