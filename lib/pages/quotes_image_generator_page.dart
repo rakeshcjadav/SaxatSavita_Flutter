@@ -56,7 +56,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   final String _selectedFont = 'NotoSansGujarati';
   double _fontSize = 24.0;
   double _authorFontSize = 16.0;
-  double _imageHeight = 370.0;
   double _imageWidth = 370.0;
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
@@ -437,12 +436,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                 return Transform.scale(
                                   scale: 80 / _imageWidth,
                                   alignment: Alignment.center,
-                                  child: SizedBox(
-                                    width: _imageWidth,
-                                    height: _imageHeight,
-                                    child: _buildQuoteImageForTemplate(
-                                      templateIndex,
-                                    ),
+                                  child: _buildQuoteImageForTemplate(
+                                    templateIndex,
                                   ),
                                 );
                               },
@@ -532,8 +527,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildQuoteImageForTemplate(int templateIndex) {
     return Container(
-      width: _imageWidth,
-      height: _imageHeight,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -561,7 +554,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
           // Stickers overlay
           // Move sticker to method
-          _buildStickersOverlay(),
+          // _buildStickersOverlay(),
         ],
       ),
     );
@@ -593,129 +586,121 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildDefaultLayout() {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildUserInfo(),
-          // Quote mark
-          Row(
-            children: [
-              Transform.flip(
-                flipY: false,
-                flipX: true,
-                child: Icon(
+    return SizedBox(
+      width: _imageWidth,
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildUserInfo(),
+            // Quote mark
+            Row(
+              children: [
+                Transform.flip(
+                  flipY: false,
+                  flipX: true,
+                  child: Icon(
+                    Icons.format_quote,
+                    size: 48,
+                    color: _textColor.withValues(alpha: 0.3),
+                  ),
+                ),
+              ],
+            ),
+            // Quote text
+            Center(
+              child: Text(
+                _quoteController.text.isNotEmpty
+                    ? _quoteController.text
+                    : '${AppLocalizations.of(context)!.enter_quote}...',
+                style: TextStyle(
+                  color: _textColor,
+                  fontSize: _fontSize,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: _selectedFont,
+                  height: 1.4,
+                  letterSpacing: 0.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // Quote mark
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(
                   Icons.format_quote,
                   size: 48,
                   color: _textColor.withValues(alpha: 0.3),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          // Quote text
-          Center(
-            child: Text(
-              _quoteController.text.isNotEmpty
-                  ? _quoteController.text
-                  : '${AppLocalizations.of(context)!.enter_quote}...',
-              style: TextStyle(
-                color: _textColor,
-                fontSize: _fontSize,
-                fontWeight: FontWeight.w600,
-                fontFamily: _selectedFont,
-                height: 1.4,
-                letterSpacing: 0.5,
-              ),
-              textAlign: TextAlign.center,
+              ],
             ),
-          ),
 
-          const SizedBox(height: 12),
-          // Quote mark
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.format_quote,
-                size: 48,
-                color: _textColor.withValues(alpha: 0.3),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          _buildAuthorAndSource(),
-        ],
+            _buildAuthorAndSource(CrossAxisAlignment.center),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildSpiritualLayout() {
     return Padding(
-      padding: const EdgeInsets.all(40.0),
-      child: Column(
-        children: [
-          // Om symbol at top
-          Icon(
-            Icons.self_improvement,
-            size: 32,
-            color: _textColor.withValues(alpha: 0.8),
-          ),
-          const SizedBox(height: 20),
-
-          Expanded(
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(24.0),
-                decoration: BoxDecoration(
-                  color: _textColor.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: _textColor.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _quoteController.text.isNotEmpty
-                          ? _quoteController.text
-                          : '${AppLocalizations.of(context)!.enter_quote}...',
-                      style: TextStyle(
-                        color: _textColor,
-                        fontSize: _fontSize,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: _selectedFont,
-                        height: 1.5,
-                        letterSpacing: 0.8,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildAuthorAndSource(),
-                  ],
-                ),
-              ),
+      padding: const EdgeInsets.all(24.0),
+      child: Center(
+        child: Container(
+          width: _imageWidth,
+          padding: const EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            color: _textColor.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: _textColor.withValues(alpha: 0.2),
+              width: 1,
             ),
           ),
-        ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Om symbol at top
+              Icon(
+                Icons.self_improvement,
+                size: 32,
+                color: _textColor.withValues(alpha: 0.8),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                _quoteController.text.isNotEmpty
+                    ? _quoteController.text
+                    : '${AppLocalizations.of(context)!.enter_quote}...',
+                style: TextStyle(
+                  color: _textColor,
+                  fontSize: _fontSize,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: _selectedFont,
+                  height: 1.5,
+                  letterSpacing: 0.8,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              _buildAuthorAndSource(CrossAxisAlignment.center),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildMandalaLayout() {
     return Padding(
-      padding: const EdgeInsets.all(48.0),
+      padding: const EdgeInsets.all(24.0),
       child: Center(
         child: Container(
-          width: 300,
-          height: 300,
-          padding: const EdgeInsets.all(32.0),
+          width: _imageWidth + 24,
+          height: _imageWidth + 24,
+          padding: const EdgeInsets.all(24.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: _textColor.withValues(alpha: 0.05),
@@ -727,23 +712,21 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Flexible(
-                child: Text(
-                  _quoteController.text.isNotEmpty
-                      ? _quoteController.text
-                      : '${AppLocalizations.of(context)!.enter_quote}...',
-                  style: TextStyle(
-                    color: _textColor,
-                    fontSize: _fontSize * 0.8,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: _selectedFont,
-                    height: 1.4,
-                  ),
-                  textAlign: TextAlign.center,
+              Text(
+                _quoteController.text.isNotEmpty
+                    ? _quoteController.text
+                    : '${AppLocalizations.of(context)!.enter_quote}...',
+                style: TextStyle(
+                  color: _textColor,
+                  fontSize: _fontSize * 0.8,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: _selectedFont,
+                  height: 1.4,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              _buildAuthorAndSource(),
+              _buildAuthorAndSource(CrossAxisAlignment.center),
             ],
           ),
         ),
@@ -753,89 +736,93 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   Widget _buildElegantLayout() {
     return Padding(
-      padding: const EdgeInsets.all(48.0),
-      child: Row(
-        children: [
-          // Left side decoration
-          Container(
-            width: 4,
-            height: _imageHeight * 0.6,
-            decoration: BoxDecoration(
+      padding: const EdgeInsets.all(32.0),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // Vertical line
+            Container(
+              width: 3, // thickness of line
               color: _textColor.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
             ),
-          ),
-          const SizedBox(width: 32),
-
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _quoteController.text.isNotEmpty
-                      ? _quoteController.text
-                      : '${AppLocalizations.of(context)!.enter_quote}...',
-                  style: TextStyle(
-                    color: _textColor,
-                    fontSize: _fontSize,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: _selectedFont,
-                    height: 1.6,
-                    fontStyle: FontStyle.italic,
+            const SizedBox(width: 16),
+            SizedBox(
+              width: _imageWidth,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _quoteController.text.isNotEmpty
+                        ? _quoteController.text
+                        : '${AppLocalizations.of(context)!.enter_quote}...',
+                    style: TextStyle(
+                      color: _textColor,
+                      fontSize: _fontSize,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: _selectedFont,
+                      height: 1.6,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    textAlign: TextAlign.left,
                   ),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 24),
-                _buildAuthorAndSource(),
-              ],
+                  const SizedBox(height: 8),
+                  _buildAuthorAndSource(CrossAxisAlignment.start),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildModernLayout() {
     return Padding(
-      padding: const EdgeInsets.all(40.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Minimalist quote
-          Text(
-            _quoteController.text.isNotEmpty
-                ? _quoteController.text
-                : '${AppLocalizations.of(context)!.enter_quote}...',
-            style: TextStyle(
-              color: _textColor,
-              fontSize: _fontSize * 1.1,
-              fontWeight: FontWeight.w300,
-              fontFamily: _selectedFont,
-              height: 1.8,
-              letterSpacing: 1.2,
+      padding: const EdgeInsets.all(24.0),
+      child: SizedBox(
+        width: _imageWidth,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Minimalist quote
+            Text(
+              _quoteController.text.isNotEmpty
+                  ? _quoteController.text
+                  : '${AppLocalizations.of(context)!.enter_quote}...',
+              style: TextStyle(
+                color: _textColor,
+                fontSize: _fontSize * 1.1,
+                fontWeight: FontWeight.w300,
+                fontFamily: _selectedFont,
+                height: 1.5,
+                letterSpacing: 0,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
 
-          const SizedBox(height: 32),
+            const SizedBox(height: 16),
 
-          // Simple line separator
-          Container(
-            width: 100,
-            height: 1,
-            color: _textColor.withValues(alpha: 0.4),
-          ),
+            // Simple line separator
+            Container(
+              width: 100,
+              height: 2,
+              color: _textColor.withValues(alpha: 0.4),
+            ),
 
-          const SizedBox(height: 24),
-          _buildAuthorAndSource(),
-        ],
+            const SizedBox(height: 16),
+            _buildAuthorAndSource(CrossAxisAlignment.center),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildClassicLayout() {
     return Container(
+      width: _imageWidth,
       margin: const EdgeInsets.all(40.0),
       padding: const EdgeInsets.all(32.0),
       decoration: BoxDecoration(
@@ -885,7 +872,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             children: [
               _buildClassicDecoration(),
               const SizedBox(width: 16),
-              _buildAuthorAndSource(),
+              _buildAuthorAndSource(CrossAxisAlignment.center),
               const SizedBox(width: 16),
               _buildClassicDecoration(),
             ],
@@ -914,6 +901,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // User Profile Section
           if (showAvatar || showName)
@@ -950,67 +938,61 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 if (showAvatar && showName) const SizedBox(width: 16),
                 // User Info
                 if (showName)
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _getDisplayName(),
-                          style: TextStyle(
-                            color: _textColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: _selectedFont,
-                          ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _getDisplayName(),
+                        style: TextStyle(
+                          color: _textColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: _selectedFont,
                         ),
-                        Text(
-                          AppLocalizations.of(
-                            context,
-                          )!.devotee_of_sakshat_savita,
-                          style: TextStyle(
-                            color: _textColor.withValues(alpha: 0.7),
-                            fontSize: 12,
-                            fontFamily: _selectedFont,
-                          ),
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.devotee_of_sakshat_savita,
+                        style: TextStyle(
+                          color: _textColor.withValues(alpha: 0.7),
+                          fontSize: 12,
+                          fontFamily: _selectedFont,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
               ],
             ),
-          // Quote Section
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.format_quote,
-                    size: 32,
-                    color: _textColor.withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(height: 12),
 
-                  Text(
-                    _quoteController.text.isNotEmpty
-                        ? _quoteController.text
-                        : '${AppLocalizations.of(context)!.enter_quote}...',
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: _fontSize,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: _selectedFont,
-                      height: 1.5,
-                      fontStyle: FontStyle.italic,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-
-                  const SizedBox(height: 24),
-                  _buildAuthorAndSource(),
-                ],
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.format_quote,
+                size: 32,
+                color: _textColor.withValues(alpha: 0.6),
               ),
-            ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: _imageWidth,
+                child: Text(
+                  _quoteController.text.isNotEmpty
+                      ? _quoteController.text
+                      : '${AppLocalizations.of(context)!.enter_quote}...',
+                  style: TextStyle(
+                    color: _textColor,
+                    fontSize: _fontSize,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: _selectedFont,
+                    height: 1.5,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              const SizedBox(height: 24),
+              _buildAuthorAndSource(CrossAxisAlignment.center),
+            ],
           ),
         ],
       ),
@@ -1021,6 +1003,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     //if (kIsWeb) return const SizedBox.shrink();
     //final user = FirebaseAuth.instance.currentUser;
     return Container(
+      width: _imageWidth,
       margin: const EdgeInsets.all(24.0),
       padding: const EdgeInsets.all(28.0),
       decoration: BoxDecoration(
@@ -1028,122 +1011,23 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: _textColor.withValues(alpha: 0.2), width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header with avatar and name
-          Row(
-            children: [
-              // User Avatar
-              if (_showUserAvatar)
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: _textColor.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child:
-                      FirebaseAuth.instance.currentUser?.photoURL != null
-                          ? ClipOval(
-                            child: Image.network(
-                              FirebaseAuth.instance.currentUser!.photoURL!,
-                              width: 48,
-                              height: 48,
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (context, error, stackTrace) =>
-                                      _buildDefaultAvatar(size: 48),
-                            ),
-                          )
-                          : _buildDefaultAvatar(size: 48),
-                ),
-              if (_showUserAvatar && _showUserName) const SizedBox(width: 12),
-              // User Name
-              if (_showUserName)
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _getDisplayName(),
-                        style: TextStyle(
-                          color: _textColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: _selectedFont,
-                        ),
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.sharing_spiritual_wisdom,
-                        style: TextStyle(
-                          color: _textColor.withValues(alpha: 0.6),
-                          fontSize: 11,
-                          fontFamily: _selectedFont,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          // Quote content
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _quoteController.text.isNotEmpty
-                        ? _quoteController.text
-                        : '${AppLocalizations.of(context)!.enter_quote}...',
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: _fontSize,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: _selectedFont,
-                      height: 1.4,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-
-                  const SizedBox(height: 20),
-                  _buildAuthorAndSource(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSocialLayout() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        children: [
-          // Social media header - only show if user info is enabled
-          if (_showUserAvatar || _showUserName)
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Header with avatar and name
             Row(
               children: [
+                // User Avatar
                 if (_showUserAvatar)
                   Container(
-                    width: 40,
-                    height: 40,
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          _textColor.withValues(alpha: 0.2),
-                          _textColor.withValues(alpha: 0.1),
-                        ],
+                      border: Border.all(
+                        color: _textColor.withValues(alpha: 0.3),
+                        width: 1,
                       ),
                     ),
                     child:
@@ -1151,18 +1035,18 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                             ? ClipOval(
                               child: Image.network(
                                 FirebaseAuth.instance.currentUser!.photoURL!,
-                                width: 40,
-                                height: 40,
+                                width: 48,
+                                height: 48,
                                 fit: BoxFit.cover,
                                 errorBuilder:
                                     (context, error, stackTrace) =>
-                                        _buildDefaultAvatar(size: 40),
+                                        _buildDefaultAvatar(size: 48),
                               ),
                             )
-                            : _buildDefaultAvatar(size: 40),
+                            : _buildDefaultAvatar(size: 48),
                   ),
                 if (_showUserAvatar && _showUserName) const SizedBox(width: 12),
-
+                // User Name
                 if (_showUserName)
                   Expanded(
                     child: Column(
@@ -1173,14 +1057,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                           style: TextStyle(
                             color: _textColor,
                             fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.bold,
                             fontFamily: _selectedFont,
                           ),
                         ),
                         Text(
                           AppLocalizations.of(
                             context,
-                          )!.shared_spiritual_thought,
+                          )!.sharing_spiritual_wisdom,
                           style: TextStyle(
                             color: _textColor.withValues(alpha: 0.6),
                             fontSize: 11,
@@ -1190,67 +1074,155 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       ],
                     ),
                   ),
-
-                if (_showUserAvatar && _showUserName)
-                  Icon(
-                    Icons.more_horiz,
-                    color: _textColor.withValues(alpha: 0.5),
-                    size: 20,
-                  ),
               ],
             ),
 
-          const SizedBox(height: 24),
-
-          // Quote content
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24.0),
-              decoration: BoxDecoration(
-                color: _textColor.withValues(alpha: 0.03),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: _textColor.withValues(alpha: 0.1),
-                  width: 1,
-                ),
+            if (_showUserAvatar || _showUserName) const SizedBox(height: 8),
+            Text(
+              _quoteController.text.isNotEmpty
+                  ? _quoteController.text
+                  : '${AppLocalizations.of(context)!.enter_quote}...',
+              style: TextStyle(
+                color: _textColor,
+                fontSize: _fontSize,
+                fontWeight: FontWeight.w400,
+                fontFamily: _selectedFont,
+                height: 1.4,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _quoteController.text.isNotEmpty
-                        ? _quoteController.text
-                        : '${AppLocalizations.of(context)!.enter_quote}...',
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: _fontSize,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: _selectedFont,
-                      height: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+              textAlign: TextAlign.center,
+            ),
 
-                  const SizedBox(height: 20),
-                  _buildAuthorAndSource(),
+            const SizedBox(height: 20),
+            _buildAuthorAndSource(CrossAxisAlignment.center),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialLayout() {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child:
+      // Quote content
+      Container(
+        width: _imageWidth,
+        padding: const EdgeInsets.all(24.0),
+        decoration: BoxDecoration(
+          color: _textColor.withValues(alpha: 0.03),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: _textColor.withValues(alpha: 0.1),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Social media header - only show if user info is enabled
+            if (_showUserAvatar || _showUserName)
+              Row(
+                children: [
+                  if (_showUserAvatar)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            _textColor.withValues(alpha: 0.2),
+                            _textColor.withValues(alpha: 0.1),
+                          ],
+                        ),
+                      ),
+                      child:
+                          FirebaseAuth.instance.currentUser?.photoURL != null
+                              ? ClipOval(
+                                child: Image.network(
+                                  FirebaseAuth.instance.currentUser!.photoURL!,
+                                  width: 40,
+                                  height: 40,
+                                  fit: BoxFit.cover,
+                                  errorBuilder:
+                                      (context, error, stackTrace) =>
+                                          _buildDefaultAvatar(size: 40),
+                                ),
+                              )
+                              : _buildDefaultAvatar(size: 40),
+                    ),
+                  if (_showUserAvatar && _showUserName)
+                    const SizedBox(width: 12),
+
+                  if (_showUserName)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _getDisplayName(),
+                            style: TextStyle(
+                              color: _textColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: _selectedFont,
+                            ),
+                          ),
+                          Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.shared_spiritual_thought,
+                            style: TextStyle(
+                              color: _textColor.withValues(alpha: 0.6),
+                              fontSize: 11,
+                              fontFamily: _selectedFont,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  if (_showUserAvatar && _showUserName)
+                    Icon(
+                      Icons.more_horiz,
+                      color: _textColor.withValues(alpha: 0.5),
+                      size: 20,
+                    ),
                 ],
               ),
+
+            if (_showUserAvatar || _showUserName) const SizedBox(height: 8),
+
+            Text(
+              _quoteController.text.isNotEmpty
+                  ? _quoteController.text
+                  : '${AppLocalizations.of(context)!.enter_quote}...',
+              style: TextStyle(
+                color: _textColor,
+                fontSize: _fontSize,
+                fontWeight: FontWeight.w400,
+                fontFamily: _selectedFont,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 20),
+            _buildAuthorAndSource(CrossAxisAlignment.center),
 
-          // Social actions
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildSocialAction(Icons.favorite_border, 'Like'),
-              _buildSocialAction(Icons.comment_outlined, 'Comment'),
-              _buildSocialAction(Icons.share_outlined, 'Share'),
-            ],
-          ),
-        ],
+            const SizedBox(height: 16),
+
+            // Social actions
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildSocialAction(Icons.favorite_border, 'Like'),
+                _buildSocialAction(Icons.comment_outlined, 'Comment'),
+                _buildSocialAction(Icons.share_outlined, 'Share'),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1258,87 +1230,92 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Widget _buildStoryLayout() {
     return SizedBox(
       width: _imageWidth,
-      height: _imageHeight,
-      child: Stack(
-        children: [
-          // Background overlay for better text readability
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withValues(alpha: 0.3),
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.5),
-                ],
-              ),
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              children: [
-                // Story header
-                Row(
-                  children: [
-                    if (_showUserAvatar)
-                      Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child:
-                            FirebaseAuth.instance.currentUser?.photoURL != null
-                                ? ClipOval(
-                                  child: Image.network(
-                                    FirebaseAuth
-                                        .instance
-                                        .currentUser!
-                                        .photoURL!,
-                                    width: 36,
-                                    height: 36,
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            _buildDefaultAvatar(
-                                              size: 36,
-                                              isStory: true,
-                                            ),
-                                  ),
-                                )
-                                : _buildDefaultAvatar(size: 36, isStory: true),
-                      ),
-                    if (_showUserAvatar && _showUserName)
-                      const SizedBox(width: 8),
-
-                    if (_showUserName)
-                      Text(
-                        _getDisplayName(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(0, 1),
-                              blurRadius: 3,
-                              color: Colors.black54,
-                            ),
-                          ],
-                        ),
-                      ),
+      child: IntrinsicHeight(
+        child: Stack(
+          children: [
+            // Background overlay for better text readability
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.2),
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.2),
                   ],
                 ),
+              ),
+            ),
 
-                // Quote content in center
-                Expanded(
-                  child: Center(
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                children: [
+                  // Story header
+                  Row(
+                    children: [
+                      if (_showUserAvatar)
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          child:
+                              FirebaseAuth.instance.currentUser?.photoURL !=
+                                      null
+                                  ? ClipOval(
+                                    child: Image.network(
+                                      FirebaseAuth
+                                          .instance
+                                          .currentUser!
+                                          .photoURL!,
+                                      width: 36,
+                                      height: 36,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              _buildDefaultAvatar(
+                                                size: 36,
+                                                isStory: true,
+                                              ),
+                                    ),
+                                  )
+                                  : _buildDefaultAvatar(
+                                    size: 36,
+                                    isStory: true,
+                                  ),
+                        ),
+                      if (_showUserAvatar && _showUserName)
+                        const SizedBox(width: 8),
+
+                      if (_showUserName)
+                        Text(
+                          _getDisplayName(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0, 1),
+                                blurRadius: 3,
+                                color: Colors.black54,
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+
+                  // Quote content in center
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1352,73 +1329,25 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                             fontWeight: FontWeight.w500,
                             fontFamily: _selectedFont,
                             height: 1.4,
-                            shadows: const [
+                            shadows: [
                               Shadow(
                                 offset: Offset(0, 2),
                                 blurRadius: 4,
-                                color: Colors.black54,
+                                color: Colors.black54.withAlpha(51),
                               ),
                             ],
                           ),
                           textAlign: TextAlign.center,
                         ),
-
-                        if (_authorController.text.isNotEmpty) ...[
-                          const SizedBox(height: 16),
-                          Text(
-                            '— ${_authorController.text}',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
-                              fontSize: _authorFontSize,
-                              fontStyle: FontStyle.italic,
-                              fontFamily: _selectedFont,
-                              shadows: const [
-                                Shadow(
-                                  offset: Offset(0, 1),
-                                  blurRadius: 3,
-                                  color: Colors.black54,
-                                ),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
                       ],
                     ),
                   ),
-                ),
-
-                // Bottom branding
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.auto_stories,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      AppLocalizations.of(context)!.sakshatSavita,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        shadows: [
-                          Shadow(
-                            offset: Offset(0, 1),
-                            blurRadius: 3,
-                            color: Colors.black54,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  _buildAuthorAndSource(CrossAxisAlignment.center),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -1500,8 +1429,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     );
   }
 
-  Widget _buildAuthorAndSource() {
+  Widget _buildAuthorAndSource(CrossAxisAlignment alignment) {
     return Column(
+      crossAxisAlignment: alignment,
       children: [
         // Author
         if (_authorController.text.isNotEmpty)
@@ -1549,7 +1479,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           const SizedBox(height: 12),
           // App branding
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment:
+                alignment == CrossAxisAlignment.center
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
             children: [
               Icon(
                 Icons.auto_stories,
@@ -1847,24 +1780,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         children: [
           Row(
             children: [
-              Icon(Icons.height, size: 16),
-              const SizedBox(width: 8),
-              Text(
-                '${AppLocalizations.of(context)!.height_label}: ${_imageHeight.round()}px',
-              ),
-              Expanded(
-                child: Slider(
-                  value: _imageHeight,
-                  min: 200.0,
-                  max: 800.0,
-                  divisions: 60,
-                  onChanged: (value) => setState(() => _imageHeight = value),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
               RotatedBox(quarterTurns: 1, child: Icon(Icons.height, size: 16)),
               const SizedBox(width: 8),
               Text(
@@ -1925,7 +1840,6 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   onChanged:
                       (value) => setState(() {
                         _showUserAvatar = value;
-                        _imageHeight += value ? 60 : -60;
                       }),
                 ),
               ],
@@ -1947,9 +1861,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                       _userProfile!.lastName.isNotEmpty))
                           ? (value) => setState(() {
                             _showUserName = value;
-                            if (!_showUserAvatar) {
-                              _imageHeight += value ? 50 : -50;
-                            }
+                            if (!_showUserAvatar) {}
                           })
                           : null,
                 ),
@@ -2042,7 +1954,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       _stickers.add(
         StickerData(
           assetPath: stickerPath,
-          position: Offset(_imageWidth / 2 - 30, _imageHeight / 2 - 30),
+          position: Offset(_imageWidth / 2 - 30, 0),
           size: 60.0,
         ),
       );
@@ -2267,7 +2179,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       ),
                       (_stickers[index].position.dy + details.delta.dy).clamp(
                         0.0,
-                        _imageHeight - sticker.size,
+                        1.0,
                       ),
                     );
                   });
@@ -2848,176 +2760,6 @@ class SocialPatternPainter extends CustomPainter {
       Offset(center.dx + size / 2, center.dy + size / 3),
       paint,
     );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// Miniature pattern painters for template previews
-class MiniGeometricPatternPainter extends CustomPainter {
-  final Color color;
-
-  MiniGeometricPatternPainter(this.color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = color
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.5;
-
-    // Draw simplified geometric pattern
-    for (int i = 0; i < 4; i++) {
-      for (int j = 0; j < 4; j++) {
-        final x = (size.width / 4) * i;
-        final y = (size.height / 4) * j;
-        canvas.drawCircle(Offset(x, y), 3, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class MiniSpiritualPatternPainter extends CustomPainter {
-  final Color color;
-
-  MiniSpiritualPatternPainter(this.color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = color
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.5;
-
-    // Draw simplified Om symbols in corners
-    canvas.drawCircle(const Offset(10, 10), 3, paint);
-    canvas.drawCircle(Offset(size.width - 10, 10), 3, paint);
-    canvas.drawCircle(Offset(10, size.height - 10), 3, paint);
-    canvas.drawCircle(Offset(size.width - 10, size.height - 10), 3, paint);
-
-    // Draw center lotus-like pattern
-    final center = Offset(size.width / 2, size.height / 2);
-    for (int i = 0; i < 6; i++) {
-      final angle = (i * 60) * (pi / 180);
-      final x = center.dx + (8 * cos(angle));
-      final y = center.dy + (8 * sin(angle));
-      canvas.drawLine(center, Offset(x, y), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class MiniMandalaPatternPainter extends CustomPainter {
-  final Color color;
-
-  MiniMandalaPatternPainter(this.color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = color
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.5;
-
-    final center = Offset(size.width / 2, size.height / 2);
-
-    // Draw concentric circles
-    for (int i = 1; i <= 3; i++) {
-      canvas.drawCircle(center, i * 8.0, paint);
-    }
-
-    // Draw radiating lines
-    for (int i = 0; i < 8; i++) {
-      final angle = (i * 45) * (pi / 180);
-      final x1 = center.dx + (12 * cos(angle));
-      final y1 = center.dy + (12 * sin(angle));
-      final x2 = center.dx + (24 * cos(angle));
-      final y2 = center.dy + (24 * sin(angle));
-      canvas.drawLine(Offset(x1, y1), Offset(x2, y2), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class MiniProfilePatternPainter extends CustomPainter {
-  final Color color;
-
-  MiniProfilePatternPainter(this.color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = color
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.3;
-
-    // Draw simplified connection lines
-    for (int i = 0; i < 3; i++) {
-      final startX = (i * size.width / 3) + 5;
-      final startY = size.height * 0.3;
-      final endX = ((i + 1) * size.width / 3);
-      final endY = size.height * 0.7;
-
-      canvas.drawLine(Offset(startX, startY), Offset(endX, endY), paint);
-    }
-
-    // Draw decorative dots
-    for (int i = 0; i < 6; i++) {
-      final angle = (i * 60) * (pi / 180);
-      final x = size.width * 0.5 + (12 * cos(angle));
-      final y = size.height * 0.5 + (12 * sin(angle));
-      canvas.drawCircle(Offset(x, y), 1, paint..style = PaintingStyle.fill);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class MiniSocialPatternPainter extends CustomPainter {
-  final Color color;
-
-  MiniSocialPatternPainter(this.color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = color
-          ..style = PaintingStyle.fill;
-
-    // Draw social network nodes
-    final nodePositions = [
-      Offset(size.width * 0.2, size.height * 0.3),
-      Offset(size.width * 0.8, size.height * 0.2),
-      Offset(size.width * 0.3, size.height * 0.8),
-      Offset(size.width * 0.7, size.height * 0.7),
-    ];
-
-    // Draw simplified connections
-    paint.style = PaintingStyle.stroke;
-    paint.strokeWidth = 0.3;
-    for (int i = 0; i < nodePositions.length - 1; i++) {
-      canvas.drawLine(nodePositions[i], nodePositions[i + 1], paint);
-    }
-
-    // Draw nodes
-    paint.style = PaintingStyle.fill;
-    for (final position in nodePositions) {
-      canvas.drawCircle(position, 1.5, paint);
-    }
   }
 
   @override

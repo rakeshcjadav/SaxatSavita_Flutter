@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "39080773295-3f280nte0376p5n3mi3mup8vg51t6bkf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.farenidham.books.saxatsavita.app",
+            "certificate_hash": "2e6439c0e67b018629b143f597366a89df7f5ec2"
+          }
+        },
+        {
           "client_id": "39080773295-7f1raj93kns2ipjebqrulgspobfstdr2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
