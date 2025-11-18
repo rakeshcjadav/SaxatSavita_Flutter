@@ -56,7 +56,6 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
     // Get custom colors or use theme defaults
     final Color surfaceColor = Theme.of(context).colorScheme.primaryContainer;
     final Color textColor = Theme.of(context).colorScheme.onPrimary;
-    //Theme.of(context).colorScheme.primary;
 
     return Theme(
       data: Theme.of(context).copyWith(
