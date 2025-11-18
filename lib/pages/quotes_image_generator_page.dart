@@ -57,10 +57,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   double _fontSize = 24.0;
   double _authorFontSize = 16.0;
   double _imageWidth = 370.0;
-  bool _isQuoteBold = false;
+  bool _isQuoteBold = true;
   bool _isQuoteItalic = false;
   bool _isAuthorBold = false;
-  bool _isAuthorItalic = false;
+  bool _isAuthorItalic = true;
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
   int _selectedTab = 0;
@@ -1418,7 +1418,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: _fontSize * 1.1,
-                            fontWeight: FontWeight.w500,
+                            fontWeight:
+                                _isQuoteBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                            fontStyle:
+                                _isQuoteItalic
+                                    ? FontStyle.italic
+                                    : FontStyle.normal,
                             fontFamily: _selectedFont,
                             height: 1.4,
                             shadows: [
