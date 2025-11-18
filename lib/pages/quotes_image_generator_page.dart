@@ -57,6 +57,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   double _fontSize = 24.0;
   double _authorFontSize = 16.0;
   double _imageWidth = 370.0;
+  bool _isQuoteBold = false;
+  bool _isQuoteItalic = false;
+  bool _isAuthorBold = false;
+  bool _isAuthorItalic = false;
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
   int _selectedTab = 0;
@@ -605,7 +609,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 style: TextStyle(
                   color: _textColor,
                   fontSize: _fontSize,
-                  fontWeight: FontWeight.w600,
+                  fontWeight:
+                      _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+                  fontStyle:
+                      _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
                   fontFamily: _selectedFont,
                   height: 1.4,
                   letterSpacing: 0.5,
@@ -668,7 +675,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     style: TextStyle(
                       color: _textColor,
                       fontSize: _fontSize,
-                      fontWeight: FontWeight.w500,
+                      fontWeight:
+                          _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+                      fontStyle:
+                          _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
                       fontFamily: _selectedFont,
                       height: 1.5,
                       letterSpacing: 0.8,
@@ -716,7 +726,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     style: TextStyle(
                       color: _textColor,
                       fontSize: _fontSize * 0.8,
-                      fontWeight: FontWeight.w600,
+                      fontWeight:
+                          _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+                      fontStyle:
+                          _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
                       fontFamily: _selectedFont,
                       height: 1.4,
                     ),
@@ -764,10 +777,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                         style: TextStyle(
                           color: _textColor,
                           fontSize: _fontSize,
-                          fontWeight: FontWeight.w400,
+                          fontWeight:
+                              _isQuoteBold
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                           fontFamily: _selectedFont,
                           height: 1.6,
-                          fontStyle: FontStyle.italic,
+                          fontStyle:
+                              _isQuoteItalic
+                                  ? FontStyle.italic
+                                  : FontStyle.normal,
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -805,7 +824,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     style: TextStyle(
                       color: _textColor,
                       fontSize: _fontSize * 1.1,
-                      fontWeight: FontWeight.w300,
+                      fontWeight:
+                          _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+                      fontStyle:
+                          _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
                       fontFamily: _selectedFont,
                       height: 1.5,
                       letterSpacing: 0,
@@ -876,7 +898,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 style: TextStyle(
                   color: _textColor,
                   fontSize: _fontSize,
-                  fontWeight: FontWeight.w500,
+                  fontWeight:
+                      _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+                  fontStyle:
+                      _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
                   fontFamily: _selectedFont,
                   height: 1.5,
                 ),
@@ -1011,10 +1036,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       style: TextStyle(
                         color: _textColor,
                         fontSize: _fontSize,
-                        fontWeight: FontWeight.w500,
+                        fontWeight:
+                            _isQuoteBold ? FontWeight.bold : FontWeight.normal,
                         fontFamily: _selectedFont,
                         height: 1.5,
-                        fontStyle: FontStyle.italic,
+                        fontStyle:
+                            _isQuoteItalic
+                                ? FontStyle.italic
+                                : FontStyle.normal,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -1128,7 +1157,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   style: TextStyle(
                     color: _textColor,
                     fontSize: _fontSize,
-                    fontWeight: FontWeight.w400,
+                    fontWeight:
+                        _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+                    fontStyle:
+                        _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
                     fontFamily: _selectedFont,
                     height: 1.4,
                   ),
@@ -1253,7 +1285,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     style: TextStyle(
                       color: _textColor,
                       fontSize: _fontSize,
-                      fontWeight: FontWeight.w400,
+                      fontWeight:
+                          _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+                      fontStyle:
+                          _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
                       fontFamily: _selectedFont,
                       height: 1.5,
                     ),
@@ -1497,7 +1532,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             style: TextStyle(
               color: _authorColor,
               fontSize: _authorFontSize,
-              fontStyle: FontStyle.italic,
+              fontWeight: _isAuthorBold ? FontWeight.bold : FontWeight.normal,
+              fontStyle: _isAuthorItalic ? FontStyle.italic : FontStyle.normal,
               fontFamily: _selectedFont,
             ),
             textAlign: TextAlign.center,
@@ -1820,47 +1856,236 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         left: 16.0,
         right: 16.0,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(Icons.format_size, size: 16),
-              const SizedBox(width: 8),
-              Text(
-                '${AppLocalizations.of(context)!.quote_font}: ${_fontSize.round()}px',
-              ),
-              Expanded(
-                child: Slider(
-                  value: _fontSize,
-                  min: 16.0,
-                  max: 32.0,
-                  divisions: 16,
-                  onChanged: (value) => setState(() => _fontSize = value),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Quote Font Size
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.format_size, size: 16),
+                const SizedBox(width: 8),
+                Text(
+                  '${AppLocalizations.of(context)!.quote_font}: ${_fontSize.round()}px',
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Icon(Icons.person, size: 16),
-              const SizedBox(width: 8),
-              Text(
-                '${AppLocalizations.of(context)!.author_font}: ${_authorFontSize.round()}px',
-              ),
-              Expanded(
-                child: Slider(
-                  value: _authorFontSize,
-                  min: 12.0,
-                  max: 20.0,
-                  divisions: 8,
-                  onChanged: (value) => setState(() => _authorFontSize = value),
+                Expanded(
+                  child: Slider(
+                    value: _fontSize,
+                    min: 16.0,
+                    max: 32.0,
+                    divisions: 16,
+                    onChanged: (value) => setState(() => _fontSize = value),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                // Quote Text Style Toggles
+                Row(
+                  children: [
+                    // Bold Toggle
+                    InkWell(
+                      onTap: () => setState(() => _isQuoteBold = !_isQuoteBold),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              _isQuoteBold
+                                  ? Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer
+                                  : Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color:
+                                _isQuoteBold
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.grey[400]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.format_bold,
+                              size: 16,
+                              color:
+                                  _isQuoteBold
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Italic Toggle
+                    InkWell(
+                      onTap:
+                          () =>
+                              setState(() => _isQuoteItalic = !_isQuoteItalic),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              _isQuoteItalic
+                                  ? Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer
+                                  : Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color:
+                                _isQuoteItalic
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.grey[400]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.format_italic,
+                              size: 16,
+                              color:
+                                  _isQuoteItalic
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 8),
+            // Author Font Size
+            Row(
+              children: [
+                Icon(Icons.person, size: 16),
+                const SizedBox(width: 8),
+                Text(
+                  '${AppLocalizations.of(context)!.author_font}: ${_authorFontSize.round()}px',
+                ),
+                Expanded(
+                  child: Slider(
+                    value: _authorFontSize,
+                    min: 12.0,
+                    max: 20.0,
+                    divisions: 8,
+                    onChanged:
+                        (value) => setState(() => _authorFontSize = value),
+                  ),
+                ),
+                // Author Text Style Toggles
+                Row(
+                  children: [
+                    // Bold Toggle
+                    InkWell(
+                      onTap:
+                          () => setState(() => _isAuthorBold = !_isAuthorBold),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              _isAuthorBold
+                                  ? Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer
+                                  : Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color:
+                                _isAuthorBold
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.grey[400]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.format_bold,
+                              size: 16,
+                              color:
+                                  _isAuthorBold
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Italic Toggle
+                    InkWell(
+                      onTap:
+                          () => setState(
+                            () => _isAuthorItalic = !_isAuthorItalic,
+                          ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              _isAuthorItalic
+                                  ? Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer
+                                  : Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color:
+                                _isAuthorItalic
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.grey[400]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.format_italic,
+                              size: 16,
+                              color:
+                                  _isAuthorItalic
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
