@@ -453,7 +453,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                           decoration: BoxDecoration(
                             color:
                                 isSelected
-                                    ? Theme.of(context).colorScheme.primary
+                                    ? Colors.amber.shade800
                                     : Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(12),
                           ),

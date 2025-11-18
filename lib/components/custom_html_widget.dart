@@ -36,6 +36,8 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
   String _selectedText = '';
   bool _isTextSelected = false;
 
+  SelectableRegionState selectableRegionState = SelectableRegionState();
+
   void _handleAddNote(String selectedText) {
     debugPrint('Add note for selected text: "$selectedText"');
     widget.onAddNote?.call(selectedText);
@@ -50,81 +52,94 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
   Widget build(BuildContext context) {
     Color fontColor = Theme.of(context).colorScheme.primary;
     String htmlContent = widget.htmlContent.replaceAll('&nbsp; &nbsp;', '⠀ ');
-    return SelectionArea(
-      onSelectionChanged: (selection) {
-        if (selection != null) {
-          _selectedText = selection.plainText;
-          _isTextSelected = _selectedText.isNotEmpty;
-          debugPrint('Selected text updated: "$_selectedText"');
-        } else {
-          _selectedText = '';
-          _isTextSelected = false;
-        }
-      },
-      contextMenuBuilder: (
-        context,
-        SelectableRegionState selectableRegionState,
-      ) {
-        return AdaptiveTextSelectionToolbar.buttonItems(
-          anchors: selectableRegionState.contextMenuAnchors,
-          buttonItems: [
-            if (widget.onAddNote != null)
-              ContextMenuButtonItem(
-                onPressed: () {
-                  if (_selectedText.isNotEmpty) {
-                    _handleAddNote(_selectedText);
-                  }
-                },
-                label: AppLocalizations.of(context)!.add_notes,
-              ),
-            if (widget.onCreateQuoteImage != null)
-              ContextMenuButtonItem(
-                onPressed: () {
-                  if (_selectedText.isNotEmpty) {
-                    _handleCreateQuoteImage(_selectedText);
-                  }
-                },
-                label: AppLocalizations.of(context)!.create_quote_image,
-              ),
-            ...selectableRegionState.contextMenuButtonItems,
-          ],
-        );
-      },
-      child: GestureDetector(
-        behavior: _isTextSelected ? null : HitTestBehavior.translucent,
-        onDoubleTap: () {
-          if (_isTextSelected) {
-            // Clear selection by rebuilding the widget
-            setState(() {
-              _selectedText = '';
-              _isTextSelected = false;
-            });
-            return;
-          }
 
-          debugPrint('CustomHtmlWidget tapped');
-          widget.onSingleTap?.call();
+    // Get custom colors or use theme defaults
+    final Color surfaceColor = Theme.of(context).colorScheme.primaryContainer;
+    final Color textColor = Theme.of(context).colorScheme.onPrimary;
+    //Theme.of(context).colorScheme.primary;
+
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+          surface: surfaceColor, // Toolbar background
+          onSurface: textColor, // Text color
+        ),
+      ),
+      child: SelectionArea(
+        onSelectionChanged: (selection) {
+          if (selection != null) {
+            _selectedText = selection.plainText;
+            _isTextSelected = _selectedText.isNotEmpty;
+            debugPrint('Selected text updated: "$_selectedText"');
+          } else {
+            _selectedText = '';
+            _isTextSelected = false;
+          }
         },
-        child: ValueListenableBuilder<AppSettings>(
-          valueListenable: appSettingsNotifier,
-          builder: (context, settings, child) {
-            return Html(
-              data: htmlContent,
-              extensions: [
-                ...widget.customTagRegistry.buildExtensions(context),
-              ],
-              style: {
-                "body": Style(
-                  color: fontColor,
-                  fontSize: FontSize(
-                    Theme.of(context).textTheme.bodyLarge!.fontSize!,
-                  ),
-                  textAlign: TextAlign.justify,
-                  lineHeight: LineHeight(appSettingsNotifier.value.lineHeight),
+        contextMenuBuilder: (context, selectableRegionState) {
+          return AdaptiveTextSelectionToolbar.buttonItems(
+            anchors: selectableRegionState.contextMenuAnchors,
+            buttonItems: [
+              if (widget.onAddNote != null)
+                ContextMenuButtonItem(
+                  onPressed: () {
+                    if (_selectedText.isNotEmpty) {
+                      _handleAddNote(_selectedText);
+                    }
+                  },
+                  label: AppLocalizations.of(context)!.add_notes,
                 ),
-              },
-            );
+              if (widget.onCreateQuoteImage != null)
+                ContextMenuButtonItem(
+                  onPressed: () {
+                    if (_selectedText.isNotEmpty) {
+                      _handleCreateQuoteImage(_selectedText);
+                    }
+                  },
+                  label: AppLocalizations.of(context)!.create_quote_image,
+                ),
+              ...selectableRegionState.contextMenuButtonItems,
+            ],
+          );
+        },
+        child: GestureDetector(
+          behavior: _isTextSelected ? null : HitTestBehavior.translucent,
+          onDoubleTap: () {
+            if (_isTextSelected) {
+              // Clear selection by rebuilding the widget
+              setState(() {
+                _selectedText = '';
+                _isTextSelected = false;
+              });
+              return;
+            }
+
+            debugPrint('CustomHtmlWidget tapped');
+            widget.onSingleTap?.call();
           },
+          child: ValueListenableBuilder<AppSettings>(
+            valueListenable: appSettingsNotifier,
+            builder: (context, settings, child) {
+              return Html(
+                data: htmlContent,
+                extensions: [
+                  ...widget.customTagRegistry.buildExtensions(context),
+                ],
+                style: {
+                  "body": Style(
+                    color: fontColor,
+                    fontSize: FontSize(
+                      Theme.of(context).textTheme.bodyLarge!.fontSize!,
+                    ),
+                    textAlign: TextAlign.justify,
+                    lineHeight: LineHeight(
+                      appSettingsNotifier.value.lineHeight,
+                    ),
+                  ),
+                },
+              );
+            },
+          ),
         ),
       ),
     );
