@@ -856,75 +856,55 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildClassicLayout() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          width: _imageWidth,
-          margin: const EdgeInsets.all(40.0),
-          padding: const EdgeInsets.all(32.0),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: _textColor.withValues(alpha: 0.3),
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
+    return Container(
+      width: _imageWidth,
+      margin: const EdgeInsets.all(40.0),
+      padding: const EdgeInsets.all(32.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: _textColor.withValues(alpha: 0.3), width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Decorative header
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Decorative header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildClassicDecoration(),
-                  const SizedBox(width: 16),
-                  Icon(
-                    Icons.auto_stories,
-                    size: 24,
-                    color: _textColor.withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(width: 16),
-                  _buildClassicDecoration(),
-                ],
+              _buildClassicDecoration(),
+              const SizedBox(width: 16),
+              Icon(
+                Icons.auto_stories,
+                size: 24,
+                color: _textColor.withValues(alpha: 0.6),
               ),
-
-              const SizedBox(height: 24),
-
-              Text(
-                _quoteController.text.isNotEmpty
-                    ? _quoteController.text
-                    : '${AppLocalizations.of(context)!.enter_quote}...',
-                style: TextStyle(
-                  color: _textColor,
-                  fontSize: _fontSize,
-                  fontWeight:
-                      _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle:
-                      _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
-                  fontFamily: _selectedFont,
-                  height: 1.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: 24),
-
-              // Decorative footer
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildClassicDecoration(),
-                  const SizedBox(width: 16),
-                  _buildAuthorAndSource(CrossAxisAlignment.center),
-                  const SizedBox(width: 16),
-                  _buildClassicDecoration(),
-                ],
-              ),
+              const SizedBox(width: 16),
+              _buildClassicDecoration(),
             ],
           ),
-        ),
-      ],
+
+          const SizedBox(height: 24),
+
+          Text(
+            _quoteController.text.isNotEmpty
+                ? _quoteController.text
+                : '${AppLocalizations.of(context)!.enter_quote}...',
+            style: TextStyle(
+              color: _textColor,
+              fontSize: _fontSize,
+              fontWeight: _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+              fontStyle: _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
+              fontFamily: _selectedFont,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+
+          const SizedBox(height: 24),
+
+          _buildAuthorAndSource(CrossAxisAlignment.center),
+        ],
+      ),
     );
   }
 
