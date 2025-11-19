@@ -131,7 +131,9 @@ class FirebaseSyncServiceWeb implements FirebaseSyncServiceBase {
   }
 
   @override
-  Future<Map<String, dynamic>> loadAllUserData() async {
+  Future<Map<String, dynamic>> loadAllUserData({
+    bool includeReadingHistory = true,
+  }) async {
     debugPrint('[Web] loadAllUserData: No-op, returning empty map');
     return {};
   }

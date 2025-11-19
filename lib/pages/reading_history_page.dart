@@ -52,7 +52,23 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadReadingHistory();
+    _loadReadingHistoryFromFirebaseAndStorage();
+  }
+
+  /// Load reading history from Firebase first, then from local storage
+  Future<void> _loadReadingHistoryFromFirebaseAndStorage() async {
+    if (!ReadingHistoryService.isReadingHistoryLoaded()) {
+      try {
+        // Load reading history from Firebase (on-demand)
+        await Utils.loadReadingHistoryFromFirebase();
+        debugPrint('Reading history loaded from Firebase on-demand');
+      } catch (e) {
+        debugPrint('Error loading reading history from Firebase: $e');
+      }
+    }
+
+    // Load from local storage (which now has Firebase data if available)
+    await _loadReadingHistory();
   }
 
   @override

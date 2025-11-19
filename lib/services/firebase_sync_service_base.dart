@@ -45,7 +45,9 @@ abstract class FirebaseSyncServiceBase {
     List<KiranUserInfo>? kiranUserInfo,
     List<ReadingHistory>? readingHistory,
   });
-  Future<Map<String, dynamic>> loadAllUserData();
+  Future<Map<String, dynamic>> loadAllUserData({
+    bool includeReadingHistory = true,
+  });
 
   // Real-time Listeners
   Stream<AppSettings?> watchAppSettings();

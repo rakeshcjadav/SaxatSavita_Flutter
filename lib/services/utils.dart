@@ -254,11 +254,24 @@ class Utils {
     }
   }
 
-  static Future<void> loadUserdatafromFirebase() async {
+  static Future<void> loadUserdatafromFirebase({
+    bool includeReadingHistory = false,
+  }) async {
     // Check if user is already logged in
     if (FirebaseAuth.instance.currentUser != null) {
-      // Load data from Firebase
-      await FirebaseIntegrationHelper().loadDataFromFirebase();
+      // Load data from Firebase (excluding reading history by default)
+      await FirebaseIntegrationHelper().loadDataFromFirebase(
+        includeReadingHistory: includeReadingHistory,
+      );
+    }
+  }
+
+  /// Load only reading history from Firebase (call this from reading history page)
+  static Future<void> loadReadingHistoryFromFirebase() async {
+    // Check if user is already logged in
+    if (FirebaseAuth.instance.currentUser != null) {
+      // Load only reading history from Firebase
+      await FirebaseIntegrationHelper().loadReadingHistoryFromFirebase();
     }
   }
 

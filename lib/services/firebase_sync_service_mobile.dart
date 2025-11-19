@@ -64,6 +64,7 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
     }
 
     try {
+      debugPrint('Loading AppSettings from Firebase...');
       final doc =
           await userDoc!.collection('appSettings').doc('settings').get();
       if (doc.exists && doc.data() != null) {
@@ -128,6 +129,7 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
     }
 
     try {
+      debugPrint('Loading BookUserInfo from Firebase...');
       final snapshot = await userDoc!.collection('bookUserInfo').get();
       final loadedItems = <BookUserInfo>[];
 
@@ -235,6 +237,7 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
     }
 
     try {
+      debugPrint('Loading KiranUserInfo from Firebase...');
       final snapshot = await userDoc!.collection('kiranUserInfo').get();
       return snapshot.docs
           .map((doc) => KiranUserInfo.fromJson(doc.data()))
@@ -319,6 +322,7 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
     }
 
     try {
+      debugPrint('Loading ReadingHistory from Firebase...');
       final snapshot =
           await userDoc!
               .collection('readingHistory')
@@ -343,6 +347,7 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
     }
 
     try {
+      debugPrint('Loading ReadingPlans from Firebase...');
       final snapshot = await userDoc!.collection('readingPlans').get();
       return snapshot.docs
           .map((doc) => ReadingPlan.fromJson(doc.data()))
@@ -469,31 +474,45 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
 
   /// Load all user data from Firebase
   @override
-  Future<Map<String, dynamic>> loadAllUserData() async {
+  Future<Map<String, dynamic>> loadAllUserData({
+    bool includeReadingHistory = true,
+  }) async {
     if (!isAuthenticated) {
       debugPrint('User not authenticated, cannot load user data');
       return {};
     }
 
     try {
-      debugPrint('Loading all user data from Firebase...');
+      debugPrint(
+        'Loading all user data from Firebase (includeReadingHistory: $includeReadingHistory)...',
+      );
 
       // Load in parallel for better performance
-      final results = await Future.wait([
+      final futures = [
         loadAppSettings(),
         loadBookUserInfo(),
         loadKiranUserInfo(),
-        loadReadingHistory(),
         loadReadingPlans(),
-      ]);
+      ];
+
+      // Conditionally add reading history
+      if (includeReadingHistory) {
+        futures.add(loadReadingHistory());
+      }
+
+      final results = await Future.wait(futures);
 
       final data = {
         'appSettings': results[0],
         'bookUserInfo': results[1],
         'kiranUserInfo': results[2],
-        'readingHistory': results[3],
-        'readingPlans': results[4],
+        'readingPlans': results[3],
       };
+
+      // Add reading history if it was loaded
+      if (includeReadingHistory && results.length > 4) {
+        data['readingHistory'] = results[4];
+      }
 
       debugPrint('All user data loaded from Firebase successfully');
       return data;

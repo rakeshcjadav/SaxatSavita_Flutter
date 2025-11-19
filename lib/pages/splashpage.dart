@@ -13,10 +13,10 @@ class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _MyWidgetState();
+  State<SplashPage> createState() => SplashPageState();
 }
 
-class _MyWidgetState extends State<SplashPage> {
+class SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
@@ -52,12 +52,12 @@ class _MyWidgetState extends State<SplashPage> {
 
         if (!mounted) return;
 
-        Utils.loadUserdatafromFirebase();
-
         // Check if   tion is needed and perform it
         await Utils.checkAndPerformMigration();
 
         debugPrint('_handleAuthenticationEvent : Migration done');
+
+        await Utils.loadUserdatafromFirebase();
 
         // Check if user has profile data to determine navigation
         bool shouldGoToProfile = await Utils.shouldNavigateToProfile();

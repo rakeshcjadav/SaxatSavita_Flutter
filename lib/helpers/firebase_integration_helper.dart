@@ -113,16 +113,23 @@ class FirebaseIntegrationHelper {
   }
 
   /// Load data from Firebase (e.g., on login or new device)
-  Future<void> loadDataFromFirebase() async {
+  /// Set includeReadingHistory to false to skip reading history (for app startup optimization)
+  Future<void> loadDataFromFirebase({
+    bool includeReadingHistory = false,
+  }) async {
     if (!_firebaseSync.isAuthenticated) {
       debugPrint('User not logged in, skipping load');
       return;
     }
 
-    debugPrint('Loading data from Firebase...');
+    debugPrint(
+      'Loading data from Firebase (includeReadingHistory: $includeReadingHistory)...',
+    );
 
     try {
-      final data = await _firebaseSync.loadAllUserData();
+      final data = await _firebaseSync.loadAllUserData(
+        includeReadingHistory: includeReadingHistory,
+      );
 
       // Update app settings if available
       if (data['appSettings'] != null) {
@@ -152,11 +159,13 @@ class FirebaseIntegrationHelper {
         debugPrint('Kiran user info loaded from Firebase');
       }
 
-      // Update reading history if available
-      if (data['readingHistory'] != null) {
+      // Update reading history if available and requested
+      if (includeReadingHistory && data['readingHistory'] != null) {
         final readingHistoryList = data['readingHistory'] as List;
         ReadingHistoryService().readingHistoryList = readingHistoryList.cast();
         debugPrint('Reading history loaded from Firebase');
+      } else if (!includeReadingHistory) {
+        debugPrint('Skipping reading history load (will be loaded on-demand)');
       }
 
       // Update reading plans if available
@@ -195,6 +204,33 @@ class FirebaseIntegrationHelper {
 
   Future<void> onReadingHistoryDeleted(ReadingHistory historyToDelete) async {
     await _firebaseSync.deleteReadingHistory(historyToDelete);
+  }
+
+  /// Load only reading history from Firebase (on-demand)
+  /// Call this method when user navigates to reading history page
+  Future<void> loadReadingHistoryFromFirebase() async {
+    if (!_firebaseSync.isAuthenticated) {
+      debugPrint('User not logged in, skipping reading history load');
+      return;
+    }
+
+    debugPrint('Loading reading history from Firebase (on-demand)...');
+
+    try {
+      // Load ONLY reading history (not all user data)
+      final readingHistoryList = await _firebaseSync.loadReadingHistory();
+
+      if (readingHistoryList.isNotEmpty) {
+        ReadingHistoryService().readingHistoryList = readingHistoryList;
+        debugPrint(
+          'Reading history loaded from Firebase (on-demand): ${readingHistoryList.length} items',
+        );
+      } else {
+        debugPrint('No reading history found in Firebase');
+      }
+    } catch (e) {
+      debugPrint('Error loading reading history from Firebase: $e');
+    }
   }
 }
 

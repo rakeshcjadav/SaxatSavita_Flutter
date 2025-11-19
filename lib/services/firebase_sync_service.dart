@@ -102,7 +102,9 @@ class FirebaseSyncService implements FirebaseSyncServiceBase {
   );
 
   @override
-  Future<Map<String, dynamic>> loadAllUserData() => _impl.loadAllUserData();
+  Future<Map<String, dynamic>> loadAllUserData({
+    bool includeReadingHistory = true,
+  }) => _impl.loadAllUserData(includeReadingHistory: includeReadingHistory);
 
   @override
   Stream<AppSettings?> watchAppSettings() => _impl.watchAppSettings();

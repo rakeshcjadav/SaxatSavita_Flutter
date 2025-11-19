@@ -33,6 +33,9 @@ class ReadingHistoryService {
     }
   }
 
+  static bool isReadingHistoryLoaded() =>
+      ReadingHistoryService().readingHistoryList.isNotEmpty;
+
   /// Get reading statistics
   static Future<Map<String, dynamic>> getReadingStatistics() async {
     try {

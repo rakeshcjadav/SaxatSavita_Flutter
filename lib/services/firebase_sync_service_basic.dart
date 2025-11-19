@@ -221,26 +221,40 @@ class FirebaseSyncService {
   }
 
   /// Load all user data from Firebase
-  Future<Map<String, dynamic>> loadAllUserData() async {
+  Future<Map<String, dynamic>> loadAllUserData({
+    bool includeReadingHistory = true,
+  }) async {
     if (!isAuthenticated) {
       debugPrint('User not authenticated, cannot load user data');
       return {};
     }
 
-    debugPrint('Loading all user data from Firebase...');
+    debugPrint(
+      'Loading all user data from Firebase (includeReadingHistory: $includeReadingHistory)...',
+    );
 
-    final results = await Future.wait([
+    final futures = [
       loadAppSettings(),
       loadBookUserInfo(),
       loadKiranUserInfo(),
-      loadReadingHistory(),
-    ]);
+    ];
 
-    return {
+    if (includeReadingHistory) {
+      futures.add(loadReadingHistory());
+    }
+
+    final results = await Future.wait(futures);
+
+    final data = {
       'appSettings': results[0],
       'bookUserInfo': results[1],
       'kiranUserInfo': results[2],
-      'readingHistory': results[3],
     };
+
+    if (includeReadingHistory && results.length > 3) {
+      data['readingHistory'] = results[3];
+    }
+
+    return data;
   }
 }

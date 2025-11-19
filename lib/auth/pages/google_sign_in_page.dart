@@ -145,12 +145,12 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   Future<void> onSuccessfulSignIn() async {
     debugPrint('_handleAuthenticationEvent : Route determination started');
 
-    await Utils.loadUserdatafromFirebase();
-
     // Check if migration is needed and perform it
     await Utils.checkAndPerformMigration();
 
     debugPrint('_handleAuthenticationEvent : Migration done');
+
+    await Utils.loadUserdatafromFirebase();
 
     // Check if user has profile data to determine navigation
     bool shouldGoToProfile = await Utils.shouldNavigateToProfile();
