@@ -72,7 +72,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   bool _showUserName = false;
 
   // Sticker options
-  List<StickerData> _stickers = [];
+  final List<StickerData> _stickers = [];
   String? _selectedStickerPath;
 
   // Predefined sticker paths

@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:saxatsavita_flutter/admin/admin_login_page.dart';
 import 'package:saxatsavita_flutter/admin/admin_panel_page.dart';
 import 'package:saxatsavita_flutter/firebase_options.dart';

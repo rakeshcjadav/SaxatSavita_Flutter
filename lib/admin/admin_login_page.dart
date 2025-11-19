@@ -88,17 +88,10 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
         await GoogleSignIn.instance.signOut();
         await FirebaseAuth.instance.signOut();
 
-        final GoogleSignInAccount? googleUser =
+        final GoogleSignInAccount googleUser =
             await GoogleSignIn.instance.authenticate();
-        if (googleUser == null) {
-          setState(() {
-            _isLoading = false;
-          });
-          return; // User cancelled sign-in
-        }
 
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
+        final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
         if (googleAuth.idToken == null) {
           throw Exception('Failed to get Google ID token');
@@ -230,7 +223,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(

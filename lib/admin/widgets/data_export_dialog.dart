@@ -229,7 +229,7 @@ class _DataExportDialogState extends State<DataExportDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Data exported to clipboard in ${_selectedFormat} format',
+              'Data exported to clipboard in $_selectedFormat format',
             ),
             action: SnackBarAction(
               label: 'View',
@@ -416,7 +416,7 @@ class _DataExportDialogState extends State<DataExportDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Export Preview (${_selectedFormat})',
+                        'Export Preview ($_selectedFormat)',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       Row(
