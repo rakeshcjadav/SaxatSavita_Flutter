@@ -234,7 +234,6 @@ class _BookmainpageState extends State<BookMainpage> {
 
   Widget bookPartWidget(List<Bookpartmodel> bookparts, int index) {
     final partNumber = bookparts[index].partNumber;
-    final partColor = Utils.getPartColor(partNumber, context);
     final accentColor = Utils.getPartAccentColor(partNumber, context);
     final isCurrentPart = Bookservice().currentPartNumber == partNumber;
 

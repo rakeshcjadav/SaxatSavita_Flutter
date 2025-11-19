@@ -8,6 +8,7 @@ class ReadingHistoryService {
   factory ReadingHistoryService() => _instance;
   ReadingHistoryService._internal();
 
+  bool hasLoadedReadingHistory = false;
   List<ReadingHistory> readingHistoryList = [];
 
   /// Save a reading history entry to SharedPreferences

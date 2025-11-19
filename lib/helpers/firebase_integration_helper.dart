@@ -163,6 +163,7 @@ class FirebaseIntegrationHelper {
       if (includeReadingHistory && data['readingHistory'] != null) {
         final readingHistoryList = data['readingHistory'] as List;
         ReadingHistoryService().readingHistoryList = readingHistoryList.cast();
+        ReadingHistoryService().hasLoadedReadingHistory = true;
         debugPrint('Reading history loaded from Firebase');
       } else if (!includeReadingHistory) {
         debugPrint('Skipping reading history load (will be loaded on-demand)');
@@ -219,7 +220,7 @@ class FirebaseIntegrationHelper {
     try {
       // Load ONLY reading history (not all user data)
       final readingHistoryList = await _firebaseSync.loadReadingHistory();
-
+      ReadingHistoryService().hasLoadedReadingHistory = true;
       if (readingHistoryList.isNotEmpty) {
         ReadingHistoryService().readingHistoryList = readingHistoryList;
         debugPrint(

@@ -61,6 +61,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   bool _isQuoteItalic = false;
   bool _isAuthorBold = false;
   bool _isAuthorItalic = true;
+  Color? _selectedQuoteTextColor; // null means use default _textColor
+  Color? _selectedAuthorTextColor; // null means use default _authorColor
+  Map<String, Color> _wordColors = {}; // Track colors for individual words
+  bool _isColorSelectionMode = false; // Track if in color selection mode
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
   int _selectedTab = 0;
@@ -137,6 +141,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     'indigo': [Colors.indigo.shade700, Colors.indigo.shade400],
     'saffron': [const Color(0xFFFF6F00), const Color(0xFFFFB74D)],
     'spiritual': [const Color(0xFF8E24AA), const Color(0xFFBA68C8)],
+    'gray': [Colors.grey.shade700, Colors.grey.shade400],
   };
 
   @override
@@ -602,22 +607,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             ),
             // Quote text
             Center(
-              child: Text(
-                _quoteController.text.isNotEmpty
-                    ? _quoteController.text
-                    : '${AppLocalizations.of(context)!.enter_quote}...',
-                style: TextStyle(
-                  color: _textColor,
-                  fontSize: _fontSize,
-                  fontWeight:
-                      _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle:
-                      _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
-                  fontFamily: _selectedFont,
-                  height: 1.4,
-                  letterSpacing: 0.5,
-                ),
+              child: SelectableText.rich(
+                _buildQuoteTextSpan(),
                 textAlign: TextAlign.center,
+                onSelectionChanged:
+                    _isColorSelectionMode
+                        ? (selection, cause) {
+                          if (selection.start != selection.end) {
+                            final text = _quoteController.text;
+                            final selectedText = text.substring(
+                              selection.start,
+                              selection.end,
+                            );
+                            if (selectedText.isNotEmpty) {
+                              _showColorPickerForSelectedText(
+                                context,
+                                selectedText,
+                              );
+                            }
+                          }
+                        }
+                        : null,
               ),
             ),
             // Quote mark
@@ -668,22 +678,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     color: _textColor.withValues(alpha: 0.8),
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    _quoteController.text.isNotEmpty
-                        ? _quoteController.text
-                        : '${AppLocalizations.of(context)!.enter_quote}...',
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: _fontSize,
-                      fontWeight:
-                          _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-                      fontStyle:
-                          _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
-                      fontFamily: _selectedFont,
-                      height: 1.5,
-                      letterSpacing: 0.8,
-                    ),
+                  SelectableText.rich(
+                    _buildQuoteTextSpan(),
                     textAlign: TextAlign.center,
+                    onSelectionChanged:
+                        _isColorSelectionMode
+                            ? (selection, cause) {
+                              if (selection.start != selection.end) {
+                                final text = _quoteController.text;
+                                final selectedText = text.substring(
+                                  selection.start,
+                                  selection.end,
+                                );
+                                if (selectedText.isNotEmpty) {
+                                  _showColorPickerForSelectedText(
+                                    context,
+                                    selectedText,
+                                  );
+                                }
+                              }
+                            }
+                            : null,
                   ),
                   const SizedBox(height: 20),
                   _buildAuthorAndSource(CrossAxisAlignment.center),
@@ -719,21 +734,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    _quoteController.text.isNotEmpty
-                        ? _quoteController.text
-                        : '${AppLocalizations.of(context)!.enter_quote}...',
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: _fontSize * 0.8,
-                      fontWeight:
-                          _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-                      fontStyle:
-                          _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
-                      fontFamily: _selectedFont,
-                      height: 1.4,
-                    ),
+                  SelectableText.rich(
+                    _buildQuoteTextSpan(),
                     textAlign: TextAlign.center,
+                    onSelectionChanged:
+                        _isColorSelectionMode
+                            ? (selection, cause) {
+                              if (selection.start != selection.end) {
+                                final text = _quoteController.text;
+                                final selectedText = text.substring(
+                                  selection.start,
+                                  selection.end,
+                                );
+                                if (selectedText.isNotEmpty) {
+                                  _showColorPickerForSelectedText(
+                                    context,
+                                    selectedText,
+                                  );
+                                }
+                              }
+                            }
+                            : null,
                   ),
                   const SizedBox(height: 16),
                   _buildAuthorAndSource(CrossAxisAlignment.center),
@@ -770,25 +791,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _quoteController.text.isNotEmpty
-                            ? _quoteController.text
-                            : '${AppLocalizations.of(context)!.enter_quote}...',
-                        style: TextStyle(
-                          color: _textColor,
-                          fontSize: _fontSize,
-                          fontWeight:
-                              _isQuoteBold
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                          fontFamily: _selectedFont,
-                          height: 1.6,
-                          fontStyle:
-                              _isQuoteItalic
-                                  ? FontStyle.italic
-                                  : FontStyle.normal,
-                        ),
+                      SelectableText.rich(
+                        _buildQuoteTextSpan(),
                         textAlign: TextAlign.left,
+                        onSelectionChanged:
+                            _isColorSelectionMode
+                                ? (selection, cause) {
+                                  if (selection.start != selection.end) {
+                                    final text = _quoteController.text;
+                                    final selectedText = text.substring(
+                                      selection.start,
+                                      selection.end,
+                                    );
+                                    if (selectedText.isNotEmpty) {
+                                      _showColorPickerForSelectedText(
+                                        context,
+                                        selectedText,
+                                      );
+                                    }
+                                  }
+                                }
+                                : null,
                       ),
                       const SizedBox(height: 8),
                       _buildAuthorAndSource(CrossAxisAlignment.start),
@@ -817,22 +840,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Minimalist quote
-                  Text(
-                    _quoteController.text.isNotEmpty
-                        ? _quoteController.text
-                        : '${AppLocalizations.of(context)!.enter_quote}...',
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: _fontSize * 1.1,
-                      fontWeight:
-                          _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-                      fontStyle:
-                          _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
-                      fontFamily: _selectedFont,
-                      height: 1.5,
-                      letterSpacing: 0,
-                    ),
+                  SelectableText.rich(
+                    _buildQuoteTextSpan(),
                     textAlign: TextAlign.center,
+                    onSelectionChanged:
+                        _isColorSelectionMode
+                            ? (selection, cause) {
+                              if (selection.start != selection.end) {
+                                final text = _quoteController.text;
+                                final selectedText = text.substring(
+                                  selection.start,
+                                  selection.end,
+                                );
+                                if (selectedText.isNotEmpty) {
+                                  _showColorPickerForSelectedText(
+                                    context,
+                                    selectedText,
+                                  );
+                                }
+                              }
+                            }
+                            : null,
                   ),
 
                   const SizedBox(height: 16),
@@ -885,19 +913,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
           const SizedBox(height: 24),
 
-          Text(
-            _quoteController.text.isNotEmpty
-                ? _quoteController.text
-                : '${AppLocalizations.of(context)!.enter_quote}...',
-            style: TextStyle(
-              color: _textColor,
-              fontSize: _fontSize,
-              fontWeight: _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-              fontStyle: _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
-              fontFamily: _selectedFont,
-              height: 1.5,
-            ),
+          SelectableText.rich(
+            _buildQuoteTextSpan(),
             textAlign: TextAlign.center,
+            onSelectionChanged:
+                _isColorSelectionMode
+                    ? (selection, cause) {
+                      if (selection.start != selection.end) {
+                        final text = _quoteController.text;
+                        final selectedText = text.substring(
+                          selection.start,
+                          selection.end,
+                        );
+                        if (selectedText.isNotEmpty) {
+                          _showColorPickerForSelectedText(
+                            context,
+                            selectedText,
+                          );
+                        }
+                      }
+                    }
+                    : null,
           ),
 
           const SizedBox(height: 24),
@@ -1009,23 +1045,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   const SizedBox(height: 12),
                   SizedBox(
                     width: _imageWidth,
-                    child: Text(
-                      _quoteController.text.isNotEmpty
-                          ? _quoteController.text
-                          : '${AppLocalizations.of(context)!.enter_quote}...',
-                      style: TextStyle(
-                        color: _textColor,
-                        fontSize: _fontSize,
-                        fontWeight:
-                            _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-                        fontFamily: _selectedFont,
-                        height: 1.5,
-                        fontStyle:
-                            _isQuoteItalic
-                                ? FontStyle.italic
-                                : FontStyle.normal,
-                      ),
+                    child: SelectableText.rich(
+                      _buildQuoteTextSpan(),
                       textAlign: TextAlign.center,
+                      onSelectionChanged:
+                          _isColorSelectionMode
+                              ? (selection, cause) {
+                                if (selection.start != selection.end) {
+                                  final text = _quoteController.text;
+                                  final selectedText = text.substring(
+                                    selection.start,
+                                    selection.end,
+                                  );
+                                  if (selectedText.isNotEmpty) {
+                                    _showColorPickerForSelectedText(
+                                      context,
+                                      selectedText,
+                                    );
+                                  }
+                                }
+                              }
+                              : null,
                     ),
                   ),
 
@@ -1130,21 +1170,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 ),
 
                 if (_showUserAvatar || _showUserName) const SizedBox(height: 8),
-                Text(
-                  _quoteController.text.isNotEmpty
-                      ? _quoteController.text
-                      : '${AppLocalizations.of(context)!.enter_quote}...',
-                  style: TextStyle(
-                    color: _textColor,
-                    fontSize: _fontSize,
-                    fontWeight:
-                        _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-                    fontStyle:
-                        _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
-                    fontFamily: _selectedFont,
-                    height: 1.4,
-                  ),
+                SelectableText.rich(
+                  _buildQuoteTextSpan(),
                   textAlign: TextAlign.center,
+                  onSelectionChanged:
+                      _isColorSelectionMode
+                          ? (selection, cause) {
+                            if (selection.start != selection.end) {
+                              final text = _quoteController.text;
+                              final selectedText = text.substring(
+                                selection.start,
+                                selection.end,
+                              );
+                              if (selectedText.isNotEmpty) {
+                                _showColorPickerForSelectedText(
+                                  context,
+                                  selectedText,
+                                );
+                              }
+                            }
+                          }
+                          : null,
                 ),
 
                 const SizedBox(height: 20),
@@ -1258,21 +1304,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   if (_showUserAvatar || _showUserName)
                     const SizedBox(height: 8),
 
-                  Text(
-                    _quoteController.text.isNotEmpty
-                        ? _quoteController.text
-                        : '${AppLocalizations.of(context)!.enter_quote}...',
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: _fontSize,
-                      fontWeight:
-                          _isQuoteBold ? FontWeight.bold : FontWeight.normal,
-                      fontStyle:
-                          _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
-                      fontFamily: _selectedFont,
-                      height: 1.5,
-                    ),
+                  SelectableText.rich(
+                    _buildQuoteTextSpan(),
                     textAlign: TextAlign.center,
+                    onSelectionChanged:
+                        _isColorSelectionMode
+                            ? (selection, cause) {
+                              if (selection.start != selection.end) {
+                                final text = _quoteController.text;
+                                final selectedText = text.substring(
+                                  selection.start,
+                                  selection.end,
+                                );
+                                if (selectedText.isNotEmpty) {
+                                  _showColorPickerForSelectedText(
+                                    context,
+                                    selectedText,
+                                  );
+                                }
+                              }
+                            }
+                            : null,
                   ),
 
                   const SizedBox(height: 20),
@@ -1391,32 +1443,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          _quoteController.text.isNotEmpty
-                              ? _quoteController.text
-                              : '${AppLocalizations.of(context)!.enter_quote}...',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: _fontSize * 1.1,
-                            fontWeight:
-                                _isQuoteBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                            fontStyle:
-                                _isQuoteItalic
-                                    ? FontStyle.italic
-                                    : FontStyle.normal,
-                            fontFamily: _selectedFont,
-                            height: 1.4,
-                            shadows: [
-                              Shadow(
-                                offset: Offset(0, 2),
-                                blurRadius: 4,
-                                color: Colors.black54.withAlpha(51),
-                              ),
-                            ],
-                          ),
+                        SelectableText.rich(
+                          _buildQuoteTextSpan(),
                           textAlign: TextAlign.center,
+                          onSelectionChanged:
+                              _isColorSelectionMode
+                                  ? (selection, cause) {
+                                    if (selection.start != selection.end) {
+                                      final text = _quoteController.text;
+                                      final selectedText = text.substring(
+                                        selection.start,
+                                        selection.end,
+                                      );
+                                      if (selectedText.isNotEmpty) {
+                                        _showColorPickerForSelectedText(
+                                          context,
+                                          selectedText,
+                                        );
+                                      }
+                                    }
+                                  }
+                                  : null,
                         ),
                       ],
                     ),
@@ -1517,7 +1564,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           Text(
             '— ${_authorController.text}',
             style: TextStyle(
-              color: _authorColor,
+              color: _selectedAuthorTextColor ?? _authorColor,
               fontSize: _authorFontSize,
               fontWeight: _isAuthorBold ? FontWeight.bold : FontWeight.normal,
               fontStyle: _isAuthorItalic ? FontStyle.italic : FontStyle.normal,
@@ -1843,238 +1890,698 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         left: 16.0,
         right: 16.0,
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Quote Font Size
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(Icons.format_size, size: 16),
-                const SizedBox(width: 8),
-                Text(
-                  '${AppLocalizations.of(context)!.quote_font}: ${_fontSize.round()}px',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Quote Font Size
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(Icons.format_size, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                '${AppLocalizations.of(context)!.quote_font}: ${_fontSize.round()}px',
+              ),
+              Expanded(
+                child: Slider(
+                  value: _fontSize,
+                  min: 16.0,
+                  max: 32.0,
+                  divisions: 16,
+                  onChanged: (value) => setState(() => _fontSize = value),
                 ),
-                Expanded(
-                  child: Slider(
-                    value: _fontSize,
-                    min: 16.0,
-                    max: 32.0,
-                    divisions: 16,
-                    onChanged: (value) => setState(() => _fontSize = value),
-                  ),
-                ),
-                // Quote Text Style Toggles
-                Row(
-                  children: [
-                    // Bold Toggle
-                    InkWell(
-                      onTap: () => setState(() => _isQuoteBold = !_isQuoteBold),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
+              ),
+              const SizedBox(width: 8),
+              // Quote Text Style Toggles
+              Row(
+                children: [
+                  // Bold Toggle
+                  InkWell(
+                    onTap: () => setState(() => _isQuoteBold = !_isQuoteBold),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            _isQuoteBold
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
                           color:
                               _isQuoteBold
-                                  ? Theme.of(
-                                    context,
-                                  ).colorScheme.primaryContainer
-                                  : Theme.of(
-                                    context,
-                                  ).colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey[400]!,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.format_bold,
+                            size: 16,
                             color:
                                 _isQuoteBold
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.grey[400]!,
-                            width: 1,
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.primary,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.format_bold,
-                              size: 16,
-                              color:
-                                  _isQuoteBold
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context).colorScheme.primary,
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    // Italic Toggle
-                    InkWell(
-                      onTap:
-                          () =>
-                              setState(() => _isQuoteItalic = !_isQuoteItalic),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
+                  ),
+                  const SizedBox(width: 8),
+                  // Italic Toggle
+                  InkWell(
+                    onTap:
+                        () => setState(() => _isQuoteItalic = !_isQuoteItalic),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            _isQuoteItalic
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
                           color:
                               _isQuoteItalic
-                                  ? Theme.of(
-                                    context,
-                                  ).colorScheme.primaryContainer
-                                  : Theme.of(
-                                    context,
-                                  ).colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey[400]!,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.format_italic,
+                            size: 16,
                             color:
                                 _isQuoteItalic
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.grey[400]!,
-                            width: 1,
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.primary,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.format_italic,
-                              size: 16,
-                              color:
-                                  _isQuoteItalic
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context).colorScheme.primary,
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 8),
-            // Author Font Size
-            Row(
-              children: [
-                Icon(Icons.person, size: 16),
-                const SizedBox(width: 8),
-                Text(
-                  '${AppLocalizations.of(context)!.author_font}: ${_authorFontSize.round()}px',
-                ),
-                Expanded(
-                  child: Slider(
-                    value: _authorFontSize,
-                    min: 12.0,
-                    max: 20.0,
-                    divisions: 8,
-                    onChanged:
-                        (value) => setState(() => _authorFontSize = value),
                   ),
-                ),
-                // Author Text Style Toggles
-                Row(
-                  children: [
-                    // Bold Toggle
-                    InkWell(
-                      onTap:
-                          () => setState(() => _isAuthorBold = !_isAuthorBold),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 6,
+                  const SizedBox(width: 8),
+                  // Color Picker
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _isColorSelectionMode = !_isColorSelectionMode;
+                      });
+                      if (_isColorSelectionMode) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Select text to color it'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            _isColorSelectionMode
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : (_selectedQuoteTextColor ??
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainer),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color:
+                              _isColorSelectionMode
+                                  ? Theme.of(context).colorScheme.primary
+                                  : (_selectedQuoteTextColor ??
+                                      Colors.grey[400]!),
+                          width: _isColorSelectionMode ? 2 : 1,
                         ),
-                        decoration: BoxDecoration(
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.palette,
+                            size: 16,
+                            color:
+                                _isColorSelectionMode
+                                    ? Theme.of(context).colorScheme.primary
+                                    : (_selectedQuoteTextColor != null
+                                        ? _getContrastColor(
+                                          _selectedQuoteTextColor!,
+                                        )
+                                        : Theme.of(
+                                          context,
+                                        ).colorScheme.primary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+          // Author Font Size
+          Row(
+            children: [
+              Icon(Icons.person, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                '${AppLocalizations.of(context)!.author_font}: ${_authorFontSize.round()}px',
+              ),
+              Expanded(
+                child: Slider(
+                  value: _authorFontSize,
+                  min: 12.0,
+                  max: 20.0,
+                  divisions: 8,
+                  onChanged: (value) => setState(() => _authorFontSize = value),
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Author Text Style Toggles
+              Row(
+                children: [
+                  // Bold Toggle
+                  InkWell(
+                    onTap: () => setState(() => _isAuthorBold = !_isAuthorBold),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            _isAuthorBold
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
                           color:
                               _isAuthorBold
-                                  ? Theme.of(
-                                    context,
-                                  ).colorScheme.primaryContainer
-                                  : Theme.of(
-                                    context,
-                                  ).colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey[400]!,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.format_bold,
+                            size: 16,
                             color:
                                 _isAuthorBold
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.grey[400]!,
-                            width: 1,
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.primary,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.format_bold,
-                              size: 16,
-                              color:
-                                  _isAuthorBold
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context).colorScheme.primary,
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    // Italic Toggle
-                    InkWell(
-                      onTap:
-                          () => setState(
-                            () => _isAuthorItalic = !_isAuthorItalic,
-                          ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
+                  ),
+                  const SizedBox(width: 8),
+                  // Italic Toggle
+                  InkWell(
+                    onTap:
+                        () =>
+                            setState(() => _isAuthorItalic = !_isAuthorItalic),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            _isAuthorItalic
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
                           color:
                               _isAuthorItalic
-                                  ? Theme.of(
-                                    context,
-                                  ).colorScheme.primaryContainer
-                                  : Theme.of(
-                                    context,
-                                  ).colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
-                            color:
-                                _isAuthorItalic
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.grey[400]!,
-                            width: 1,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.format_italic,
-                              size: 16,
-                              color:
-                                  _isAuthorItalic
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context).colorScheme.primary,
-                            ),
-                          ],
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey[400]!,
+                          width: 1,
                         ),
                       ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.format_italic,
+                            size: 16,
+                            color:
+                                _isAuthorItalic
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.primary,
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Color Picker
+                  InkWell(
+                    onTap: () => _showAuthorColorPicker(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            _selectedAuthorTextColor ??
+                            Theme.of(context).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color:
+                              _selectedAuthorTextColor != null
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey[400]!,
+                          width: 1,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.palette,
+                        size: 16,
+                        color:
+                            _selectedAuthorTextColor != null
+                                ? _getContrastColor(_selectedAuthorTextColor!)
+                                : Colors.grey[700],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
+  }
+
+  // Get contrast color for icon visibility
+  Color _getContrastColor(Color backgroundColor) {
+    final luminance = backgroundColor.computeLuminance();
+    return luminance > 0.5 ? Colors.black : Colors.white;
+  }
+
+  // Build TextSpan with per-word colors
+  TextSpan _buildQuoteTextSpan() {
+    final text =
+        _quoteController.text.isNotEmpty
+            ? _quoteController.text
+            : '${AppLocalizations.of(context)!.enter_quote}...';
+
+    // If no word-specific colors, return single span
+    if (_wordColors.isEmpty) {
+      return TextSpan(
+        text: text,
+        style: TextStyle(
+          color: _selectedQuoteTextColor ?? _textColor,
+          fontSize: _fontSize,
+          fontWeight: _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+          fontFamily: _selectedFont,
+          height: 1.5,
+          fontStyle: _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
+        ),
+      );
+    }
+
+    // Split text into words and apply colors
+    final words = text.split(' ');
+    final List<TextSpan> spans = [];
+
+    for (int i = 0; i < words.length; i++) {
+      final word = words[i];
+      final wordColor =
+          _wordColors[word] ?? _selectedQuoteTextColor ?? _textColor;
+
+      spans.add(
+        TextSpan(
+          text: word,
+          style: TextStyle(
+            color: wordColor,
+            fontSize: _fontSize,
+            fontWeight: _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+            fontFamily: _selectedFont,
+            height: 1.5,
+            fontStyle: _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
+          ),
+        ),
+      );
+
+      // Add space after each word except the last
+      if (i < words.length - 1) {
+        spans.add(
+          TextSpan(
+            text: ' ',
+            style: TextStyle(
+              color: _selectedQuoteTextColor ?? _textColor,
+              fontSize: _fontSize,
+              fontWeight: _isQuoteBold ? FontWeight.bold : FontWeight.normal,
+              fontFamily: _selectedFont,
+              height: 1.5,
+              fontStyle: _isQuoteItalic ? FontStyle.italic : FontStyle.normal,
+            ),
+          ),
+        );
+      }
+    }
+
+    return TextSpan(children: spans);
+  }
+
+  // Show color picker for selected text from context menu
+  void _showColorPickerForSelectedText(
+    BuildContext context,
+    String selectedText,
+  ) {
+    if (selectedText.isEmpty) return;
+
+    // Split selected text into words
+    final words = selectedText.split(' ');
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Choose Color'),
+            content: SingleChildScrollView(
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children:
+                    _getColorOptions().map((color) {
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            // Apply color to all words in selection
+                            for (final word in words) {
+                              if (word.trim().isNotEmpty) {
+                                _wordColors[word.trim()] = color;
+                              }
+                            }
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.grey[300]!,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    // Remove colors from selected words
+                    for (final word in words) {
+                      _wordColors.remove(word.trim());
+                    }
+                  });
+                  Navigator.pop(context);
+                },
+                child: Text('Remove Color'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  // Show word selection dialog before color picker (fallback for palette button)
+  void _showQuoteColorPicker(BuildContext context) {
+    final text = _quoteController.text.isNotEmpty ? _quoteController.text : '';
+    if (text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Please enter quote text first')));
+      return;
+    }
+
+    final words = text.split(' ').toSet().toList(); // Unique words
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Select Words to Color'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children:
+                      words.map((word) {
+                        final hasColor = _wordColors.containsKey(word);
+                        return InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                            _showColorPickerForWord(context, word);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  hasColor
+                                      ? _wordColors[word]!.withValues(
+                                        alpha: 0.3,
+                                      )
+                                      : Theme.of(
+                                        context,
+                                      ).colorScheme.surfaceContainer,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color:
+                                    hasColor
+                                        ? _wordColors[word]!
+                                        : Colors.grey[400]!,
+                                width: 2,
+                              ),
+                            ),
+                            child: Text(
+                              word,
+                              style: TextStyle(
+                                color:
+                                    hasColor
+                                        ? _wordColors[word]
+                                        : Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                                fontWeight:
+                                    hasColor
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  setState(() => _wordColors.clear());
+                  Navigator.pop(context);
+                },
+                child: Text('Clear All'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Done'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  // Show color picker for specific word
+  void _showColorPickerForWord(BuildContext context, String word) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Color for "$word"'),
+            content: SingleChildScrollView(
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children:
+                    _getColorOptions().map((color) {
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _wordColors[word] = color;
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.grey[300]!,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  setState(() => _wordColors.remove(word));
+                  Navigator.pop(context);
+                },
+                child: Text('Remove Color'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Close'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  // Show color picker dialog for author text
+  void _showAuthorColorPicker(BuildContext context) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Select Author Text Color'),
+            content: SingleChildScrollView(
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children:
+                    _getColorOptions().map((color) {
+                      return InkWell(
+                        onTap: () {
+                          setState(() => _selectedAuthorTextColor = color);
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color:
+                                  _selectedAuthorTextColor == color
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.grey[300]!,
+                              width: _selectedAuthorTextColor == color ? 3 : 1,
+                            ),
+                          ),
+                          child:
+                              _selectedAuthorTextColor == color
+                                  ? Icon(
+                                    Icons.check,
+                                    color: _getContrastColor(color),
+                                  )
+                                  : null,
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  setState(() => _selectedAuthorTextColor = null);
+                  Navigator.pop(context);
+                },
+                child: Text('Reset'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Close'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  // Get available color options
+  List<Color> _getColorOptions() {
+    return [
+      Colors.white,
+      Colors.white70,
+      Colors.black,
+      Colors.black87,
+      Colors.red,
+      Colors.pink,
+      Colors.purple,
+      Colors.deepPurple,
+      Colors.indigo,
+      Colors.blue,
+      Colors.lightBlue,
+      Colors.cyan,
+      Colors.teal,
+      Colors.green,
+      Colors.lightGreen,
+      Colors.lime,
+      Colors.yellow,
+      Colors.amber,
+      Colors.orange,
+      Colors.deepOrange,
+      Colors.brown,
+      Colors.grey,
+      Color(0xFFFFD700), // Gold
+      Color(0xFFC0C0C0), // Silver
+      Color(0xFFFF6F00), // Saffron
+    ];
   }
 
   Widget _buildImageSizeTab() {

@@ -57,7 +57,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
 
   /// Load reading history from Firebase first, then from local storage
   Future<void> _loadReadingHistoryFromFirebaseAndStorage() async {
-    if (!ReadingHistoryService.isReadingHistoryLoaded()) {
+    if (!ReadingHistoryService().hasLoadedReadingHistory) {
       try {
         // Load reading history from Firebase (on-demand)
         await Utils.loadReadingHistoryFromFirebase();
