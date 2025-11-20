@@ -976,6 +976,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         Padding(
           padding: const EdgeInsets.all(32.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // User Profile Section
@@ -2258,7 +2259,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     for (int i = 0; i < words.length; i++) {
       final word = words[i];
       // Remove punctuation and trim for map lookup to handle punctuation and boundaries
-      final cleanWord = word.replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '').trim();
+      final cleanWord =
+          word.replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '').trim();
       final wordColor =
           _wordColors[cleanWord] ?? _selectedQuoteTextColor ?? _textColor;
 
@@ -2325,7 +2327,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                             for (final word in words) {
                               debugPrint("Word: $word");
                               // Remove punctuation before storing to ensure consistent matching
-                              final cleanWord = word.replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '').trim();
+                              final cleanWord =
+                                  word
+                                      .replaceAll(
+                                        RegExp(r'[.,!?;:"\(\)\[\]\{\}]'),
+                                        '',
+                                      )
+                                      .trim();
                               if (cleanWord.isNotEmpty) {
                                 debugPrint("Found Word: $cleanWord");
                                 _wordColors[cleanWord] = color;
@@ -2356,7 +2364,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   setState(() {
                     // Remove colors from selected words
                     for (final word in words) {
-                      final cleanWord = word.replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '').trim();
+                      final cleanWord =
+                          word
+                              .replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '')
+                              .trim();
                       _wordColors.remove(cleanWord);
                     }
                   });
