@@ -615,10 +615,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                         ? (selection, cause) {
                           if (selection.start != selection.end) {
                             final text = _quoteController.text;
-                            final selectedText = text.substring(
-                              selection.start,
-                              selection.end,
-                            );
+                            final selectedText =
+                                text
+                                    .substring(selection.start, selection.end)
+                                    .trim();
                             if (selectedText.isNotEmpty) {
                               _showColorPickerForSelectedText(
                                 context,
@@ -742,10 +742,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                             ? (selection, cause) {
                               if (selection.start != selection.end) {
                                 final text = _quoteController.text;
-                                final selectedText = text.substring(
-                                  selection.start,
-                                  selection.end,
-                                );
+                                final selectedText =
+                                    text
+                                        .substring(
+                                          selection.start,
+                                          selection.end,
+                                        )
+                                        .trim();
                                 if (selectedText.isNotEmpty) {
                                   _showColorPickerForSelectedText(
                                     context,
@@ -799,10 +802,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                 ? (selection, cause) {
                                   if (selection.start != selection.end) {
                                     final text = _quoteController.text;
-                                    final selectedText = text.substring(
-                                      selection.start,
-                                      selection.end,
-                                    );
+                                    final selectedText =
+                                        text
+                                            .substring(
+                                              selection.start,
+                                              selection.end,
+                                            )
+                                            .trim();
                                     if (selectedText.isNotEmpty) {
                                       _showColorPickerForSelectedText(
                                         context,
@@ -848,10 +854,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                             ? (selection, cause) {
                               if (selection.start != selection.end) {
                                 final text = _quoteController.text;
-                                final selectedText = text.substring(
-                                  selection.start,
-                                  selection.end,
-                                );
+                                final selectedText =
+                                    text
+                                        .substring(
+                                          selection.start,
+                                          selection.end,
+                                        )
+                                        .trim();
                                 if (selectedText.isNotEmpty) {
                                   _showColorPickerForSelectedText(
                                     context,
@@ -921,10 +930,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                     ? (selection, cause) {
                       if (selection.start != selection.end) {
                         final text = _quoteController.text;
-                        final selectedText = text.substring(
-                          selection.start,
-                          selection.end,
-                        );
+                        final selectedText =
+                            text
+                                .substring(selection.start, selection.end)
+                                .trim();
                         if (selectedText.isNotEmpty) {
                           _showColorPickerForSelectedText(
                             context,
@@ -1053,10 +1062,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                               ? (selection, cause) {
                                 if (selection.start != selection.end) {
                                   final text = _quoteController.text;
-                                  final selectedText = text.substring(
-                                    selection.start,
-                                    selection.end,
-                                  );
+                                  final selectedText =
+                                      text
+                                          .substring(
+                                            selection.start,
+                                            selection.end,
+                                          )
+                                          .trim();
+                                  debugPrint('Selected text: $selectedText');
                                   if (selectedText.isNotEmpty) {
                                     _showColorPickerForSelectedText(
                                       context,
@@ -1178,10 +1191,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                           ? (selection, cause) {
                             if (selection.start != selection.end) {
                               final text = _quoteController.text;
-                              final selectedText = text.substring(
-                                selection.start,
-                                selection.end,
-                              );
+                              final selectedText =
+                                  text
+                                      .substring(selection.start, selection.end)
+                                      .trim();
                               if (selectedText.isNotEmpty) {
                                 _showColorPickerForSelectedText(
                                   context,
@@ -1312,10 +1325,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                             ? (selection, cause) {
                               if (selection.start != selection.end) {
                                 final text = _quoteController.text;
-                                final selectedText = text.substring(
-                                  selection.start,
-                                  selection.end,
-                                );
+                                final selectedText =
+                                    text
+                                        .substring(
+                                          selection.start,
+                                          selection.end,
+                                        )
+                                        .trim();
                                 if (selectedText.isNotEmpty) {
                                   _showColorPickerForSelectedText(
                                     context,
@@ -1451,10 +1467,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                   ? (selection, cause) {
                                     if (selection.start != selection.end) {
                                       final text = _quoteController.text;
-                                      final selectedText = text.substring(
-                                        selection.start,
-                                        selection.end,
-                                      );
+                                      final selectedText =
+                                          text
+                                              .substring(
+                                                selection.start,
+                                                selection.end,
+                                              )
+                                              .trim();
                                       if (selectedText.isNotEmpty) {
                                         _showColorPickerForSelectedText(
                                           context,
@@ -2238,8 +2257,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
     for (int i = 0; i < words.length; i++) {
       final word = words[i];
+      // Remove punctuation and trim for map lookup to handle punctuation and boundaries
+      final cleanWord = word.replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '').trim();
       final wordColor =
-          _wordColors[word] ?? _selectedQuoteTextColor ?? _textColor;
+          _wordColors[cleanWord] ?? _selectedQuoteTextColor ?? _textColor;
 
       spans.add(
         TextSpan(
@@ -2302,8 +2323,12 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                           setState(() {
                             // Apply color to all words in selection
                             for (final word in words) {
-                              if (word.trim().isNotEmpty) {
-                                _wordColors[word.trim()] = color;
+                              debugPrint("Word: $word");
+                              // Remove punctuation before storing to ensure consistent matching
+                              final cleanWord = word.replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '').trim();
+                              if (cleanWord.isNotEmpty) {
+                                debugPrint("Found Word: $cleanWord");
+                                _wordColors[cleanWord] = color;
                               }
                             }
                           });
@@ -2331,7 +2356,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   setState(() {
                     // Remove colors from selected words
                     for (final word in words) {
-                      _wordColors.remove(word.trim());
+                      final cleanWord = word.replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '').trim();
+                      _wordColors.remove(cleanWord);
                     }
                   });
                   Navigator.pop(context);
