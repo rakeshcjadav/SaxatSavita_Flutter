@@ -63,7 +63,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   bool _isAuthorItalic = true;
   Color? _selectedQuoteTextColor; // null means use default _textColor
   Color? _selectedAuthorTextColor; // null means use default _authorColor
-  Map<String, Color> _wordColors = {}; // Track colors for individual words
+  Map<int, Color> _wordColors =
+      {}; // Track colors for individual words by index
   bool _isColorSelectionMode = false; // Track if in color selection mode
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
@@ -620,9 +621,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                     .substring(selection.start, selection.end)
                                     .trim();
                             if (selectedText.isNotEmpty) {
+                              // Calculate word index from character position
+                              final beforeSelection = text.substring(
+                                0,
+                                selection.start,
+                              );
+                              final startIndex =
+                                  beforeSelection.split(' ').length - 1;
                               _showColorPickerForSelectedText(
                                 context,
                                 selectedText,
+                                startIndex < 0 ? 0 : startIndex,
                               );
                             }
                           }
@@ -691,9 +700,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                   selection.end,
                                 );
                                 if (selectedText.isNotEmpty) {
+                                  final beforeSelection = text.substring(
+                                    0,
+                                    selection.start,
+                                  );
+                                  final startIndex =
+                                      beforeSelection.split(' ').length - 1;
                                   _showColorPickerForSelectedText(
                                     context,
                                     selectedText,
+                                    startIndex < 0 ? 0 : startIndex,
                                   );
                                 }
                               }
@@ -750,9 +766,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                         )
                                         .trim();
                                 if (selectedText.isNotEmpty) {
+                                  final beforeSelection = text.substring(
+                                    0,
+                                    selection.start,
+                                  );
+                                  final startIndex =
+                                      beforeSelection.split(' ').length - 1;
                                   _showColorPickerForSelectedText(
                                     context,
                                     selectedText,
+                                    startIndex < 0 ? 0 : startIndex,
                                   );
                                 }
                               }
@@ -810,9 +833,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                             )
                                             .trim();
                                     if (selectedText.isNotEmpty) {
+                                      final beforeSelection = text.substring(
+                                        0,
+                                        selection.start,
+                                      );
+                                      final startIndex =
+                                          beforeSelection.split(' ').length - 1;
                                       _showColorPickerForSelectedText(
                                         context,
                                         selectedText,
+                                        startIndex < 0 ? 0 : startIndex,
                                       );
                                     }
                                   }
@@ -862,9 +892,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                         )
                                         .trim();
                                 if (selectedText.isNotEmpty) {
+                                  final beforeSelection = text.substring(
+                                    0,
+                                    selection.start,
+                                  );
+                                  final startIndex =
+                                      beforeSelection.split(' ').length - 1;
                                   _showColorPickerForSelectedText(
                                     context,
                                     selectedText,
+                                    startIndex < 0 ? 0 : startIndex,
                                   );
                                 }
                               }
@@ -935,9 +972,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                 .substring(selection.start, selection.end)
                                 .trim();
                         if (selectedText.isNotEmpty) {
+                          final beforeSelection = text.substring(
+                            0,
+                            selection.start,
+                          );
+                          final startIndex =
+                              beforeSelection.split(' ').length - 1;
                           _showColorPickerForSelectedText(
                             context,
                             selectedText,
+                            startIndex < 0 ? 0 : startIndex,
                           );
                         }
                       }
@@ -1072,9 +1116,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                           .trim();
                                   debugPrint('Selected text: $selectedText');
                                   if (selectedText.isNotEmpty) {
+                                    final beforeSelection = text.substring(
+                                      0,
+                                      selection.start,
+                                    );
+                                    final startIndex =
+                                        beforeSelection.split(' ').length - 1;
                                     _showColorPickerForSelectedText(
                                       context,
                                       selectedText,
+                                      startIndex < 0 ? 0 : startIndex,
                                     );
                                   }
                                 }
@@ -1197,9 +1248,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                       .substring(selection.start, selection.end)
                                       .trim();
                               if (selectedText.isNotEmpty) {
+                                final beforeSelection = text.substring(
+                                  0,
+                                  selection.start,
+                                );
+                                final startIndex =
+                                    beforeSelection.split(' ').length - 1;
                                 _showColorPickerForSelectedText(
                                   context,
                                   selectedText,
+                                  startIndex < 0 ? 0 : startIndex,
                                 );
                               }
                             }
@@ -1334,9 +1392,16 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                         )
                                         .trim();
                                 if (selectedText.isNotEmpty) {
+                                  final beforeSelection = text.substring(
+                                    0,
+                                    selection.start,
+                                  );
+                                  final startIndex =
+                                      beforeSelection.split(' ').length - 1;
                                   _showColorPickerForSelectedText(
                                     context,
                                     selectedText,
+                                    startIndex < 0 ? 0 : startIndex,
                                   );
                                 }
                               }
@@ -1476,9 +1541,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                               )
                                               .trim();
                                       if (selectedText.isNotEmpty) {
+                                        final beforeSelection = text.substring(
+                                          0,
+                                          selection.start,
+                                        );
+                                        final startIndex =
+                                            beforeSelection.split(' ').length -
+                                            1;
                                         _showColorPickerForSelectedText(
                                           context,
                                           selectedText,
+                                          startIndex < 0 ? 0 : startIndex,
                                         );
                                       }
                                     }
@@ -2258,11 +2331,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
     for (int i = 0; i < words.length; i++) {
       final word = words[i];
-      // Remove punctuation and trim for map lookup to handle punctuation and boundaries
-      final cleanWord =
-          word.replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '').trim();
-      final wordColor =
-          _wordColors[cleanWord] ?? _selectedQuoteTextColor ?? _textColor;
+      // Use word index for color lookup
+      final wordColor = _wordColors[i] ?? _selectedQuoteTextColor ?? _textColor;
 
       spans.add(
         TextSpan(
@@ -2303,6 +2373,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   void _showColorPickerForSelectedText(
     BuildContext context,
     String selectedText,
+    int startIndex,
   ) {
     if (selectedText.isEmpty) return;
 
@@ -2323,21 +2394,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       return InkWell(
                         onTap: () {
                           setState(() {
-                            // Apply color to all words in selection
-                            for (final word in words) {
-                              debugPrint("Word: $word");
-                              // Remove punctuation before storing to ensure consistent matching
-                              final cleanWord =
-                                  word
-                                      .replaceAll(
-                                        RegExp(r'[.,!?;:"\(\)\[\]\{\}]'),
-                                        '',
-                                      )
-                                      .trim();
-                              if (cleanWord.isNotEmpty) {
-                                debugPrint("Found Word: $cleanWord");
-                                _wordColors[cleanWord] = color;
-                              }
+                            // Apply color to all words in selection by index
+                            for (int i = 0; i < words.length; i++) {
+                              _wordColors[startIndex + i] = color;
                             }
                           });
                           Navigator.pop(context);
@@ -2362,13 +2421,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               TextButton(
                 onPressed: () {
                   setState(() {
-                    // Remove colors from selected words
-                    for (final word in words) {
-                      final cleanWord =
-                          word
-                              .replaceAll(RegExp(r'[.,!?;:"\(\)\[\]\{\}]'), '')
-                              .trim();
-                      _wordColors.remove(cleanWord);
+                    // Remove colors from selected words by index
+                    for (int i = 0; i < words.length; i++) {
+                      _wordColors.remove(startIndex + i);
                     }
                   });
                   Navigator.pop(context);
@@ -2394,7 +2449,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
       return;
     }
 
-    final words = text.split(' ').toSet().toList(); // Unique words
+    final words = text.split(' '); // Keep all words with their indices
 
     showDialog(
       context: context,
@@ -2408,12 +2463,14 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                   spacing: 8,
                   runSpacing: 8,
                   children:
-                      words.map((word) {
-                        final hasColor = _wordColors.containsKey(word);
+                      words.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final word = entry.value;
+                        final hasColor = _wordColors.containsKey(index);
                         return InkWell(
                           onTap: () {
                             Navigator.pop(context);
-                            _showColorPickerForWord(context, word);
+                            _showColorPickerForWord(context, word, index);
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(
@@ -2423,7 +2480,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                             decoration: BoxDecoration(
                               color:
                                   hasColor
-                                      ? _wordColors[word]!.withValues(
+                                      ? _wordColors[index]!.withValues(
                                         alpha: 0.3,
                                       )
                                       : Theme.of(
@@ -2433,7 +2490,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                               border: Border.all(
                                 color:
                                     hasColor
-                                        ? _wordColors[word]!
+                                        ? _wordColors[index]!
                                         : Colors.grey[400]!,
                                 width: 2,
                               ),
@@ -2443,7 +2500,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                               style: TextStyle(
                                 color:
                                     hasColor
-                                        ? _wordColors[word]
+                                        ? _wordColors[index]
                                         : Theme.of(
                                           context,
                                         ).colorScheme.onSurface,
@@ -2477,7 +2534,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   // Show color picker for specific word
-  void _showColorPickerForWord(BuildContext context, String word) {
+  void _showColorPickerForWord(BuildContext context, String word, int index) {
     showDialog(
       context: context,
       builder:
@@ -2492,7 +2549,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                       return InkWell(
                         onTap: () {
                           setState(() {
-                            _wordColors[word] = color;
+                            _wordColors[index] = color;
                           });
                           Navigator.pop(context);
                         },
@@ -2515,7 +2572,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             actions: [
               TextButton(
                 onPressed: () {
-                  setState(() => _wordColors.remove(word));
+                  setState(() => _wordColors.remove(index));
                   Navigator.pop(context);
                 },
                 child: Text('Remove Color'),
