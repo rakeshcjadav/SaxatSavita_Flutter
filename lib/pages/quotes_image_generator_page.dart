@@ -66,7 +66,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   Color? _selectedAuthorTextColor; // null means use default _authorColor
   final Map<int, Color> _wordColors =
       {}; // Track colors for individual words by index
-  bool _isColorSelectionMode = false; // Track if in color selection mode
+  bool _isColorSelectionMode = true; // Track if in color selection mode
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
   Color _customGradientStart = Colors.deepOrange.shade700;
