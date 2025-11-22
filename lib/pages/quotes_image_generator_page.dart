@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
@@ -63,11 +64,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   bool _isAuthorItalic = true;
   Color? _selectedQuoteTextColor; // null means use default _textColor
   Color? _selectedAuthorTextColor; // null means use default _authorColor
-  Map<int, Color> _wordColors =
+  final Map<int, Color> _wordColors =
       {}; // Track colors for individual words by index
   bool _isColorSelectionMode = false; // Track if in color selection mode
   int _selectedTemplate = 8;
   String _selectedGradient = 'orange';
+  Color _customGradientStart = Colors.deepOrange.shade700;
+  Color _customGradientEnd = Colors.orange.shade400;
   int _selectedTab = 0;
   double _tabViewHeight = 10;
   final bool _enableStickers = false;
@@ -133,7 +136,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   ];
 
   // Color gradients
-  final Map<String, List<Color>> _gradients = {
+  Map<String, List<Color>> get _gradients => {
     'orange': [Colors.deepOrange.shade700, Colors.orange.shade400],
     'blue': [const Color(0xFF1565C0), const Color(0xFF42A5F5)],
     'green': [const Color(0xFF2E7D32), const Color(0xFF4CAF50)],
@@ -143,6 +146,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     'saffron': [const Color(0xFFFF6F00), const Color(0xFFFFB74D)],
     'spiritual': [const Color(0xFF8E24AA), const Color(0xFFBA68C8)],
     'gray': [Colors.grey.shade700, Colors.grey.shade400],
+    'custom': [_customGradientStart, _customGradientEnd],
   };
 
   @override
@@ -1073,16 +1077,18 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                               fontFamily: _selectedFont,
                             ),
                           ),
-                          Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.devotee_of_sakshat_savita,
-                            style: TextStyle(
-                              color: _textColor.withValues(alpha: 0.7),
-                              fontSize: 12,
-                              fontFamily: _selectedFont,
+                          if (!hasEnableEditing) ...[
+                            Text(
+                              AppLocalizations.of(
+                                context,
+                              )!.devotee_of_sakshat_savita,
+                              style: TextStyle(
+                                color: _textColor.withValues(alpha: 0.7),
+                                fontSize: 12,
+                                fontFamily: _selectedFont,
+                              ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                   ],
@@ -1218,16 +1224,18 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                 fontFamily: _selectedFont,
                               ),
                             ),
-                            Text(
-                              AppLocalizations.of(
-                                context,
-                              )!.sharing_spiritual_wisdom,
-                              style: TextStyle(
-                                color: _textColor.withValues(alpha: 0.6),
-                                fontSize: 11,
-                                fontFamily: _selectedFont,
+                            if (!hasEnableEditing) ...[
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.sharing_spiritual_wisdom,
+                                style: TextStyle(
+                                  color: _textColor.withValues(alpha: 0.6),
+                                  fontSize: 11,
+                                  fontFamily: _selectedFont,
+                                ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       ),
@@ -1350,16 +1358,18 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                                     fontFamily: _selectedFont,
                                   ),
                                 ),
-                                Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.shared_spiritual_thought,
-                                  style: TextStyle(
-                                    color: _textColor.withValues(alpha: 0.6),
-                                    fontSize: 11,
-                                    fontFamily: _selectedFont,
+                                if (!hasEnableEditing) ...[
+                                  Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.shared_spiritual_thought,
+                                    style: TextStyle(
+                                      color: _textColor.withValues(alpha: 0.6),
+                                      fontSize: 11,
+                                      fontFamily: _selectedFont,
+                                    ),
                                   ),
-                                ),
+                                ],
                               ],
                             ),
                           ),
@@ -1964,13 +1974,72 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         left: 8.0,
         right: 8.0,
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          spacing: 4.0,
-          children:
-              _gradients.keys.map((key) => _buildGradientOption(key)).toList(),
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Gradient options
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                spacing: 4.0,
+                children:
+                    _gradients.keys
+                        .map((key) => _buildGradientOption(key))
+                        .toList(),
+              ),
+            ),
+          ),
+          // Custom gradient color pickers (show only when custom is selected)
+          if (_selectedGradient == 'custom') ...[
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Start Color', style: TextStyle(fontSize: 12)),
+                      const SizedBox(height: 4),
+                      InkWell(
+                        onTap: () => _showGradientColorPicker(context, true),
+                        child: Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: _customGradientStart,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.grey.shade400),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('End Color', style: TextStyle(fontSize: 12)),
+                      const SizedBox(height: 4),
+                      InkWell(
+                        onTap: () => _showGradientColorPicker(context, false),
+                        child: Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: _customGradientEnd,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.grey.shade400),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -2678,6 +2747,105 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     ];
   }
 
+  // Show color picker for custom gradient
+  void _showGradientColorPicker(BuildContext context, bool isStartColor) {
+    Color pickerColor =
+        isStartColor ? _customGradientStart : _customGradientEnd;
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              isStartColor ? 'Select Start Color' : 'Select End Color',
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Predefined colors for quick access
+                  Text(
+                    'Quick Colors',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children:
+                        _getColorOptions().map((color) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                if (isStartColor) {
+                                  _customGradientStart = color;
+                                } else {
+                                  _customGradientEnd = color;
+                                }
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: Colors.grey.shade400,
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                  Divider(),
+                  const SizedBox(height: 8),
+                  // Custom color picker
+                  Text(
+                    'Custom Color',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                  const SizedBox(height: 12),
+                  ColorPicker(
+                    pickerColor: pickerColor,
+                    onColorChanged: (color) {
+                      pickerColor = color;
+                    },
+                    pickerAreaHeightPercent: 0.7,
+                    enableAlpha: false,
+                    displayThumbColor: true,
+                    showLabel: false,
+                    pickerAreaBorderRadius: BorderRadius.circular(8),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (isStartColor) {
+                      _customGradientStart = pickerColor;
+                    } else {
+                      _customGradientEnd = pickerColor;
+                    }
+                  });
+                  Navigator.pop(context);
+                },
+                child: Text('Apply'),
+              ),
+            ],
+          ),
+    );
+  }
+
   Widget _buildImageSizeTab() {
     return Padding(
       padding: const EdgeInsets.only(
@@ -2879,6 +3047,8 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   }
 
   Widget _buildGradientOption(String key) {
+    final isCustom = key == 'custom';
+
     return InkWell(
       onTap: () => setState(() => _selectedGradient = key),
       child: Container(
@@ -2901,7 +3071,27 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
         ),
         child:
             _selectedGradient == key
-                ? const Icon(Icons.check, color: Colors.white)
+                ? Icon(
+                  isCustom ? Icons.palette : Icons.check,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      blurRadius: 3,
+                    ),
+                  ],
+                )
+                : isCustom
+                ? Icon(
+                  Icons.palette,
+                  color: Colors.white.withValues(alpha: 0.7),
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      blurRadius: 3,
+                    ),
+                  ],
+                )
                 : null,
       ),
     );
