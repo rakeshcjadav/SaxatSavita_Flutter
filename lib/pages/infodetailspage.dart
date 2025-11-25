@@ -96,7 +96,7 @@ class Infodetailspage extends StatelessWidget {
                                     kiranIndex: -1,
                                     partNumber: -1,
                                   );
-                              final result = await Navigator.of(context).push(
+                              await Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder:
                                       (_) => QuotesImageGeneratorPage(
