@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
+import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
+import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import '../models/infocontent_model.dart';
 import '../components/appbar.dart';
 
@@ -63,7 +66,48 @@ class Infodetailspage extends StatelessWidget {
                       debugPrint("Unfocus TextField");
                     },
                     child: SafeArea(
-                      child: CustomHtmlWidget(htmlContent: strContent),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 6.0,
+                          right: 6.0,
+                          top: 12.0,
+                          bottom: 12.0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: HtmlToTextSpan.convertToWidgets(
+                            strContent,
+                            Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: appSettingsNotifier.value.fontSize,
+                            ),
+                            context,
+                            textAlign: TextAlign.justify,
+                            lineHeight: appSettingsNotifier.value.lineHeight,
+
+                            onCreateQuoteImage: (selectedText) async {
+                              final InspirationalQuote quote =
+                                  InspirationalQuote(
+                                    quote: selectedText!,
+                                    author:
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.jogi_swami,
+                                    kiranIndex: -1,
+                                    partNumber: -1,
+                                  );
+                              final result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => QuotesImageGeneratorPage(
+                                        quote: quote,
+                                      ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

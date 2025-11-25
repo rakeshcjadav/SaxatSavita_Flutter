@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -76,6 +77,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   String _currentKiranContent = '';
   List<int> _searchMatches = [];
   int _currentMatchIndex = -1;
+  final bool _useCustomHtmlWidget = false;
 
   @override
   void initState() {
@@ -617,6 +619,20 @@ class _KiranReadPageState extends State<KiranReadPage>
                 });
               },
             ),
+            /*IconButton(
+              icon: Icon(
+                _useCustomHtmlWidget ? Icons.view_agenda : Icons.text_fields,
+              ),
+              tooltip:
+                  _useCustomHtmlWidget
+                      ? 'Using CustomHtmlWidget'
+                      : 'Using HtmlToTextSpan',
+              onPressed: () {
+                setState(() {
+                  _useCustomHtmlWidget = !_useCustomHtmlWidget;
+                });
+              },
+            ),*/
           ],
           onSettingsPressed: () async {
             _pauseTimer();
@@ -750,109 +766,9 @@ class _KiranReadPageState extends State<KiranReadPage>
                                 }
                                 return false;
                               },
-                              child: Scrollbar(
-                                controller: _scrollController,
-                                interactive: true,
-                                child: SingleChildScrollView(
-                                  controller: _scrollController,
-                                  child: Column(
-                                    children: [
-                                      CustomHtmlWidget(
-                                        htmlContent:
-                                            _isSearchMode &&
-                                                    _searchController
-                                                        .text
-                                                        .isNotEmpty
-                                                ? _getHighlightedContent(
-                                                  getKiranContent(contentData),
-                                                )
-                                                : getKiranContent(contentData),
-
-                                        onAddNote: (selectedText) async {
-                                          _pauseTimer();
-                                          await _openNoteEditor(
-                                            selectedText: selectedText,
-                                          );
-                                          _resumeTimer();
-                                        },
-                                        onCreateQuoteImage: (
-                                          selectedText,
-                                        ) async {
-                                          _pauseTimer();
-                                          await _openQuoteEditor(
-                                            selectedText: selectedText,
-                                          );
-                                          _resumeTimer();
-                                        },
-                                        onSingleTap: () {
-                                          // Toggle edge nav buttons setting
-                                          if (mounted) {
-                                            final currentValue =
-                                                appSettingsNotifier
-                                                    .value
-                                                    .showEdgeNavButtons;
-                                            appSettingsNotifier
-                                                .value = copyAppSettings(
-                                              appSettingsNotifier.value,
-                                              showEdgeNavButtons: !currentValue,
-                                            );
-                                            debugPrint(
-                                              'Edge nav buttons toggled: ${!currentValue}',
-                                            );
-                                          }
-                                        },
-                                      ),
-                                      const SizedBox(height: 8.0),
-                                      // Finish button
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20.0,
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed:
-                                            _isFinishButtonEnabled
-                                                ? () async {
-                                                  _onFinishReadingPressed();
-                                                }
-                                                : null,
-
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.kiran_read_finished,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color:
-                                                  _isFinishButtonEnabled
-                                                      ? null
-                                                      : Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16.0),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          if (_hasPreviousKiran()) ...[
-                                            _buildPreviousKiranButton(),
-                                          ],
-                                          const Spacer(),
-                                          if (_hasNextKiran()) ...[
-                                            _buildNextKiranButton(),
-                                          ],
-                                        ],
-                                      ),
-                                      const SizedBox(height: 64.0),
-                                    ],
-                                  ),
-                                ),
+                              child: _buildKiranContentWidget(
+                                contentData,
+                                context,
                               ),
                             );
                           },
@@ -899,6 +815,131 @@ class _KiranReadPageState extends State<KiranReadPage>
             _resumeTimer();
           },
           child: Icon(Icons.note_add),
+        ),
+      ),
+    );
+  }
+
+  Scrollbar _buildKiranContentWidget(
+    Map<String, dynamic> contentData,
+    BuildContext context,
+  ) {
+    return Scrollbar(
+      controller: _scrollController,
+      interactive: true,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: _useCustomHtmlWidget ? 0.0 : 6.0,
+            right: _useCustomHtmlWidget ? 0.0 : 6.0,
+          ),
+          child: Column(
+            children: [
+              if (!_useCustomHtmlWidget)
+                ...HtmlToTextSpan.convertToWidgets(
+                  _isSearchMode && _searchController.text.isNotEmpty
+                      ? _getHighlightedContentForTextSpan(
+                        getKiranContent(contentData),
+                      )
+                      : getKiranContent(contentData),
+                  Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: appSettingsNotifier.value.fontSize,
+                  ),
+                  context,
+                  textAlign: TextAlign.justify,
+                  lineHeight: appSettingsNotifier.value.lineHeight,
+                  onAddNote: (selectedText) async {
+                    _pauseTimer();
+                    await _openNoteEditor(selectedText: selectedText);
+                    _resumeTimer();
+                  },
+                  onCreateQuoteImage: (selectedText) async {
+                    _pauseTimer();
+                    await _openQuoteEditor(selectedText: selectedText);
+                    _resumeTimer();
+                  },
+                  onDoubleTap: () {
+                    // Toggle edge nav buttons setting
+                    if (mounted) {
+                      final currentValue =
+                          appSettingsNotifier.value.showEdgeNavButtons;
+                      appSettingsNotifier.value = copyAppSettings(
+                        appSettingsNotifier.value,
+                        showEdgeNavButtons: !currentValue,
+                      );
+                      debugPrint('Edge nav buttons toggled: ${!currentValue}');
+                    }
+                  },
+                ),
+              if (_useCustomHtmlWidget)
+                CustomHtmlWidget(
+                  htmlContent:
+                      _isSearchMode && _searchController.text.isNotEmpty
+                          ? _getHighlightedContent(getKiranContent(contentData))
+                          : getKiranContent(contentData),
+
+                  onAddNote: (selectedText) async {
+                    _pauseTimer();
+                    await _openNoteEditor(selectedText: selectedText);
+                    _resumeTimer();
+                  },
+                  onCreateQuoteImage: (selectedText) async {
+                    _pauseTimer();
+                    await _openQuoteEditor(selectedText: selectedText);
+                    _resumeTimer();
+                  },
+                  onSingleTap: () {
+                    // Toggle edge nav buttons setting
+                    if (mounted) {
+                      final currentValue =
+                          appSettingsNotifier.value.showEdgeNavButtons;
+                      appSettingsNotifier.value = copyAppSettings(
+                        appSettingsNotifier.value,
+                        showEdgeNavButtons: !currentValue,
+                      );
+                      debugPrint('Edge nav buttons toggled: ${!currentValue}');
+                    }
+                  },
+                ),
+              const SizedBox(height: 8.0),
+              // Finish button
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+                onPressed:
+                    _isFinishButtonEnabled
+                        ? () async {
+                          _onFinishReadingPressed();
+                        }
+                        : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    AppLocalizations.of(context)!.kiran_read_finished,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: _isFinishButtonEnabled ? null : Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (_hasPreviousKiran()) ...[_buildPreviousKiranButton()],
+                  const Spacer(),
+                  if (_hasNextKiran()) ...[_buildNextKiranButton()],
+                ],
+              ),
+              const SizedBox(height: 64.0),
+            ],
+          ),
         ),
       ),
     );
@@ -1132,6 +1173,101 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
     // Add any remaining text after the last match
     buffer.write(highlighted.substring(lastMatchEnd));
+
+    return buffer.toString();
+  }
+
+  String _getHighlightedContentForTextSpan(String content) {
+    if (_searchController.text.isEmpty || _searchMatches.isEmpty) {
+      return content;
+    }
+
+    final query = _searchController.text.trim();
+    String strQuery = query.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
+    List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
+
+    // Build a pattern that matches any of the words (case-insensitive)
+    final pattern = RegExp(
+      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
+      caseSensitive: false,
+    );
+
+    // Get plain text content for matching (strip HTML tags)
+    final plainText = _getPlainTextFromHtml(content);
+
+    // Find all matches in plain text
+    final plainMatches = pattern.allMatches(plainText).toList();
+    if (plainMatches.isEmpty) return content;
+
+    // Now we need to map plain text positions to HTML positions
+    // This is complex, so we'll use a simpler approach:
+    // Parse the content and wrap matches with <mark> tags
+
+    final buffer = StringBuffer();
+    int plainPos = 0;
+    int matchCounter = 0;
+
+    // Track which plain text match we're looking for
+    int currentPlainMatchIndex = 0;
+
+    for (int i = 0; i < content.length; i++) {
+      final char = content[i];
+
+      // Check if we're at the start of an HTML tag
+      if (char == '<') {
+        // Find the end of the tag
+        final tagEnd = content.indexOf('>', i);
+        if (tagEnd != -1) {
+          // Add the entire tag to the buffer
+          buffer.write(content.substring(i, tagEnd + 1));
+          i = tagEnd;
+          continue;
+        }
+      }
+
+      // Check if we're at the start of a match in plain text
+      if (currentPlainMatchIndex < plainMatches.length) {
+        final match = plainMatches[currentPlainMatchIndex];
+
+        if (plainPos == match.start) {
+          // Start of a match
+          final isCurrentMatch = matchCounter == _currentMatchIndex;
+          buffer.write('<mark data-current="$isCurrentMatch">');
+
+          // Write the matched text
+          final matchLength = match.end - match.start;
+          int charsWritten = 0;
+          int j = i;
+
+          while (charsWritten < matchLength && j < content.length) {
+            final c = content[j];
+            if (c == '<') {
+              // Skip HTML tags within the match
+              final tagEnd = content.indexOf('>', j);
+              if (tagEnd != -1) {
+                buffer.write(content.substring(j, tagEnd + 1));
+                j = tagEnd + 1;
+                continue;
+              }
+            }
+            buffer.write(c);
+            charsWritten++;
+            j++;
+          }
+
+          buffer.write('</mark>');
+          i = j - 1; // -1 because the loop will increment
+          plainPos += matchLength;
+          currentPlainMatchIndex++;
+          matchCounter++;
+          continue;
+        }
+      }
+
+      // Regular character
+      buffer.write(char);
+      plainPos++;
+    }
 
     return buffer.toString();
   }
