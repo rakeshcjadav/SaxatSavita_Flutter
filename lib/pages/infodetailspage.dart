@@ -89,10 +89,7 @@ class Infodetailspage extends StatelessWidget {
                               final InspirationalQuote quote =
                                   InspirationalQuote(
                                     quote: selectedText!,
-                                    author:
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.jogi_swami,
+                                    author: infoItem.title,
                                     kiranIndex: -1,
                                     partNumber: -1,
                                   );

@@ -9,6 +9,16 @@ import 'package:saxatsavita_flutter/services/utils.dart';
 
 /// Converts HTML string to a list of widgets for use with Column
 class HtmlToTextSpan {
+  // Set to false to disable all debug prints in this file
+  static const bool _enableDebugPrint = false;
+
+  static void _debugPrint(String message) {
+    if (_enableDebugPrint) {
+      // ignore: avoid_print
+      print(message);
+    }
+  }
+
   /// Converts HTML string to a list of widgets with proper formatting and alignment
   static List<Widget> convertToWidgets(
     String htmlContent,
@@ -20,17 +30,17 @@ class HtmlToTextSpan {
     Function(String)? onCreateQuoteImage,
     VoidCallback? onDoubleTap,
   }) {
-    debugPrint('[HtmlToTextSpan] Starting conversion...');
+    _debugPrint('[HtmlToTextSpan] Starting conversion...');
     final document = html_parser.parse(htmlContent);
     final body = document.body;
 
     // Debug: print document structure
     if (body != null) {
-      debugPrint(
+      _debugPrint(
         '[HtmlToTextSpan] Body has ${body.children.length} direct children:',
       );
       for (var i = 0; i < body.children.length; i++) {
-        debugPrint(
+        _debugPrint(
           '[HtmlToTextSpan]   Child $i: <${body.children[i].localName}>',
         );
       }
@@ -55,7 +65,7 @@ class HtmlToTextSpan {
 
     void flushCurrentSpans() {
       if (currentSpans.isNotEmpty) {
-        debugPrint(
+        _debugPrint(
           '[HtmlToTextSpan] Flushing ${currentSpans.length} spans, creating widget at position ${widgets.length}',
         );
 
@@ -138,11 +148,11 @@ class HtmlToTextSpan {
 
         widgets.add(selectableWidget);
         currentSpans.clear(); // Clear the list instead of reassigning
-        debugPrint(
+        _debugPrint(
           '[HtmlToTextSpan] After flush: currentSpans.length = ${currentSpans.length}',
         );
       } else {
-        debugPrint('[HtmlToTextSpan] Flush called but currentSpans is empty');
+        _debugPrint('[HtmlToTextSpan] Flush called but currentSpans is empty');
       }
     }
 
@@ -161,34 +171,34 @@ class HtmlToTextSpan {
 
     flushCurrentSpans();
 
-    debugPrint('[HtmlToTextSpan] Finished conversion.');
+    _debugPrint('[HtmlToTextSpan] Finished conversion.');
     // print all widgets
     for (var widget in widgets) {
       if (widget is Padding && widget.child is SelectableText) {
         final selectableText = widget.child as SelectableText;
         if (selectableText.data != null) {
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan] Widget: SelectableText with data: "${selectableText.data}"',
           );
         } else if (selectableText.textSpan != null) {
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan] Widget: SelectableText.rich with TextSpan:',
           );
           _printTextSpan(selectableText.textSpan!, indent: '  ');
         }
       } else if (widget is SelectableText) {
         if (widget.data != null) {
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan] Widget: SelectableText with data: "${widget.data}"',
           );
         } else if (widget.textSpan != null) {
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan] Widget: SelectableText.rich with TextSpan:',
           );
           _printTextSpan(widget.textSpan!, indent: '  ');
         }
       } else {
-        debugPrint('[HtmlToTextSpan] Widget: ${widget.runtimeType}');
+        _debugPrint('[HtmlToTextSpan] Widget: ${widget.runtimeType}');
       }
     }
 
@@ -202,20 +212,20 @@ class HtmlToTextSpan {
             span.text!.length > 50
                 ? '${span.text!.substring(0, 50)}...'
                 : span.text!;
-        debugPrint('[HtmlToTextSpan] $indent- Text: "$text"');
+        _debugPrint('[HtmlToTextSpan] $indent- Text: "$text"');
       }
       if (span.children != null && span.children!.isNotEmpty) {
-        debugPrint(
+        _debugPrint(
           '[HtmlToTextSpan] $indent- Children (${span.children!.length}):',
         );
         for (var child in span.children!) {
           _printTextSpan(child, indent: '$indent  ');
         }
       } else if (span.text == null || span.text!.isEmpty) {
-        debugPrint('[HtmlToTextSpan] $indent- Empty TextSpan');
+        _debugPrint('[HtmlToTextSpan] $indent- Empty TextSpan');
       }
     } else {
-      debugPrint('[HtmlToTextSpan] $indent- ${span.runtimeType}');
+      _debugPrint('[HtmlToTextSpan] $indent- ${span.runtimeType}');
     }
   }
 
@@ -254,7 +264,7 @@ class HtmlToTextSpan {
           .replaceAll('&#8230;', '…');
 
       if (text.isNotEmpty) {
-        debugPrint(
+        _debugPrint(
           '[HtmlToTextSpan] Text node: "${text.length > 50 ? "${text.substring(0, 50)}..." : text}"',
         );
 
@@ -277,23 +287,23 @@ class HtmlToTextSpan {
       }
       return;
     }
-    debugPrint(
+    _debugPrint(
       '[HtmlToTextSpan] ------ Processing node (depth $nodeDepth): ${node.text}',
     );
     nodeDepth++;
 
     if (node is dom.Element) {
-      debugPrint('[HtmlToTextSpan] Processing tag: <${node.localName}>');
+      _debugPrint('[HtmlToTextSpan] Processing tag: <${node.localName}>');
 
       // Special handling for body - just process children sequentially
       if (node.localName == 'body') {
-        debugPrint(
+        _debugPrint(
           '[HtmlToTextSpan]   -> Body element, processing ${node.children.length} children sequentially',
         );
         int childIndex = 0;
         for (var child in node.nodes) {
           if (child is dom.Element) {
-            debugPrint(
+            _debugPrint(
               '[HtmlToTextSpan]   -> Processing body child $childIndex: <${child.localName}>',
             );
           }
@@ -309,7 +319,7 @@ class HtmlToTextSpan {
           );
           childIndex++;
         }
-        debugPrint(
+        _debugPrint(
           '[HtmlToTextSpan]   -> Body complete. Widgets created: ${widgets.length}',
         );
         return;
@@ -324,22 +334,22 @@ class HtmlToTextSpan {
       switch (node.localName) {
         case 'b':
         case 'strong':
-          debugPrint('[HtmlToTextSpan]   -> Applying bold style');
+          _debugPrint('[HtmlToTextSpan]   -> Applying bold style');
           newStyle = currentStyle.copyWith(fontWeight: FontWeight.bold);
           break;
         case 'i':
         case 'em':
-          debugPrint('[HtmlToTextSpan]   -> Applying italic style');
+          _debugPrint('[HtmlToTextSpan]   -> Applying italic style');
           newStyle = currentStyle.copyWith(fontStyle: FontStyle.italic);
           break;
         case 'u':
-          debugPrint('[HtmlToTextSpan]   -> Applying underline');
+          _debugPrint('[HtmlToTextSpan]   -> Applying underline');
           newStyle = currentStyle.copyWith(
             decoration: TextDecoration.underline,
           );
           break;
         case 'mark':
-          debugPrint('[HtmlToTextSpan]   -> Applying highlight/mark style');
+          _debugPrint('[HtmlToTextSpan]   -> Applying highlight/mark style');
           // Check for data-current attribute to determine highlight color
           final isCurrent = node.attributes['data-current'] == 'true';
           final bgColor = isCurrent ? Color(0xFFFF9800) : Color(0xFFFFEB3B);
@@ -349,7 +359,7 @@ class HtmlToTextSpan {
           );
           break;
         case 'slok':
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan]   -> Block element: SLOK (centered, bold)',
           );
           // Flush current spans and create centered widget
@@ -362,7 +372,7 @@ class HtmlToTextSpan {
           );
           break;
         case 'header':
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan]   -> Block element: HEADER (centered, bold, 1.2x size)',
           );
           flushCurrentSpans();
@@ -374,7 +384,7 @@ class HtmlToTextSpan {
           );
           break;
         case 'footer':
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan]   -> Block element: FOOTER (right-aligned, italic, 0.9x size)',
           );
           flushCurrentSpans();
@@ -388,7 +398,7 @@ class HtmlToTextSpan {
           );
           break;
         case 'p':
-          debugPrint('[HtmlToTextSpan]   -> Paragraph tag (flushing before)');
+          _debugPrint('[HtmlToTextSpan]   -> Paragraph tag (flushing before)');
           // Flush before processing paragraph content
           flushCurrentSpans();
 
@@ -399,7 +409,7 @@ class HtmlToTextSpan {
                 child.localName == 'header' ||
                 child.localName == 'footer',
           );
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan]   -> Paragraph ${hasBlockChildren ? "(contains block elements)" : "(normal)"}',
           );
 
@@ -438,14 +448,14 @@ class HtmlToTextSpan {
               }
             }
             // Flush after processing all children
-            debugPrint(
+            _debugPrint(
               '[HtmlToTextSpan]   -> Paragraph with blocks done, flushing',
             );
             flushCurrentSpans();
             return;
           } else {
             // Normal paragraph - process content then flush
-            debugPrint(
+            _debugPrint(
               '[HtmlToTextSpan]   -> Processing normal paragraph children',
             );
             for (var child in node.nodes) {
@@ -461,18 +471,18 @@ class HtmlToTextSpan {
               );
             }
             // Flush the paragraph content as a separate widget
-            debugPrint(
+            _debugPrint(
               '[HtmlToTextSpan]   -> Normal paragraph done, flushing (currentSpans: ${currentSpans.length})',
             );
             flushCurrentSpans();
             return;
           }
         case 'br':
-          debugPrint('[HtmlToTextSpan]   -> Line break');
+          _debugPrint('[HtmlToTextSpan]   -> Line break');
           currentSpans.add(TextSpan(text: '\n', style: currentStyle));
           return;
         case 'img':
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan]   -> Image: ${node.attributes['src'] ?? 'no src'}',
           );
           flushCurrentSpans();
@@ -486,7 +496,7 @@ class HtmlToTextSpan {
           );
           return;
         case 'a':
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan]   -> Link: ${node.attributes['href'] ?? 'no href'}',
           );
           newStyle = currentStyle.copyWith(
@@ -528,7 +538,7 @@ class HtmlToTextSpan {
         }
 
         if (blockSpans.isNotEmpty) {
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan]   -> Adding ${blockSpans.length} block spans to widget at position ${widgets.length} (isCentered: $isCentered, isRightAligned: $isRightAligned)',
           );
 
@@ -542,7 +552,7 @@ class HtmlToTextSpan {
             alignment = TextAlign.start;
           }
 
-          debugPrint('[HtmlToTextSpan]   -> Using alignment: $alignment');
+          _debugPrint('[HtmlToTextSpan]   -> Using alignment: $alignment');
 
           widgets.add(
             Padding(
@@ -568,7 +578,7 @@ class HtmlToTextSpan {
         );
 
         if (hasBlockChildren) {
-          debugPrint(
+          _debugPrint(
             '[HtmlToTextSpan]   -> Inline element contains block children, processing sequentially',
           );
           // Process children sequentially like paragraphs do
@@ -625,7 +635,7 @@ class HtmlToTextSpan {
 
   /// Handles tap on anchor tags to show dictionary meanings
   static void _handleAnchorTap(BuildContext context, String href) {
-    debugPrint('[HtmlToTextSpan] Anchor tapped: $href');
+    _debugPrint('[HtmlToTextSpan] Anchor tapped: $href');
 
     // Call Bookservice to get meaning (synchronous)
     final meaning = Bookservice().getMeaning(href);
@@ -633,7 +643,7 @@ class HtmlToTextSpan {
     if (meaning != null && meaning.index != -1) {
       _showMeaningDialog(context, meaning);
     } else {
-      debugPrint('[HtmlToTextSpan] No meaning found for: $href');
+      _debugPrint('[HtmlToTextSpan] No meaning found for: $href');
     }
   }
 

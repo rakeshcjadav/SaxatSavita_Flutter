@@ -1730,6 +1730,31 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               ),
             ],
           ),
+        ] else if (!hasEnableEditing) ...[
+          const SizedBox(height: 12),
+          // App branding
+          Row(
+            mainAxisAlignment:
+                alignment == CrossAxisAlignment.center
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.auto_stories,
+                color: _textColor.withValues(alpha: 0.7),
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                AppLocalizations.of(context)!.sakshatSavita,
+                style: TextStyle(
+                  color: _textColor.withValues(alpha: 0.7),
+                  fontSize: 12,
+                  fontFamily: _selectedFont,
+                ),
+              ),
+            ],
+          ),
         ],
       ],
     );
