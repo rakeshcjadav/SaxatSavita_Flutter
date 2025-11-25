@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
+import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
@@ -77,7 +78,6 @@ class _KiranReadPageState extends State<KiranReadPage>
   String _currentKiranContent = '';
   List<int> _searchMatches = [];
   int _currentMatchIndex = -1;
-  final bool _useCustomHtmlWidget = false;
 
   @override
   void initState() {
@@ -831,12 +831,12 @@ class _KiranReadPageState extends State<KiranReadPage>
         controller: _scrollController,
         child: Padding(
           padding: EdgeInsets.only(
-            left: _useCustomHtmlWidget ? 0.0 : 6.0,
-            right: _useCustomHtmlWidget ? 0.0 : 6.0,
+            left: RemoteConfigService().useCustomHtmlWidget ? 0.0 : 6.0,
+            right: RemoteConfigService().useCustomHtmlWidget ? 0.0 : 6.0,
           ),
           child: Column(
             children: [
-              if (!_useCustomHtmlWidget)
+              if (!RemoteConfigService().useCustomHtmlWidget)
                 ...HtmlToTextSpan.convertToWidgets(
                   _isSearchMode && _searchController.text.isNotEmpty
                       ? _getHighlightedContentForTextSpan(
@@ -873,7 +873,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                     }
                   },
                 ),
-              if (_useCustomHtmlWidget)
+              if (RemoteConfigService().useCustomHtmlWidget)
                 CustomHtmlWidget(
                   htmlContent:
                       _isSearchMode && _searchController.text.isNotEmpty

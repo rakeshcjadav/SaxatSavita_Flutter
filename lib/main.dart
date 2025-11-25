@@ -22,6 +22,7 @@ import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 import 'package:saxatsavita_flutter/services/home_widget_service.dart';
+import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -75,6 +76,10 @@ void main() async {
     // Initialize Analytics Service
     AnalyticsService().initialize(analytics);
     print('Firebase Analytics initialized successfully');
+
+    // Initialize Remote Config
+    await RemoteConfigService().initialize();
+    print('Firebase Remote Config initialized successfully');
 
     // Initialize In-App Review Service
     await InAppReviewService().initialize();

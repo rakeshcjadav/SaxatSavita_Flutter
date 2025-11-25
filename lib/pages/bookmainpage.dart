@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/bookmarkwidget.dart';
+import 'package:saxatsavita_flutter/components/remote_config_widgets.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
@@ -98,6 +99,7 @@ class _BookmainpageState extends State<BookMainpage> {
     return SafeArea(
       child: Column(
         children: [
+          const AnnouncementBanner(),
           const SizedBox(height: 8),
           Text(
             AppLocalizations.of(context)!.tag_line,
@@ -128,6 +130,7 @@ class _BookmainpageState extends State<BookMainpage> {
           ),
           Column(
             children: [
+              const AnnouncementBanner(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
