@@ -88,7 +88,7 @@ class Infodetailspage extends StatelessWidget {
                             onCreateQuoteImage: (selectedText) async {
                               final InspirationalQuote quote =
                                   InspirationalQuote(
-                                    quote: selectedText!,
+                                    quote: selectedText,
                                     author: infoItem.title,
                                     kiranIndex: -1,
                                     partNumber: -1,
