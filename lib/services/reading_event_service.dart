@@ -88,9 +88,10 @@ class ReadingEventService {
       final deviceId = await getDeviceId();
 
       // Find event for this kiran on this device
-      final event = events.where((e) {
-        return e.kiranIndex == kiranIndex && e.deviceId == deviceId;
-      }).firstOrNull;
+      final event =
+          events.where((e) {
+            return e.kiranIndex == kiranIndex && e.deviceId == deviceId;
+          }).firstOrNull;
 
       return event;
     } catch (e) {
@@ -145,9 +146,7 @@ class ReadingEventService {
   }
 
   /// Complete a reading event (convert to history and delete event)
-  static Future<ReadingHistory> completeReadingEvent(
-    ReadingEvent event,
-  ) async {
+  static Future<ReadingHistory> completeReadingEvent(ReadingEvent event) async {
     try {
       // Convert to history
       final history = convertEventToHistory(event);
@@ -265,10 +264,14 @@ class ReadingEventService {
         0,
         (sum, event) => sum + event.durationSeconds,
       );
-      final avgProgress = events.isEmpty
-          ? 0
-          : events.fold<int>(0, (sum, event) => sum + event.currentProgress) ~/
-              events.length;
+      final avgProgress =
+          events.isEmpty
+              ? 0
+              : events.fold<int>(
+                    0,
+                    (sum, event) => sum + event.currentProgress,
+                  ) ~/
+                  events.length;
 
       return {
         'totalEvents': totalEvents,

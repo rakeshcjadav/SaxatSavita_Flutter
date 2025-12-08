@@ -13,12 +13,12 @@ class ReadingEvent {
   final int kiranIndex;
   final int partNumber;
   final DateTime startedAt;
-  final int currentProgress; // 0-100
+  int currentProgress; // 0-100
   final int durationSeconds; // Time spent so far
   final bool isPaused;
   final double? lastScrollPosition; // Optional: track where user left off
   final String deviceId; // To handle multi-device scenarios
-  final DateTime lastUpdatedAt;
+  DateTime lastUpdatedAt;
   final String category; // Morning/Afternoon/Evening/Night Reading
 
   ReadingEvent({

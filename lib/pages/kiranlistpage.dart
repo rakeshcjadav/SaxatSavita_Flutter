@@ -36,6 +36,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
   late BookUserInfo bookUserInfo;
   int? _expandedIndex;
   bool _showFavoritesOnly = false;
+  int _rebuildCounter = 0; // Counter to force FutureBuilder refresh
 
   @override
   void initState() {
@@ -70,8 +71,9 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     bool fromSearch = false,
   }) async {
     // Check if there's an existing reading event for this kiran
-    final existingEvent =
-        await ReadingEventService.getReadingEventForKiran(kiran.index);
+    final existingEvent = await ReadingEventService.getReadingEventForKiran(
+      kiran.index,
+    );
 
     ReadingMode? selectedMode;
     ReadingEvent? eventToResume;
@@ -117,7 +119,11 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     );
     if (result == true) {
       setState(() {
+        debugPrint(
+          '🔄 Returning from KiranReadPage, refreshing KiranListPage state',
+        );
         // Refresh the state to reflect any changes made in KiranReadPage
+        _rebuildCounter++; // Force FutureBuilder refresh to update event badges
       });
     }
     /*
@@ -174,33 +180,38 @@ class _KiranlistpageState extends State<Kiranlistpage> {
   Future<ReadingMode?> _showReadingModeDialog() async {
     return showDialog<ReadingMode>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('How would you like to read?'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.book, color: Colors.blue, size: 32),
-              title: const Text(
-                'Reading Mode',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: const Text('Track progress and save history'),
-              onTap: () => Navigator.pop(context, ReadingMode.reading),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('How would you like to read?'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.book, color: Colors.blue, size: 32),
+                  title: const Text(
+                    'Reading Mode',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: const Text('Track progress and save history'),
+                  onTap: () => Navigator.pop(context, ReadingMode.reading),
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                    size: 32,
+                  ),
+                  title: const Text(
+                    'Browse Mode',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: const Text('Quick look, no tracking'),
+                  onTap: () => Navigator.pop(context, ReadingMode.browse),
+                ),
+              ],
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.search, color: Colors.grey, size: 32),
-              title: const Text(
-                'Browse Mode',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: const Text('Quick look, no tracking'),
-              onTap: () => Navigator.pop(context, ReadingMode.browse),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -208,67 +219,68 @@ class _KiranlistpageState extends State<Kiranlistpage> {
   Future<String?> _showResumeDialog(ReadingEvent event) async {
     return showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Continue Reading?'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'You have an ongoing session:',
-              style: TextStyle(color: Colors.grey[700]),
-            ),
-            const SizedBox(height: 12),
-            Row(
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Continue Reading?'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.pending, color: Colors.blue, size: 20),
-                const SizedBox(width: 8),
                 Text(
-                  '${event.currentProgress}% complete',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  'You have an ongoing session:',
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Icon(Icons.pending, color: Colors.blue, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${event.currentProgress}% complete',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(Icons.timer, color: Colors.green, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${event.formattedDuration} read',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(Icons.access_time, color: Colors.orange, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      event.timeAgo,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Icon(Icons.timer, color: Colors.green, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  '${event.formattedDuration} read',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Icon(Icons.access_time, color: Colors.orange, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  event.timeAgo,
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'browse'),
-            child: const Text('Just Browse'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'browse'),
+                child: const Text('Just Browse'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'new'),
+                child: const Text('Start New'),
+              ),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context, 'resume'),
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Resume'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'new'),
-            child: const Text('Start New'),
-          ),
-          ElevatedButton.icon(
-            onPressed: () => Navigator.pop(context, 'resume'),
-            icon: const Icon(Icons.play_arrow),
-            label: const Text('Resume'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -516,42 +528,57 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         Row(
           children: [
             Text(kiran.number, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(width: 12),
+            const SizedBox(width: 2),
             Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Text(
-                  kiran.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  overflow: TextOverflow.ellipsis,
+              child: ColoredBox(
+                color: Colors.transparent,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    kiran.title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ),
             // Reading event badge
             FutureBuilder<ReadingEvent?>(
+              key: ValueKey('event_${kiran.index}_$_rebuildCounter'),
               future: ReadingEventService.getReadingEventForKiran(kiran.index),
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data != null) {
                   final event = snapshot.data!;
                   return Container(
                     margin: const EdgeInsets.only(left: 8),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withValues(alpha: 0.2),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue, width: 1),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 1,
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.pending, size: 14, color: Colors.blue),
+                        Icon(
+                          Icons.pending,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         const SizedBox(width: 4),
                         Text(
-                          '${event.currentProgress}%',
-                          style: const TextStyle(
+                          '${kiranUserInfo.progress}%',
+                          style: TextStyle(
                             fontSize: 11,
-                            color: Colors.blue,
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

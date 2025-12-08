@@ -55,6 +55,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
   bool _isTimerPaused = false;
+  int _initialDurationOffset = 0; // For resumed events
 
   // ValueNotifiers to prevent widget rebuilds during timer updates
   final ValueNotifier<String> _elapsedNotifier = ValueNotifier<String>("00:00");
@@ -99,6 +100,11 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Only start tracking in reading mode
     if (_isReadingMode) {
+      // If resuming an existing event, track the initial duration offset
+      if (widget.existingEvent != null) {
+        _initialDurationOffset = widget.existingEvent!.durationSeconds;
+      }
+
       _stopwatch.start();
       _sessionStartTime = DateTime.now();
       _currentCategory = _getCategoryBasedOnTime();
@@ -156,21 +162,10 @@ class _KiranReadPageState extends State<KiranReadPage>
     // Stop stopwatch first to capture correct elapsed time
     _stopwatch.stop();
 
-    // Save final reading event state before exit (in reading mode only)
-    if (_isReadingMode && _currentReadingEvent != null) {
-      _currentReadingEvent = _currentReadingEvent!.copyWith(
-        currentProgress: widget.kiranUserInfo.progress,
-        durationSeconds: _stopwatch.elapsed.inSeconds,
-        lastScrollPosition:
-            _scrollController.hasClients ? _scrollController.offset : null,
-        lastUpdatedAt: DateTime.now(),
-      );
-      // Fire and forget - don't await in dispose
-      ReadingEventService.saveReadingEvent(_currentReadingEvent!);
-    }
-
-    // Save reading history if session is long enough
-    _saveReadingHistory();
+    _saveReadingEvent();
+    // Note: We DO NOT save reading history here automatically
+    // History should only be created when user explicitly finishes reading
+    // This prevents cluttering history with incomplete sessions
 
     // Disable wakelock when leaving the page
     WakelockPlus.disable();
@@ -203,6 +198,31 @@ class _KiranReadPageState extends State<KiranReadPage>
     _searchFocusNode.dispose();
 
     super.dispose();
+  }
+
+  Future<void> _saveReadingEvent() async {
+    // Save final reading event state before exit (in reading mode only)
+    // This preserves the event for resume capability
+    // Note: History is ONLY created when user explicitly finishes reading (presses finish button)
+    if (_isReadingMode && _currentReadingEvent != null) {
+      _currentReadingEvent = _currentReadingEvent!.copyWith(
+        currentProgress: widget.kiranUserInfo.progress,
+        durationSeconds: _stopwatch.elapsed.inSeconds + _initialDurationOffset,
+        lastScrollPosition:
+            _scrollController.hasClients ? _scrollController.offset : null,
+        lastUpdatedAt: DateTime.now(),
+      );
+      // Fire and forget - don't await in dispose
+      await ReadingEventService.saveReadingEvent(_currentReadingEvent!);
+    }
+    /*
+    // Also update and save the kiran user info progress
+    if (_scrollController.hasClients && _contentHeight > 0) {
+      widget.kiranUserInfo.progress =
+          ((_scrollController.position.pixels / _contentHeight) * 100).round();
+      widget.kiranUserInfo.updatedAt = DateTime.now();
+      Utils.updateKiranUserInfo(widget.kiranUserInfo);
+    }*/
   }
 
   // Handle app lifecycle changes
@@ -256,7 +276,8 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   void _updateElapsedTime() {
-    final seconds = _stopwatch.elapsed.inSeconds;
+    // Add initial offset for resumed events
+    final seconds = _stopwatch.elapsed.inSeconds + _initialDurationOffset;
     final minutes = seconds ~/ 60;
     final secs = seconds % 60;
     final timeString =
@@ -343,13 +364,22 @@ class _KiranReadPageState extends State<KiranReadPage>
           if (currentProgress != widget.kiranUserInfo.progress) {
             widget.kiranUserInfo.progress = currentProgress;
             widget.kiranUserInfo.updatedAt = DateTime.now();
+
+            if (_isReadingMode && _currentReadingEvent != null) {
+              _currentReadingEvent = _currentReadingEvent!.copyWith(
+                currentProgress: currentProgress,
+                durationSeconds:
+                    _stopwatch.elapsed.inSeconds + _initialDurationOffset,
+                lastUpdatedAt: DateTime.now(),
+              );
+            }
+
             // Update periodically, not on every scroll event for performance
             if (currentProgress % 5 == 0) {
               // Update every 5% progress
               //Utils.updateKiranUserInfo(widget.kiranUserInfo);
               _hasDataChanged = true;
-              // Update reading event every 5%
-              _updateReadingEvent();
+              // Reading event will be updated on dispose
             }
           }
         }
@@ -541,8 +571,14 @@ class _KiranReadPageState extends State<KiranReadPage>
         // Resume existing event
         _currentReadingEvent = widget.existingEvent;
         _initialReadingProgress = _currentReadingEvent!.currentProgress;
-        
-        debugPrint('📖 Resumed reading event: ${_currentReadingEvent!.id}');
+
+        // Initial duration offset is already set in initState
+        // Update the timer display immediately
+        _updateElapsedTime();
+
+        debugPrint(
+          '📖 Resumed reading event: ${_currentReadingEvent!.id} with ${_currentReadingEvent!.formattedDuration}',
+        );
       } else {
         // Create new event
         final deviceId = await ReadingEventService.getDeviceId();
@@ -567,13 +603,15 @@ class _KiranReadPageState extends State<KiranReadPage>
     try {
       _currentReadingEvent = _currentReadingEvent!.copyWith(
         currentProgress: widget.kiranUserInfo.progress,
-        durationSeconds: _stopwatch.elapsed.inSeconds,
+        durationSeconds: _stopwatch.elapsed.inSeconds + _initialDurationOffset,
         lastScrollPosition:
             _scrollController.hasClients ? _scrollController.offset : null,
         lastUpdatedAt: DateTime.now(),
       );
       await ReadingEventService.saveReadingEvent(_currentReadingEvent!);
-      debugPrint('💾 Reading event updated: ${_currentReadingEvent!.currentProgress}%');
+      debugPrint(
+        '💾 Reading event updated: ${_currentReadingEvent!.currentProgress}%',
+      );
     } catch (e) {
       debugPrint('❌ Error updating reading event: $e');
     }
@@ -731,22 +769,23 @@ class _KiranReadPageState extends State<KiranReadPage>
               ),
               child: Column(
                 children: [
-                  displayExtraInfos(context),
+                  if (_isReadingMode) displayExtraInfos(context),
                   // Search bar
                   if (_isSearchMode) _buildSearchBar(),
-                  LinearProgressIndicator(
-                    value: widget.kiranUserInfo.progress.toDouble() / 100.0,
-                    minHeight: 3,
-                    borderRadius: BorderRadius.circular(3),
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.1),
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(
+                  if (_isReadingMode)
+                    LinearProgressIndicator(
+                      value: widget.kiranUserInfo.progress.toDouble() / 100.0,
+                      minHeight: 3,
+                      borderRadius: BorderRadius.circular(3),
+                      backgroundColor: Theme.of(
                         context,
-                      ).colorScheme.primary.withValues(alpha: 0.5),
+                      ).colorScheme.primary.withValues(alpha: 0.1),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.5),
+                      ),
                     ),
-                  ),
                   Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -1601,7 +1640,9 @@ class _KiranReadPageState extends State<KiranReadPage>
                       builder: (context, elapsed, child) {
                         return Text(
                           elapsed,
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall!.copyWith(
                             fontSize: 13,
                             color: _isTimerPaused ? Colors.orange : null,
                           ),
@@ -1628,9 +1669,13 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Convert reading event to history if in reading mode
     if (_isReadingMode && _currentReadingEvent != null) {
+      debugPrint(
+        '📖 Converting reading event to history : ${_currentReadingEvent!.kiranIndex} : ${_currentReadingEvent!.currentProgress} : ${_currentReadingEvent!.durationSeconds}',
+      );
       try {
-        final history =
-            await ReadingEventService.completeReadingEvent(_currentReadingEvent!);
+        final history = await ReadingEventService.completeReadingEvent(
+          _currentReadingEvent!,
+        );
         await ReadingHistoryService.saveReadingHistory(history);
         debugPrint('✅ Reading event converted to history');
       } catch (e) {
@@ -1673,7 +1718,8 @@ class _KiranReadPageState extends State<KiranReadPage>
         Utils.applyBookmarkToNextKiran(widget.kiranUserInfo);
       });
 
-      final durationSeconds = _stopwatch.elapsed.inSeconds;
+      final durationSeconds =
+          _currentReadingEvent?.durationSeconds ?? _stopwatch.elapsed.inSeconds;
       final minutes = durationSeconds ~/ 60;
       final secs = durationSeconds % 60;
       final timeString =
@@ -1781,44 +1827,70 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
   }
 
-  void _navigateToPreviousKiran() {
+  Future<void> _navigateToPreviousKiran() async {
     KiranInfo previousKiranInfo = KiranListService().getKiranInfo(
       widget.kiranUserInfo.partNumber,
       widget.kiranInfo.index - 1,
     );
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder:
-            (_) => KiranReadPage(
-              partNumber: widget.partNumber,
-              kiranInfo: previousKiranInfo,
-              kiranUserInfo: KiranUserService().getKiranUserInfo(
-                widget.kiranUserInfo.kiranIndex - 1,
+
+    // Check for existing reading event if in reading mode
+    ReadingEvent? existingEvent;
+    if (widget.readingMode == ReadingMode.reading) {
+      existingEvent = await ReadingEventService.getReadingEventForKiran(
+        previousKiranInfo.index,
+      );
+    }
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => KiranReadPage(
+                partNumber: widget.partNumber,
+                kiranInfo: previousKiranInfo,
+                kiranUserInfo: KiranUserService().getKiranUserInfo(
+                  widget.kiranUserInfo.kiranIndex - 1,
+                ),
+                readingMode: widget.readingMode,
+                existingEvent: existingEvent,
               ),
-            ),
-      ),
-    );
+        ),
+      );
+    }
   }
 
-  void _navigateToNextKiran() {
+  Future<void> _navigateToNextKiran() async {
     KiranInfo nextKiranInfo = KiranListService().getKiranInfo(
       widget.kiranUserInfo.partNumber,
       widget.kiranInfo.index + 1,
     );
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder:
-            (_) => KiranReadPage(
-              partNumber: widget.partNumber,
-              kiranInfo: nextKiranInfo,
-              kiranUserInfo: KiranUserService().getKiranUserInfo(
-                widget.kiranUserInfo.kiranIndex + 1,
+
+    // Check for existing reading event if in reading mode
+    ReadingEvent? existingEvent;
+    if (widget.readingMode == ReadingMode.reading) {
+      existingEvent = await ReadingEventService.getReadingEventForKiran(
+        nextKiranInfo.index,
+      );
+    }
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => KiranReadPage(
+                partNumber: widget.partNumber,
+                kiranInfo: nextKiranInfo,
+                kiranUserInfo: KiranUserService().getKiranUserInfo(
+                  widget.kiranUserInfo.kiranIndex + 1,
+                ),
+                readingMode: widget.readingMode,
+                existingEvent: existingEvent,
               ),
-            ),
-      ),
-    );
+        ),
+      );
+    }
   }
 
   Widget _buildNextKiranButton() {

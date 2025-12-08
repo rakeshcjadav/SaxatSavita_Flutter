@@ -757,12 +757,12 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
 
     try {
       final snapshot = await userDoc!.collection('readingEvents').get();
-      
+
       if (snapshot.docs.isEmpty) {
         debugPrint('No reading events found in Firebase');
         return;
       }
-      
+
       for (final doc in snapshot.docs) {
         try {
           final event = ReadingEvent.fromFirestore(doc);
@@ -777,8 +777,10 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
           debugPrint('Error loading individual reading event: $e');
         }
       }
-      
-      debugPrint('📥 Loaded ${snapshot.docs.length} reading events from Firebase');
+
+      debugPrint(
+        '📥 Loaded ${snapshot.docs.length} reading events from Firebase',
+      );
     } catch (e) {
       debugPrint('❌ Error loading reading events from Firebase: $e');
     }
