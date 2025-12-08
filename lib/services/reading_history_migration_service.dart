@@ -9,6 +9,9 @@ import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 class ReadingHistoryMigrationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Enable verbose logging for debugging migration issues
+  static const bool _enableVerboseLogging = true;
+
   /// Check if user has legacy data that needs migration
   Future<bool> hasLegacyData(String userId) async {
     try {
@@ -30,6 +33,10 @@ class ReadingHistoryMigrationService {
     String userId,
   ) async {
     try {
+      if (_enableVerboseLogging) {
+        debugPrint('🔍 [Migration] Fetching legacy data for user: $userId');
+      }
+
       final legacyCollection = _firestore
           .collection('users')
           .doc(userId)
@@ -37,11 +44,17 @@ class ReadingHistoryMigrationService {
 
       final snapshot = await legacyCollection.orderBy('createdAt').get();
 
+      if (_enableVerboseLogging) {
+        debugPrint(
+          '📊 [Migration] Found ${snapshot.docs.length} legacy entries',
+        );
+      }
+
       return snapshot.docs.map((doc) {
         return LegacyReadingHistory.fromFirestore(doc);
       }).toList();
     } catch (e) {
-      debugPrint('Error fetching legacy reading history: $e');
+      debugPrint('❌ [Migration] Error fetching legacy reading history: $e');
       return [];
     }
   }
@@ -53,10 +66,17 @@ class ReadingHistoryMigrationService {
     Function(int current, int total)? onProgress,
   }) async {
     try {
+      if (_enableVerboseLogging) {
+        debugPrint('🚀 [Migration] Starting migration for user: $userId');
+      }
+
       // Get all legacy data
       final legacyEntries = await getLegacyReadingHistory(userId);
 
       if (legacyEntries.isEmpty) {
+        if (_enableVerboseLogging) {
+          debugPrint('✅ [Migration] No legacy data found to migrate');
+        }
         return MigrationResult(
           success: true,
           migratedCount: 0,
@@ -66,14 +86,32 @@ class ReadingHistoryMigrationService {
         );
       }
 
+      if (_enableVerboseLogging) {
+        debugPrint(
+          '📋 [Migration] Processing ${legacyEntries.length} legacy entries',
+        );
+      }
+
       int migratedCount = 0;
       int skippedCount = 0;
       int errorCount = 0;
       final List<String> errors = [];
 
+      // PERFORMANCE FIX: Load existing entries once, not in the loop!
+      final existingEntries = await ReadingHistoryService.loadReadingHistory();
+      if (_enableVerboseLogging) {
+        debugPrint(
+          '📂 [Migration] Loaded ${existingEntries.length} existing entries for duplicate check',
+        );
+      }
+
       // Process each legacy entry
       for (int i = 0; i < legacyEntries.length; i++) {
         final legacyEntry = legacyEntries[i];
+
+        if (_enableVerboseLogging && i % 10 == 0) {
+          debugPrint('⏳ [Migration] Progress: $i/${legacyEntries.length}');
+        }
 
         try {
           // Convert to current format
@@ -86,8 +124,6 @@ class ReadingHistoryMigrationService {
           );
 
           // Check if entry already exists (avoid duplicates)
-          final existingEntries =
-              await ReadingHistoryService.loadReadingHistory();
           final isDuplicate = existingEntries.any((entry) {
             return entry.createdAt == currentEntry.createdAt &&
                 entry.partNumber == currentEntry.partNumber &&
@@ -95,13 +131,21 @@ class ReadingHistoryMigrationService {
           });
 
           if (isDuplicate) {
-            debugPrint('Skipping duplicate entry: ${legacyEntry.toString()}');
+            if (_enableVerboseLogging) {
+              debugPrint(
+                '⏭️  [Migration] Skipping duplicate: Kiran ${legacyEntry.kiranIndex} at ${legacyEntry.createdAt}',
+              );
+            }
             skippedCount++;
           } else {
             // Add to current reading history
             await ReadingHistoryService.saveReadingHistory(currentEntry);
             migratedCount++;
-            debugPrint('Migrated entry: ${legacyEntry.toString()}');
+            if (_enableVerboseLogging) {
+              debugPrint(
+                '✅ [Migration] Migrated: Kiran ${legacyEntry.kiranIndex} (${legacyEntry.durationSeconds}s)',
+              );
+            }
           }
 
           // Report progress
@@ -111,13 +155,22 @@ class ReadingHistoryMigrationService {
           final errorMsg =
               'Failed to migrate entry ${legacyEntry.documentId}: $e';
           errors.add(errorMsg);
-          debugPrint(errorMsg);
+          debugPrint('❌ [Migration] $errorMsg');
         }
       }
 
       // Optionally delete legacy data after successful migration
       if (deleteAfterMigration && errorCount == 0) {
+        if (_enableVerboseLogging) {
+          debugPrint('🗑️  [Migration] Deleting legacy data...');
+        }
         await _deleteLegacyData(userId);
+      }
+
+      if (_enableVerboseLogging) {
+        debugPrint(
+          '🎉 [Migration] Complete: $migratedCount migrated, $skippedCount skipped, $errorCount errors',
+        );
       }
 
       final result = MigrationResult(
@@ -281,6 +334,63 @@ class ReadingHistoryMigrationService {
     }
 
     return await migrateLegacyData(user.uid, onProgress: onProgress);
+  }
+
+  /// DEBUG: Migrate for a specific user ID (for testing/debugging)
+  /// Use this to test migration with another user's ID on your device
+  Future<MigrationResult> debugMigrateSpecificUser(
+    String userId, {
+    Function(int current, int total)? onProgress,
+  }) async {
+    debugPrint('🔧 [DEBUG] Migrating data for user ID: $userId');
+    return await migrateLegacyData(userId, onProgress: onProgress);
+  }
+
+  /// DEBUG: Get legacy data count for a specific user ID
+  Future<int> debugGetLegacyDataCount(String userId) async {
+    try {
+      final legacyCollection = _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('reading_history');
+
+      final snapshot = await legacyCollection.limit(1).get();
+
+      if (snapshot.docs.isEmpty) {
+        debugPrint('🔧 [DEBUG] User $userId has no legacy data');
+        return 0;
+      }
+
+      // Get actual count
+      final allDocs = await legacyCollection.get();
+      final count = allDocs.docs.length;
+      debugPrint('🔧 [DEBUG] User $userId has $count legacy entries');
+      return count;
+    } catch (e) {
+      debugPrint('🔧 [DEBUG] Error checking legacy data: $e');
+      return 0;
+    }
+  }
+
+  /// DEBUG: Get migration status for a specific user ID
+  Future<Map<String, dynamic>?> debugGetMigrationStatus(String userId) async {
+    try {
+      final userDoc = await _firestore.collection('users').doc(userId).get();
+
+      if (!userDoc.exists) {
+        debugPrint('🔧 [DEBUG] User document does not exist');
+        return null;
+      }
+
+      final data = userDoc.data();
+      final migrations = data?['migrations'] as Map<String, dynamic>?;
+
+      debugPrint('🔧 [DEBUG] Migration status: $migrations');
+      return migrations;
+    } catch (e) {
+      debugPrint('🔧 [DEBUG] Error getting migration status: $e');
+      return null;
+    }
   }
 
   /// Helper methods

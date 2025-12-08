@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/debug_only/debug_migration_with_user_id.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
@@ -904,6 +905,21 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: const Text('Test the in-app review prompt dialog'),
             onTap: () {
               InAppReviewService().forcePromptForReview();
+            },
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.sync_problem),
+            title: const Text('Debug Migration Issues'),
+            subtitle: const Text('Test migration with any user ID'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DebugMigrationWithUserIdPage(),
+                ),
+              );
             },
           ),
         ),
