@@ -3,6 +3,7 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'firebase_sync_service_base.dart';
 
@@ -182,6 +183,21 @@ class FirebaseSyncServiceWeb implements FirebaseSyncServiceBase {
   @override
   Future<void> deleteReadingHistory(ReadingHistory historyToDelete) async {
     debugPrint('[Web] deleteReadingHistory: No-op');
+  }
+
+  @override
+  Future<void> syncReadingEvent(ReadingEvent event) async {
+    debugPrint('[Web] syncReadingEvent: No-op');
+  }
+
+  @override
+  Future<void> deleteReadingEvent(String eventId) async {
+    debugPrint('[Web] deleteReadingEvent: No-op');
+  }
+
+  @override
+  Future<void> loadReadingEvents() async {
+    debugPrint('[Web] loadReadingEvents: No-op');
   }
 }
 

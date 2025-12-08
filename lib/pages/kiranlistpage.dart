@@ -6,10 +6,12 @@ import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranlist_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import '../models/bookpart_model.dart';
 import '../services/kiranuser_service.dart';
@@ -64,8 +66,41 @@ class _KiranlistpageState extends State<Kiranlistpage> {
 
   Future<void> _navigateToKiranReadPage(
     KiranInfo kiran,
-    KiranUserInfo kiranUserInfo,
-  ) async {
+    KiranUserInfo kiranUserInfo, {
+    bool fromSearch = false,
+  }) async {
+    // Check if there's an existing reading event for this kiran
+    final existingEvent =
+        await ReadingEventService.getReadingEventForKiran(kiran.index);
+
+    ReadingMode? selectedMode;
+    ReadingEvent? eventToResume;
+
+    if (fromSearch) {
+      // Coming from search, always use browse mode
+      selectedMode = ReadingMode.browse;
+    } else if (existingEvent != null) {
+      // Show resume dialog
+      final resumeChoice = await _showResumeDialog(existingEvent);
+      if (resumeChoice == null) return; // User cancelled
+
+      if (resumeChoice == 'resume') {
+        selectedMode = ReadingMode.reading;
+        eventToResume = existingEvent;
+      } else if (resumeChoice == 'new') {
+        // Delete old event and start new reading session
+        await ReadingEventService.deleteReadingEvent(existingEvent.id);
+        selectedMode = ReadingMode.reading;
+      } else {
+        // browse
+        selectedMode = ReadingMode.browse;
+      }
+    } else {
+      // No existing event, show mode selection dialog
+      selectedMode = await _showReadingModeDialog();
+      if (selectedMode == null) return; // User cancelled
+    }
+
     Utils.updateLastOpenedKiran(bookUserInfo, kiran.index);
     final result = await Navigator.push(
       context,
@@ -75,6 +110,8 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               partNumber: widget.bookPart.id,
               kiranInfo: kiran,
               kiranUserInfo: kiranUserInfo,
+              readingMode: selectedMode!,
+              existingEvent: eventToResume,
             ),
       ),
     );
@@ -130,6 +167,108 @@ class _KiranlistpageState extends State<Kiranlistpage> {
       index: index,
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
+    );
+  }
+
+  /// Show dialog to select reading mode
+  Future<ReadingMode?> _showReadingModeDialog() async {
+    return showDialog<ReadingMode>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('How would you like to read?'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.book, color: Colors.blue, size: 32),
+              title: const Text(
+                'Reading Mode',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: const Text('Track progress and save history'),
+              onTap: () => Navigator.pop(context, ReadingMode.reading),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.search, color: Colors.grey, size: 32),
+              title: const Text(
+                'Browse Mode',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: const Text('Quick look, no tracking'),
+              onTap: () => Navigator.pop(context, ReadingMode.browse),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Show dialog to resume existing reading session
+  Future<String?> _showResumeDialog(ReadingEvent event) async {
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Continue Reading?'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'You have an ongoing session:',
+              style: TextStyle(color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(Icons.pending, color: Colors.blue, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  '${event.currentProgress}% complete',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(Icons.timer, color: Colors.green, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  '${event.formattedDuration} read',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(Icons.access_time, color: Colors.orange, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  event.timeAgo,
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'browse'),
+            child: const Text('Just Browse'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'new'),
+            child: const Text('Start New'),
+          ),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.pop(context, 'resume'),
+            icon: const Icon(Icons.play_arrow),
+            label: const Text('Resume'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -387,6 +526,41 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+            ),
+            // Reading event badge
+            FutureBuilder<ReadingEvent?>(
+              future: ReadingEventService.getReadingEventForKiran(kiran.index),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data != null) {
+                  final event = snapshot.data!;
+                  return Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.blue, width: 1),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.pending, size: 14, color: Colors.blue),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${event.currentProgress}%',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
           ],
         ),

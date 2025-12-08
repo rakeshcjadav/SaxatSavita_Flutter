@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
@@ -205,6 +206,34 @@ class FirebaseIntegrationHelper {
 
   Future<void> onReadingHistoryDeleted(ReadingHistory historyToDelete) async {
     await _firebaseSync.deleteReadingHistory(historyToDelete);
+  }
+
+  /// Auto-sync when reading event is created or updated
+  Future<void> onReadingEventUpdated(ReadingEvent event) async {
+    debugPrint('Reading event updated, syncing to Firebase...$event');
+    await _firebaseSync.syncReadingEvent(event);
+  }
+
+  /// Auto-sync when reading event is deleted
+  Future<void> onReadingEventDeleted(String eventId) async {
+    debugPrint('Reading event deleted, syncing to Firebase...$eventId');
+    await _firebaseSync.deleteReadingEvent(eventId);
+  }
+
+  /// Sync reading events from Firebase to local storage
+  Future<void> syncReadingEventsFromFirebase() async {
+    if (!_firebaseSync.isAuthenticated) {
+      debugPrint('User not logged in, skipping reading events sync');
+      return;
+    }
+
+    debugPrint('Loading reading events from Firebase...');
+    try {
+      await _firebaseSync.loadReadingEvents();
+      debugPrint('Reading events synced from Firebase');
+    } catch (e) {
+      debugPrint('Error syncing reading events from Firebase: $e');
+    }
   }
 
   /// Load only reading history from Firebase (on-demand)

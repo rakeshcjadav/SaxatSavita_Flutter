@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -5,7 +6,10 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
+import 'package:saxatsavita_flutter/services/reading_event_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_sync_service_base.dart';
 
 /// Mobile/Native implementation of FirebaseSyncService using Firebase
@@ -708,6 +712,75 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
       debugPrint('ReadingHistory entry deleted from Firebase successfully');
     } catch (e) {
       debugPrint('Error deleting ReadingHistory from Firebase: $e');
+    }
+  }
+
+  @override
+  Future<void> syncReadingEvent(ReadingEvent event) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot sync ReadingEvent');
+      return;
+    }
+
+    try {
+      await userDoc!
+          .collection('readingEvents')
+          .doc(event.id)
+          .set(event.toFirestore(), SetOptions(merge: true));
+      debugPrint('✅ ReadingEvent synced to Firebase: ${event.id}');
+    } catch (e) {
+      debugPrint('❌ Error syncing ReadingEvent to Firebase: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteReadingEvent(String eventId) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot delete ReadingEvent');
+      return;
+    }
+
+    try {
+      await userDoc!.collection('readingEvents').doc(eventId).delete();
+      debugPrint('🗑️ ReadingEvent deleted from Firebase: $eventId');
+    } catch (e) {
+      debugPrint('❌ Error deleting ReadingEvent from Firebase: $e');
+    }
+  }
+
+  @override
+  Future<void> loadReadingEvents() async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot load ReadingEvents');
+      return;
+    }
+
+    try {
+      final snapshot = await userDoc!.collection('readingEvents').get();
+      
+      if (snapshot.docs.isEmpty) {
+        debugPrint('No reading events found in Firebase');
+        return;
+      }
+      
+      for (final doc in snapshot.docs) {
+        try {
+          final event = ReadingEvent.fromFirestore(doc);
+          // Save to local storage without triggering another Firebase sync
+          final prefs = await SharedPreferences.getInstance();
+          final localEvents = await ReadingEventService.getAllReadingEvents();
+          localEvents.removeWhere((e) => e.id == event.id);
+          localEvents.add(event);
+          final eventsJson = localEvents.map((e) => e.toJson()).toList();
+          await prefs.setString('reading_events', jsonEncode(eventsJson));
+        } catch (e) {
+          debugPrint('Error loading individual reading event: $e');
+        }
+      }
+      
+      debugPrint('📥 Loaded ${snapshot.docs.length} reading events from Firebase');
+    } catch (e) {
+      debugPrint('❌ Error loading reading events from Firebase: $e');
     }
   }
 }

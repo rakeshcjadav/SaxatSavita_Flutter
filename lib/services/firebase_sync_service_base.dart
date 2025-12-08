@@ -2,6 +2,7 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 
 /// Base interface for FirebaseSyncService
@@ -59,4 +60,9 @@ abstract class FirebaseSyncServiceBase {
   Future<void> saveUserDetailsToFirebase(String displayName, String email);
   Future<bool> deleteAccount({dynamic reauthCredential});
   Future<void> deleteReadingHistory(ReadingHistory historyToDelete);
+
+  // Reading Events
+  Future<void> syncReadingEvent(ReadingEvent event);
+  Future<void> deleteReadingEvent(String eventId);
+  Future<void> loadReadingEvents();
 }

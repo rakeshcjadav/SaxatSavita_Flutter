@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
+import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
@@ -31,11 +33,15 @@ class KiranReadPage extends StatefulWidget {
     required this.kiranInfo,
     required this.kiranUserInfo,
     this.searchQuery,
+    this.readingMode = ReadingMode.reading,
+    this.existingEvent,
   });
   final String partNumber;
   final KiranInfo kiranInfo;
   final KiranUserInfo kiranUserInfo;
   final String? searchQuery;
+  final ReadingMode readingMode;
+  final ReadingEvent? existingEvent;
 
   @override
   State<KiranReadPage> createState() => _KiranReadPageState();
@@ -71,6 +77,10 @@ class _KiranReadPageState extends State<KiranReadPage>
   DateTime? _sessionStartTime;
   String _currentCategory = 'Reading Session';
 
+  // Reading event tracking
+  ReadingEvent? _currentReadingEvent;
+  bool _isReadingMode = true; // vs browse mode
+
   // Search functionality state
   bool _isSearchMode = false;
   final TextEditingController _searchController = TextEditingController();
@@ -83,11 +93,20 @@ class _KiranReadPageState extends State<KiranReadPage>
   void initState() {
     super.initState();
     _futureKiranContent = _loadKiranContent();
-    _stopwatch.start();
 
-    // Initialize reading session
-    _sessionStartTime = DateTime.now();
-    _currentCategory = _getCategoryBasedOnTime();
+    // Set reading mode
+    _isReadingMode = widget.readingMode == ReadingMode.reading;
+
+    // Only start tracking in reading mode
+    if (_isReadingMode) {
+      _stopwatch.start();
+      _sessionStartTime = DateTime.now();
+      _currentCategory = _getCategoryBasedOnTime();
+      _startTimer();
+
+      // Initialize or resume reading event
+      _initializeReadingEvent();
+    }
 
     // Add observer to detect app lifecycle changes
     WidgetsBinding.instance.addObserver(this);
@@ -105,8 +124,6 @@ class _KiranReadPageState extends State<KiranReadPage>
       chapterName: widget.kiranInfo.title,
       partName: 'Part ${widget.partNumber}',
     );
-
-    _startTimer();
 
     // If searchQuery is provided, open search mode and perform search
     if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
@@ -138,6 +155,19 @@ class _KiranReadPageState extends State<KiranReadPage>
   void dispose() {
     // Stop stopwatch first to capture correct elapsed time
     _stopwatch.stop();
+
+    // Save final reading event state before exit (in reading mode only)
+    if (_isReadingMode && _currentReadingEvent != null) {
+      _currentReadingEvent = _currentReadingEvent!.copyWith(
+        currentProgress: widget.kiranUserInfo.progress,
+        durationSeconds: _stopwatch.elapsed.inSeconds,
+        lastScrollPosition:
+            _scrollController.hasClients ? _scrollController.offset : null,
+        lastUpdatedAt: DateTime.now(),
+      );
+      // Fire and forget - don't await in dispose
+      ReadingEventService.saveReadingEvent(_currentReadingEvent!);
+    }
 
     // Save reading history if session is long enough
     _saveReadingHistory();
@@ -318,6 +348,8 @@ class _KiranReadPageState extends State<KiranReadPage>
               // Update every 5% progress
               //Utils.updateKiranUserInfo(widget.kiranUserInfo);
               _hasDataChanged = true;
+              // Update reading event every 5%
+              _updateReadingEvent();
             }
           }
         }
@@ -499,6 +531,51 @@ class _KiranReadPageState extends State<KiranReadPage>
       return 'Evening Reading';
     } else {
       return 'Night Reading';
+    }
+  }
+
+  /// Initialize or resume reading event
+  Future<void> _initializeReadingEvent() async {
+    try {
+      if (widget.existingEvent != null) {
+        // Resume existing event
+        _currentReadingEvent = widget.existingEvent;
+        _initialReadingProgress = _currentReadingEvent!.currentProgress;
+        
+        debugPrint('📖 Resumed reading event: ${_currentReadingEvent!.id}');
+      } else {
+        // Create new event
+        final deviceId = await ReadingEventService.getDeviceId();
+        _currentReadingEvent = ReadingEvent.create(
+          kiranIndex: widget.kiranInfo.index,
+          partNumber: int.parse(widget.partNumber.replaceAll('part', '')),
+          deviceId: deviceId,
+          category: _currentCategory,
+        );
+        await ReadingEventService.saveReadingEvent(_currentReadingEvent!);
+        debugPrint('📝 Created new reading event: ${_currentReadingEvent!.id}');
+      }
+    } catch (e) {
+      debugPrint('❌ Error initializing reading event: $e');
+    }
+  }
+
+  /// Update reading event with current progress
+  Future<void> _updateReadingEvent() async {
+    if (!_isReadingMode || _currentReadingEvent == null) return;
+
+    try {
+      _currentReadingEvent = _currentReadingEvent!.copyWith(
+        currentProgress: widget.kiranUserInfo.progress,
+        durationSeconds: _stopwatch.elapsed.inSeconds,
+        lastScrollPosition:
+            _scrollController.hasClients ? _scrollController.offset : null,
+        lastUpdatedAt: DateTime.now(),
+      );
+      await ReadingEventService.saveReadingEvent(_currentReadingEvent!);
+      debugPrint('💾 Reading event updated: ${_currentReadingEvent!.currentProgress}%');
+    } catch (e) {
+      debugPrint('❌ Error updating reading event: $e');
     }
   }
 
@@ -904,30 +981,31 @@ class _KiranReadPageState extends State<KiranReadPage>
                   },
                 ),
               const SizedBox(height: 8.0),
-              // Finish button
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+              // Finish button (only in reading mode)
+              if (_isReadingMode)
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
                   ),
-                ),
-                onPressed:
-                    _isFinishButtonEnabled
-                        ? () async {
-                          _onFinishReadingPressed();
-                        }
-                        : null,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    AppLocalizations.of(context)!.kiran_read_finished,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: _isFinishButtonEnabled ? null : Colors.grey,
+                  onPressed:
+                      _isFinishButtonEnabled
+                          ? () async {
+                            _onFinishReadingPressed();
+                          }
+                          : null,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      AppLocalizations.of(context)!.kiran_read_finished,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: _isFinishButtonEnabled ? null : Colors.grey,
+                      ),
                     ),
                   ),
                 ),
-              ),
               const SizedBox(height: 16.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1471,67 +1549,69 @@ class _KiranReadPageState extends State<KiranReadPage>
               ),
             ),
           ),
-          // Auto-scroll play/pause button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: IconButton(
-              onPressed: () {
-                closeSearch();
-                _toggleAutoScroll();
-              },
-              icon: Icon(
-                _isAutoScrolling
-                    ? Icons.pause
-                    : (_autoScrollDelayTimer != null
-                        ? Icons.schedule
-                        : Icons.play_arrow),
-                color:
-                    _isAutoScrolling
-                        ? Colors.amber
-                        : (_autoScrollDelayTimer != null
-                            ? Colors.orange
-                            : null),
-              ),
-              tooltip:
+          // Auto-scroll play/pause button (only in reading mode)
+          if (_isReadingMode)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: IconButton(
+                onPressed: () {
+                  closeSearch();
+                  _toggleAutoScroll();
+                },
+                icon: Icon(
                   _isAutoScrolling
-                      ? 'Pause Auto-scroll'
+                      ? Icons.pause
                       : (_autoScrollDelayTimer != null
-                          ? 'Auto-scroll starting in 5 seconds...'
-                          : 'Start Auto-scroll'),
-              iconSize: 28,
-            ),
-          ),
-          // Timer display
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    _isTimerPaused
-                        ? Icons.pause_circle_outline
-                        : Icons.av_timer_outlined,
-                    size: 20,
-                    color: _isTimerPaused ? Colors.orange : null,
-                  ),
-                  const SizedBox(width: 8),
-                  ValueListenableBuilder<String>(
-                    valueListenable: _elapsedNotifier,
-                    builder: (context, elapsed, child) {
-                      return Text(
-                        elapsed,
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 13,
-                          color: _isTimerPaused ? Colors.orange : null,
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                          ? Icons.schedule
+                          : Icons.play_arrow),
+                  color:
+                      _isAutoScrolling
+                          ? Colors.amber
+                          : (_autoScrollDelayTimer != null
+                              ? Colors.orange
+                              : null),
+                ),
+                tooltip:
+                    _isAutoScrolling
+                        ? 'Pause Auto-scroll'
+                        : (_autoScrollDelayTimer != null
+                            ? 'Auto-scroll starting in 5 seconds...'
+                            : 'Start Auto-scroll'),
+                iconSize: 28,
               ),
             ),
-          ),
+          // Timer display (only in reading mode)
+          if (_isReadingMode)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      _isTimerPaused
+                          ? Icons.pause_circle_outline
+                          : Icons.av_timer_outlined,
+                      size: 20,
+                      color: _isTimerPaused ? Colors.orange : null,
+                    ),
+                    const SizedBox(width: 8),
+                    ValueListenableBuilder<String>(
+                      valueListenable: _elapsedNotifier,
+                      builder: (context, elapsed, child) {
+                        return Text(
+                          elapsed,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 13,
+                            color: _isTimerPaused ? Colors.orange : null,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -1546,8 +1626,22 @@ class _KiranReadPageState extends State<KiranReadPage>
     _stopwatch.stop();
     _timer?.cancel();
 
-    // Save reading history before finishing
-    await _saveReadingHistory();
+    // Convert reading event to history if in reading mode
+    if (_isReadingMode && _currentReadingEvent != null) {
+      try {
+        final history =
+            await ReadingEventService.completeReadingEvent(_currentReadingEvent!);
+        await ReadingHistoryService.saveReadingHistory(history);
+        debugPrint('✅ Reading event converted to history');
+      } catch (e) {
+        debugPrint('❌ Error converting reading event to history: $e');
+        // Fall back to regular save
+        await _saveReadingHistory();
+      }
+    } else {
+      // Save reading history before finishing (browse mode or no event)
+      await _saveReadingHistory();
+    }
 
     // Track reading completion analytics
     final readingTimeSeconds = _stopwatch.elapsed.inSeconds;
