@@ -548,7 +548,6 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               future: ReadingEventService.getReadingEventForKiran(kiran.index),
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data != null) {
-                  final event = snapshot.data!;
                   return Container(
                     margin: const EdgeInsets.only(left: 8),
                     padding: const EdgeInsets.symmetric(

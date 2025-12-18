@@ -42,7 +42,7 @@ class NotificationService {
 
       // Android initialization
       const AndroidInitializationSettings initializationSettingsAndroid =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+          AndroidInitializationSettings('@drawable/ic_notification');
 
       // iOS initialization
       const DarwinInitializationSettings initializationSettingsIOS =
@@ -260,8 +260,7 @@ class NotificationService {
           channelDescription: 'Daily reading plan reminders',
           importance: Importance.high,
           priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
-          largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+          icon: '@drawable/ic_notification',
           playSound: true,
           enableVibration: true,
           enableLights: true,
@@ -362,10 +361,7 @@ class NotificationService {
             channelDescription: 'Notifications for achieved reading goals',
             importance: Importance.high,
             priority: Priority.high,
-            icon: '@mipmap/ic_launcher',
-            largeIcon: const DrawableResourceAndroidBitmap(
-              '@mipmap/ic_launcher',
-            ),
+            icon: '@drawable/ic_notification',
             styleInformation: BigTextStyleInformation(
               body,
               contentTitle: title,
@@ -450,7 +446,7 @@ class NotificationService {
             channelDescription: 'Motivational reading messages',
             importance: Importance.high,
             priority: Priority.high,
-            icon: '@mipmap/ic_launcher',
+            icon: '@drawable/ic_notification',
             playSound: true,
             enableVibration: true,
             enableLights: true,
@@ -525,7 +521,7 @@ class NotificationService {
           channelDescription: 'Motivational reading messages',
           importance: Importance.high,
           priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
+          icon: '@drawable/ic_notification',
           playSound: true,
           enableVibration: true,
           enableLights: true,
