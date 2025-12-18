@@ -14,7 +14,7 @@ class ReadingEvent {
   final int partNumber;
   final DateTime startedAt;
   int currentProgress; // 0-100
-  final int durationSeconds; // Time spent so far
+  int durationSeconds; // Time spent so far
   final bool isPaused;
   final double? lastScrollPosition; // Optional: track where user left off
   final String deviceId; // To handle multi-device scenarios
@@ -157,11 +157,12 @@ class ReadingEvent {
     final duration = Duration(seconds: durationSeconds);
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
 
     if (hours > 0) {
       return '${hours}h ${minutes}m';
     } else if (minutes > 0) {
-      return '${minutes}m';
+      return '${minutes}m ${seconds}s';
     } else {
       return '${duration.inSeconds}s';
     }

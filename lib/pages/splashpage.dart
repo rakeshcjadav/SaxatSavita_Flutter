@@ -191,7 +191,9 @@ class SplashPageState extends State<SplashPage> {
                         LinearProgressIndicator(
                           value: _migrationProgress,
                           backgroundColor: Colors.white.withValues(alpha: 0.3),
-                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                           minHeight: 4,
                         ),
                         const SizedBox(height: 16),

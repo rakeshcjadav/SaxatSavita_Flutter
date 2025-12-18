@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
@@ -290,17 +291,7 @@ class _KiranReadPageState extends State<KiranReadPage>
       widget.kiranInfo.wordCount,
     );
     if (estimatedReadingSeconds > 0 && !_isFinishButtonEnabledNotifier.value) {
-      final initialProgress = _initialReadingProgress / 100.0;
-      if (initialProgress >= 0.8) {
-        _isFinishButtonEnabledNotifier.value = true;
-        // Only call setState when the button state actually changes
-        if (!_isFinishButtonEnabled) {
-          setState(() {
-            _isFinishButtonEnabled = true;
-          });
-        }
-      }
-      final threshold = 0.8 - initialProgress;
+      final threshold = 0.8;
       final requiredSeconds = (estimatedReadingSeconds * threshold).round();
       if (seconds >= requiredSeconds) {
         _isFinishButtonEnabledNotifier.value = true;
@@ -622,7 +613,8 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     try {
       // Use stopwatch elapsed time which accounts for pause/resume cycles
-      final durationSeconds = _stopwatch.elapsed.inSeconds;
+      final durationSeconds =
+          _stopwatch.elapsed.inSeconds + _initialDurationOffset;
 
       // Only save if session was longer than 10 seconds
       if (durationSeconds >= 10) {
@@ -1669,6 +1661,8 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Convert reading event to history if in reading mode
     if (_isReadingMode && _currentReadingEvent != null) {
+      _currentReadingEvent!.durationSeconds =
+          _stopwatch.elapsed.inSeconds + _initialDurationOffset;
       debugPrint(
         '📖 Converting reading event to history : ${_currentReadingEvent!.kiranIndex} : ${_currentReadingEvent!.currentProgress} : ${_currentReadingEvent!.durationSeconds}',
       );
@@ -1677,7 +1671,9 @@ class _KiranReadPageState extends State<KiranReadPage>
           _currentReadingEvent!,
         );
         await ReadingHistoryService.saveReadingHistory(history);
-        debugPrint('✅ Reading event converted to history');
+        // Clear the event reference since it's now deleted
+        _currentReadingEvent = null;
+        debugPrint('✅ Reading event converted to history and deleted');
       } catch (e) {
         debugPrint('❌ Error converting reading event to history: $e');
         // Fall back to regular save
@@ -1689,7 +1685,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
 
     // Track reading completion analytics
-    final readingTimeSeconds = _stopwatch.elapsed.inSeconds;
+    final readingTimeSeconds =
+        _stopwatch.elapsed.inSeconds + _initialDurationOffset;
     await AnalyticsService().logCompleteReading(
       bookName: 'Sakshat Savita',
       chapterName: widget.kiranInfo.title,
@@ -1719,7 +1716,8 @@ class _KiranReadPageState extends State<KiranReadPage>
       });
 
       final durationSeconds =
-          _currentReadingEvent?.durationSeconds ?? _stopwatch.elapsed.inSeconds;
+          _currentReadingEvent?.durationSeconds ??
+          _stopwatch.elapsed.inSeconds + _initialDurationOffset;
       final minutes = durationSeconds ~/ 60;
       final secs = durationSeconds % 60;
       final timeString =
