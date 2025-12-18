@@ -289,12 +289,17 @@ class Utils {
     return await UserProfileService().getUserProfile();
   }
 
-  static Future<void> checkAndPerformMigration() async {
+  static Future<void> checkAndPerformMigration({
+    Function(String message, double progress)? onProgress,
+  }) async {
     debugPrint('Checking and performing data migration if needed...');
+    onProgress?.call('Migrating reading history...', 0.25);
     await ReadingHistoryMigrationService().autoMigrateCurrentUser();
     debugPrint('Finished migrating reading history.');
+    onProgress?.call('Migrating kiran progress...', 0.75);
     await KiranUserInfoMigrationService().autoMigrateCurrentUser();
     debugPrint('Finished migrating Kiran user info.');
+    onProgress?.call('Migration complete', 1.0);
   }
 
   // Apple Sign-In user data cache management

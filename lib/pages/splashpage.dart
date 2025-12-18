@@ -17,6 +17,10 @@ class SplashPage extends StatefulWidget {
 }
 
 class SplashPageState extends State<SplashPage> {
+  String _migrationMessage = '';
+  double _migrationProgress = 0.0;
+  bool _isMigrating = false;
+
   @override
   void initState() {
     super.initState();
@@ -52,8 +56,29 @@ class SplashPageState extends State<SplashPage> {
 
         if (!mounted) return;
 
-        // Check if   tion is needed and perform it
-        await Utils.checkAndPerformMigration();
+        // Check if migration is needed and perform it
+        setState(() {
+          _isMigrating = true;
+          _migrationMessage = 'Preparing migration...';
+          _migrationProgress = 0.0;
+        });
+
+        await Utils.checkAndPerformMigration(
+          onProgress: (message, progress) {
+            if (mounted) {
+              setState(() {
+                _migrationMessage = message;
+                _migrationProgress = progress;
+              });
+            }
+          },
+        );
+
+        if (mounted) {
+          setState(() {
+            _isMigrating = false;
+          });
+        }
 
         debugPrint('_handleAuthenticationEvent : Migration done');
 
@@ -154,9 +179,40 @@ class SplashPageState extends State<SplashPage> {
               ),
             ),
           ),
-          const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_isMigrating) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: Column(
+                      children: [
+                        LinearProgressIndicator(
+                          value: _migrationProgress,
+                          backgroundColor: Colors.white.withValues(alpha: 0.3),
+                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                          minHeight: 4,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          _migrationMessage,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ],
+              ],
             ),
           ),
         ],

@@ -145,8 +145,29 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   Future<void> onSuccessfulSignIn() async {
     debugPrint('_handleAuthenticationEvent : Route determination started');
 
+    // Show migration progress dialog
+    if (mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => _MigrationProgressDialog(),
+      );
+    }
+
     // Check if migration is needed and perform it
-    await Utils.checkAndPerformMigration();
+    await Utils.checkAndPerformMigration(
+      onProgress: (message, progress) {
+        if (mounted) {
+          // Update dialog state
+          setState(() {});
+        }
+      },
+    );
+
+    // Close migration dialog
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
 
     debugPrint('_handleAuthenticationEvent : Migration done');
 
@@ -663,6 +684,45 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
       body: ConstrainedBox(
         constraints: const BoxConstraints.expand(),
         child: _buildBody(),
+      ),
+    );
+  }
+}
+
+class _MigrationProgressDialog extends StatelessWidget {
+  const _MigrationProgressDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      child: Dialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 24),
+              Text(
+                'Migrating your data...',
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Please wait while we update your reading progress',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
