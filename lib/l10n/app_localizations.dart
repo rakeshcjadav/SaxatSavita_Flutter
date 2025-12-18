@@ -2761,6 +2761,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exit Anyway'**
   String get exit_anyway;
+
+  /// No description provided for @reading_mode_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to read?'**
+  String get reading_mode_dialog_title;
+
+  /// No description provided for @reading_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Mode'**
+  String get reading_mode;
+
+  /// No description provided for @reading_mode_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track progress and save history'**
+  String get reading_mode_subtitle;
+
+  /// No description provided for @browse_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Mode'**
+  String get browse_mode;
+
+  /// No description provided for @browse_mode_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick look, no tracking'**
+  String get browse_mode_subtitle;
+
+  /// No description provided for @continue_reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Reading?'**
+  String get continue_reading;
+
+  /// No description provided for @ongoing_session.
+  ///
+  /// In en, this message translates to:
+  /// **'You have an ongoing session:'**
+  String get ongoing_session;
+
+  /// Shows reading progress percentage
+  ///
+  /// In en, this message translates to:
+  /// **'{progress}% complete'**
+  String percent_complete(int progress);
+
+  /// Shows duration already spent reading
+  ///
+  /// In en, this message translates to:
+  /// **'{duration} read'**
+  String time_read(String duration);
+
+  /// No description provided for @just_browse.
+  ///
+  /// In en, this message translates to:
+  /// **'Just Browse'**
+  String get just_browse;
+
+  /// No description provided for @start_new.
+  ///
+  /// In en, this message translates to:
+  /// **'Start New'**
+  String get start_new;
+
+  /// No description provided for @resume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get resume;
+
+  /// No description provided for @migrating_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Migrating your data...'**
+  String get migrating_data;
+
+  /// No description provided for @migration_wait_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait while we update your reading progress'**
+  String get migration_wait_message;
+
+  /// No description provided for @migrating_reading_history.
+  ///
+  /// In en, this message translates to:
+  /// **'Migrating reading history...'**
+  String get migrating_reading_history;
+
+  /// No description provided for @migrating_kiran_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Migrating kiran progress...'**
+  String get migrating_kiran_progress;
+
+  /// No description provided for @migration_complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Migration complete'**
+  String get migration_complete;
 }
 
 class _AppLocalizationsDelegate

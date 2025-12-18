@@ -1478,4 +1478,62 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get exit_anyway => 'ગમે તેમ બહાર નીકળો';
+
+  @override
+  String get reading_mode_dialog_title => 'તમે કેવી રીતે વાંચવા માંગો છો?';
+
+  @override
+  String get reading_mode => 'રીડિંગ મોડ';
+
+  @override
+  String get reading_mode_subtitle => 'પ્રગતિ ટ્રેક કરો અને ઈતિહાસ સાચવો';
+
+  @override
+  String get browse_mode => 'બ્રાઉઝ મોડ';
+
+  @override
+  String get browse_mode_subtitle => 'ઝડપી જોવું, કોઈ ટ્રેકિંગ નહીં';
+
+  @override
+  String get continue_reading => 'વાંચન ચાલુ રાખો?';
+
+  @override
+  String get ongoing_session => 'તમારો સત્ર ચાલી રહ્યો છે:';
+
+  @override
+  String percent_complete(int progress) {
+    return '$progress% પૂર્ણ';
+  }
+
+  @override
+  String time_read(String duration) {
+    return '$duration વંચાયેલું';
+  }
+
+  @override
+  String get just_browse => 'ફક્ત જુઓ';
+
+  @override
+  String get start_new => 'નવું શરૂ કરો';
+
+  @override
+  String get resume => 'ફરી શરૂ કરો';
+
+  @override
+  String get migrating_data => 'ડેટા સ્થાનાંતરિત કરી રહ્યા છીએ...';
+
+  @override
+  String get migration_wait_message =>
+      'કૃપા કરીને રાહ જુઓ જ્યારે અમે તમારી માહિતી અપડેટ કરીએ છીએ';
+
+  @override
+  String get migrating_reading_history =>
+      'વાંચન ઈતિહાસ સ્થાનાંતરિત કરી રહ્યા છીએ...';
+
+  @override
+  String get migrating_kiran_progress =>
+      'કિરણ પ્રગતિ સ્થાનાંતરિત કરી રહ્યા છીએ...';
+
+  @override
+  String get migration_complete => 'સ્થાનાંતરણ પૂર્ણ!';
 }

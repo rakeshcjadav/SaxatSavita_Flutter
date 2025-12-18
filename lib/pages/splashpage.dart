@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
@@ -57,9 +58,10 @@ class SplashPageState extends State<SplashPage> {
         if (!mounted) return;
 
         // Check if migration is needed and perform it
+        final l10n = AppLocalizations.of(context)!;
         setState(() {
           _isMigrating = true;
-          _migrationMessage = 'Preparing migration...';
+          _migrationMessage = l10n.migrating_data;
           _migrationProgress = 0.0;
         });
 
@@ -67,7 +69,14 @@ class SplashPageState extends State<SplashPage> {
           onProgress: (message, progress) {
             if (mounted) {
               setState(() {
-                _migrationMessage = message;
+                // Map progress values to localized messages
+                if (progress <= 0.25) {
+                  _migrationMessage = l10n.migrating_reading_history;
+                } else if (progress <= 0.75) {
+                  _migrationMessage = l10n.migrating_kiran_progress;
+                } else {
+                  _migrationMessage = l10n.migration_complete;
+                }
                 _migrationProgress = progress;
               });
             }

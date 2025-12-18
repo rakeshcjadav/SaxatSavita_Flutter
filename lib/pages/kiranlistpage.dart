@@ -178,21 +178,22 @@ class _KiranlistpageState extends State<Kiranlistpage> {
 
   /// Show dialog to select reading mode
   Future<ReadingMode?> _showReadingModeDialog() async {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<ReadingMode>(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('How would you like to read?'),
+            title: Text(l10n.reading_mode_dialog_title),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
                   leading: const Icon(Icons.book, color: Colors.blue, size: 32),
-                  title: const Text(
-                    'Reading Mode',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  title: Text(
+                    l10n.reading_mode,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: const Text('Track progress and save history'),
+                  subtitle: Text(l10n.reading_mode_subtitle),
                   onTap: () => Navigator.pop(context, ReadingMode.reading),
                 ),
                 const Divider(),
@@ -202,11 +203,11 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                     color: Colors.grey,
                     size: 32,
                   ),
-                  title: const Text(
-                    'Browse Mode',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  title: Text(
+                    l10n.browse_mode,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: const Text('Quick look, no tracking'),
+                  subtitle: Text(l10n.browse_mode_subtitle),
                   onTap: () => Navigator.pop(context, ReadingMode.browse),
                 ),
               ],
@@ -217,17 +218,18 @@ class _KiranlistpageState extends State<Kiranlistpage> {
 
   /// Show dialog to resume existing reading session
   Future<String?> _showResumeDialog(ReadingEvent event) async {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<String>(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Continue Reading?'),
+            title: Text(l10n.continue_reading),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'You have an ongoing session:',
+                  l10n.ongoing_session,
                   style: TextStyle(color: Colors.grey[700]),
                 ),
                 const SizedBox(height: 12),
@@ -236,7 +238,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                     Icon(Icons.pending, color: Colors.blue, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      '${event.currentProgress}% complete',
+                      l10n.percent_complete(event.currentProgress),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -247,7 +249,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                     Icon(Icons.timer, color: Colors.green, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      '${event.formattedDuration} read',
+                      l10n.time_read(event.formattedDuration),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -268,16 +270,16 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, 'browse'),
-                child: const Text('Just Browse'),
+                child: Text(l10n.just_browse),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, 'new'),
-                child: const Text('Start New'),
+                child: Text(l10n.start_new),
               ),
               ElevatedButton.icon(
                 onPressed: () => Navigator.pop(context, 'resume'),
                 icon: const Icon(Icons.play_arrow),
-                label: const Text('Resume'),
+                label: Text(l10n.resume),
               ),
             ],
           ),

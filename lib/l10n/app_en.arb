@@ -689,5 +689,41 @@
     "incomplete_profile": "Incomplete Profile",
     "please_complete_profile": "Please complete all required fields to continue.",
     "continue_editing": "Continue Editing",
-    "exit_anyway": "Exit Anyway"
+    "exit_anyway": "Exit Anyway",
+    
+    "reading_mode_dialog_title": "How would you like to read?",
+    "reading_mode": "Reading Mode",
+    "reading_mode_subtitle": "Track progress and save history",
+    "browse_mode": "Browse Mode",
+    "browse_mode_subtitle": "Quick look, no tracking",
+    "continue_reading": "Continue Reading?",
+    "ongoing_session": "You have an ongoing session:",
+    "percent_complete": "{progress}% complete",
+    "@percent_complete": {
+        "description": "Shows reading progress percentage",
+        "placeholders": {
+            "progress": {
+                "type": "int",
+                "example": "45"
+            }
+        }
+    },
+    "time_read": "{duration} read",
+    "@time_read": {
+        "description": "Shows duration already spent reading",
+        "placeholders": {
+            "duration": {
+                "type": "String",
+                "example": "12m:34s"
+            }
+        }
+    },
+    "just_browse": "Just Browse",
+    "start_new": "Start New",
+    "resume": "Resume",
+    "migrating_data": "Migrating your data...",
+    "migration_wait_message": "Please wait while we update your reading progress",
+    "migrating_reading_history": "Migrating reading history...",
+    "migrating_kiran_progress": "Migrating kiran progress...",
+    "migration_complete": "Migration complete"
 }

@@ -694,6 +694,7 @@ class _MigrationProgressDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PopScope(
       canPop: false,
       child: Dialog(
@@ -706,13 +707,13 @@ class _MigrationProgressDialog extends StatelessWidget {
               const CircularProgressIndicator(),
               const SizedBox(height: 24),
               Text(
-                'Migrating your data...',
+                l10n.migrating_data,
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                'Please wait while we update your reading progress',
+                l10n.migration_wait_message,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(
                     context,

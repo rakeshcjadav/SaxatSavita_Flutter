@@ -1473,4 +1473,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exit_anyway => 'Exit Anyway';
+
+  @override
+  String get reading_mode_dialog_title => 'How would you like to read?';
+
+  @override
+  String get reading_mode => 'Reading Mode';
+
+  @override
+  String get reading_mode_subtitle => 'Track progress and save history';
+
+  @override
+  String get browse_mode => 'Browse Mode';
+
+  @override
+  String get browse_mode_subtitle => 'Quick look, no tracking';
+
+  @override
+  String get continue_reading => 'Continue Reading?';
+
+  @override
+  String get ongoing_session => 'You have an ongoing session:';
+
+  @override
+  String percent_complete(int progress) {
+    return '$progress% complete';
+  }
+
+  @override
+  String time_read(String duration) {
+    return '$duration read';
+  }
+
+  @override
+  String get just_browse => 'Just Browse';
+
+  @override
+  String get start_new => 'Start New';
+
+  @override
+  String get resume => 'Resume';
+
+  @override
+  String get migrating_data => 'Migrating your data...';
+
+  @override
+  String get migration_wait_message =>
+      'Please wait while we update your reading progress';
+
+  @override
+  String get migrating_reading_history => 'Migrating reading history...';
+
+  @override
+  String get migrating_kiran_progress => 'Migrating kiran progress...';
+
+  @override
+  String get migration_complete => 'Migration complete';
 }

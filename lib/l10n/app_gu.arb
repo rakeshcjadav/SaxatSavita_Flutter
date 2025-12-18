@@ -690,5 +690,23 @@
     "incomplete_profile": "અધૂરો પ્રોફાઇલ",
     "please_complete_profile": "ચાલુ રાખવા માટે કૃપા કરીને બધી આવશ્યક માહિતી ભરો.",
     "continue_editing": "ભરવાનું ચાલુ રાખો",
-    "exit_anyway": "ગમે તેમ બહાર નીકળો"
+    "exit_anyway": "ગમે તેમ બહાર નીકળો",
+    
+    "reading_mode_dialog_title": "તમે કેવી રીતે વાંચવા માંગો છો?",
+    "reading_mode": "રીડિંગ મોડ",
+    "reading_mode_subtitle": "પ્રગતિ ટ્રેક કરો અને ઈતિહાસ સાચવો",
+    "browse_mode": "બ્રાઉઝ મોડ",
+    "browse_mode_subtitle": "ઝડપી જોવું, કોઈ ટ્રેકિંગ નહીં",
+    "continue_reading": "વાંચન ચાલુ રાખો?",
+    "ongoing_session": "તમારો સત્ર ચાલી રહ્યો છે:",
+    "percent_complete": "{progress}% પૂર્ણ",
+    "time_read": "{duration} વંચાયેલું",
+    "just_browse": "ફક્ત જુઓ",
+    "start_new": "નવું શરૂ કરો",
+    "resume": "ફરી શરૂ કરો",
+    "migrating_data": "ડેટા સ્થાનાંતરિત કરી રહ્યા છીએ...",
+    "migration_wait_message": "કૃપા કરીને રાહ જુઓ જ્યારે અમે તમારી માહિતી અપડેટ કરીએ છીએ",
+    "migrating_reading_history": "વાંચન ઈતિહાસ સ્થાનાંતરિત કરી રહ્યા છીએ...",
+    "migrating_kiran_progress": "કિરણ પ્રગતિ સ્થાનાંતરિત કરી રહ્યા છીએ...",
+    "migration_complete": "સ્થાનાંતરણ પૂર્ણ!"
 }
