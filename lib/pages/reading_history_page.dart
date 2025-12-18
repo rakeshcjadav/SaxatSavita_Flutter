@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
@@ -246,6 +247,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                 kiranInfo: kiranInfo,
                 partNumber: 'part$partNumber',
                 kiranUserInfo: kiranUserInfo,
+                readingMode: ReadingMode.browse,
               ),
         ),
       );

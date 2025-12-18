@@ -4,6 +4,7 @@ import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
@@ -260,6 +261,7 @@ class _NoteListPageState extends State<NoteListPage> {
               partNumber: 'part${noteItem.partNumber}',
               kiranInfo: noteItem.kiranInfo,
               kiranUserInfo: noteItem.kiranUserInfo,
+              readingMode: ReadingMode.browse,
             ),
       ),
     );

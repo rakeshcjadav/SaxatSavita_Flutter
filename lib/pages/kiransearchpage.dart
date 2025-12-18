@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
@@ -701,6 +702,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               kiranInfo: result.kiranInfo,
               kiranUserInfo: kiranUserInfo,
               searchQuery: _searchController.text.trim(),
+              readingMode: ReadingMode.browse,
             ),
       ),
     );

@@ -270,16 +270,16 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, 'browse'),
-                child: Text(l10n.just_browse),
+                child: Text('${l10n.just_browse} - (${l10n.browse_mode})'),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, 'new'),
-                child: Text(l10n.start_new),
+                child: Text('${l10n.start_new} - (${l10n.reading_mode})'),
               ),
               ElevatedButton.icon(
                 onPressed: () => Navigator.pop(context, 'resume'),
                 icon: const Icon(Icons.play_arrow),
-                label: Text(l10n.resume),
+                label: Text('${l10n.resume} - (${l10n.reading_mode})'),
               ),
             ],
           ),

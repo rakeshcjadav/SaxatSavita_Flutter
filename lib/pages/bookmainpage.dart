@@ -6,11 +6,13 @@ import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
+import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/pages/bookmarks_page.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
+import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'kiranlistpage.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -410,6 +412,38 @@ class _BookmainpageState extends State<BookMainpage> {
     var bookUserInfo = Bookservice().getBookUserInfo(partNumber);
     var kiranInfo = KiranListService().getKiranInfo(partNumber, kiranIndex);
     var kiranUserInfo = KiranUserService().getKiranUserInfo(kiranIndex);
+
+    // Check if there's an existing reading event for this kiran
+    final existingEvent = await ReadingEventService.getReadingEventForKiran(
+      kiranInfo.index,
+    );
+
+    ReadingMode? selectedMode;
+    ReadingEvent? eventToResume;
+
+    if (existingEvent != null) {
+      // Show resume dialog
+      final resumeChoice = await _showResumeDialog(existingEvent);
+      if (resumeChoice == null) return; // User cancelled
+
+      if (resumeChoice == 'resume') {
+        selectedMode = ReadingMode.reading;
+        eventToResume = existingEvent;
+      } else if (resumeChoice == 'new') {
+        // Delete old event and start new reading session
+        await ReadingEventService.deleteReadingEvent(existingEvent.id);
+        selectedMode = ReadingMode.reading;
+      } else {
+        // browse
+        selectedMode = ReadingMode.browse;
+      }
+    } else {
+      // No existing event, show mode selection dialog
+      selectedMode = await _showReadingModeDialog();
+      if (selectedMode == null) return; // User cancelled
+    }
+
+    Utils.updateLastOpenedKiran(bookUserInfo, kiranInfo.index);
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -418,6 +452,8 @@ class _BookmainpageState extends State<BookMainpage> {
               partNumber: bookUserInfo.id,
               kiranInfo: kiranInfo,
               kiranUserInfo: kiranUserInfo,
+              readingMode: selectedMode!,
+              existingEvent: eventToResume,
             ),
       ),
     );
@@ -441,6 +477,38 @@ class _BookmainpageState extends State<BookMainpage> {
     var kiranUserInfo = KiranUserService().getKiranUserInfo(
       latestBookmark.kiranIndex,
     );
+
+    // Check if there's an existing reading event for this kiran
+    final existingEvent = await ReadingEventService.getReadingEventForKiran(
+      kiranInfo.index,
+    );
+
+    ReadingMode? selectedMode;
+    ReadingEvent? eventToResume;
+
+    if (existingEvent != null) {
+      // Show resume dialog
+      final resumeChoice = await _showResumeDialog(existingEvent);
+      if (resumeChoice == null) return; // User cancelled
+
+      if (resumeChoice == 'resume') {
+        selectedMode = ReadingMode.reading;
+        eventToResume = existingEvent;
+      } else if (resumeChoice == 'new') {
+        // Delete old event and start new reading session
+        await ReadingEventService.deleteReadingEvent(existingEvent.id);
+        selectedMode = ReadingMode.reading;
+      } else {
+        // browse
+        selectedMode = ReadingMode.browse;
+      }
+    } else {
+      // No existing event, show mode selection dialog
+      selectedMode = await _showReadingModeDialog();
+      if (selectedMode == null) return; // User cancelled
+    }
+
+    Utils.updateLastOpenedKiran(bookUserInfo, kiranInfo.index);
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -449,6 +517,8 @@ class _BookmainpageState extends State<BookMainpage> {
               partNumber: bookUserInfo.id,
               kiranInfo: kiranInfo,
               kiranUserInfo: kiranUserInfo,
+              readingMode: selectedMode!,
+              existingEvent: eventToResume,
             ),
       ),
     );
@@ -457,6 +527,116 @@ class _BookmainpageState extends State<BookMainpage> {
         // Refresh the state to reflect any changes made in KiranReadPage
       });
     }
+  }
+
+  /// Show dialog to select reading mode
+  Future<ReadingMode?> _showReadingModeDialog() async {
+    final l10n = AppLocalizations.of(context)!;
+    return showDialog<ReadingMode>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.reading_mode_dialog_title),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.book, color: Colors.blue, size: 32),
+                  title: Text(
+                    l10n.reading_mode,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(l10n.reading_mode_subtitle),
+                  onTap: () => Navigator.pop(context, ReadingMode.reading),
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                    size: 32,
+                  ),
+                  title: Text(
+                    l10n.browse_mode,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(l10n.browse_mode_subtitle),
+                  onTap: () => Navigator.pop(context, ReadingMode.browse),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+
+  /// Show dialog to resume existing reading session
+  Future<String?> _showResumeDialog(ReadingEvent event) async {
+    final l10n = AppLocalizations.of(context)!;
+    return showDialog<String>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.continue_reading),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.ongoing_session,
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Icon(Icons.pending, color: Colors.blue, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.percent_complete(event.currentProgress),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(Icons.timer, color: Colors.green, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.time_read(event.formattedDuration),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(Icons.access_time, color: Colors.orange, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      event.timeAgo,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'browse'),
+                child: Text(l10n.just_browse),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'new'),
+                child: Text(l10n.start_new),
+              ),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context, 'resume'),
+                icon: const Icon(Icons.play_arrow),
+                label: Text(l10n.resume),
+              ),
+            ],
+          ),
+    );
   }
 
   Bookmark? getLatestBookmark(int partNumber) {
