@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Navigate to project root
+cd "$(dirname "$0")/.."
+
 # Build the release app bundle
 echo "Building release app bundle..."
 flutter clean

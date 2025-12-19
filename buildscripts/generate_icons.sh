@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# Navigate to project root
+cd "$(dirname "$0")/.."
+
 # App Icon Generation Script for Sakshaat Savita
 # This script helps process and generate app icons from your spiritual guru image
 
 echo "🙏 Sakshaat Savita App Icon Generator"
-echo "=================================="
+echo "=================================""
 
 # Check if the source image exists (support PNG, JPG, WEBP)
 if [ ! -f "assets/icon/source_image.png" ] && [ ! -f "assets/icon/source_image.jpg" ] && [ ! -f "assets/icon/source_image.webp" ]; then
