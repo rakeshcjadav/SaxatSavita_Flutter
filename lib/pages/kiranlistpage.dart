@@ -183,12 +183,19 @@ class _KiranlistpageState extends State<Kiranlistpage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(l10n.reading_mode_dialog_title),
+            title: Text(
+              l10n.reading_mode_dialog_title,
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  leading: const Icon(Icons.book, color: Colors.blue, size: 32),
+                  leading: Icon(
+                    Icons.book,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 32,
+                  ),
                   title: Text(
                     l10n.reading_mode,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -198,9 +205,9 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 ),
                 const Divider(),
                 ListTile(
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.search,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.primary,
                     size: 32,
                   ),
                   title: Text(
@@ -212,6 +219,12 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 ),
               ],
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, null),
+                child: Text(l10n.cancel),
+              ),
+            ],
           ),
     );
   }

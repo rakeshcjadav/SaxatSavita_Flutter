@@ -42,7 +42,7 @@ class NotificationService {
 
       // Android initialization
       const AndroidInitializationSettings initializationSettingsAndroid =
-          AndroidInitializationSettings('@drawable/ic_notification');
+          AndroidInitializationSettings('ic_launcher_foreground');
 
       // iOS initialization
       const DarwinInitializationSettings initializationSettingsIOS =
@@ -260,7 +260,7 @@ class NotificationService {
           channelDescription: 'Daily reading plan reminders',
           importance: Importance.high,
           priority: Priority.high,
-          icon: '@drawable/ic_notification',
+          icon: 'notifications_24dp_fill',
           playSound: true,
           enableVibration: true,
           enableLights: true,
@@ -274,14 +274,14 @@ class NotificationService {
           actions: [
             AndroidNotificationAction(
               'read_now',
-              appLocalizations.read_now,
-              icon: DrawableResourceAndroidBitmap('@drawable/ic_read'),
+              '📖 ${appLocalizations.read_now}',
+              //icon: DrawableResourceAndroidBitmap('menu_book_24dp'),
               showsUserInterface: true,
             ),
             AndroidNotificationAction(
               'remind_later',
-              appLocalizations.remind_later,
-              icon: DrawableResourceAndroidBitmap('@drawable/ic_reminder'),
+              '⏰ ${appLocalizations.remind_later}',
+              //icon: DrawableResourceAndroidBitmap('notifications_24dp_fill'),
               showsUserInterface: true,
             ),
           ],
@@ -361,7 +361,7 @@ class NotificationService {
             channelDescription: 'Notifications for achieved reading goals',
             importance: Importance.high,
             priority: Priority.high,
-            icon: '@drawable/ic_notification',
+            icon: 'crown_24dp_fill',
             styleInformation: BigTextStyleInformation(
               body,
               contentTitle: title,
@@ -446,7 +446,7 @@ class NotificationService {
             channelDescription: 'Motivational reading messages',
             importance: Importance.high,
             priority: Priority.high,
-            icon: '@drawable/ic_notification',
+            icon: 'electric_bolt_24dp_fill',
             playSound: true,
             enableVibration: true,
             enableLights: true,
@@ -521,7 +521,7 @@ class NotificationService {
           channelDescription: 'Motivational reading messages',
           importance: Importance.high,
           priority: Priority.high,
-          icon: '@drawable/ic_notification',
+          icon: 'notifications_24dp_fill',
           playSound: true,
           enableVibration: true,
           enableLights: true,
@@ -531,21 +531,21 @@ class NotificationService {
           actions: [
             const AndroidNotificationAction(
               'read_now',
-              'Read Now',
-              icon: DrawableResourceAndroidBitmap('@drawable/ic_read'),
+              '📖 Read Now',
+              //icon: DrawableResourceAndroidBitmap('menu_book_24dp'),
               showsUserInterface: true,
             ),
             const AndroidNotificationAction(
               'remind_later',
-              'Remind Later',
-              icon: DrawableResourceAndroidBitmap('@drawable/ic_reminder'),
+              '⏰ Remind Later',
+              //icon: DrawableResourceAndroidBitmap('notifications_24dp_fill'),
               showsUserInterface: true,
             ),
           ],
         ),
         iOS: const DarwinNotificationDetails(
           presentAlert: true,
-          presentBadge: false,
+          presentBadge: true,
           presentSound: true,
         ),
       ),
@@ -685,6 +685,7 @@ class NotificationService {
           'Reading Reminders',
           importance: Importance.high,
           priority: Priority.high,
+          icon: 'notifications_24dp_fill',
         ),
         iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true),
       ),
