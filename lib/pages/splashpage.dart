@@ -30,8 +30,10 @@ class SplashPageState extends State<SplashPage> {
 
   Future<void> _checkAuthAndNavigate() async {
     try {
+      FlutterNativeSplash.remove(); // remove splash after init
+
       // Wait for a minimum splash display time
-      await Future.delayed(const Duration(seconds: 1));
+      //await Future.delayed(const Duration(seconds: 1));
 
       if (!mounted) return;
 
@@ -98,8 +100,6 @@ class SplashPageState extends State<SplashPage> {
 
         // Check if this is the first time user
         final isFirstTime = await FirstTimeUserService.isFirstTimeUser();
-
-        FlutterNativeSplash.remove(); // remove splash after init
 
         if (shouldGoToProfile) {
           if (mounted) {

@@ -22,6 +22,8 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   GoogleSignInAccount? _currentUser;
   String _errorMessage = '';
   bool _isAppleSignInAvailable = false;
+  String _migrationMessage = '';
+  double _migrationProgress = 0.0;
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn.instance;
@@ -147,10 +149,67 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
 
     // Show migration progress dialog
     if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      setState(() {
+        _migrationMessage = l10n.migrating_data;
+        _migrationProgress = 0.0;
+      });
+
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => _MigrationProgressDialog(),
+        builder:
+            (dialogContext) => StatefulBuilder(
+              builder: (context, setDialogState) {
+                return PopScope(
+                  canPop: false,
+                  child: Dialog(
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 24),
+                          LinearProgressIndicator(
+                            value: _migrationProgress,
+                            backgroundColor:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).colorScheme.primary,
+                            ),
+                            minHeight: 4,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            _migrationMessage.isNotEmpty
+                                ? _migrationMessage
+                                : l10n.migrating_data,
+                            style: Theme.of(context).textTheme.titleMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.migration_wait_message,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
       );
     }
 
@@ -158,8 +217,18 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
     await Utils.checkAndPerformMigration(
       onProgress: (message, progress) {
         if (mounted) {
-          // Update dialog state
-          setState(() {});
+          final l10n = AppLocalizations.of(context)!;
+          setState(() {
+            // Map progress values to localized messages
+            if (progress <= 0.25) {
+              _migrationMessage = l10n.migrating_reading_history;
+            } else if (progress <= 0.75) {
+              _migrationMessage = l10n.migrating_kiran_progress;
+            } else {
+              _migrationMessage = l10n.migration_complete;
+            }
+            _migrationProgress = progress;
+          });
         }
       },
     );
@@ -684,46 +753,6 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
       body: ConstrainedBox(
         constraints: const BoxConstraints.expand(),
         child: _buildBody(),
-      ),
-    );
-  }
-}
-
-class _MigrationProgressDialog extends StatelessWidget {
-  const _MigrationProgressDialog();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return PopScope(
-      canPop: false,
-      child: Dialog(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 24),
-              Text(
-                l10n.migrating_data,
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.migration_wait_message,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withOpacity(0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

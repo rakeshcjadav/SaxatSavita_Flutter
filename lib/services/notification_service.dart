@@ -671,7 +671,7 @@ class NotificationService {
 
   /// Schedule a "remind later" notification
   Future<void> _scheduleRemindLater() async {
-    final remindTime = DateTime.now().add(const Duration(minutes: 1));
+    final remindTime = DateTime.now().add(const Duration(minutes: 15));
     final scheduledDate = tz.TZDateTime.from(remindTime, tz.local);
 
     await _flutterLocalNotificationsPlugin.zonedSchedule(
