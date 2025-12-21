@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
-import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
 
 // Import full pages (they will be rendered without their scaffold)
@@ -38,23 +37,6 @@ class _MainNavigationState extends State<MainNavigation> {
       _selectedIndex = index;
     });
     _pageController.jumpToPage(index);
-  }
-
-  String _getAppBarTitle() {
-    switch (_selectedIndex) {
-      case 0:
-        return 'Dashboard';
-      case 1:
-        return AppLocalizations.of(context)!.sakshatSavita;
-      case 2:
-        return AppLocalizations.of(context)!.notes;
-      case 3:
-        return AppLocalizations.of(context)!.reading_history;
-      case 4:
-        return AppLocalizations.of(context)!.profile;
-      default:
-        return 'Dashboard';
-    }
   }
 
   @override

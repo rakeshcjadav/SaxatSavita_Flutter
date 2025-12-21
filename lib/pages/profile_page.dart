@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/services/cache_service.dart';
 import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:saxatsavita_flutter/models/user_profile_model.dart';
 
@@ -297,6 +300,45 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ),
                                 ),
                               ),
+                              const SizedBox(height: 16),
+                              // Logout Button
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red.shade300,
+                                  ),
+                                  onPressed: _isSaving ? null : _logoutEvent,
+                                  child:
+                                      _isSaving
+                                          ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                          : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.logout,
+                                                color: Colors.white,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.logout,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -329,5 +371,76 @@ class _ProfilePageState extends State<ProfilePage> {
         body: body,
       ),
     );
+  }
+
+  void _logoutEvent() async {
+    // Store context-dependent values before async operations
+    final navigator = Navigator.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      // Clear all local cache before signing out
+      await CacheService().clearAllLocalCache();
+
+      // Sign out from Google
+      await GoogleSignIn.instance.signOut();
+      // Sign out from Firebase
+      await FirebaseAuth.instance.signOut();
+
+      if (mounted) {
+        // Pop the loading indicator
+        navigator.pop();
+        // Navigate to sign in page
+        navigator.pushReplacement(
+          MaterialPageRoute(builder: (context) => const GoogleSignInPage()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      // Pop the loading indicator
+      if (mounted) {
+        navigator.pop();
+        // Show Firebase Auth specific error
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Authentication error: ${e.message ?? e.code}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      debugPrint('Firebase Auth sign out error: ${e.code} - ${e.message}');
+    } on FirebaseException catch (e) {
+      // Pop the loading indicator
+      if (mounted) {
+        navigator.pop();
+        // Show Firebase specific error
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Firebase error: ${e.message ?? e.code}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      debugPrint('Firebase sign out error: ${e.code} - ${e.message}');
+    } catch (e) {
+      // Pop the loading indicator
+      if (mounted) {
+        navigator.pop();
+        // Show general error
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Error signing out: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      debugPrint('Sign out error: $e');
+    }
   }
 }

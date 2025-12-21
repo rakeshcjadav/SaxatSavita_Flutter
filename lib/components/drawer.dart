@@ -356,82 +356,79 @@ class _DrawerState extends State<MyDrawer> {
       DrawerItem.logout => ListTile(
         leading: const Icon(Icons.logout),
         title: Text(AppLocalizations.of(context)!.logout),
-        onTap: () async {
-          // Store context-dependent values before async operations
-          final navigator = Navigator.of(context);
-          final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-          try {
-            // Show loading indicator
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder:
-                  (context) => const Center(child: CircularProgressIndicator()),
-            );
-
-            // Clear all local cache before signing out
-            await CacheService().clearAllLocalCache();
-
-            // Sign out from Google
-            await GoogleSignIn.instance.signOut();
-            // Sign out from Firebase
-            await FirebaseAuth.instance.signOut();
-
-            if (mounted) {
-              // Pop the loading indicator
-              navigator.pop();
-              // Navigate to sign in page
-              navigator.pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const GoogleSignInPage(),
-                ),
-              );
-            }
-          } on FirebaseAuthException catch (e) {
-            // Pop the loading indicator
-            if (mounted) {
-              navigator.pop();
-              // Show Firebase Auth specific error
-              scaffoldMessenger.showSnackBar(
-                SnackBar(
-                  content: Text('Authentication error: ${e.message ?? e.code}'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-            debugPrint(
-              'Firebase Auth sign out error: ${e.code} - ${e.message}',
-            );
-          } on FirebaseException catch (e) {
-            // Pop the loading indicator
-            if (mounted) {
-              navigator.pop();
-              // Show Firebase specific error
-              scaffoldMessenger.showSnackBar(
-                SnackBar(
-                  content: Text('Firebase error: ${e.message ?? e.code}'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-            debugPrint('Firebase sign out error: ${e.code} - ${e.message}');
-          } catch (e) {
-            // Pop the loading indicator
-            if (mounted) {
-              navigator.pop();
-              // Show general error
-              scaffoldMessenger.showSnackBar(
-                SnackBar(
-                  content: Text('Error signing out: ${e.toString()}'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-            debugPrint('Sign out error: $e');
-          }
-        },
+        onTap: _logoutEvent,
       ),
     };
+  }
+
+  void _logoutEvent() async {
+    // Store context-dependent values before async operations
+    final navigator = Navigator.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      // Clear all local cache before signing out
+      await CacheService().clearAllLocalCache();
+
+      // Sign out from Google
+      await GoogleSignIn.instance.signOut();
+      // Sign out from Firebase
+      await FirebaseAuth.instance.signOut();
+
+      if (mounted) {
+        // Pop the loading indicator
+        navigator.pop();
+        // Navigate to sign in page
+        navigator.pushReplacement(
+          MaterialPageRoute(builder: (context) => const GoogleSignInPage()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      // Pop the loading indicator
+      if (mounted) {
+        navigator.pop();
+        // Show Firebase Auth specific error
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Authentication error: ${e.message ?? e.code}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      debugPrint('Firebase Auth sign out error: ${e.code} - ${e.message}');
+    } on FirebaseException catch (e) {
+      // Pop the loading indicator
+      if (mounted) {
+        navigator.pop();
+        // Show Firebase specific error
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Firebase error: ${e.message ?? e.code}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      debugPrint('Firebase sign out error: ${e.code} - ${e.message}');
+    } catch (e) {
+      // Pop the loading indicator
+      if (mounted) {
+        navigator.pop();
+        // Show general error
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Error signing out: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      debugPrint('Sign out error: $e');
+    }
   }
 }
