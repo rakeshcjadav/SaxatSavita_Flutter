@@ -1137,6 +1137,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(color: Colors.grey),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
@@ -1144,6 +1145,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                textAlign: TextAlign.center,
               ),
             ],
           ),

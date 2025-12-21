@@ -244,6 +244,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       AppLocalizations.of(context)!.header_slok,
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 18,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -258,6 +259,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     AppLocalizations.of(context)!.jogi_swami,
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 18,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -298,6 +300,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       AppLocalizations.of(context)!.sampRakhjo,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 18,
                       ),
                     ),
                   ),

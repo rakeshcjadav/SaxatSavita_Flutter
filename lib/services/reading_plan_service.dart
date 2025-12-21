@@ -86,6 +86,9 @@ class ReadingPlanService {
     // Schedule notifications for this plan
     await NotificationService().scheduleReadingPlanReminders(plan);
 
+    // Set the new plan as active
+    await setActivePlan(plan.id);
+
     debugPrint('✅ Created reading plan: ${plan.title}');
     return plan;
   }

@@ -22,6 +22,10 @@ AppBar buildAppBar(
   return AppBar(
     title: Text(
       title.isEmpty ? AppLocalizations.of(context)!.sakshatSavita : title,
+      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+        fontSize: 18,
+        color: Theme.of(context).colorScheme.onPrimary,
+      ),
     ),
     elevation: 5,
     actions: [

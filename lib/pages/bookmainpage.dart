@@ -192,7 +192,9 @@ class _BookmainpageState extends State<BookMainpage> {
               ),
               Text(
                 AppLocalizations.of(context)!.tag_line,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall!.copyWith(fontSize: 18),
               ),
               Expanded(child: _buildBookPartsWidget()),
             ],

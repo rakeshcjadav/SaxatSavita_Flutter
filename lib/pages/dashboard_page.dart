@@ -134,15 +134,17 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   Text(
                     greeting,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[600],
+                      fontSize: 18,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     userName,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
+                      fontSize: 22,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -151,9 +153,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     const SizedBox(height: 2),
                     Text(
                       _userProfile!.city,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                      ),
                     ),
                   ],
                 ],
