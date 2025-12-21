@@ -34,7 +34,9 @@ class NoteItem {
 enum SortOption { dateModified, partNumber, noteLength }
 
 class NoteListPage extends StatefulWidget {
-  const NoteListPage({super.key});
+  final bool showScaffold;
+
+  const NoteListPage({super.key, this.showScaffold = true});
 
   @override
   State<NoteListPage> createState() => _NoteListPageState();
@@ -346,6 +348,10 @@ class _NoteListPageState extends State<NoteListPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.showScaffold) {
+      return _buildBody();
+    }
+
     return Scaffold(
       appBar: buildAppBar(
         context,
@@ -457,148 +463,149 @@ class _NoteListPageState extends State<NoteListPage> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Search Bar
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              color: Theme.of(context).colorScheme.surfaceContainer,
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.searchNotesHint,
-                  prefixIcon: Icon(Icons.search),
-                  suffixIcon:
-                      _searchController.text.isNotEmpty
-                          ? IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                            },
-                          )
-                          : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  filled: true,
-                  fillColor: Theme.of(context).colorScheme.surface,
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    return SafeArea(
+      child: Column(
+        children: [
+          // Search Bar
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            color: Theme.of(context).colorScheme.surfaceContainer,
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.searchNotesHint,
+                prefixIcon: Icon(Icons.search),
+                suffixIcon:
+                    _searchController.text.isNotEmpty
+                        ? IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                          },
+                        )
+                        : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
+                filled: true,
+                fillColor: Theme.of(context).colorScheme.surface,
               ),
             ),
+          ),
 
-            // Filters Section
-            if (_showFilters) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outline.withValues(alpha: 0.2),
-                    ),
+          // Filters Section
+          if (_showFilters) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                border: Border(
+                  bottom: BorderSide(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withValues(alpha: 0.2),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.book, size: 16),
-                        SizedBox(width: 8),
-                        Text(
-                          AppLocalizations.of(context)!.bookParts,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      children:
-                          [1, 2, 3, 4, 5].map((partNumber) {
-                            final isSelected = _selectedParts.contains(
-                              partNumber,
-                            );
-                            return FilterChip(
-                              selected: isSelected,
-                              onSelected: (_) => _togglePartFilter(partNumber),
-                              label: Text(
-                                Bookservice().getPartTitle(context, partNumber),
-                              ),
-                              labelStyle: Theme.of(
-                                context,
-                              ).textTheme.labelSmall!.copyWith(
-                                color:
-                                    isSelected
-                                        ? Utils.getPartColor(
-                                          partNumber,
-                                          context,
-                                        )
-                                        : Utils.getPartAccentColor(
-                                          partNumber,
-                                          context,
-                                        ),
-                              ),
-                              avatar:
-                                  isSelected
-                                      ? Icon(Icons.check, size: 16)
-                                      : Icon(Icons.book, size: 16),
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.surface,
-                              selectedColor: Utils.getPartAccentColor(
-                                partNumber,
-                                context,
-                              ),
-                            );
-                          }).toList(),
-                    ),
-                  ],
-                ),
               ),
-            ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.book, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.bookParts,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children:
+                        [1, 2, 3, 4, 5].map((partNumber) {
+                          final isSelected = _selectedParts.contains(
+                            partNumber,
+                          );
+                          return FilterChip(
+                            selected: isSelected,
+                            onSelected: (_) => _togglePartFilter(partNumber),
+                            label: Text(
+                              Bookservice().getPartTitle(context, partNumber),
+                            ),
+                            labelStyle: Theme.of(
+                              context,
+                            ).textTheme.labelSmall!.copyWith(
+                              color:
+                                  isSelected
+                                      ? Utils.getPartColor(partNumber, context)
+                                      : Utils.getPartAccentColor(
+                                        partNumber,
+                                        context,
+                                      ),
+                            ),
+                            avatar:
+                                isSelected
+                                    ? Icon(Icons.check, size: 16)
+                                    : Icon(Icons.book, size: 16),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surface,
+                            selectedColor: Utils.getPartAccentColor(
+                              partNumber,
+                              context,
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          ],
 
-            // Notes Count Header
-            if (!_isLoading) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
+          // Notes Count Header
+          if (!_isLoading) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Text(
+                    AppLocalizations.of(
+                      context,
+                    )!.notesCount(_filteredNotes.length, _allNotes.length),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                  ),
+                  if (_filteredNotes.isNotEmpty) ...[
                     Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.notesCount(_filteredNotes.length, _allNotes.length),
+                      _getSortDescription(),
                       style: Theme.of(
                         context,
                       ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                     ),
-                    Spacer(),
-                    if (_filteredNotes.isNotEmpty) ...[
-                      Text(
-                        _getSortDescription(),
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                      ),
-                    ],
                   ],
-                ),
+                ],
               ),
-            ],
-
-            // Notes List
-            Expanded(child: _buildNotesList()),
+            ),
           ],
-        ),
+
+          // Notes List
+          Expanded(child: _buildNotesList()),
+        ],
       ),
     );
   }

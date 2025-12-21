@@ -7,6 +7,7 @@ import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
+import 'package:saxatsavita_flutter/pages/bookmarks_page.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
@@ -17,6 +18,8 @@ import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import 'package:saxatsavita_flutter/pages/profile_page.dart';
+import 'package:saxatsavita_flutter/pages/dashboard_page.dart';
+import 'package:saxatsavita_flutter/pages/main_navigation.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
@@ -269,6 +272,8 @@ class SakshatSavitaApp extends StatelessWidget {
           ),
           home: const SplashPage(),
           routes: {
+            '/dashboard': (context) => const DashboardPage(),
+            '/main': (context) => const MainNavigation(),
             '/info': (context) => const Infolistpage(),
             '/preface':
                 (context) => Infodetailspage(
@@ -280,10 +285,14 @@ class SakshatSavitaApp extends StatelessWidget {
             '/home': (context) => const HomePage(),
             '/bookmainpage': (context) => const BookMainpage(),
             '/notes': (context) => const NoteListPage(),
+            '/notelist': (context) => const NoteListPage(),
+            '/bookmarks': (context) => const BookmarksPage(partNumber: 1),
             '/readinghistory': (context) => const ReadingHistoryPage(),
             '/reading_plans': (context) => const ReadingPlanPage(),
+            '/readingplan': (context) => const ReadingPlanPage(),
             '/quotes_generator':
                 (context) => const QuotesImageGeneratorPage(quote: null),
+            '/quotes': (context) => const QuotesImageGeneratorPage(quote: null),
             '/profile':
                 (context) => const ProfilePage(continueAfterProfile: false),
             '/welcome': (context) => const WelcomeScreen(),

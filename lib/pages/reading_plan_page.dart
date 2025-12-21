@@ -1296,15 +1296,13 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
               ),
               TextButton(
                 onPressed: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  final localizations = AppLocalizations.of(context)!;
                   Navigator.pop(context);
                   await _readingPlanService.deleteReadingPlan(plan.id);
                   setState(() {});
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        AppLocalizations.of(context)!.reading_plan_deleted,
-                      ),
-                    ),
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(localizations.reading_plan_deleted)),
                   );
                 },
                 child: Text(AppLocalizations.of(context)!.reading_plans_delete),

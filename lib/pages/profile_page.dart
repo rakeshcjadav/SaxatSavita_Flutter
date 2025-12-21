@@ -6,8 +6,14 @@ import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:saxatsavita_flutter/models/user_profile_model.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.continueAfterProfile});
   final bool continueAfterProfile;
+  final bool showScaffold;
+
+  const ProfilePage({
+    super.key,
+    required this.continueAfterProfile,
+    this.showScaffold = true,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -89,9 +95,9 @@ class _ProfilePageState extends State<ProfilePage> {
       if (mounted) {
         setState(() {
           _isSaving = false;
-          // Navigate to home page
+          // Navigate to main navigation page
           if (widget.continueAfterProfile) {
-            Navigator.pushReplacementNamed(context, '/home');
+            Navigator.pushReplacementNamed(context, '/main');
           }
         });
       }
@@ -137,8 +143,176 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final body =
+        _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : GestureDetector(
+              onTap: () {
+                // Dismiss keyboard and context menu when tapping outside
+                FocusScope.of(context).unfocus();
+              },
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(8.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Profile Header
+                      Center(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 50,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              backgroundImage:
+                                  FirebaseAuth.instance.currentUser?.photoURL !=
+                                          null
+                                      ? NetworkImage(
+                                        FirebaseAuth
+                                            .instance
+                                            .currentUser!
+                                            .photoURL!,
+                                      )
+                                      : null,
+                              child:
+                                  FirebaseAuth.instance.currentUser?.photoURL ==
+                                          null
+                                      ? Icon(
+                                        Icons.person,
+                                        size: 50,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary,
+                                      )
+                                      : null,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              FirebaseAuth.instance.currentUser?.email ?? '',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Profile Form
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.personal_information,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(height: 16),
+
+                              // First Name
+                              TextFormField(
+                                controller: _firstNameController,
+                                decoration: InputDecoration(
+                                  labelText:
+                                      AppLocalizations.of(context)!.first_name,
+                                  prefixIcon: const Icon(Icons.person_outline),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return AppLocalizations.of(
+                                      context,
+                                    )!.first_name_required;
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Last Name
+                              TextFormField(
+                                controller: _lastNameController,
+                                decoration: InputDecoration(
+                                  labelText:
+                                      AppLocalizations.of(context)!.last_name,
+                                  prefixIcon: const Icon(Icons.person_outline),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return AppLocalizations.of(
+                                      context,
+                                    )!.last_name_required;
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16),
+
+                              // City
+                              TextFormField(
+                                controller: _cityController,
+                                decoration: InputDecoration(
+                                  labelText:
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.city_or_village,
+                                  prefixIcon: const Icon(Icons.location_city),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return AppLocalizations.of(
+                                      context,
+                                    )!.city_or_village_required;
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 24),
+
+                              // Save Button
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: _isSaving ? null : _saveProfile,
+                                  child:
+                                      _isSaving
+                                          ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                          : Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.save_profile,
+                                          ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+
+    if (!widget.showScaffold) {
+      return body;
+    }
+
     return PopScope(
-      canPop: false, // Always prevent default pop behavior
+      canPop: false,
       onPopInvokedWithResult: (bool didPop, dynamic result) async {
         if (!didPop) {
           final shouldPop = await _onWillPop();
@@ -152,193 +326,7 @@ class _ProfilePageState extends State<ProfilePage> {
           context,
           title: AppLocalizations.of(context)!.profile,
         ),
-        body:
-            _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : GestureDetector(
-                  onTap: () {
-                    // Dismiss keyboard and context menu when tapping outside
-                    FocusScope.of(context).unfocus();
-                  },
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Profile Header
-                          Center(
-                            child: Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 50,
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  backgroundImage:
-                                      FirebaseAuth
-                                                  .instance
-                                                  .currentUser
-                                                  ?.photoURL !=
-                                              null
-                                          ? NetworkImage(
-                                            FirebaseAuth
-                                                .instance
-                                                .currentUser!
-                                                .photoURL!,
-                                          )
-                                          : null,
-                                  child:
-                                      FirebaseAuth
-                                                  .instance
-                                                  .currentUser
-                                                  ?.photoURL ==
-                                              null
-                                          ? Icon(
-                                            Icons.person,
-                                            size: 50,
-                                            color:
-                                                Theme.of(
-                                                  context,
-                                                ).colorScheme.onPrimary,
-                                          )
-                                          : null,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  FirebaseAuth.instance.currentUser?.email ??
-                                      '',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-
-                          // Profile Form
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(
-                                      context,
-                                    )!.personal_information,
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  const SizedBox(height: 16),
-
-                                  // First Name
-                                  TextFormField(
-                                    controller: _firstNameController,
-                                    decoration: InputDecoration(
-                                      labelText:
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.first_name,
-                                      prefixIcon: const Icon(
-                                        Icons.person_outline,
-                                      ),
-                                      border: const OutlineInputBorder(),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null ||
-                                          value.trim().isEmpty) {
-                                        return AppLocalizations.of(
-                                          context,
-                                        )!.first_name_required;
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
-
-                                  // Last Name
-                                  TextFormField(
-                                    controller: _lastNameController,
-                                    decoration: InputDecoration(
-                                      labelText:
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.last_name,
-                                      prefixIcon: const Icon(
-                                        Icons.person_outline,
-                                      ),
-                                      border: const OutlineInputBorder(),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null ||
-                                          value.trim().isEmpty) {
-                                        return AppLocalizations.of(
-                                          context,
-                                        )!.last_name_required;
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
-
-                                  // City
-                                  TextFormField(
-                                    controller: _cityController,
-                                    decoration: InputDecoration(
-                                      labelText:
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.city_or_village,
-                                      prefixIcon: const Icon(
-                                        Icons.location_city,
-                                      ),
-                                      border: const OutlineInputBorder(),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null ||
-                                          value.trim().isEmpty) {
-                                        return AppLocalizations.of(
-                                          context,
-                                        )!.city_or_village_required;
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 24),
-
-                                  // Save Button
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed:
-                                          _isSaving ? null : _saveProfile,
-                                      child:
-                                          _isSaving
-                                              ? const SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                              )
-                                              : Text(
-                                                AppLocalizations.of(
-                                                  context,
-                                                )!.save_profile,
-                                              ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+        body: body,
       ),
     );
   }

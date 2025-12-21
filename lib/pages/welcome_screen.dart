@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
-import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/pages/main_navigation.dart';
 import 'package:saxatsavita_flutter/services/first_time_user_service.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -105,7 +105,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     if (mounted) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => const MainNavigation()),
       );
     }
   }

@@ -116,6 +116,150 @@ abstract class AppLocalizations {
   /// **'Aashirvachan'**
   String get aashirvachan;
 
+  /// No description provided for @dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quickActions;
+
+  /// No description provided for @readingStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Statistics'**
+  String get readingStatistics;
+
+  /// No description provided for @totalTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Time'**
+  String get totalTime;
+
+  /// No description provided for @sessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get sessions;
+
+  /// No description provided for @kirans.
+  ///
+  /// In en, this message translates to:
+  /// **'Kirans'**
+  String get kirans;
+
+  /// No description provided for @activePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Reading Plan'**
+  String get activePlan;
+
+  /// No description provided for @progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get progress;
+
+  /// No description provided for @noActivePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'No Active Reading Plan'**
+  String get noActivePlan;
+
+  /// No description provided for @noActivePlanMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a personalized reading plan to track your daily progress and stay motivated.'**
+  String get noActivePlanMessage;
+
+  /// No description provided for @createPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Plan'**
+  String get createPlan;
+
+  /// No description provided for @recentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activity'**
+  String get recentActivity;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @noActivityYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No reading activity yet'**
+  String get noActivityYet;
+
+  /// No description provided for @currentStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Streak'**
+  String get currentStreak;
+
+  /// No description provided for @longestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest Streak'**
+  String get longestStreak;
+
+  /// No description provided for @goodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Morning'**
+  String get goodMorning;
+
+  /// No description provided for @goodAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Afternoon'**
+  String get goodAfternoon;
+
+  /// No description provided for @goodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Evening'**
+  String get goodEvening;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get plan;
+
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
+
+  /// No description provided for @quotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Quotes'**
+  String get quotes;
+
   /// No description provided for @information.
   ///
   /// In en, this message translates to:
@@ -511,12 +655,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Notes'**
   String get save_notes;
-
-  /// No description provided for @notes.
-  ///
-  /// In en, this message translates to:
-  /// **'Notes'**
-  String get notes;
 
   /// No description provided for @add_notes.
   ///
@@ -1141,12 +1279,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Completed'**
   String get completed;
-
-  /// No description provided for @kirans.
-  ///
-  /// In en, this message translates to:
-  /// **'Kirans'**
-  String get kirans;
 
   /// No description provided for @quick_actions.
   ///

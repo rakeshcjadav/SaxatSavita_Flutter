@@ -10,7 +10,9 @@ import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final bool showScaffold;
+
+  const HomePage({super.key, this.showScaffold = true});
 
   @override
   State<HomePage> createState() => HomePageState();
@@ -31,9 +33,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // Check for app updates automatically
     WidgetsBinding.instance.addPostFrameCallback((_) {
       InAppUpdateService().checkForUpdateOnAppStart(context);
+      _checkProfileAndNavigate();
     });
-
-    _checkProfileAndNavigate();
   }
 
   Future<void> _checkProfileAndNavigate() async {
@@ -60,6 +61,18 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final body = OrientationBuilder(
+      builder:
+          (context, orientation) =>
+              orientation == Orientation.portrait
+                  ? _buildPortraitHomePage(context)
+                  : _buildLandScapeHomePage(context),
+    );
+
+    if (!widget.showScaffold) {
+      return body;
+    }
+
     return Scaffold(
       appBar: buildAppBar(
         context,
@@ -82,13 +95,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           DrawerItem.logout,
         ],
       ),
-      body: OrientationBuilder(
-        builder:
-            (context, orientation) =>
-                orientation == Orientation.portrait
-                    ? _buildPortraitHomePage(context)
-                    : _buildLandScapeHomePage(context),
-      ),
+      body: body,
       //bottomNavigationBar: const Navigationbar(),
     );
   }

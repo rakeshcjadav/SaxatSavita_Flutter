@@ -18,6 +18,79 @@ class AppLocalizationsGu extends AppLocalizations {
   String get aashirvachan => 'આશીર્વચન';
 
   @override
+  String get dashboard => 'ડેશબોર્ડ';
+
+  @override
+  String get home => 'હોમ';
+
+  @override
+  String get quickActions => 'ઝડપી ક્રિયાઓ';
+
+  @override
+  String get readingStatistics => 'વાંચનના આંકડા';
+
+  @override
+  String get totalTime => 'કુલ સમય';
+
+  @override
+  String get sessions => 'સત્રો';
+
+  @override
+  String get kirans => 'કિરણો';
+
+  @override
+  String get activePlan => 'સક્રિય વાંચન યોજના';
+
+  @override
+  String get progress => 'પ્રગતિ';
+
+  @override
+  String get noActivePlan => 'કોઈ સક્રિય વાંચન યોજના નથી';
+
+  @override
+  String get noActivePlanMessage =>
+      'તમારી દૈનિક પ્રગતિને ટ્રૅક કરવા અને પ્રેરિત રહેવા માટે વ્યક્તિગત વાંચન યોજના બનાવો.';
+
+  @override
+  String get createPlan => 'યોજના બનાવો';
+
+  @override
+  String get recentActivity => 'તાજેતરની પ્રવૃત્તિ';
+
+  @override
+  String get viewAll => 'બધું જુઓ';
+
+  @override
+  String get noActivityYet => 'હજી વાંચન પ્રવૃત્તિ નથી';
+
+  @override
+  String get currentStreak => 'વર્તમાન સિલસિલો';
+
+  @override
+  String get longestStreak => 'સૌથી લાંબો સિલસિલો';
+
+  @override
+  String get goodMorning => 'સુપ્રભાત';
+
+  @override
+  String get goodAfternoon => 'શુભ બપોર';
+
+  @override
+  String get goodEvening => 'શુભ સાંજ';
+
+  @override
+  String get notes => 'નોંધ';
+
+  @override
+  String get plan => 'યોજના';
+
+  @override
+  String get history => 'ઇતિહાસ';
+
+  @override
+  String get quotes => 'અવતરણો';
+
+  @override
   String get information => 'માહિતી';
 
   @override
@@ -241,9 +314,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get save_notes => 'નોંધ સેવ કરો';
-
-  @override
-  String get notes => 'નોંધ';
 
   @override
   String get add_notes => 'નોંધ ઉમેરો';
@@ -577,9 +647,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get completed => 'પૂર્ણ થયું';
-
-  @override
-  String get kirans => 'કિરણો';
 
   @override
   String get quick_actions => 'ઝડપી ક્રિયાઓ';

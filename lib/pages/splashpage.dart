@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
-import 'package:saxatsavita_flutter/pages/homepage.dart';
+import 'package:saxatsavita_flutter/pages/main_navigation.dart';
 import 'package:saxatsavita_flutter/pages/profile_page.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/services/first_time_user_service.dart';
@@ -25,7 +25,9 @@ class SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _checkAuthAndNavigate();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthAndNavigate();
+    });
   }
 
   Future<void> _checkAuthAndNavigate() async {
@@ -45,7 +47,7 @@ class SplashPageState extends State<SplashPage> {
 
         await Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
         );
         return;
       }
@@ -124,10 +126,10 @@ class SplashPageState extends State<SplashPage> {
           }
         } else {
           if (mounted) {
-            // Go directly to homepage for returning users
+            // Go directly to main navigation for returning users
             await Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(builder: (context) => const MainNavigation()),
             );
           }
         }

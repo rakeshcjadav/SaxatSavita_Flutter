@@ -18,6 +18,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aashirvachan => 'Aashirvachan';
 
   @override
+  String get dashboard => 'Dashboard';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get readingStatistics => 'Reading Statistics';
+
+  @override
+  String get totalTime => 'Total Time';
+
+  @override
+  String get sessions => 'Sessions';
+
+  @override
+  String get kirans => 'Kirans';
+
+  @override
+  String get activePlan => 'Active Reading Plan';
+
+  @override
+  String get progress => 'Progress';
+
+  @override
+  String get noActivePlan => 'No Active Reading Plan';
+
+  @override
+  String get noActivePlanMessage =>
+      'Create a personalized reading plan to track your daily progress and stay motivated.';
+
+  @override
+  String get createPlan => 'Create Plan';
+
+  @override
+  String get recentActivity => 'Recent Activity';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get noActivityYet => 'No reading activity yet';
+
+  @override
+  String get currentStreak => 'Current Streak';
+
+  @override
+  String get longestStreak => 'Longest Streak';
+
+  @override
+  String get goodMorning => 'Good Morning';
+
+  @override
+  String get goodAfternoon => 'Good Afternoon';
+
+  @override
+  String get goodEvening => 'Good Evening';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get plan => 'Plan';
+
+  @override
+  String get history => 'History';
+
+  @override
+  String get quotes => 'Quotes';
+
+  @override
   String get information => 'Information';
 
   @override
@@ -240,9 +313,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get save_notes => 'Save Notes';
-
-  @override
-  String get notes => 'Notes';
 
   @override
   String get add_notes => 'Add Notes';
@@ -576,9 +646,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completed => 'Completed';
-
-  @override
-  String get kirans => 'Kirans';
 
   @override
   String get quick_actions => 'Quick Actions';
