@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/components/drawer.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/services/dashboard_service.dart';
@@ -86,6 +87,22 @@ class _DashboardPageState extends State<DashboardPage> {
         context,
         title: AppLocalizations.of(context)!.dashboard,
         actionItems: [ActionOptions.settings],
+      ),
+      drawer: MyDrawer(
+        items: [
+          DrawerItem.aashirvachan,
+          DrawerItem.notes,
+          DrawerItem.search,
+          DrawerItem.readingPlans,
+          DrawerItem.readingHistory,
+          DrawerItem.quotesImageGenerator,
+          DrawerItem.profile,
+          DrawerItem.welcomeTour,
+          DrawerItem.marketingShowcase,
+          DrawerItem.migration,
+          DrawerItem.adminpanel,
+          DrawerItem.logout,
+        ],
       ),
       body: body,
     );
