@@ -82,9 +82,9 @@ class _MainNavigationState extends State<MainNavigation> {
         type: BottomNavigationBarType.fixed,
         elevation: 8,
         items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.dashboard),
+            label: AppLocalizations.of(context)!.dashboard,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
