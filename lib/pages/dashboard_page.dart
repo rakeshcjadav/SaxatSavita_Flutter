@@ -35,20 +35,22 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> _loadDashboardData() async {
-    setState(() => _isLoading = true);
+    if (mounted) setState(() => _isLoading = true);
 
     try {
       final stats = await _dashboardService.getDashboardStatistics();
       final profile = await _dashboardService.getUserProfile();
 
-      setState(() {
-        _statistics = stats;
-        _userProfile = profile;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _statistics = stats;
+          _userProfile = profile;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
       debugPrint('Error loading dashboard data: $e');
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -67,9 +69,9 @@ class _DashboardPageState extends State<DashboardPage> {
                     _buildWelcomeCard(),
                     _buildStreakCard(),
                     const SizedBox(height: 16),
-                    _buildQuickActionsGrid(),
-                    const SizedBox(height: 16),
                     _buildReadingStatsCards(),
+                    const SizedBox(height: 16),
+                    _buildQuickActionsGrid(),
                     _buildActivePlanCard(),
                     _buildWeeklyChartCard(),
                     _buildRecentActivityCard(),
@@ -87,6 +89,13 @@ class _DashboardPageState extends State<DashboardPage> {
         context,
         title: AppLocalizations.of(context)!.dashboard,
         actionItems: [ActionOptions.settings],
+        extraActions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _isLoading ? null : _loadDashboardData,
+          ),
+        ],
       ),
       drawer: MyDrawer(
         items: [

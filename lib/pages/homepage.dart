@@ -9,16 +9,24 @@ import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
 import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:async';
+
 class HomePage extends StatefulWidget {
   final bool showScaffold;
 
   const HomePage({super.key, this.showScaffold = true});
 
   @override
-  State<HomePage> createState() => HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class HomePageState extends State<HomePage> with WidgetsBindingObserver {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  bool _isOffline = false;
+  late final Connectivity _connectivity;
+  late final Stream<dynamic> _connectivityStream;
+  late final StreamSubscription<dynamic> _connectivitySubscription;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +43,38 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       InAppUpdateService().checkForUpdateOnAppStart(context);
       _checkProfileAndNavigate();
     });
+
+    _connectivity = Connectivity();
+    _connectivityStream = _connectivity.onConnectivityChanged;
+    _connectivitySubscription = _connectivityStream.listen((event) {
+      ConnectivityResult result;
+      if (event is ConnectivityResult) {
+        result = event;
+      } else if (event is List &&
+          event.isNotEmpty &&
+          event.first is ConnectivityResult) {
+        result = event.first as ConnectivityResult;
+      } else {
+        result = ConnectivityResult.none;
+      }
+
+      final offline = result == ConnectivityResult.none;
+      if (offline != _isOffline && mounted) {
+        setState(() {
+          _isOffline = offline;
+        });
+      }
+    });
+    _checkInitialConnectivity();
+  }
+
+  Future<void> _checkInitialConnectivity() async {
+    final result = await _connectivity.checkConnectivity();
+    if (mounted) {
+      setState(() {
+        _isOffline = result == ConnectivityResult.none;
+      });
+    }
   }
 
   Future<void> _checkProfileAndNavigate() async {
@@ -53,6 +93,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _connectivitySubscription.cancel();
     super.dispose();
   }
 
@@ -78,6 +119,37 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         context,
         title: AppLocalizations.of(context)!.sakshatSavita,
         actionItems: [ActionOptions.info, ActionOptions.settings],
+        extraActions: [
+          if (_isOffline) ...[
+            IconButton(
+              icon: Icon(Icons.wifi_off, color: Colors.red.shade400),
+              tooltip: 'Offline',
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'You are offline. Please check your internet connection.',
+                    ),
+                    backgroundColor: Colors.red.shade300,
+                  ),
+                );
+              },
+            ),
+          ] else ...[
+            IconButton(
+              icon: Icon(Icons.wifi, color: Colors.green.shade400),
+              tooltip: 'Online',
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('You are online.'),
+                    backgroundColor: Colors.green.shade300,
+                  ),
+                );
+              },
+            ),
+          ],
+        ],
       ),
       drawer: MyDrawer(
         items: [

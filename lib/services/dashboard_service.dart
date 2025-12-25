@@ -72,6 +72,9 @@ class DashboardService {
       // Get weekly reading data for chart
       final weeklyData = await _getWeeklyReadingData();
 
+      // logging
+      debugPrint('✅ Dashboard statistics fetched successfully');
+
       return DashboardStatistics(
         totalReadingSessions: stats['totalSessions'] ?? 0,
         totalReadingTimeSeconds: stats['totalDurationSeconds'] ?? 0,
