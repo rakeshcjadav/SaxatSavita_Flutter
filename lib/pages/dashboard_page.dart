@@ -56,10 +56,13 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation;
+
     final body =
         _isLoading
             ? const Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
+            : orientation == Orientation.portrait
+            ? RefreshIndicator(
               onRefresh: _loadDashboardData,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -78,7 +81,8 @@ class _DashboardPageState extends State<DashboardPage> {
                   ],
                 ),
               ),
-            );
+            )
+            : _buildLandscapeDashboard();
 
     if (!widget.showScaffold) {
       return body;
@@ -813,6 +817,59 @@ class _DashboardPageState extends State<DashboardPage> {
                       ],
                     ),
                   ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Landscape layout: two-column arrangement for wider screens.
+  Widget _buildLandscapeDashboard() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left column: welcome, streaks and quick actions
+            Expanded(
+              flex: 2,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildWelcomeCard(),
+                    const SizedBox(height: 12),
+                    _buildQuickActionsGrid(),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 12),
+
+            // Right column: stats, active plan, charts and recent activity
+            Expanded(
+              flex: 3,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildStreakCard(),
+                    const SizedBox(height: 12),
+                    _buildReadingStatsCards(),
+                    const SizedBox(height: 12),
+                    _buildActivePlanCard(),
+                    const SizedBox(height: 12),
+                    _buildWeeklyChartCard(),
+                    const SizedBox(height: 12),
+                    _buildRecentActivityCard(),
+                  ],
                 ),
               ),
             ),
