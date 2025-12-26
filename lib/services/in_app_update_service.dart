@@ -83,6 +83,14 @@ class InAppUpdateService {
     }
   }
 
+  void showUpdateDialog(
+    BuildContext context,
+    AppUpdateInfo updateInfo, {
+    bool isManualCheck = false,
+  }) {
+    _showUpdateDialog(context, updateInfo, isManualCheck: isManualCheck);
+  }
+
   /// Show update dialog for Android
   Future<void> _showUpdateDialog(
     BuildContext context,
@@ -103,14 +111,23 @@ class InAppUpdateService {
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 8),
-              Text(localizations.updateAvailable),
+              Text(
+                localizations.updateAvailable,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ],
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(localizations.updateAvailableMessage),
+              Text(
+                localizations.updateAvailableMessage,
+                style: const TextStyle(fontSize: 18),
+              ),
               const SizedBox(height: 16),
               if (updateInfo.immediateUpdateAllowed)
                 Container(
@@ -134,6 +151,7 @@ class InAppUpdateService {
                             color:
                                 Theme.of(context).colorScheme.onErrorContainer,
                             fontWeight: FontWeight.w500,
+                            fontSize: 18,
                           ),
                         ),
                       ),
@@ -146,14 +164,26 @@ class InAppUpdateService {
             if (!updateInfo.immediateUpdateAllowed)
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(localizations.later),
+                child: Text(
+                  localizations.later,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
               ),
             ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).pop();
                 await _performUpdate(context, updateInfo);
               },
-              child: Text(localizations.updateNow),
+              child: Text(
+                localizations.updateNow,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ),
           ],
         );
@@ -213,14 +243,29 @@ class InAppUpdateService {
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 8),
-              Text(localizations.upToDate),
+              Text(
+                localizations.upToDate,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ],
           ),
-          content: Text(localizations.noUpdateAvailable),
+          content: Text(
+            localizations.noUpdateAvailable,
+            style: const TextStyle(fontSize: 18),
+          ),
           actions: [
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(localizations.ok),
+              child: Text(
+                localizations.ok,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ),
           ],
         );
@@ -280,10 +325,13 @@ class InAppUpdateService {
                         : Theme.of(context).colorScheme.error,
               ),
               const SizedBox(width: 8),
-              Text(errorTitle),
+              Text(
+                errorTitle,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
             ],
           ),
-          content: Text(errorMessage),
+          content: Text(errorMessage, style: const TextStyle(fontSize: 18)),
           actions: [
             if (errorString.contains('ERROR_APP_NOT_OWNED') ||
                 errorString.contains('INSTALL ERROR(-10)') ||
@@ -295,11 +343,20 @@ class InAppUpdateService {
                   Navigator.of(context).pop();
                   await _openPlayStore();
                 },
-                child: const Text('Open Play Store'),
+                child: const Text(
+                  'Open Play Store',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
               ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(localizations.ok),
+              child: Text(
+                localizations.ok,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ),
           ],
         );
@@ -356,21 +413,42 @@ class InAppUpdateService {
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 8),
-              Text(localizations.updateReady),
+              Text(
+                localizations.updateReady,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ],
           ),
-          content: Text(localizations.updateReadyMessage),
+          content: Text(
+            localizations.updateReadyMessage,
+            style: const TextStyle(fontSize: 18),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(localizations.later),
+              child: Text(
+                localizations.later,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ),
             ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).pop();
                 await InAppUpdate.completeFlexibleUpdate();
               },
-              child: Text(localizations.restartNow),
+              child: Text(
+                localizations.restartNow,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ),
           ],
         );

@@ -1160,6 +1160,24 @@ abstract class AppLocalizations {
   /// **'Track your daily reading habits with this line chart showing minutes read per day over the last 30 days. Peaks indicate your most productive reading days.'**
   String get dailyChartDescription;
 
+  /// No description provided for @dailyChartLatestRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest ← • → 30 days back'**
+  String get dailyChartLatestRange;
+
+  /// No description provided for @latest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest'**
+  String get latest;
+
+  /// No description provided for @refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
   /// No description provided for @weeklyChartDescription.
   ///
   /// In en, this message translates to:

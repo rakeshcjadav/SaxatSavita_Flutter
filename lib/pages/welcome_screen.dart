@@ -240,6 +240,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           AppLocalizations.of(context)!.previous,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
+                            fontSize: 18,
                           ),
                         ),
                       )
@@ -265,7 +266,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             ? AppLocalizations.of(context)!.get_started
                             : AppLocalizations.of(context)!.next,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -283,58 +284,60 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget _buildFeaturePage(WelcomeFeature feature) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Feature icon with gradient background
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(colors: feature.gradient),
-              boxShadow: [
-                BoxShadow(
-                  color: feature.gradient[0].withValues(alpha: 0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Feature icon with gradient background
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(colors: feature.gradient),
+                boxShadow: [
+                  BoxShadow(
+                    color: feature.gradient[0].withValues(alpha: 0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Icon(feature.icon, size: 60, color: Colors.white),
             ),
-            child: Icon(feature.icon, size: 60, color: Colors.white),
-          ),
 
-          const SizedBox(height: 40),
+            const SizedBox(height: 40),
 
-          // Feature title
-          Text(
-            feature.title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
+            // Feature title
+            Text(
+              feature.title,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          // Feature description
-          Text(
-            feature.description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.7),
-              height: 1.5,
+            // Feature description
+            Text(
+              feature.description,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
 
-          const SizedBox(height: 40),
+            const SizedBox(height: 40),
 
-          // Feature highlights (if any)
-          _buildFeatureHighlights(feature),
-        ],
+            // Feature highlights (if any)
+            _buildFeatureHighlights(feature),
+          ],
+        ),
       ),
     );
   }

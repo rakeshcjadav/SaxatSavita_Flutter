@@ -112,6 +112,7 @@ class _DrawerState extends State<MyDrawer> {
         _userProfile!.fullName,
         style: Theme.of(context).textTheme.titleSmall!.copyWith(
           color: Theme.of(context).colorScheme.onPrimary,
+          fontSize: 18,
         ),
       );
     } else {
@@ -120,6 +121,7 @@ class _DrawerState extends State<MyDrawer> {
         FirebaseAuth.instance.currentUser?.displayName ?? '',
         style: Theme.of(context).textTheme.titleSmall!.copyWith(
           color: Theme.of(context).colorScheme.onPrimary,
+          fontSize: 18,
         ),
       );
     }
@@ -134,6 +136,7 @@ class _DrawerState extends State<MyDrawer> {
           'Apple ID',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: Theme.of(context).colorScheme.onPrimary,
+            fontSize: 18,
           ),
         );
       }
@@ -141,6 +144,7 @@ class _DrawerState extends State<MyDrawer> {
         _userProfile!.email,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
           color: Theme.of(context).colorScheme.onPrimary,
+          fontSize: 18,
         ),
       );
     } else {
@@ -149,6 +153,7 @@ class _DrawerState extends State<MyDrawer> {
         FirebaseAuth.instance.currentUser?.email ?? '',
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
           color: Theme.of(context).colorScheme.onPrimary,
+          fontSize: 18,
         ),
       );
     }
@@ -221,7 +226,7 @@ class _DrawerState extends State<MyDrawer> {
                 child: Text(
                   'Version: $version + ${snapshot.data!.buildNumber}',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: const TextStyle(fontSize: 18, color: Colors.grey),
                 ),
               );
             },
@@ -232,10 +237,14 @@ class _DrawerState extends State<MyDrawer> {
   }
 
   Widget _buildDrawerItem(DrawerItem item) {
+    TextStyle textStyle = const TextStyle(fontSize: 18);
     return switch (item) {
       DrawerItem.aashirvachan => ListTile(
         leading: const Icon(Icons.description),
-        title: Text(AppLocalizations.of(context)!.aashirvachan),
+        title: Text(
+          AppLocalizations.of(context)!.aashirvachan,
+          style: textStyle,
+        ),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/aashirvachan');
@@ -243,7 +252,10 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.information => ListTile(
         leading: const Icon(Icons.info),
-        title: Text(AppLocalizations.of(context)!.information),
+        title: Text(
+          AppLocalizations.of(context)!.information,
+          style: textStyle,
+        ),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/info');
@@ -251,7 +263,7 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.notes => ListTile(
         leading: const Icon(Icons.note),
-        title: Text(AppLocalizations.of(context)!.notes),
+        title: Text(AppLocalizations.of(context)!.notes, style: textStyle),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/notes');
@@ -259,7 +271,7 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.search => ListTile(
         leading: const Icon(Icons.search),
-        title: Text(AppLocalizations.of(context)!.search),
+        title: Text(AppLocalizations.of(context)!.search, style: textStyle),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/search');
@@ -267,7 +279,10 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.readingPlans => ListTile(
         leading: const Icon(Icons.schedule),
-        title: Text(AppLocalizations.of(context)!.reading_plans),
+        title: Text(
+          AppLocalizations.of(context)!.reading_plans,
+          style: textStyle,
+        ),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/reading_plans');
@@ -275,7 +290,10 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.readingHistory => ListTile(
         leading: const Icon(Icons.history),
-        title: Text(AppLocalizations.of(context)!.reading_history),
+        title: Text(
+          AppLocalizations.of(context)!.reading_history,
+          style: textStyle,
+        ),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/readinghistory');
@@ -283,7 +301,10 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.quotesImageGenerator => ListTile(
         leading: const Icon(Icons.format_quote),
-        title: Text(AppLocalizations.of(context)!.quotes_image_generator),
+        title: Text(
+          AppLocalizations.of(context)!.quotes_image_generator,
+          style: textStyle,
+        ),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/quotes_generator', arguments: {null});
@@ -291,7 +312,7 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.profile => ListTile(
         leading: const Icon(Icons.person),
-        title: Text(AppLocalizations.of(context)!.profile),
+        title: Text(AppLocalizations.of(context)!.profile, style: textStyle),
         onTap: () async {
           Navigator.pop(context);
           await Navigator.pushNamed(context, '/profile');
@@ -301,7 +322,7 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.settings => ListTile(
         leading: const Icon(Icons.settings),
-        title: Text(AppLocalizations.of(context)!.settings),
+        title: Text(AppLocalizations.of(context)!.settings, style: textStyle),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/settings');
@@ -309,7 +330,10 @@ class _DrawerState extends State<MyDrawer> {
       ),
       DrawerItem.welcomeTour => ListTile(
         leading: const Icon(Icons.celebration),
-        title: Text(AppLocalizations.of(context)!.welcome_tour),
+        title: Text(
+          AppLocalizations.of(context)!.welcome_tour,
+          style: textStyle,
+        ),
         onTap: () {
           // Show welcome screen for first-time users
           Navigator.pushReplacement(
@@ -324,6 +348,7 @@ class _DrawerState extends State<MyDrawer> {
               leading: const Icon(Icons.star),
               title: Text(
                 '${AppLocalizations.of(context)!.sakshatSavita} (Debug)',
+                style: textStyle,
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -335,7 +360,7 @@ class _DrawerState extends State<MyDrawer> {
         kDebugMode
             ? ListTile(
               leading: const Icon(Icons.transfer_within_a_station),
-              title: Text("Migration (Debug)"),
+              title: Text("Migration (Debug)", style: textStyle),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/migration');
@@ -346,7 +371,7 @@ class _DrawerState extends State<MyDrawer> {
         kDebugMode && kIsWeb
             ? ListTile(
               leading: const Icon(Icons.admin_panel_settings),
-              title: Text("Admin Panel (Debug)"),
+              title: Text("Admin Panel (Debug)", style: textStyle),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/admin');
@@ -355,7 +380,7 @@ class _DrawerState extends State<MyDrawer> {
             : const SizedBox.shrink(),
       DrawerItem.logout => ListTile(
         leading: const Icon(Icons.logout),
-        title: Text(AppLocalizations.of(context)!.logout),
+        title: Text(AppLocalizations.of(context)!.logout, style: textStyle),
         onTap: _logoutEvent,
       ),
     };

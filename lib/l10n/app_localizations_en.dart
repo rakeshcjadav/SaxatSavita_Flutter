@@ -584,6 +584,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Track your daily reading habits with this line chart showing minutes read per day over the last 30 days. Peaks indicate your most productive reading days.';
 
   @override
+  String get dailyChartLatestRange => 'Latest ← • → 30 days back';
+
+  @override
+  String get latest => 'Latest';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
   String get weeklyChartDescription =>
       'View your weekly reading patterns with this bar chart displaying total hours read per week over the last 12 weeks. Helps identify consistent reading periods.';
 

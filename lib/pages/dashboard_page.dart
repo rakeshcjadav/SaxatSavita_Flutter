@@ -92,7 +92,7 @@ class _DashboardPageState extends State<DashboardPage> {
         extraActions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh',
+            tooltip: AppLocalizations.of(context)!.refresh,
             onPressed: _isLoading ? null : _loadDashboardData,
           ),
         ],
@@ -626,7 +626,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ).colorScheme.primaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(
+                      child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
@@ -636,7 +636,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Latest ← • → 30 days back',
+                        AppLocalizations.of(context)!.dailyChartLatestRange,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 10,
@@ -934,10 +934,9 @@ class _DashboardPageState extends State<DashboardPage> {
     } else {
       final daysDifference = today.difference(dateDay).inDays;
 
-      if (daysDifference < 7 && daysDifference > 0) {
-        // Show weekday name for dates within the last week
-        final weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        return weekdays[date.weekday - 1];
+        if (daysDifference < 7 && daysDifference > 0) {
+        // Show weekday name for dates within the last week (localized)
+        return DateFormat('EEE', Localizations.localeOf(context).toString()).format(date);
       } else {
         // Show date for older dates
         return '${date.day}/${date.month}/${date.year}';
@@ -1023,18 +1022,20 @@ class _DashboardPageState extends State<DashboardPage> {
       return _getIntuitiveDateLabel(date);
     }
 
+    final latestLabel = AppLocalizations.of(context)!.latest;
+
     if (_isToday(date)) {
-      return 'Latest (${AppLocalizations.of(context)!.today})';
+      return '$latestLabel (${AppLocalizations.of(context)!.today})';
     } else if (_isYesterday(date)) {
-      return 'Latest (${AppLocalizations.of(context)!.yesterday})';
+      return '$latestLabel (${AppLocalizations.of(context)!.yesterday})';
     } else {
       final now = DateTime.now();
       final difference = now.difference(date).inDays;
 
       if (difference <= 7) {
-        return 'Latest (${DateFormat('EEE').format(date)})';
+        return '$latestLabel (${DateFormat('EEE', Localizations.localeOf(context).toString()).format(date)})';
       } else {
-        return 'Latest (${DateFormat('dd/MM').format(date)})';
+        return '$latestLabel (${DateFormat('dd/MM').format(date)})';
       }
     }
   }

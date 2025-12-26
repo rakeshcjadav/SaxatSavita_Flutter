@@ -269,6 +269,14 @@ class SakshatSavitaApp extends StatelessWidget {
                 ),
               ),
             ),
+            snackBarTheme: SnackBarThemeData(
+              backgroundColor: colorScheme.primaryContainer,
+              contentTextStyle: TextStyle(
+                fontSize: 18,
+                color: colorScheme.onPrimaryContainer,
+              ),
+              actionTextColor: colorScheme.secondary,
+            ),
           ),
           home: const SplashPage(),
           routes: {

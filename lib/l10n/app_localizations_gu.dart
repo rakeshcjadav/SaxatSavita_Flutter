@@ -585,6 +585,15 @@ class AppLocalizationsGu extends AppLocalizations {
       'છેલ્લા ૩૦ દિવસમાં દરરોજ વાંચેલી મિનિટો દર્શાવતા આ લાઇન ચાર્ટ સાથે તમારી દૈનિક વાંચન આદતોને ટ્રેક કરો. શિખરો તમારા સૌથી ઉત્પાદક વાંચન દિવસો દર્શાવે છે.';
 
   @override
+  String get dailyChartLatestRange => 'તાજેતર ← • → 30 દિવસ પાછા';
+
+  @override
+  String get latest => 'તાજેતર';
+
+  @override
+  String get refresh => 'તાજું કરો';
+
+  @override
   String get weeklyChartDescription =>
       'છેલ્લા ૧૨ અઠવાડિયામાં દર અઠવાડિયે કુલ વાંચેલા કલાકો દર્શાવતા આ બાર ચાર્ટ સાથે તમારા સાપ્તાહિક વાંચન પેટર્નને જુઓ. સતત વાંચન સમયગાળાને ઓળખવામાં મદદ કરે છે.';
 
