@@ -123,13 +123,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           if (_isOffline) ...[
             IconButton(
               icon: Icon(Icons.wifi_off, color: Colors.red.shade400),
-              tooltip: 'Offline',
+              tooltip: AppLocalizations.of(context)!.offline,
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(
-                      'You are offline. Please check your internet connection.',
-                    ),
+                    content: Text(AppLocalizations.of(context)!.offlineMessage),
                     backgroundColor: Colors.red.shade300,
                   ),
                 );
@@ -138,11 +136,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           ] else ...[
             IconButton(
               icon: Icon(Icons.wifi, color: Colors.green.shade400),
-              tooltip: 'Online',
+              tooltip: AppLocalizations.of(context)!.online,
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('You are online.'),
+                    content: Text(AppLocalizations.of(context)!.onlineMessage),
                     backgroundColor: Colors.green.shade300,
                   ),
                 );

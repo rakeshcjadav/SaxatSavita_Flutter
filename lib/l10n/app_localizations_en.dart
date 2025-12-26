@@ -593,6 +593,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get refresh => 'Refresh';
 
   @override
+  String get offline => 'Offline';
+
+  @override
+  String get offlineMessage =>
+      'You are offline. Please check your internet connection.';
+
+  @override
+  String get online => 'Online';
+
+  @override
+  String get onlineMessage => 'You are online.';
+
+  @override
   String get weeklyChartDescription =>
       'View your weekly reading patterns with this bar chart displaying total hours read per week over the last 12 weeks. Helps identify consistent reading periods.';
 

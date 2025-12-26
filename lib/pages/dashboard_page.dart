@@ -626,7 +626,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ).colorScheme.primaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                      child: Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
@@ -934,9 +934,12 @@ class _DashboardPageState extends State<DashboardPage> {
     } else {
       final daysDifference = today.difference(dateDay).inDays;
 
-        if (daysDifference < 7 && daysDifference > 0) {
+      if (daysDifference < 7 && daysDifference > 0) {
         // Show weekday name for dates within the last week (localized)
-        return DateFormat('EEE', Localizations.localeOf(context).toString()).format(date);
+        return DateFormat(
+          'EEE',
+          Localizations.localeOf(context).toString(),
+        ).format(date);
       } else {
         // Show date for older dates
         return '${date.day}/${date.month}/${date.year}';

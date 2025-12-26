@@ -594,6 +594,19 @@ class AppLocalizationsGu extends AppLocalizations {
   String get refresh => 'તાજું કરો';
 
   @override
+  String get offline => 'ઓફલાઇન';
+
+  @override
+  String get offlineMessage =>
+      'તમે ઑફલાઇન(offline) છો. કૃપા કરી તમારું ઇન્ટરનેટ કનેક્શન તપાસો.';
+
+  @override
+  String get online => 'ઓનલાઇન';
+
+  @override
+  String get onlineMessage => 'તમે ઑનલાઇન(online) છો.';
+
+  @override
   String get weeklyChartDescription =>
       'છેલ્લા ૧૨ અઠવાડિયામાં દર અઠવાડિયે કુલ વાંચેલા કલાકો દર્શાવતા આ બાર ચાર્ટ સાથે તમારા સાપ્તાહિક વાંચન પેટર્નને જુઓ. સતત વાંચન સમયગાળાને ઓળખવામાં મદદ કરે છે.';
 

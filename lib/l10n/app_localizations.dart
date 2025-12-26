@@ -1178,6 +1178,30 @@ abstract class AppLocalizations {
   /// **'Refresh'**
   String get refresh;
 
+  /// No description provided for @offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get offline;
+
+  /// No description provided for @offlineMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You are offline. Please check your internet connection.'**
+  String get offlineMessage;
+
+  /// No description provided for @online.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get online;
+
+  /// No description provided for @onlineMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You are online.'**
+  String get onlineMessage;
+
   /// No description provided for @weeklyChartDescription.
   ///
   /// In en, this message translates to:
