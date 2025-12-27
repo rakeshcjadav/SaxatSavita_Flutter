@@ -1208,6 +1208,8 @@ PODS:
     - Firebase/Firestore (= 12.6.0)
     - firebase_core
     - Flutter
+  - connectivity_plus (0.0.1):
+    - Flutter
   - device_info_plus (0.0.1):
     - Flutter
   - Firebase/Auth (12.6.0):
@@ -1517,6 +1519,7 @@ PODS:
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -1576,6 +1579,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   firebase_analytics:
@@ -1625,6 +1630,7 @@ SPEC CHECKSUMS:
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
   cloud_firestore: 45532e0c1fd1f6a5720af8aa0312470c366b73d2
+  connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   Firebase: a451a7b61536298fd5cbfe3a746fd40443a50679
   firebase_analytics: 4f9cca09e65f6c2944a862c6dc86f6bed9fb769c
