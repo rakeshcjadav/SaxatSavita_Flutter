@@ -263,7 +263,7 @@ class _NoteListPageState extends State<NoteListPage> {
               partNumber: 'part${noteItem.partNumber}',
               kiranInfo: noteItem.kiranInfo,
               kiranUserInfo: noteItem.kiranUserInfo,
-              readingMode: ReadingMode.browse,
+              readingMode: ReadingMode.reading,
             ),
       ),
     );

@@ -256,6 +256,7 @@
     "older": "Older",
     "duration": "Duration",
     "readingSession": "Reading Session",
+    "short_reading_session_discarded": "Reading session too short — discarded",
     "filterByCategory": "Filter by Category",
     "allCategories": "All Categories",
     "clearFilters": "Clear Filters",

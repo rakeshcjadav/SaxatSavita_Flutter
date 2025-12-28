@@ -702,7 +702,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               kiranInfo: result.kiranInfo,
               kiranUserInfo: kiranUserInfo,
               searchQuery: _searchController.text.trim(),
-              readingMode: ReadingMode.browse,
+              readingMode: ReadingMode.reading,
             ),
       ),
     );

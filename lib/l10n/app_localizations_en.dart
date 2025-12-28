@@ -470,6 +470,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get readingSession => 'Reading Session';
 
   @override
+  String get short_reading_session_discarded =>
+      'Reading session too short — discarded';
+
+  @override
   String get filterByCategory => 'Filter by Category';
 
   @override

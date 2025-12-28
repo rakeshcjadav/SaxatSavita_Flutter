@@ -59,8 +59,6 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   // ValueNotifiers to prevent widget rebuilds during timer updates
   final ValueNotifier<String> _elapsedNotifier = ValueNotifier<String>("00:00");
-  final ValueNotifier<bool> _isFinishButtonEnabledNotifier =
-      ValueNotifier<bool>(false);
 
   // Auto-scroll variables
   bool _isAutoScrollEnabled = false;
@@ -71,7 +69,6 @@ class _KiranReadPageState extends State<KiranReadPage>
   bool _isInitialized = false;
 
   bool _hasDataChanged = false;
-  bool _isFinishButtonEnabled = false;
   int _initialReadingProgress = 0;
 
   // Reading history tracking
@@ -191,7 +188,6 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Dispose ValueNotifiers
     _elapsedNotifier.dispose();
-    _isFinishButtonEnabledNotifier.dispose();
 
     // Dispose search controllers
     _searchController.dispose();
@@ -285,23 +281,7 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     _elapsedNotifier.value = timeString;
 
-    // Check if 80% of estimated reading time has elapsed
-    final estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
-      widget.kiranInfo.wordCount,
-    );
-    if (estimatedReadingSeconds > 0 && !_isFinishButtonEnabledNotifier.value) {
-      final threshold = 0.8;
-      final requiredSeconds = (estimatedReadingSeconds * threshold).round();
-      if (seconds >= requiredSeconds) {
-        _isFinishButtonEnabledNotifier.value = true;
-        // Only call setState when the button state actually changes
-        if (!_isFinishButtonEnabled) {
-          setState(() {
-            _isFinishButtonEnabled = true;
-          });
-        }
-      }
-    }
+    // No finish-button gating — button will be enabled always.
   }
 
   void _updateWakelock() {
@@ -331,15 +311,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   void _initializeAutoScroll() {
-    // Check if button should already be enabled (for cases where user has already spent time reading)
-    final estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
-      widget.kiranInfo.wordCount,
-    );
-    if (estimatedReadingSeconds > 0 &&
-        _stopwatch.elapsed.inSeconds >=
-            (estimatedReadingSeconds * 0.8).round()) {
-      _isFinishButtonEnabled = true;
-    }
+    // No finish-button gating — leave button enabled always.
 
     // Get content height and set up scroll listener
     if (_scrollController.hasClients) {
@@ -1019,20 +991,14 @@ class _KiranReadPageState extends State<KiranReadPage>
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
-                  onPressed:
-                      _isFinishButtonEnabled
-                          ? () async {
-                            _onFinishReadingPressed();
-                          }
-                          : null,
+                  onPressed: () async {
+                    _onFinishReadingPressed();
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       AppLocalizations.of(context)!.kiran_read_finished,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: _isFinishButtonEnabled ? null : Colors.grey,
-                      ),
                     ),
                   ),
                 ),
@@ -1658,10 +1624,45 @@ class _KiranReadPageState extends State<KiranReadPage>
     _stopwatch.stop();
     _timer?.cancel();
 
-    // Convert reading event to history if in reading mode
+    // Compute total reading duration (including any initial offset)
+    final readingTimeSeconds =
+        _stopwatch.elapsed.inSeconds + _initialDurationOffset;
+
+    // If the session is too short, discard the reading event and do not
+    // convert it to history or increment read counts.
+    if (readingTimeSeconds < 15) {
+      if (_isReadingMode && _currentReadingEvent != null) {
+        try {
+          await ReadingEventService.deleteReadingEvent(
+            _currentReadingEvent!.id,
+          );
+          debugPrint(
+            '🗑️ Short reading event discarded: ${_currentReadingEvent!.id}',
+          );
+        } catch (e) {
+          debugPrint('❌ Error deleting short reading event: $e');
+        }
+        _currentReadingEvent = null;
+      }
+
+      // Notify analytics minimally (optional) and show a snackbar
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.short_reading_session_discarded),
+          ),
+        );
+        // Close the read page and return `false` (no meaningful changes)
+        Navigator.of(context).pop(false);
+      }
+
+      // Do not proceed to convert or save history nor increment counts
+      return;
+    }
+
+    // For valid sessions (>= 15s): convert event to history if present
     if (_isReadingMode && _currentReadingEvent != null) {
-      _currentReadingEvent!.durationSeconds =
-          _stopwatch.elapsed.inSeconds + _initialDurationOffset;
+      _currentReadingEvent!.durationSeconds = readingTimeSeconds;
       debugPrint(
         '📖 Converting reading event to history : ${_currentReadingEvent!.kiranIndex} : ${_currentReadingEvent!.currentProgress} : ${_currentReadingEvent!.durationSeconds}',
       );
@@ -1684,8 +1685,6 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
 
     // Track reading completion analytics
-    final readingTimeSeconds =
-        _stopwatch.elapsed.inSeconds + _initialDurationOffset;
     await AnalyticsService().logCompleteReading(
       bookName: 'Sakshat Savita',
       chapterName: widget.kiranInfo.title,
@@ -1704,8 +1703,6 @@ class _KiranReadPageState extends State<KiranReadPage>
         Utils.updateKiranUserInfo(widget.kiranUserInfo);
         _hasDataChanged = true;
         _pauseTimer();
-        _isFinishButtonEnabled = false;
-        _isFinishButtonEnabledNotifier.value = false;
         // Stop auto-scroll if active
         if (_isAutoScrolling) {
           _stopAutoScroll();
@@ -1722,56 +1719,61 @@ class _KiranReadPageState extends State<KiranReadPage>
       final timeString =
           "${minutes.toString().padLeft(2, '0')}m:${secs.toString().padLeft(2, '0')}s";
 
-      // Show Dialog
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(
+      // Show Dialog and await its dismissal, then close the read page.
+      if (mounted) {
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(
+                localizations.kiran_read_finished_message(
+                  widget.kiranUserInfo.readCount,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+
+                children: [
+                  Text(localizations.word_count(widget.kiranInfo.wordCount)),
+                  Text('${localizations.reading_time} : $timeString'),
+                  const SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      // Previous Kiran button
+                      if (_hasPreviousKiran()) _buildPreviousKiranButton(),
+                      const Spacer(),
+                      // Next Kiran button
+                      if (_hasNextKiran()) _buildNextKiranButton(),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(localizations.ok),
+                ),
+              ],
+            );
+          },
+        );
+
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text(
               localizations.kiran_read_finished_message(
                 widget.kiranUserInfo.readCount,
               ),
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-
-              children: [
-                Text(localizations.word_count(widget.kiranInfo.wordCount)),
-                Text('${localizations.reading_time} : $timeString'),
-                const SizedBox(height: 8.0),
-                Row(
-                  children: [
-                    // Previous Kiran button
-                    if (_hasPreviousKiran()) _buildPreviousKiranButton(),
-                    const Spacer(),
-                    // Next Kiran button
-                    if (_hasNextKiran()) _buildNextKiranButton(),
-                  ],
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(localizations.ok),
-              ),
-            ],
-          );
-        },
-      );
-
-      scaffoldMessenger.showSnackBar(
-        SnackBar(
-          content: Text(
-            localizations.kiran_read_finished_message(
-              widget.kiranUserInfo.readCount,
-            ),
+            duration: const Duration(seconds: 2),
           ),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+        );
+
+        // Close the read page and return whether data changed
+        Navigator.of(context).pop(_hasDataChanged);
+      }
     }
   }
 

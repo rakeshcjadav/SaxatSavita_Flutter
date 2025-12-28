@@ -437,7 +437,7 @@ class _BookmainpageState extends State<BookMainpage> {
         selectedMode = ReadingMode.reading;
       } else {
         // browse
-        selectedMode = ReadingMode.browse;
+        selectedMode = ReadingMode.reading;
       }
     } else {
       // No existing event, show mode selection dialog
@@ -502,7 +502,7 @@ class _BookmainpageState extends State<BookMainpage> {
         selectedMode = ReadingMode.reading;
       } else {
         // browse
-        selectedMode = ReadingMode.browse;
+        selectedMode = ReadingMode.reading;
       }
     } else {
       // No existing event, show mode selection dialog
@@ -563,7 +563,7 @@ class _BookmainpageState extends State<BookMainpage> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(l10n.browse_mode_subtitle),
-                  onTap: () => Navigator.pop(context, ReadingMode.browse),
+                  onTap: () => Navigator.pop(context, ReadingMode.reading),
                 ),
               ],
             ),

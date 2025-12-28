@@ -78,10 +78,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     ReadingMode? selectedMode;
     ReadingEvent? eventToResume;
 
-    if (fromSearch) {
-      // Coming from search, always use browse mode
-      selectedMode = ReadingMode.browse;
-    } else if (existingEvent != null) {
+    if (existingEvent != null) {
       // Show resume dialog
       final resumeChoice = await _showResumeDialog(existingEvent);
       if (resumeChoice == null) return; // User cancelled
@@ -93,14 +90,10 @@ class _KiranlistpageState extends State<Kiranlistpage> {
         // Delete old event and start new reading session
         await ReadingEventService.deleteReadingEvent(existingEvent.id);
         selectedMode = ReadingMode.reading;
-      } else {
-        // browse
-        selectedMode = ReadingMode.browse;
       }
     } else {
-      // No existing event, show mode selection dialog
-      selectedMode = await _showReadingModeDialog();
-      if (selectedMode == null) return; // User cancelled
+      // Always use reading mode (browse removed)
+      selectedMode = ReadingMode.reading;
     }
 
     Utils.updateLastOpenedKiran(bookUserInfo, kiran.index);
@@ -176,59 +169,6 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     );
   }
 
-  /// Show dialog to select reading mode
-  Future<ReadingMode?> _showReadingModeDialog() async {
-    final l10n = AppLocalizations.of(context)!;
-    return showDialog<ReadingMode>(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              l10n.reading_mode_dialog_title,
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: Icon(
-                    Icons.book,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 32,
-                  ),
-                  title: Text(
-                    l10n.reading_mode,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(l10n.reading_mode_subtitle),
-                  onTap: () => Navigator.pop(context, ReadingMode.reading),
-                ),
-                const Divider(),
-                ListTile(
-                  leading: Icon(
-                    Icons.search,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 32,
-                  ),
-                  title: Text(
-                    l10n.browse_mode,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(l10n.browse_mode_subtitle),
-                  onTap: () => Navigator.pop(context, ReadingMode.browse),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, null),
-                child: Text(l10n.cancel),
-              ),
-            ],
-          ),
-    );
-  }
-
   /// Show dialog to resume existing reading session
   Future<String?> _showResumeDialog(ReadingEvent event) async {
     final l10n = AppLocalizations.of(context)!;
@@ -281,18 +221,15 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               ],
             ),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'browse'),
-                child: Text('${l10n.just_browse} - (${l10n.browse_mode})'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'new'),
-                child: Text('${l10n.start_new} - (${l10n.reading_mode})'),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context, null),
+                icon: const Icon(Icons.cancel),
+                label: Text(l10n.cancel),
               ),
               ElevatedButton.icon(
                 onPressed: () => Navigator.pop(context, 'resume'),
                 icon: const Icon(Icons.play_arrow),
-                label: Text('${l10n.resume} - (${l10n.reading_mode})'),
+                label: Text(l10n.resume),
               ),
             ],
           ),

@@ -938,6 +938,12 @@ abstract class AppLocalizations {
   /// **'Reading Session'**
   String get readingSession;
 
+  /// No description provided for @short_reading_session_discarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading session too short — discarded'**
+  String get short_reading_session_discarded;
+
   /// No description provided for @filterByCategory.
   ///
   /// In en, this message translates to:

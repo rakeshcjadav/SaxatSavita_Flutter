@@ -472,6 +472,10 @@ class AppLocalizationsGu extends AppLocalizations {
   String get readingSession => 'વાંચન સત્ર';
 
   @override
+  String get short_reading_session_discarded =>
+      'વાંચન સત્ર ખૂબ નાનું — રદ કરાયું';
+
+  @override
   String get filterByCategory => 'શ્રેણી દ્વારા ફિલ્ટર કરો';
 
   @override
@@ -1606,7 +1610,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get start_new => 'નવું શરૂ કરો';
 
   @override
-  String get resume => 'ફરી શરૂ કરો';
+  String get resume => 'વાંચન કરો';
 
   @override
   String get migrating_data => 'ડેટા સ્થાનાંતરિત કરી રહ્યા છીએ...';

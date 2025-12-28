@@ -247,7 +247,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
                 kiranInfo: kiranInfo,
                 partNumber: 'part$partNumber',
                 kiranUserInfo: kiranUserInfo,
-                readingMode: ReadingMode.browse,
+                readingMode: ReadingMode.reading,
               ),
         ),
       );
