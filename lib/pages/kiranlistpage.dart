@@ -13,8 +13,8 @@ import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
-import '../models/bookpart_model.dart';
-import '../services/kiranuser_service.dart';
+import 'package:saxatsavita_flutter/models/bookpart_model.dart';
+import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class Kiranlistpage extends StatefulWidget {
@@ -67,9 +67,8 @@ class _KiranlistpageState extends State<Kiranlistpage> {
 
   Future<void> _navigateToKiranReadPage(
     KiranInfo kiran,
-    KiranUserInfo kiranUserInfo, {
-    bool fromSearch = false,
-  }) async {
+    KiranUserInfo kiranUserInfo,
+  ) async {
     // Check if there's an existing reading event for this kiran
     final existingEvent = await ReadingEventService.getReadingEventForKiran(
       kiran.index,

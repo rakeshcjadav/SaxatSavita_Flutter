@@ -4,8 +4,8 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
 import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
-import '../models/infocontent_model.dart';
-import '../components/appbar.dart';
+import 'package:saxatsavita_flutter/models/infocontent_model.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 
 class Infodetailspage extends StatelessWidget {
   const Infodetailspage({super.key, required this.infoItem});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
-import '../models/aashirvachan_model.dart';
+import 'package:saxatsavita_flutter/models/aashirvachan_model.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 
 class AashirvachanDetailPage extends StatefulWidget {

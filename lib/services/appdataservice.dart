@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../models/infocontent_model.dart';
+import 'package:saxatsavita_flutter/models/infocontent_model.dart';
 
 class AppDataService {
   static final AppDataService _instance = AppDataService._internal();

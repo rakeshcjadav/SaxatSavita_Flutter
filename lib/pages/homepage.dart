@@ -8,7 +8,6 @@ import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
 import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:async';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
-import '../components/appbar.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'infodetailspage.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 

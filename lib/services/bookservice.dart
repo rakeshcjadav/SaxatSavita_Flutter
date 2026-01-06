@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'dart:convert';
-import '../models/bookpart_model.dart';
-import 'kiranlistservice.dart';
-import '../models/meanings_model.dart';
+import 'package:saxatsavita_flutter/models/bookpart_model.dart';
+import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'package:saxatsavita_flutter/models/meanings_model.dart';
 
 class Bookservice {
   static final Bookservice _instance = Bookservice._internal();
