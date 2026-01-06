@@ -1,4 +1,4 @@
-import '../models/kiranuserinfo_model.dart';
+import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 
 class KiranUserService {
   static final KiranUserService _instance = KiranUserService._internal();
