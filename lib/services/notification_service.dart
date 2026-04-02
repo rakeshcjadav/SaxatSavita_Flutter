@@ -59,7 +59,7 @@ class NotificationService {
           );
 
       final initialized = await _flutterLocalNotificationsPlugin.initialize(
-        initializationSettings,
+        settings: initializationSettings,
         onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
       );
       debugPrint('📍 Flutter notifications initialized: $initialized');
@@ -249,11 +249,11 @@ class NotificationService {
         AppLocalizations.of(NavigationService.navigatorKey.currentContext!)!;
 
     await _flutterLocalNotificationsPlugin.zonedSchedule(
-      notificationId,
-      '📚 ${appLocalizations.reading_time}',
-      _getReminderMessage(plan, reminderTime),
-      scheduledDate,
-      NotificationDetails(
+      id: notificationId,
+      title: '📚 ${appLocalizations.reading_time}',
+      body: _getReminderMessage(plan, reminderTime),
+      scheduledDate: scheduledDate,
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           _readingReminderChannelId,
           'Reading Reminders',
@@ -351,10 +351,10 @@ class NotificationService {
               : "Congratulations! You've completed today's reading goal. Your dedication to spiritual growth is inspiring.";
 
       await _flutterLocalNotificationsPlugin.show(
-        plan.id.hashCode + 1000, // Unique ID for goal notifications
-        title,
-        body,
-        NotificationDetails(
+        id: plan.id.hashCode + 1000, // Unique ID for goal notifications
+        title: title,
+        body: body,
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             _goalAchievedChannelId,
             'Goal Achievements',
@@ -436,10 +436,10 @@ class NotificationService {
       }
 
       await _flutterLocalNotificationsPlugin.show(
-        streakDays + 2000, // Unique ID for streak notifications
-        title,
-        body,
-        NotificationDetails(
+        id: streakDays + 2000, // Unique ID for streak notifications
+        title: title,
+        body: body,
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             _motivationChannelId,
             'Motivation',
@@ -487,7 +487,7 @@ class NotificationService {
       for (final reminderTime in plan.reminderTimes) {
         final notificationId =
             plan.id.hashCode + (reminderTime.hour * 100 + reminderTime.minute);
-        await _flutterLocalNotificationsPlugin.cancel(notificationId);
+        await _flutterLocalNotificationsPlugin.cancel(id: notificationId);
       }
       debugPrint('🚫 Cancelled reminders for plan: ${plan.title}');
     } catch (e) {
@@ -511,10 +511,10 @@ class NotificationService {
         suggestions[DateTime.now().millisecond % suggestions.length];
 
     await _flutterLocalNotificationsPlugin.show(
-      9999, // Fixed ID for suggestions
-      "💡 Reading Suggestion",
-      randomSuggestion,
-      NotificationDetails(
+      id: 9999, // Fixed ID for suggestions
+      title: "💡 Reading Suggestion",
+      body: randomSuggestion,
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           _motivationChannelId,
           'Motivation',
@@ -675,11 +675,11 @@ class NotificationService {
     final scheduledDate = tz.TZDateTime.from(remindTime, tz.local);
 
     await _flutterLocalNotificationsPlugin.zonedSchedule(
-      8888, // Fixed ID for remind later
-      "📚 Reading Reminder",
-      "You asked to be reminded - time for your spiritual reading!",
-      scheduledDate,
-      const NotificationDetails(
+      id: 8888, // Fixed ID for remind later
+      title: "📚 Reading Reminder",
+      body: "You asked to be reminded - time for your spiritual reading!",
+      scheduledDate: scheduledDate,
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           _readingReminderChannelId,
           'Reading Reminders',

@@ -157,6 +157,24 @@ class AppLocalizationsGu extends AppLocalizations {
   String get kiran_start => '|| સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ||';
 
   @override
+  String get kiran_place => 'સ્થળ';
+
+  @override
+  String get kiran_date => 'તારીખ';
+
+  @override
+  String get kiran_moral => 'નૈતિક';
+
+  @override
+  String get kiran_history => 'ઇતિહાસ';
+
+  @override
+  String get kiran_summary => 'સારાંશ';
+
+  @override
+  String get kiran_info => 'કિરણની માહિતી ( AI Generated )';
+
+  @override
   String get tag_line => '।। વિચાર કરો તો ખબર પડે ।।';
 
   @override

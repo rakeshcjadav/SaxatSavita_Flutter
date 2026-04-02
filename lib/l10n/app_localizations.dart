@@ -392,6 +392,42 @@ abstract class AppLocalizations {
   /// **'।। સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ।।'**
   String get kiran_start;
 
+  /// No description provided for @kiran_place.
+  ///
+  /// In en, this message translates to:
+  /// **'Place'**
+  String get kiran_place;
+
+  /// No description provided for @kiran_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get kiran_date;
+
+  /// No description provided for @kiran_moral.
+  ///
+  /// In en, this message translates to:
+  /// **'Moral'**
+  String get kiran_moral;
+
+  /// No description provided for @kiran_history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get kiran_history;
+
+  /// No description provided for @kiran_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get kiran_summary;
+
+  /// No description provided for @kiran_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran Info ( AI Generated )'**
+  String get kiran_info;
+
   /// No description provided for @tag_line.
   ///
   /// In en, this message translates to:

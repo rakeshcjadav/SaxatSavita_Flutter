@@ -50,6 +50,7 @@ class KiranReadPage extends StatefulWidget {
 class _KiranReadPageState extends State<KiranReadPage>
     with WidgetsBindingObserver {
   late Future<Map<String, dynamic>> _futureKiranContent;
+  Map<String, dynamic>? _kiranContentData; // cached for AppBar info sheet
   final ScrollController _scrollController = ScrollController();
 
   final Stopwatch _stopwatch = Stopwatch();
@@ -673,6 +674,15 @@ class _KiranReadPageState extends State<KiranReadPage>
               },
             ),
             IconButton(
+              icon: const Icon(Icons.info_outline),
+              tooltip: AppLocalizations.of(context)!.kiran_info,
+              onPressed: () {
+                if (_kiranContentData != null) {
+                  _showKiranInfoSheet(context, _kiranContentData!);
+                }
+              },
+            ),
+            IconButton(
               icon: Icon(_isSearchMode ? Icons.close : Icons.search),
               tooltip:
                   _isSearchMode
@@ -807,6 +817,10 @@ class _KiranReadPageState extends State<KiranReadPage>
                               );
                             }
                             final contentData = snapshot.data!;
+                            // Cache for use by AppBar info button
+                            if (_kiranContentData == null) {
+                              _kiranContentData = contentData;
+                            }
 
                             // Initialize auto-scroll and set initial position after content is loaded (only once)
                             if (!_isInitialized) {
@@ -896,6 +910,229 @@ class _KiranReadPageState extends State<KiranReadPage>
           child: Icon(Icons.note_add),
         ),
       ),
+    );
+  }
+
+  /// Builds the meta info panel (place, date, moral, summary) shown above the kiran text.
+  Widget _buildKiranMetaPanel(
+    Map<String, dynamic> contentData,
+    BuildContext context,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    final String place =
+        (contentData['main']?['place'] as String? ?? '').trim();
+    final String date = (contentData['meta']?['date'] as String? ?? '').trim();
+    final String moral =
+        (contentData['meta']?['moral'] as String? ?? '').trim();
+    final String history =
+        (contentData['meta']?['history'] as String? ?? '').trim();
+    final List<String> summary =
+        (contentData['meta']?['summary'] as List<dynamic>? ?? [])
+            .map((e) => e.toString().trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+
+    final bool hasAnything =
+        place.isNotEmpty ||
+        date.isNotEmpty ||
+        moral.isNotEmpty ||
+        history.isNotEmpty ||
+        summary.isNotEmpty;
+
+    if (!hasAnything) return const SizedBox.shrink();
+
+    final contentFontSize = appSettingsNotifier.value.fontSize;
+    final contentStyle = textTheme.bodyMedium!.copyWith(
+      color: colorScheme.primary,
+      fontSize: contentFontSize,
+    );
+
+    Widget sectionBlock(IconData icon, String label, String value) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: colorScheme.primary),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: contentStyle.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          if (value.isNotEmpty)
+            RemoteConfigService().useCustomHtmlWidget
+                ? CustomHtmlWidget(
+                  htmlContent: value,
+                  onAddNote: null,
+                  onCreateQuoteImage: null,
+                  onSingleTap: null,
+                )
+                : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: HtmlToTextSpan.convertToWidgets(
+                    value,
+                    contentStyle,
+                    context,
+                    textAlign: TextAlign.justify,
+                    lineHeight: appSettingsNotifier.value.lineHeight,
+                  ),
+                ),
+        ],
+      );
+    }
+
+    return Card(
+      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      //color: colorScheme.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (place.isNotEmpty)
+              sectionBlock(Icons.location_on_outlined, l10n.kiran_place, place),
+            if (date.isNotEmpty) ...[
+              const Divider(height: 16),
+              sectionBlock(
+                Icons.calendar_today_outlined,
+                l10n.kiran_date,
+                date,
+              ),
+            ],
+            if (moral.isNotEmpty) ...[
+              const Divider(height: 16),
+              sectionBlock(Icons.lightbulb_outline, l10n.kiran_moral, moral),
+            ],
+            if (history.isNotEmpty) ...[
+              const Divider(height: 16),
+              sectionBlock(
+                Icons.history_edu_outlined,
+                l10n.kiran_history,
+                history,
+              ),
+            ],
+            if (summary.isNotEmpty) ...[
+              const Divider(height: 16),
+              sectionBlock(Icons.format_list_bulleted, l10n.kiran_summary, ''),
+              const SizedBox(height: 4),
+              ...summary.indexed.map(((int, String) entry) {
+                final number = (entry.$1 + 1)
+                    .toString()
+                    .replaceAll('0', '૦')
+                    .replaceAll('1', '૧')
+                    .replaceAll('2', '૨')
+                    .replaceAll('3', '૩')
+                    .replaceAll('4', '૪')
+                    .replaceAll('5', '૫')
+                    .replaceAll('6', '૬')
+                    .replaceAll('7', '૭')
+                    .replaceAll('8', '૮')
+                    .replaceAll('9', '૯');
+                final bullet = entry.$2;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //CustomHtmlWidget(htmlContent: '<b>$number.</b>'),
+                      Expanded(
+                        child:
+                            RemoteConfigService().useCustomHtmlWidget
+                                ? CustomHtmlWidget(
+                                  htmlContent: '<b>$number.</b> $bullet',
+                                  onAddNote: null,
+                                  onCreateQuoteImage: null,
+                                  onSingleTap: null,
+                                )
+                                : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: HtmlToTextSpan.convertToWidgets(
+                                    '<b>$number.</b> $bullet',
+                                    contentStyle,
+                                    context,
+                                    textAlign: TextAlign.justify,
+                                    lineHeight:
+                                        appSettingsNotifier.value.lineHeight,
+                                  ),
+                                ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Shows the kiran meta info (place, date, moral, summary) in a modal bottom sheet.
+  void _showKiranInfoSheet(
+    BuildContext context,
+    Map<String, dynamic> contentData,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetContext) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.5,
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          builder: (_, controller) {
+            return Column(
+              children: [
+                const SizedBox(height: 8),
+                // drag handle
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      AppLocalizations.of(context)!.kiran_info,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: controller,
+                    padding: const EdgeInsets.all(12),
+                    child: SafeArea(
+                      child: _buildKiranMetaPanel(contentData, context),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
