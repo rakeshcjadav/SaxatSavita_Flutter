@@ -48,7 +48,7 @@ class KiranReadPage extends StatefulWidget {
 }
 
 class _KiranReadPageState extends State<KiranReadPage>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   late Future<Map<String, dynamic>> _futureKiranContent;
   Map<String, dynamic>? _kiranContentData; // cached for AppBar info sheet
   final ScrollController _scrollController = ScrollController();
@@ -88,10 +88,19 @@ class _KiranReadPageState extends State<KiranReadPage>
   List<int> _searchMatches = [];
   int _currentMatchIndex = -1;
 
+  // Tab controller for the optional TabBar meta layout
+  TabController? _metaTabController;
+
   @override
   void initState() {
     super.initState();
     _futureKiranContent = _loadKiranContent();
+
+    // Initialize tab controller when using the TabBar meta layout
+    if (RemoteConfigService().kiranMetaEnabled &&
+        RemoteConfigService().kiranMetaAsTabBar) {
+      _metaTabController = TabController(length: 2, vsync: this);
+    }
 
     // Set reading mode
     _isReadingMode = widget.readingMode == ReadingMode.reading;
@@ -193,6 +202,9 @@ class _KiranReadPageState extends State<KiranReadPage>
     // Dispose search controllers
     _searchController.dispose();
     _searchFocusNode.dispose();
+
+    // Dispose tab controller if used
+    _metaTabController?.dispose();
 
     super.dispose();
   }
@@ -673,15 +685,17 @@ class _KiranReadPageState extends State<KiranReadPage>
                 }
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.info_outline),
-              tooltip: AppLocalizations.of(context)!.kiran_info,
-              onPressed: () {
-                if (_kiranContentData != null) {
-                  _showKiranInfoSheet(context, _kiranContentData!);
-                }
-              },
-            ),
+            if (RemoteConfigService().kiranMetaEnabled &&
+                !RemoteConfigService().kiranMetaAsTabBar)
+              IconButton(
+                icon: const Icon(Icons.info_outline),
+                tooltip: AppLocalizations.of(context)!.kiran_info,
+                onPressed: () {
+                  if (_kiranContentData != null) {
+                    _showKiranInfoSheet(context, _kiranContentData!);
+                  }
+                },
+              ),
             IconButton(
               icon: Icon(_isSearchMode ? Icons.close : Icons.search),
               tooltip:
@@ -730,177 +744,72 @@ class _KiranReadPageState extends State<KiranReadPage>
             );
             _resumeTimer();
           },
+          bottom:
+              RemoteConfigService().kiranMetaEnabled &&
+                      RemoteConfigService().kiranMetaAsTabBar
+                  ? TabBar(
+                    controller: _metaTabController,
+                    tabs: [
+                      Tab(text: AppLocalizations.of(context)!.kiran),
+                      Tab(text: AppLocalizations.of(context)!.kiran_summary),
+                    ],
+                  )
+                  : null,
         ),
-        body: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 0,
-                bottom: 16.0,
-              ),
-              child: Column(
-                children: [
-                  if (_isReadingMode) displayExtraInfos(context),
-                  // Search bar
-                  if (_isSearchMode) _buildSearchBar(),
-                  if (_isReadingMode)
-                    LinearProgressIndicator(
-                      value: widget.kiranUserInfo.progress.toDouble() / 100.0,
-                      minHeight: 3,
-                      borderRadius: BorderRadius.circular(3),
-                      backgroundColor: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.5),
-                      ),
-                    ),
-                  Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(20.0),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4.0,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium!.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            overflow: TextOverflow.ellipsis,
+        body:
+            RemoteConfigService().kiranMetaEnabled &&
+                    RemoteConfigService().kiranMetaAsTabBar
+                ? TabBarView(
+                  controller: _metaTabController,
+                  children: [
+                    _buildReadingBody(),
+                    FutureBuilder<Map<String, dynamic>>(
+                      future: _futureKiranContent,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else if (!snapshot.hasData) {
+                          return const Center(child: Text('No content found.'));
+                        }
+                        final contentData = snapshot.data!;
+                        // Ensure cache is populated even if Reading tab was never shown
+                        _kiranContentData ??= contentData;
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16.0,
+                            right: 16.0,
+                            top: 0.0,
+                            bottom: 16.0,
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: appSettingsNotifier.value.edgePadding,
-                        right: appSettingsNotifier.value.edgePadding,
-                        top: 0,
-                        bottom: 0.0,
-                      ),
-                      child: SafeArea(
-                        child: FutureBuilder<Map<String, dynamic>>(
-                          future: _futureKiranContent,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                child: Text('Error: ${snapshot.error}'),
-                              );
-                            } else if (!snapshot.hasData) {
-                              return const Center(
-                                child: Text('No content found.'),
-                              );
-                            }
-                            final contentData = snapshot.data!;
-                            // Cache for use by AppBar info button
-                            if (_kiranContentData == null) {
-                              _kiranContentData = contentData;
-                            }
-
-                            // Initialize auto-scroll and set initial position after content is loaded (only once)
-                            if (!_isInitialized) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                _initializeAutoScroll();
-                                _setInitialScrollPosition();
-                                _isInitialized = true;
-                              });
-                            }
-                            return NotificationListener<ScrollNotification>(
-                              onNotification: (notification) {
-                                if (notification is UserScrollNotification) {
-                                  // User started scrolling manually
-                                  if (_isAutoScrollEnabled &&
-                                      _isAutoScrolling) {
-                                    _stopAutoScroll();
-                                  }
-                                } else if (notification
-                                    is ScrollEndNotification) {
-                                  // User stopped scrolling
-                                  if (_isAutoScrollEnabled &&
-                                      !_isAutoScrolling &&
-                                      _autoScrollDelayTimer == null) {
-                                    // Optionally, resume auto-scroll after a short delay
-                                    Future.delayed(
-                                      const Duration(seconds: 1),
-                                      () {
-                                        if (mounted &&
-                                            !_isAutoScrolling &&
-                                            _autoScrollDelayTimer == null) {
-                                          _startAutoScrollWithDelay();
-                                        }
-                                      },
-                                    );
-                                  }
-                                }
-                                return false;
-                              },
-                              child: _buildKiranContentWidget(
-                                contentData,
-                                context,
+                          child: Scrollbar(
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.only(
+                                left: 4.0,
+                                right: 4.0,
+                                top: 16.0,
+                                bottom: 0.0,
                               ),
-                            );
-                          },
-                        ),
-                      ),
+                              child: SafeArea(
+                                child: _buildKiranMetaPanel(
+                                  contentData,
+                                  context,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                ],
-              ),
-            ),
-            // Previous button (left edge, vertically centered)
-            if (appSettingsNotifier.value.showEdgeNavButtons &&
-                _hasPreviousKiran())
-              Positioned(
-                left: 4,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: _buildEdgeNavButton(
-                    icon: Icons.arrow_circle_left_outlined,
-                    onTap: _navigateToPreviousKiran,
-                  ),
-                ),
-              ),
-            // Next button (right edge, vertically centered)
-            if (appSettingsNotifier.value.showEdgeNavButtons && _hasNextKiran())
-              Positioned(
-                right: 4,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: _buildEdgeNavButton(
-                    icon: Icons.arrow_circle_right_outlined,
-                    onTap: _navigateToNextKiran,
-                  ),
-                ),
-              ),
-          ],
-        ),
+                  ],
+                )
+                : _buildReadingBody(),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             _pauseTimer();
@@ -910,6 +819,167 @@ class _KiranReadPageState extends State<KiranReadPage>
           child: Icon(Icons.note_add),
         ),
       ),
+    );
+  }
+
+  /// Builds the main reading body (used directly or as a tab in TabBar layout).
+  Widget _buildReadingBody() {
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 0,
+            bottom: 16.0,
+          ),
+          child: Column(
+            children: [
+              if (_isReadingMode) displayExtraInfos(context),
+              // Search bar
+              if (_isSearchMode) _buildSearchBar(),
+              if (_isReadingMode)
+                LinearProgressIndicator(
+                  value: widget.kiranUserInfo.progress.toDouble() / 100.0,
+                  minHeight: 3,
+                  borderRadius: BorderRadius.circular(3),
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.5),
+                  ),
+                ),
+              Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(20.0),
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4.0,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: appSettingsNotifier.value.edgePadding,
+                    right: appSettingsNotifier.value.edgePadding,
+                    top: 0,
+                    bottom: 0.0,
+                  ),
+                  child: SafeArea(
+                    child: FutureBuilder<Map<String, dynamic>>(
+                      future: _futureKiranContent,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else if (!snapshot.hasData) {
+                          return const Center(child: Text('No content found.'));
+                        }
+                        final contentData = snapshot.data!;
+                        // Cache for use by AppBar info button / Info tab
+                        if (_kiranContentData == null) {
+                          _kiranContentData = contentData;
+                        }
+
+                        // Initialize auto-scroll and set initial position after content is loaded (only once)
+                        if (!_isInitialized) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            _initializeAutoScroll();
+                            _setInitialScrollPosition();
+                            _isInitialized = true;
+                          });
+                        }
+                        return NotificationListener<ScrollNotification>(
+                          onNotification: (notification) {
+                            if (notification is UserScrollNotification) {
+                              // User started scrolling manually
+                              if (_isAutoScrollEnabled && _isAutoScrolling) {
+                                _stopAutoScroll();
+                              }
+                            } else if (notification is ScrollEndNotification) {
+                              // User stopped scrolling
+                              if (_isAutoScrollEnabled &&
+                                  !_isAutoScrolling &&
+                                  _autoScrollDelayTimer == null) {
+                                // Optionally, resume auto-scroll after a short delay
+                                Future.delayed(const Duration(seconds: 1), () {
+                                  if (mounted &&
+                                      !_isAutoScrolling &&
+                                      _autoScrollDelayTimer == null) {
+                                    _startAutoScrollWithDelay();
+                                  }
+                                });
+                              }
+                            }
+                            return false;
+                          },
+                          child: _buildKiranContentWidget(contentData, context),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Previous button (left edge, vertically centered)
+        if (appSettingsNotifier.value.showEdgeNavButtons && _hasPreviousKiran())
+          Positioned(
+            left: 4,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: _buildEdgeNavButton(
+                icon: Icons.arrow_circle_left_outlined,
+                onTap: _navigateToPreviousKiran,
+              ),
+            ),
+          ),
+        // Next button (right edge, vertically centered)
+        if (appSettingsNotifier.value.showEdgeNavButtons && _hasNextKiran())
+          Positioned(
+            right: 4,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: _buildEdgeNavButton(
+                icon: Icons.arrow_circle_right_outlined,
+                onTap: _navigateToNextKiran,
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -944,6 +1014,11 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     if (!hasAnything) return const SizedBox.shrink();
 
+    final titleStyle = textTheme.titleMedium!.copyWith(
+      color: Theme.of(context).colorScheme.primary,
+      overflow: TextOverflow.ellipsis,
+    );
+
     final contentFontSize = appSettingsNotifier.value.fontSize;
     final contentStyle = textTheme.bodyMedium!.copyWith(
       color: colorScheme.primary,
@@ -956,12 +1031,9 @@ class _KiranReadPageState extends State<KiranReadPage>
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: colorScheme.primary),
+              Icon(icon, size: 24, color: colorScheme.primary),
               const SizedBox(width: 6),
-              Text(
-                label,
-                style: contentStyle.copyWith(fontWeight: FontWeight.bold),
-              ),
+              Text(label, style: titleStyle),
             ],
           ),
           const SizedBox(height: 4),
@@ -987,90 +1059,75 @@ class _KiranReadPageState extends State<KiranReadPage>
       );
     }
 
-    return Card(
-      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-      //color: colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (place.isNotEmpty)
-              sectionBlock(Icons.location_on_outlined, l10n.kiran_place, place),
-            if (date.isNotEmpty) ...[
-              const Divider(height: 16),
-              sectionBlock(
-                Icons.calendar_today_outlined,
-                l10n.kiran_date,
-                date,
-              ),
-            ],
-            if (moral.isNotEmpty) ...[
-              const Divider(height: 16),
-              sectionBlock(Icons.lightbulb_outline, l10n.kiran_moral, moral),
-            ],
-            if (history.isNotEmpty) ...[
-              const Divider(height: 16),
-              sectionBlock(
-                Icons.history_edu_outlined,
-                l10n.kiran_history,
-                history,
-              ),
-            ],
-            if (summary.isNotEmpty) ...[
-              const Divider(height: 16),
-              sectionBlock(Icons.format_list_bulleted, l10n.kiran_summary, ''),
-              const SizedBox(height: 4),
-              ...summary.indexed.map(((int, String) entry) {
-                final number = (entry.$1 + 1)
-                    .toString()
-                    .replaceAll('0', '૦')
-                    .replaceAll('1', '૧')
-                    .replaceAll('2', '૨')
-                    .replaceAll('3', '૩')
-                    .replaceAll('4', '૪')
-                    .replaceAll('5', '૫')
-                    .replaceAll('6', '૬')
-                    .replaceAll('7', '૭')
-                    .replaceAll('8', '૮')
-                    .replaceAll('9', '૯');
-                final bullet = entry.$2;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 6.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //CustomHtmlWidget(htmlContent: '<b>$number.</b>'),
-                      Expanded(
-                        child:
-                            RemoteConfigService().useCustomHtmlWidget
-                                ? CustomHtmlWidget(
-                                  htmlContent: '<b>$number.</b> $bullet',
-                                  onAddNote: null,
-                                  onCreateQuoteImage: null,
-                                  onSingleTap: null,
-                                )
-                                : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: HtmlToTextSpan.convertToWidgets(
-                                    '<b>$number.</b> $bullet',
-                                    contentStyle,
-                                    context,
-                                    textAlign: TextAlign.justify,
-                                    lineHeight:
-                                        appSettingsNotifier.value.lineHeight,
-                                  ),
-                                ),
-                      ),
-                    ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        sectionBlock(Icons.article, "AI Generated", ""),
+        if (place.isNotEmpty)
+          sectionBlock(Icons.location_on, l10n.kiran_place, place),
+        if (date.isNotEmpty) ...[
+          const Divider(height: 16),
+          sectionBlock(Icons.calendar_today, l10n.kiran_date, date),
+        ],
+        if (moral.isNotEmpty) ...[
+          const Divider(height: 16),
+          sectionBlock(Icons.lightbulb, l10n.kiran_moral, moral),
+        ],
+        if (history.isNotEmpty) ...[
+          const Divider(height: 16),
+          sectionBlock(Icons.history_edu, l10n.kiran_history, history),
+        ],
+        if (summary.isNotEmpty) ...[
+          const Divider(height: 16),
+          sectionBlock(Icons.format_list_bulleted, l10n.kiran_summary, ''),
+          const SizedBox(height: 4),
+          ...summary.indexed.map(((int, String) entry) {
+            final number = (entry.$1 + 1)
+                .toString()
+                .replaceAll('0', '૦')
+                .replaceAll('1', '૧')
+                .replaceAll('2', '૨')
+                .replaceAll('3', '૩')
+                .replaceAll('4', '૪')
+                .replaceAll('5', '૫')
+                .replaceAll('6', '૬')
+                .replaceAll('7', '૭')
+                .replaceAll('8', '૮')
+                .replaceAll('9', '૯');
+            final bullet = entry.$2;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 6.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //CustomHtmlWidget(htmlContent: '<b>$number.</b>'),
+                  Expanded(
+                    child:
+                        RemoteConfigService().useCustomHtmlWidget
+                            ? CustomHtmlWidget(
+                              htmlContent: '<b>$number.</b> $bullet',
+                              onAddNote: null,
+                              onCreateQuoteImage: null,
+                              onSingleTap: null,
+                            )
+                            : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: HtmlToTextSpan.convertToWidgets(
+                                '<b>$number.</b> $bullet',
+                                contentStyle,
+                                context,
+                                textAlign: TextAlign.justify,
+                                lineHeight:
+                                    appSettingsNotifier.value.lineHeight,
+                              ),
+                            ),
                   ),
-                );
-              }),
-            ],
-          ],
-        ),
-      ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ],
     );
   }
 
@@ -1122,7 +1179,12 @@ class _KiranReadPageState extends State<KiranReadPage>
                 Expanded(
                   child: SingleChildScrollView(
                     controller: controller,
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.only(
+                      left: 16 + appSettingsNotifier.value.edgePadding,
+                      right: 16 + appSettingsNotifier.value.edgePadding,
+                      top: 16,
+                      bottom: 16,
+                    ),
                     child: SafeArea(
                       child: _buildKiranMetaPanel(contentData, context),
                     ),

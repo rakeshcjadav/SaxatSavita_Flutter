@@ -76,6 +76,10 @@ class RemoteConfigService {
         // A/B Testing
         'use_custom_html_widget':
             true, // Toggle between HtmlToTextSpan and CustomHtmlWidget
+        // Layout options
+        'kiran_meta_enabled': false, // false = hide kiran meta info completely
+        'kiran_meta_as_tab_bar':
+            true, // true = TabBar layout, false = AppBar icon + bottom sheet
       });
 
       // Fetch and activate
@@ -184,6 +188,15 @@ class RemoteConfigService {
   // A/B Testing
   bool get useCustomHtmlWidget =>
       _remoteConfig?.getBool('use_custom_html_widget') ?? false;
+
+  /// false → hide kiran meta info completely (no icon, no tab, no bottom sheet)
+  bool get kiranMetaEnabled =>
+      _remoteConfig?.getBool('kiran_meta_enabled') ?? true;
+
+  /// true  → show kiran meta info in a TabBar (Reading / Info tabs)
+  /// false → show via AppBar icon + modal bottom sheet (default)
+  bool get kiranMetaAsTabBar =>
+      _remoteConfig?.getBool('kiran_meta_as_tab_bar') ?? false;
 
   /// Get a custom string value
   String getString(String key, {String defaultValue = ''}) {
