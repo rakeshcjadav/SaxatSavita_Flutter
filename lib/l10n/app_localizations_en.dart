@@ -1626,6 +1626,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resume => 'Resume';
 
   @override
+  String get kiran_calendar => 'Kiran Calendar';
+
+  @override
+  String get kirans_by_date => 'Kirans by Date';
+
+  @override
+  String get select_date_to_view_kirans => 'Select a date to view kirans';
+
+  @override
+  String get no_kirans_on_this_date => 'No kirans on this date';
+
+  @override
+  String get resume_reading => 'Resume Reading?';
+
+  @override
+  String resume_reading_message(String duration) {
+    return 'You have a reading session in progress ($duration). Would you like to resume or start a new session?';
+  }
+
+  @override
   String get migrating_data => 'Migrating your data...';
 
   @override

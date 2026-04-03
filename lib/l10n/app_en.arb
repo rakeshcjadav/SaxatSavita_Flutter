@@ -759,6 +759,19 @@
     "just_browse": "Just Browse",
     "start_new": "Start New",
     "resume": "Resume",
+    "kiran_calendar": "Kiran Calendar",
+    "kirans_by_date": "Kirans by Date",
+    "select_date_to_view_kirans": "Select a date to view kirans",
+    "no_kirans_on_this_date": "No kirans on this date",
+    "resume_reading": "Resume Reading?",
+    "resume_reading_message": "You have a reading session in progress ({duration}). Would you like to resume or start a new session?",
+    "@resume_reading_message": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
     "migrating_data": "Migrating your data...",
     "migration_wait_message": "Please wait while we update your reading progress",
     "migrating_reading_history": "Migrating reading history...",

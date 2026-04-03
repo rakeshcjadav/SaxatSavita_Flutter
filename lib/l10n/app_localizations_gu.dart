@@ -1631,6 +1631,26 @@ class AppLocalizationsGu extends AppLocalizations {
   String get resume => 'વાંચન કરો';
 
   @override
+  String get kiran_calendar => 'કિરણ કૅલેન્ડર';
+
+  @override
+  String get kirans_by_date => 'તારીખ ક્રમે';
+
+  @override
+  String get select_date_to_view_kirans => 'કિરણ જોવા માટે તારીખ પસંદ કરો';
+
+  @override
+  String get no_kirans_on_this_date => 'આ તારીખે કોઈ કિરણ નથી';
+
+  @override
+  String get resume_reading => 'વાંચન કૅ ચાલુ રાખવો?';
+
+  @override
+  String resume_reading_message(String duration) {
+    return 'તમારી ચાલુ વાંચન સત્ર ($duration) છે. ચાલુ રાખશો કે નવો શરૂ કરશો?';
+  }
+
+  @override
   String get migrating_data => 'ડેટા સ્થાનાંતરિત કરી રહ્યા છીએ...';
 
   @override

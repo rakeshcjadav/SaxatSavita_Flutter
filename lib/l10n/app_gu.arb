@@ -745,5 +745,11 @@
     "migration_wait_message": "કૃપા કરીને રાહ જુઓ જ્યારે અમે તમારી માહિતી અપડેટ કરીએ છીએ",
     "migrating_reading_history": "વાંચન ઈતિહાસ સ્થાનાંતરિત કરી રહ્યા છીએ...",
     "migrating_kiran_progress": "કિરણ પ્રગતિ સ્થાનાંતરિત કરી રહ્યા છીએ...",
-    "migration_complete": "સ્થાનાંતરણ પૂર્ણ!"
+    "migration_complete": "સ્થાનાંતરણ પૂર્ણ!",
+    "kiran_calendar": "કિરણ કૅલેન્ડર",
+    "kirans_by_date": "તારીખ ક્રમે",
+    "select_date_to_view_kirans": "કિરણ જોવા માટે તારીખ પસંદ કરો",
+    "no_kirans_on_this_date": "આ તારીખે કોઈ કિરણ નથી",
+    "resume_reading": "વાંચન કૅ ચાલુ રાખવો?",
+    "resume_reading_message": "તમારી ચાલુ વાંચન સત્ર ({duration}) છે. ચાલુ રાખશો કે નવો શરૂ કરશો?"
 }

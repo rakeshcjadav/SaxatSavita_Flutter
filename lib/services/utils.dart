@@ -113,6 +113,47 @@ class Utils {
     return '${seconds}s';
   }
 
+  /// Parses a kiran date string of the form 'DD-MM-YY' (ASCII digits,
+  /// as stored in [KiranInfo.date] extracted from the JSON book files)
+  /// into a [DateTime] at midnight UTC.
+  ///
+  /// Stored format is 'D-M-YYYY' (4-digit year).  Also accepts the legacy
+  /// 'D-M-YY' format: YY >= 50 → 1900 + YY, YY < 50 → 2000 + YY.
+  /// Returns null if the string is empty, malformed, or the date is invalid.
+  static DateTime? parseKiranDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return null;
+    final parts = dateStr.split('-');
+    if (parts.length != 3) return null;
+    final d = int.tryParse(parts[0]);
+    final mo = int.tryParse(parts[1]);
+    final yy = int.tryParse(parts[2]);
+    if (d == null || mo == null || yy == null) return null;
+    final int year;
+    if (yy >= 100) {
+      year = yy; // already a 4-digit year
+    } else {
+      year = yy >= 50 ? 1900 + yy : 2000 + yy;
+    }
+    try {
+      return DateTime.utc(year, mo, d);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Converts ASCII digits 0–9 in [s] to Gujarati numerals ૦–૯.
+  static String toGujaratiNumerals(String s) => s
+      .replaceAll('0', '૦')
+      .replaceAll('1', '૧')
+      .replaceAll('2', '૨')
+      .replaceAll('3', '૩')
+      .replaceAll('4', '૪')
+      .replaceAll('5', '૫')
+      .replaceAll('6', '૬')
+      .replaceAll('7', '૭')
+      .replaceAll('8', '૮')
+      .replaceAll('9', '૯');
+
   static bool isBookmarked(KiranUserInfo kiranUserInfo) {
     BookUserInfo bookUserInfo = Bookservice().getBookUserInfo(
       kiranUserInfo.partNumber,

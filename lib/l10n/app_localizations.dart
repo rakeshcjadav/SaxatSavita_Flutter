@@ -3050,6 +3050,42 @@ abstract class AppLocalizations {
   /// **'Resume'**
   String get resume;
 
+  /// No description provided for @kiran_calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran Calendar'**
+  String get kiran_calendar;
+
+  /// No description provided for @kirans_by_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Kirans by Date'**
+  String get kirans_by_date;
+
+  /// No description provided for @select_date_to_view_kirans.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a date to view kirans'**
+  String get select_date_to_view_kirans;
+
+  /// No description provided for @no_kirans_on_this_date.
+  ///
+  /// In en, this message translates to:
+  /// **'No kirans on this date'**
+  String get no_kirans_on_this_date;
+
+  /// No description provided for @resume_reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Reading?'**
+  String get resume_reading;
+
+  /// No description provided for @resume_reading_message.
+  ///
+  /// In en, this message translates to:
+  /// **'You have a reading session in progress ({duration}). Would you like to resume or start a new session?'**
+  String resume_reading_message(String duration);
+
   /// No description provided for @migrating_data.
   ///
   /// In en, this message translates to:

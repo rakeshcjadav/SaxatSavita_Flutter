@@ -31,6 +31,8 @@ import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
 import 'pages/settingspage.dart';
 import 'pages/aashirvachanlistpage.dart';
+import 'package:saxatsavita_flutter/pages/kiran_calendar_page.dart';
+import 'package:saxatsavita_flutter/pages/kiran_chronological_page.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter/foundation.dart';
 
@@ -290,6 +292,8 @@ class SakshatSavitaApp extends StatelessWidget {
             '/search': (context) => const Kiransearchpage(),
             '/settings': (context) => const SettingsPage(),
             '/aashirvachan': (context) => const Aashirvachanpage(),
+            '/kiran-calendar': (context) => const KiranCalendarPage(),
+            '/kiran-chronological': (context) => const KiranChronologicalPage(),
             '/home': (context) => const HomePage(),
             '/bookmainpage': (context) => const BookMainpage(),
             '/notes': (context) => const NoteListPage(),

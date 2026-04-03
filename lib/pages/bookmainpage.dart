@@ -75,6 +75,14 @@ class _BookmainpageState extends State<BookMainpage> {
                   ActionOptions.search,
                   ActionOptions.settings,
                 ],
+                extraActions: [
+                  IconButton(
+                    icon: const Icon(Icons.calendar_month_outlined),
+                    tooltip: AppLocalizations.of(context)!.kiran_calendar,
+                    onPressed:
+                        () => Navigator.pushNamed(context, '/kiran-calendar'),
+                  ),
+                ],
               )
               : buildAppBar(
                 context,
@@ -85,6 +93,14 @@ class _BookmainpageState extends State<BookMainpage> {
                   ActionOptions.notes,
                   ActionOptions.search,
                   ActionOptions.settings,
+                ],
+                extraActions: [
+                  IconButton(
+                    icon: const Icon(Icons.calendar_month_outlined),
+                    tooltip: AppLocalizations.of(context)!.kiran_calendar,
+                    onPressed:
+                        () => Navigator.pushNamed(context, '/kiran-calendar'),
+                  ),
                 ],
               ),
       body: OrientationBuilder(
