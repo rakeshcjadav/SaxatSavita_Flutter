@@ -920,7 +920,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: recentHistory.length.clamp(0, 5),
-                separatorBuilder: (_, __) => const Divider(),
+                separatorBuilder: (_, _) => const Divider(),
                 itemBuilder: (context, index) {
                   final history = recentHistory[index];
                   return ListTile(

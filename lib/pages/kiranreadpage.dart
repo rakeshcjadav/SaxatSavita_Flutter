@@ -907,9 +907,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                         }
                         final contentData = snapshot.data!;
                         // Cache for use by AppBar info button / Info tab
-                        if (_kiranContentData == null) {
-                          _kiranContentData = contentData;
-                        }
+                        _kiranContentData ??= contentData;
 
                         // Initialize auto-scroll and set initial position after content is loaded (only once)
                         if (!_isInitialized) {

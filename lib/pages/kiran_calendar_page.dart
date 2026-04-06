@@ -21,9 +21,14 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
   final KiranCalendarService _service = KiranCalendarService();
 
   bool _loading = true;
-  // Use year 2000 as the fixed display year for the 12-month calendar
-  DateTime _focusedDay = DateTime.utc(2000, 5, 20);
-  DateTime? _selectedDay = DateTime.utc(2000, 5, 20);
+  // Use year 2000 as the fixed display year; map today's month/day into it
+  static DateTime _todayIn2000() {
+    final now = DateTime.now();
+    return DateTime.utc(2000, now.month, now.day);
+  }
+
+  DateTime _focusedDay = _todayIn2000();
+  DateTime? _selectedDay = _todayIn2000();
   List<KiranCalendarEntry> _selectedEntries = [];
 
   @override
@@ -275,7 +280,7 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       itemCount: _selectedEntries.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final entry = _selectedEntries[index];
         return _buildKiranTile(entry, colorScheme, l10n);
