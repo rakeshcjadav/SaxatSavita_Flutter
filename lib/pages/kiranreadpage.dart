@@ -76,6 +76,9 @@ class _KiranReadPageState extends State<KiranReadPage>
   bool _isTtsPaused = false;
   List<String> _ttsChunks = [];
   int _currentTtsChunk = 0;
+  bool _isTtsDrivingScroll = false; // true while TTS is actively driving scroll
+  List<double> _ttsScrollTargets =
+      []; // char-weighted scroll position per chunk
 
   bool _hasDataChanged = false;
   int _initialReadingProgress = 0;
@@ -393,12 +396,14 @@ class _KiranReadPageState extends State<KiranReadPage>
       _currentTtsChunk++;
       if (_currentTtsChunk < _ttsChunks.length) {
         // Brief pause between sentences for more natural-sounding speech
-        Future.delayed(const Duration(milliseconds: 200), () {
+        Future.delayed(const Duration(milliseconds: 300), () {
           if (mounted && _isTtsSpeaking && !_isTtsPaused) {
             _speakCurrentChunk();
           }
         });
       } else {
+        _isTtsDrivingScroll = false;
+        _pauseTimer();
         if (mounted) {
           setState(() {
             _isTtsSpeaking = false;
@@ -656,6 +661,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
 
     // Expand common abbreviations before anything else
+    t = t.replaceAll(RegExp(r'પૂ\.'), 'પૂજ્ય');
     t = t.replaceAll(RegExp(r'ગુ\.'), 'ગુણાતીતાનંદ');
     t = t.replaceAll(RegExp(r'તા\.'), 'તારીખ');
     t = t.replaceAll(RegExp(r'સં\.'), 'સંવત');
@@ -788,19 +794,74 @@ class _KiranReadPageState extends State<KiranReadPage>
     return sentences;
   }
 
+  /// Rebuilds char-weighted scroll targets whenever chunks or scroll extent change.
+  /// Targets point to the START of each chunk (not the end), offset upward by
+  /// two line-heights so the spoken sentence is near the top of the viewport.
+  /// The line-height offset scales with the user's font size so larger fonts
+  /// don't push the active sentence off-screen.
+  void _recomputeTtsScrollTargets() {
+    if (_ttsChunks.isEmpty || !_scrollController.hasClients) return;
+    final maxExtent = _scrollController.position.maxScrollExtent;
+    if (maxExtent <= 0) return;
+    final totalChars = _ttsChunks.fold(0, (s, c) => s + c.length);
+    if (totalChars == 0) return;
+    // One line-height ≈ fontSize × 1.5 (Flutter default line spacing).
+    final lineHeight = appSettingsNotifier.value.fontSize * 1.5;
+    var cumulativeBefore = 0;
+    _ttsScrollTargets = List.generate(_ttsChunks.length, (i) {
+      // Scroll to the START of this chunk, then back up by 2 line-heights for
+      // visual breathing room above the sentence being spoken.
+      final startPos = (cumulativeBefore / totalChars) * maxExtent;
+      cumulativeBefore += _ttsChunks[i].length;
+      return (startPos - lineHeight * 2.0).clamp(0.0, maxExtent);
+    });
+  }
+
   void _speakCurrentChunk() {
     if (_currentTtsChunk < _ttsChunks.length) {
       _tts?.speak(_ttsChunks[_currentTtsChunk]);
+      if (_isTtsDrivingScroll && _scrollController.hasClients) {
+        // Lazily build targets on first use or if not yet populated.
+        if (_ttsScrollTargets.length != _ttsChunks.length) {
+          _recomputeTtsScrollTargets();
+        }
+        if (_ttsScrollTargets.isNotEmpty) {
+          final target = _ttsScrollTargets[_currentTtsChunk];
+          // Estimate how long this chunk will take to speak.
+          // flutter_tts rate 0.5 ≈ normal speed (~22 Gujarati chars/sec).
+          final chunkChars = _ttsChunks[_currentTtsChunk].length;
+          final rate = appSettingsNotifier.value.ttsSpeechRate.clamp(0.1, 1.0);
+          final charsPerSec = 22.0 * (rate / 0.5);
+          final estimatedMs = ((chunkChars / charsPerSec) * 1000).round();
+          final duration = Duration(
+            milliseconds: estimatedMs.clamp(300, 12000),
+          );
+          _scrollController.animateTo(
+            target,
+            duration: duration,
+            curve: Curves.linear,
+          );
+        }
+      }
     }
   }
 
   Future<void> _startTts() async {
     if (_tts == null) await _initTts();
     if (_isAutoScrolling) _stopAutoScroll();
+    _isTtsDrivingScroll = true;
     if (_kiranContentData != null && _ttsChunks.isEmpty) {
       _ttsChunks = _prepareTtsChunks(getKiranContent(_kiranContentData!));
+      // Prepend an intro chunk: "સાક્ષાત્ સવિતા, ભાગ <part>, કિરણ <number>, <title>"
+      final partNum = int.tryParse(widget.partNumber.replaceAll('part', '')) ?? 1;
+      final partWord = _numberToGujarati(partNum);
+      final kiranNumber = widget.kiranInfo.number.replaceAll('.', '').trim();
+      final kiranTitle = widget.kiranInfo.title.trim();
+      final intro = 'સાક્ષાત્ સવિતા. ભાગ $partWord. કિરણ $kiranNumber. $kiranTitle.';
+      _ttsChunks = [intro, ..._ttsChunks];
     }
     if (_ttsChunks.isEmpty) return;
+    _ttsScrollTargets = []; // will be (re)computed on first _speakCurrentChunk
     await _tts!.setSpeechRate(appSettingsNotifier.value.ttsSpeechRate);
     await _tts!.setLanguage(
       appSettingsNotifier.value.language == 'gu' ? 'gu-IN' : 'en-US',
@@ -821,6 +882,8 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   Future<void> _stopTts() async {
     await _tts?.stop();
+    _isTtsDrivingScroll = false;
+    _ttsScrollTargets = [];
     if (mounted) {
       setState(() {
         _isTtsSpeaking = false;
@@ -832,6 +895,7 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   Future<void> _pauseOrResumeTts() async {
     if (_isTtsPaused) {
+      _isTtsDrivingScroll = true;
       await _tts?.setSpeechRate(appSettingsNotifier.value.ttsSpeechRate);
       await _tts?.speak(_ttsChunks[_currentTtsChunk]);
       if (mounted)
@@ -839,6 +903,7 @@ class _KiranReadPageState extends State<KiranReadPage>
           _isTtsPaused = false;
         });
     } else {
+      _isTtsDrivingScroll = false;
       await _tts?.pause();
       if (mounted)
         setState(() {

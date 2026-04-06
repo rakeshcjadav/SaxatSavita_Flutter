@@ -380,7 +380,7 @@ class HtmlToTextSpan {
           isCentered = true;
           newStyle = currentStyle.copyWith(
             fontWeight: FontWeight.normal,
-            fontSize: (currentStyle.fontSize ?? 16) * 0.75,
+            fontSize: (currentStyle.fontSize ?? 16),
           );
           break;
         case 'footer':
