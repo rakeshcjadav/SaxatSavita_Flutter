@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
@@ -68,6 +69,13 @@ class _KiranReadPageState extends State<KiranReadPage>
   Timer? _autoScrollDelayTimer; // Timer for 5-second delay
   double _contentHeight = 0;
   bool _isInitialized = false;
+
+  // TTS variables
+  FlutterTts? _tts;
+  bool _isTtsSpeaking = false;
+  bool _isTtsPaused = false;
+  List<String> _ttsChunks = [];
+  int _currentTtsChunk = 0;
 
   bool _hasDataChanged = false;
   int _initialReadingProgress = 0;
@@ -205,6 +213,10 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Dispose tab controller if used
     _metaTabController?.dispose();
+
+    // Stop and dispose TTS
+    _tts?.stop();
+    _tts = null;
 
     super.dispose();
   }
@@ -362,6 +374,141 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
   }
 
+  // ── TTS ──────────────────────────────────────────────────────────────────
+
+  Future<void> _initTts() async {
+    _tts = FlutterTts();
+    final lang = appSettingsNotifier.value.language == 'gu' ? 'gu-IN' : 'en-US';
+    await _tts!.setLanguage(lang);
+    // Apply saved voice if set
+    final savedVoice = appSettingsNotifier.value.ttsVoice;
+    if (savedVoice != null && savedVoice.contains('|')) {
+      final parts = savedVoice.split('|');
+      await _tts!.setVoice({'name': parts[0], 'locale': parts[1]});
+    }
+    await _tts!.setSpeechRate(appSettingsNotifier.value.ttsSpeechRate);
+    await _tts!.setVolume(1.0);
+    await _tts!.setPitch(1.0);
+    _tts!.setCompletionHandler(() {
+      _currentTtsChunk++;
+      if (_currentTtsChunk < _ttsChunks.length) {
+        _speakCurrentChunk();
+      } else {
+        if (mounted) {
+          setState(() {
+            _isTtsSpeaking = false;
+            _isTtsPaused = false;
+            _currentTtsChunk = 0;
+          });
+        }
+      }
+    });
+    _tts!.setErrorHandler((msg) {
+      debugPrint('TTS error: $msg');
+      if (mounted) {
+        setState(() {
+          _isTtsSpeaking = false;
+          _isTtsPaused = false;
+        });
+      }
+    });
+  }
+
+  List<String> _prepareTtsChunks(String html) {
+    final withNewlines = html
+        .replaceAll(RegExp(r'</p>', caseSensitive: false), '\n')
+        .replaceAll(RegExp(r'</header>', caseSensitive: false), '\n')
+        .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n');
+    // Strip all remaining HTML tags
+    final stripped = withNewlines.replaceAll(RegExp(r'<[^>]*>'), '');
+    // Decode common HTML entities to natural text or whitespace
+    final decoded =
+        stripped
+            .replaceAll('&nbsp;', ' ')
+            .replaceAll('&zwj;', '')
+            .replaceAll('&zwnj;', '')
+            .replaceAll('&shy;', '')
+            .replaceAll('&#x200B;', '') // zero-width space
+            .replaceAll('&#8203;', '') // zero-width space (decimal)
+            .replaceAll('&#160;', ' ') // non-breaking space (decimal)
+            .replaceAll('&amp;', '&')
+            .replaceAll('&lt;', '<')
+            .replaceAll('&gt;', '>')
+            .replaceAll('&quot;', '"')
+            .replaceAll('&apos;', "'")
+            // Collapse any leftover numeric/named entities to empty
+            .replaceAll(RegExp(r'&[a-zA-Z0-9#]+;'), '')
+            // Collapse multiple spaces/nbsp into one
+            .replaceAll(RegExp(r'[ \t]+'), ' ')
+            .trim();
+    return decoded
+        .split(RegExp(r'\n+'))
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
+
+  void _speakCurrentChunk() {
+    if (_currentTtsChunk < _ttsChunks.length) {
+      _tts?.speak(_ttsChunks[_currentTtsChunk]);
+    }
+  }
+
+  Future<void> _startTts() async {
+    if (_tts == null) await _initTts();
+    if (_isAutoScrolling) _stopAutoScroll();
+    if (_kiranContentData != null && _ttsChunks.isEmpty) {
+      _ttsChunks = _prepareTtsChunks(getKiranContent(_kiranContentData!));
+    }
+    if (_ttsChunks.isEmpty) return;
+    await _tts!.setSpeechRate(appSettingsNotifier.value.ttsSpeechRate);
+    await _tts!.setLanguage(
+      appSettingsNotifier.value.language == 'gu' ? 'gu-IN' : 'en-US',
+    );
+    // Re-apply voice preference on every play (user may have changed it)
+    final savedVoice = appSettingsNotifier.value.ttsVoice;
+    if (savedVoice != null && savedVoice.contains('|')) {
+      final parts = savedVoice.split('|');
+      await _tts!.setVoice({'name': parts[0], 'locale': parts[1]});
+    }
+    if (mounted)
+      setState(() {
+        _isTtsSpeaking = true;
+        _isTtsPaused = false;
+      });
+    _speakCurrentChunk();
+  }
+
+  Future<void> _stopTts() async {
+    await _tts?.stop();
+    if (mounted) {
+      setState(() {
+        _isTtsSpeaking = false;
+        _isTtsPaused = false;
+        _currentTtsChunk = 0;
+      });
+    }
+  }
+
+  Future<void> _pauseOrResumeTts() async {
+    if (_isTtsPaused) {
+      await _tts?.setSpeechRate(appSettingsNotifier.value.ttsSpeechRate);
+      await _tts?.speak(_ttsChunks[_currentTtsChunk]);
+      if (mounted)
+        setState(() {
+          _isTtsPaused = false;
+        });
+    } else {
+      await _tts?.pause();
+      if (mounted)
+        setState(() {
+          _isTtsPaused = true;
+        });
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+
   void _startAutoScroll() {
     final estimatedReadingSeconds = Utils.getEstimatedReadingSeconds(
       widget.kiranInfo.wordCount,
@@ -516,7 +663,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     final content =
         '<header>${AppLocalizations.of(context)!.kiran_start}</header>'
         '${contentData['main']['content'] ?? ''}'
-        '<p><footer>${contentData['main']['footer'] ?? ''}</footer></p>';
+        '<p><footer>${contentData['main']['footer'] ?? ''}</footer></p>'
+        '<header>${AppLocalizations.of(context)!.kiran_end}</header>';
 
     // Cache the content for search functionality
     _currentKiranContent = _getPlainTextFromHtml(content);
@@ -1873,6 +2021,36 @@ class _KiranReadPageState extends State<KiranReadPage>
                 iconSize: 28,
               ),
             ),
+          // TTS play/pause and stop buttons (only when TTS is enabled in settings)
+          if (_isReadingMode && appSettingsNotifier.value.ttsEnabled) ...[
+            IconButton(
+              onPressed: () {
+                if (_isTtsSpeaking) {
+                  _pauseOrResumeTts();
+                } else {
+                  _startTts();
+                }
+              },
+              icon: Icon(
+                _isTtsSpeaking && !_isTtsPaused
+                    ? Icons.pause_circle_outline
+                    : Icons.play_circle_outline,
+                color: _isTtsSpeaking ? Colors.blue : null,
+              ),
+              tooltip:
+                  _isTtsSpeaking
+                      ? (_isTtsPaused ? 'Resume' : 'Pause TTS')
+                      : 'Read Aloud',
+              iconSize: 28,
+            ),
+            if (_isTtsSpeaking)
+              IconButton(
+                onPressed: _stopTts,
+                icon: const Icon(Icons.stop_circle_outlined, color: Colors.red),
+                tooltip: 'Stop TTS',
+                iconSize: 28,
+              ),
+          ],
           // Timer display (only in reading mode)
           if (_isReadingMode)
             Expanded(
@@ -1916,6 +2094,9 @@ class _KiranReadPageState extends State<KiranReadPage>
     // Store context before async operation
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final localizations = AppLocalizations.of(context)!;
+
+    // Stop TTS if running
+    if (_isTtsSpeaking) await _stopTts();
 
     // Stop stopwatch to capture correct elapsed time
     _stopwatch.stop();

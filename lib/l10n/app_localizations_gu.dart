@@ -157,6 +157,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get kiran_start => '|| સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ||';
 
   @override
+  String get kiran_end => 'શ્રી સહજાનંદસ્વામી મહારાજની જય';
+
+  @override
   String get kiran_place => 'સ્થળ';
 
   @override
@@ -1521,6 +1524,24 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get useColorfulPartStyleDescription =>
       'સાક્ષાત્ સવિતા ના દરેક ભાગ માટે અલગ અલગ રંગો વાપરો';
+
+  @override
+  String get ttsEnabled => 'ટેક્સ્ટ-ટુ-સ્પીચ';
+
+  @override
+  String get ttsEnabledDescription => 'TTS વડે કિરણ સ્વરૂપે સાંભળો';
+
+  @override
+  String get ttsSpeechRate => 'બોલવાની ઝડપ';
+
+  @override
+  String get ttsVoice => 'અવાજ';
+
+  @override
+  String get ttsVoiceDefault => 'ડિફૉલ્ટ';
+
+  @override
+  String get ttsVoiceNoneAvailable => 'કોઈ અવાજ ઉપલબ્ધ નથી';
 
   @override
   String get plan_name => 'યોજનાનું નામ';

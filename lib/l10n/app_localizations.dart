@@ -392,6 +392,12 @@ abstract class AppLocalizations {
   /// **'।। સ્વામિનારાયણ હરે, સ્વામિનારાયણ હરે ।।'**
   String get kiran_start;
 
+  /// No description provided for @kiran_end.
+  ///
+  /// In en, this message translates to:
+  /// **'શ્રી સહજાનંદસ્વામી મહારાજની જય'**
+  String get kiran_end;
+
   /// No description provided for @kiran_place.
   ///
   /// In en, this message translates to:
@@ -2845,6 +2851,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use colorful theme for each part'**
   String get useColorfulPartStyleDescription;
+
+  /// No description provided for @ttsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Text-to-Speech'**
+  String get ttsEnabled;
+
+  /// No description provided for @ttsEnabledDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Read Kiran aloud using speech synthesis'**
+  String get ttsEnabledDescription;
+
+  /// No description provided for @ttsSpeechRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Speech Rate'**
+  String get ttsSpeechRate;
+
+  /// No description provided for @ttsVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get ttsVoice;
+
+  /// No description provided for @ttsVoiceDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get ttsVoiceDefault;
+
+  /// No description provided for @ttsVoiceNoneAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No voices available'**
+  String get ttsVoiceNoneAvailable;
 
   /// No description provided for @plan_name.
   ///

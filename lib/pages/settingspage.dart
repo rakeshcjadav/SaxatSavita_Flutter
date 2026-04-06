@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/debug_only/debug_migration_with_user_id.dart';
@@ -40,6 +41,17 @@ class _SettingsPageState extends State<SettingsPage> {
   late bool _showEdgeNavButtons;
   late double _edgePadding;
   late bool _useColorfulPartStyle;
+  late bool _ttsEnabled;
+  late double _ttsSpeechRate;
+  String? _ttsVoice; // "name|locale"
+
+  // Available TTS voices loaded from the device
+  List<Map<String, String>> _availableVoices = [];
+  bool _voicesLoaded = false;
+
+  // TTS voice preview
+  FlutterTts? _previewTts;
+  bool _isPreviewPlaying = false;
 
   // Track saving state
   bool _isSaving = false;
@@ -48,6 +60,12 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadOriginalSettings();
+  }
+
+  @override
+  void dispose() {
+    _previewTts?.stop();
+    super.dispose();
   }
 
   void _loadOriginalSettings() {
@@ -64,10 +82,237 @@ class _SettingsPageState extends State<SettingsPage> {
     _showEdgeNavButtons = _originalSettings.showEdgeNavButtons;
     _edgePadding = _originalSettings.edgePadding;
     _useColorfulPartStyle = _originalSettings.useColorfulPartStyle;
+    _ttsEnabled = _originalSettings.ttsEnabled;
+    _ttsSpeechRate = _originalSettings.ttsSpeechRate;
+    _ttsVoice = _originalSettings.ttsVoice;
   }
 
   void _revertChanges() {
     appSettingsNotifier.value = _originalSettings;
+  }
+
+  // ── TTS voice helpers ────────────────────────────────────────────────────
+
+  /// Maps BCP-47 locale codes to human-readable language+region names.
+  static const Map<String, String> _localeNames = {
+    'ar': 'Arabic',
+    'bn': 'Bengali',
+    'bn-BD': 'Bengali (Bangladesh)',
+    'gu-IN': 'Gujarati (India)',
+    'hi-IN': 'Hindi (India)',
+    'mr-IN': 'Marathi (India)',
+    'bn-IN': 'Bengali (India)',
+    'ta-IN': 'Tamil (India)',
+    'te-IN': 'Telugu (India)',
+    'kn-IN': 'Kannada (India)',
+    'ml-IN': 'Malayalam (India)',
+    'pa-IN': 'Punjabi (India)',
+    'ur-PK': 'Urdu (Pakistan)',
+    'en-IN': 'English (India)',
+    'en-US': 'English (US)',
+    'en-GB': 'English (UK)',
+    'en-AU': 'English (Australia)',
+    'en-CA': 'English (Canada)',
+    'fr-FR': 'French (France)',
+    'fr-CA': 'French (Canada)',
+    'de-DE': 'German (Germany)',
+    'es-ES': 'Spanish (Spain)',
+    'es-US': 'Spanish (US)',
+    'it-IT': 'Italian',
+    'pt-BR': 'Portuguese (Brazil)',
+    'pt-PT': 'Portuguese (Portugal)',
+    'ru-RU': 'Russian',
+    'zh-CN': 'Chinese (Simplified)',
+    'zh-TW': 'Chinese (Traditional)',
+    'ja-JP': 'Japanese',
+    'ko-KR': 'Korean',
+    'ar-XA': 'Arabic',
+    'nl-NL': 'Dutch',
+    'pl-PL': 'Polish',
+    'sv-SE': 'Swedish',
+    'nb-NO': 'Norwegian',
+    'da-DK': 'Danish',
+    'fi-FI': 'Finnish',
+    'tr-TR': 'Turkish',
+    'cs-CZ': 'Czech',
+    'sk-SK': 'Slovak',
+    'ro-RO': 'Romanian',
+    'hu-HU': 'Hungarian',
+    'uk-UA': 'Ukrainian',
+  };
+
+  static String _localeDisplayName(String locale) {
+    final norm = locale.replaceAll('_', '-');
+    if (_localeNames.containsKey(norm)) return _localeNames[norm]!;
+    // Try just the language code
+    final lang = norm.split('-').first;
+    final langMatch =
+        _localeNames.entries
+            .where((e) => e.key.startsWith('$lang-'))
+            .map((e) => e.value.split(' (').first)
+            .firstOrNull;
+    return langMatch ?? norm;
+  }
+
+  /// Builds a user-friendly display name from raw TTS voice data.
+  /// • iOS:     "com.apple.voice.compact.en-US.Samantha" → "Samantha" / "Samantha · Enhanced"
+  /// • Android: "en-us-x-sfg-local"                     → "Gujarati (India) · Standard"
+  static String _buildVoiceDisplayName(
+    String name,
+    String locale,
+    int quality, {
+    int gender = 0,
+  }) {
+    // gender: 0=unspecified, 1=male, 2=female (iOS AVSpeechSynthesisVoiceGender)
+    final genderSuffix = gender == 1 ? ' ♂' : (gender == 2 ? ' ♀' : '');
+
+    String? personalName;
+
+    // iOS / macOS reverse-domain names: com.apple.ttsbundle.Samantha-compact
+    // or com.apple.voice.compact.en-US.Samantha
+    if (name.contains('.')) {
+      final segments = name.split('.');
+      // Last dot-segment that is a clean word (no hyphens) is the personal name
+      for (final seg in segments.reversed) {
+        if (seg.isNotEmpty && RegExp(r'^[A-Za-z]+$').hasMatch(seg)) {
+          personalName = seg;
+          break;
+        }
+      }
+    }
+
+    if (personalName != null) {
+      // iOS quality: 1 = default, 2 = enhanced/premium
+      if (quality >= 2) return '$personalName$genderSuffix · Enhanced';
+      return '$personalName$genderSuffix';
+    }
+
+    // Android / other: voice name conveys no useful info to most users,
+    // but Google TTS names follow: {lang}-{region}-x-{code}-{local|network}
+    // Extract the variant code to differentiate voices in the same locale.
+    String? variantLabel;
+    final xMatch = RegExp(r'-x-([^-]+)-').firstMatch(name.toLowerCase());
+    if (xMatch != null) {
+      final code = xMatch.group(1)!;
+      // Strip the language prefix (e.g. 'gu' from 'gud') to get the variant letter(s)
+      final localeLang = locale.split('-').first.toLowerCase();
+      String variant =
+          code.startsWith(localeLang)
+              ? code.substring(localeLang.length)
+              : code;
+      if (variant.isNotEmpty) {
+        variantLabel = 'Voice ${variant.toUpperCase()}';
+      }
+    }
+
+    String qualityLabel;
+    if (quality >= 500) {
+      qualityLabel = 'Premium';
+    } else if (quality >= 400) {
+      qualityLabel = 'Enhanced';
+    } else {
+      qualityLabel = 'Standard';
+    }
+
+    final base = variantLabel ?? _localeDisplayName(locale);
+    return '$base$genderSuffix · $qualityLabel';
+  }
+
+  Future<void> _previewSelectedVoice() async {
+    if (_isPreviewPlaying) {
+      await _previewTts?.stop();
+      if (mounted) setState(() => _isPreviewPlaying = false);
+      return;
+    }
+    _previewTts ??= FlutterTts();
+    await _previewTts!.setLanguage('gu-IN');
+    await _previewTts!.setSpeechRate(_ttsSpeechRate);
+    if (_ttsVoice != null) {
+      final parts = _ttsVoice!.split('|');
+      if (parts.length == 2) {
+        await _previewTts!.setVoice({'name': parts[0], 'locale': parts[1]});
+      }
+    }
+    _previewTts!.setCompletionHandler(() {
+      if (mounted) setState(() => _isPreviewPlaying = false);
+    });
+    _previewTts!.setErrorHandler((_) {
+      if (mounted) setState(() => _isPreviewPlaying = false);
+    });
+    if (mounted) setState(() => _isPreviewPlaying = true);
+    await _previewTts!.speak('નમસ્તે, આ મારો અવાજ છે.');
+  }
+
+  Future<void> _loadTtsVoices() async {
+    if (_voicesLoaded) return;
+    try {
+      final tts = FlutterTts();
+      final raw = await tts.getVoices;
+      if (raw == null) return;
+
+      final voices =
+          (raw as List)
+              .cast<Map>()
+              // Keep only installed, offline Gujarati voices
+              .where(
+                (v) =>
+                    v['networkConnectionRequired'] != true &&
+                    v['notInstalled'] != true &&
+                    (v['locale']?.toString() ?? '').toLowerCase().startsWith(
+                      'gu',
+                    ),
+              )
+              .map(
+                (v) => {
+                  'name': v['name']?.toString() ?? '',
+                  'locale': v['locale']?.toString() ?? '',
+                  'quality': (v['quality'] ?? 300).toString(),
+                  'gender': (v['gender'] ?? 0).toString(),
+                },
+              )
+              .where((v) => v['name']!.isNotEmpty)
+              .toList();
+
+      // Build display names and handle duplicates by appending index
+      final displayNameCount = <String, int>{};
+      for (final v in voices) {
+        final dn = _buildVoiceDisplayName(
+          v['name']!,
+          v['locale']!,
+          int.tryParse(v['quality']!) ?? 300,
+          gender: int.tryParse(v['gender']!) ?? 0,
+        );
+        displayNameCount[dn] = (displayNameCount[dn] ?? 0) + 1;
+        v['displayName'] = dn;
+      }
+      // For duplicates, suffix a counter
+      final seenCount = <String, int>{};
+      for (final v in voices) {
+        final dn = v['displayName']!;
+        if (displayNameCount[dn]! > 1) {
+          seenCount[dn] = (seenCount[dn] ?? 0) + 1;
+          v['displayName'] = '$dn ${seenCount[dn]}';
+        }
+      }
+
+      voices.sort((a, b) {
+        final la = _localeDisplayName(a['locale']!);
+        final lb = _localeDisplayName(b['locale']!);
+        final c = la.compareTo(lb);
+        if (c != 0) return c;
+        return a['displayName']!.compareTo(b['displayName']!);
+      });
+
+      if (mounted) {
+        setState(() {
+          _availableVoices = voices;
+          _voicesLoaded = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading TTS voices: $e');
+      if (mounted) setState(() => _voicesLoaded = true);
+    }
   }
 
   Future<void> _resetWelcomeScreen() async {
@@ -103,6 +348,9 @@ class _SettingsPageState extends State<SettingsPage> {
     _showEdgeNavButtons = _originalSettings.showEdgeNavButtons;
     _edgePadding = _originalSettings.edgePadding;
     _useColorfulPartStyle = _originalSettings.useColorfulPartStyle;
+    _ttsEnabled = _originalSettings.ttsEnabled;
+    _ttsSpeechRate = _originalSettings.ttsSpeechRate;
+    _ttsVoice = _originalSettings.ttsVoice;
   }
 
   bool get _settingsChanged {
@@ -118,7 +366,11 @@ class _SettingsPageState extends State<SettingsPage> {
         _originalSettings.keepScreenOn != current.keepScreenOn ||
         _originalSettings.showEdgeNavButtons != current.showEdgeNavButtons ||
         _originalSettings.edgePadding != current.edgePadding ||
-        _originalSettings.useColorfulPartStyle != current.useColorfulPartStyle;
+        _originalSettings.useColorfulPartStyle !=
+            current.useColorfulPartStyle ||
+        _originalSettings.ttsEnabled != current.ttsEnabled ||
+        _originalSettings.ttsSpeechRate != current.ttsSpeechRate ||
+        _originalSettings.ttsVoice != current.ttsVoice;
   }
 
   AppSettings _createCurrentSettings() {
@@ -135,6 +387,9 @@ class _SettingsPageState extends State<SettingsPage> {
       showEdgeNavButtons: _showEdgeNavButtons,
       edgePadding: _edgePadding,
       useColorfulPartStyle: _useColorfulPartStyle,
+      ttsEnabled: _ttsEnabled,
+      ttsSpeechRate: _ttsSpeechRate,
+      ttsVoice: _ttsVoice,
     );
   }
 
@@ -591,6 +846,113 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
       ),
+
+      // Text-to-Speech Toggle
+      Card(
+        child: SwitchListTile(
+          secondary: const Icon(Icons.record_voice_over_outlined),
+          title: Text(AppLocalizations.of(context)!.ttsEnabled),
+          subtitle: Text(AppLocalizations.of(context)!.ttsEnabledDescription),
+          value: _ttsEnabled,
+          onChanged: (bool value) {
+            setState(() {
+              _ttsEnabled = value;
+              _updateHasUnsavedChanges();
+            });
+            if (value) _loadTtsVoices();
+          },
+        ),
+      ),
+
+      // Speech Rate (only visible when TTS is enabled)
+      if (_ttsEnabled)
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.speed_outlined),
+            title: Text(
+              '${AppLocalizations.of(context)!.ttsSpeechRate}: ${(_ttsSpeechRate * 10).round() / 10}x',
+            ),
+            subtitle: Slider(
+              min: 0.1,
+              max: 1.0,
+              divisions: 9,
+              value: _ttsSpeechRate,
+              label: '${(_ttsSpeechRate * 10).round() / 10}x',
+              onChanged: (value) {
+                setState(() {
+                  _ttsSpeechRate = value;
+                });
+                _updateHasUnsavedChanges();
+              },
+            ),
+          ),
+        ),
+
+      // Voice picker (only visible when TTS is enabled)
+      if (_ttsEnabled)
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.mic_none_outlined),
+            title: Text(AppLocalizations.of(context)!.ttsVoice),
+            trailing:
+                _voicesLoaded
+                    ? IconButton(
+                      icon: Icon(
+                        _isPreviewPlaying
+                            ? Icons.stop_circle_outlined
+                            : Icons.play_circle_outline,
+                      ),
+                      tooltip: 'Preview voice',
+                      onPressed: _previewSelectedVoice,
+                    )
+                    : null,
+            subtitle:
+                _voicesLoaded
+                    ? DropdownButton<String?>(
+                      isExpanded: true,
+                      value:
+                          _availableVoices.any(
+                                (v) =>
+                                    '${v['name']}|${v['locale']}' == _ttsVoice,
+                              )
+                              ? _ttsVoice
+                              : null,
+                      underline: const SizedBox.shrink(),
+                      items: [
+                        DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text(
+                            AppLocalizations.of(context)!.ttsVoiceDefault,
+                          ),
+                        ),
+                        ..._availableVoices.map((v) {
+                          final key = '${v['name']}|${v['locale']}';
+                          final display =
+                              v['displayName']!.isNotEmpty
+                                  ? v['displayName']!
+                                  : v['name']!;
+                          return DropdownMenuItem<String?>(
+                            value: key,
+                            child: Text(
+                              display,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          );
+                        }),
+                      ],
+                      onChanged: (value) {
+                        setState(() => _ttsVoice = value);
+                        _updateHasUnsavedChanges();
+                      },
+                    )
+                    : TextButton.icon(
+                      onPressed: _loadTtsVoices,
+                      icon: const Icon(Icons.refresh),
+                      label: Text(AppLocalizations.of(context)!.ttsVoice),
+                    ),
+          ),
+        ),
     ];
   }
 

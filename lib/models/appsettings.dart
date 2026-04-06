@@ -13,6 +13,9 @@ class AppSettings {
   bool showEdgeNavButtons;
   double edgePadding;
   bool useColorfulPartStyle;
+  bool ttsEnabled;
+  double ttsSpeechRate;
+  String? ttsVoice; // stored as "name|locale"
 
   AppSettings({
     required this.fontSize,
@@ -27,6 +30,9 @@ class AppSettings {
     required this.showEdgeNavButtons,
     required this.edgePadding,
     required this.useColorfulPartStyle,
+    required this.ttsEnabled,
+    required this.ttsSpeechRate,
+    this.ttsVoice,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -44,6 +50,9 @@ class AppSettings {
       showEdgeNavButtons: json['showEdgeNavButtons'] ?? true,
       edgePadding: json['edgePadding']?.toDouble() ?? 16.0,
       useColorfulPartStyle: json['useColorfulPartStyle'] ?? false,
+      ttsEnabled: json['ttsEnabled'] ?? false,
+      ttsSpeechRate: json['ttsSpeechRate']?.toDouble() ?? 0.5,
+      ttsVoice: json['ttsVoice'] as String?,
     );
   }
 
@@ -61,6 +70,9 @@ class AppSettings {
       'showEdgeNavButtons': showEdgeNavButtons,
       'edgePadding': edgePadding,
       'useColorfulPartStyle': useColorfulPartStyle,
+      'ttsEnabled': ttsEnabled,
+      'ttsSpeechRate': ttsSpeechRate,
+      'ttsVoice': ttsVoice,
     };
   }
 
@@ -102,6 +114,8 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
     showEdgeNavButtons: false,
     edgePadding: 0.0,
     useColorfulPartStyle: false,
+    ttsEnabled: false,
+    ttsSpeechRate: 0.5,
   ),
 );
 
@@ -118,6 +132,8 @@ AppSettings appSettingsDefault = AppSettings(
   showEdgeNavButtons: false,
   edgePadding: 0.0,
   useColorfulPartStyle: false,
+  ttsEnabled: false,
+  ttsSpeechRate: 0.5,
 );
 
 AppSettings copyAppSettings(
@@ -134,6 +150,10 @@ AppSettings copyAppSettings(
   bool? showEdgeNavButtons,
   double? edgePadding,
   bool? useColorfulPartStyle,
+  bool? ttsEnabled,
+  double? ttsSpeechRate,
+  String? ttsVoice,
+  bool clearTtsVoice = false,
 }) {
   return AppSettings(
     fontSize: fontSize ?? settings.fontSize,
@@ -148,5 +168,8 @@ AppSettings copyAppSettings(
     showEdgeNavButtons: showEdgeNavButtons ?? settings.showEdgeNavButtons,
     edgePadding: edgePadding ?? settings.edgePadding,
     useColorfulPartStyle: useColorfulPartStyle ?? settings.useColorfulPartStyle,
+    ttsEnabled: ttsEnabled ?? settings.ttsEnabled,
+    ttsSpeechRate: ttsSpeechRate ?? settings.ttsSpeechRate,
+    ttsVoice: clearTtsVoice ? null : (ttsVoice ?? settings.ttsVoice),
   );
 }
