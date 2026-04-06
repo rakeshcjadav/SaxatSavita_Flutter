@@ -77,8 +77,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   List<String> _ttsChunks = [];
   int _currentTtsChunk = 0;
   bool _isTtsDrivingScroll = false; // true while TTS is actively driving scroll
-  List<double> _ttsScrollTargets =
-      []; // char-weighted scroll position per chunk
+  List<double> _ttsScrollTargets = []; // char-weighted scroll position per chunk
 
   bool _hasDataChanged = false;
   int _initialReadingProgress = 0;
@@ -853,11 +852,13 @@ class _KiranReadPageState extends State<KiranReadPage>
     if (_kiranContentData != null && _ttsChunks.isEmpty) {
       _ttsChunks = _prepareTtsChunks(getKiranContent(_kiranContentData!));
       // Prepend an intro chunk: "સાક્ષાત્ સવિતા, ભાગ <part>, કિરણ <number>, <title>"
-      final partNum = int.tryParse(widget.partNumber.replaceAll('part', '')) ?? 1;
+      final partNum =
+          int.tryParse(widget.partNumber.replaceAll('part', '')) ?? 1;
       final partWord = _numberToGujarati(partNum);
       final kiranNumber = widget.kiranInfo.number.replaceAll('.', '').trim();
       final kiranTitle = widget.kiranInfo.title.trim();
-      final intro = 'સાક્ષાત્ સવિતા. ભાગ $partWord. કિરણ $kiranNumber. $kiranTitle.';
+      final intro =
+          'સાક્ષાત્ સવિતા. ભાગ $partWord. કિરણ $kiranNumber. $kiranTitle.';
       _ttsChunks = [intro, ..._ttsChunks];
     }
     if (_ttsChunks.isEmpty) return;
