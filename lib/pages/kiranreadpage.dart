@@ -392,7 +392,12 @@ class _KiranReadPageState extends State<KiranReadPage>
     _tts!.setCompletionHandler(() {
       _currentTtsChunk++;
       if (_currentTtsChunk < _ttsChunks.length) {
-        _speakCurrentChunk();
+        // Brief pause between sentences for more natural-sounding speech
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted && _isTtsSpeaking && !_isTtsPaused) {
+            _speakCurrentChunk();
+          }
+        });
       } else {
         if (mounted) {
           setState(() {
@@ -412,6 +417,322 @@ class _KiranReadPageState extends State<KiranReadPage>
         });
       }
     });
+  }
+
+  // ── Gujarati TTS text normalization ──────────────────────────────────────
+
+  static const _gujaratiDigits = {
+    '૦': 0, '૧': 1, '૨': 2, '૩': 3, '૪': 4,
+    '૫': 5, '૬': 6, '૭': 7, '૮': 8, '૯': 9,
+    // Letter lookalikes commonly used as digits in Gujarati manuscripts
+    'ર': 2, // GUJARATI LETTER RA (U+0AB0) written in place of digit ૨
+    'પ': 5, // GUJARATI LETTER PA (U+0AAA) written in place of digit ૫
+  };
+
+  /// Converts a string of Gujarati (or ASCII) digits to an integer.
+  static int _parseGujaratiInt(String s) {
+    var result = 0;
+    for (final ch in s.runes.map(String.fromCharCode)) {
+      final d = _gujaratiDigits[ch] ?? int.tryParse(ch);
+      if (d != null) result = result * 10 + d;
+    }
+    return result;
+  }
+
+  static const _ones = [
+    '',
+    'એક',
+    'બે',
+    'ત્રણ',
+    'ચાર',
+    'પાંચ',
+    'છ',
+    'સાત',
+    'આઠ',
+    'નવ',
+    'દસ',
+    'અગિયાર',
+    'બાર',
+    'તેર',
+    'ચૌદ',
+    'પંદર',
+    'સોળ',
+    'સત્તર',
+    'અઢાર',
+    'ઓગણીસ',
+    'વીસ',
+    'એકવીસ',
+    'બાવીસ',
+    'તેવીસ',
+    'ચોવીસ',
+    'પચ્ચીસ',
+    'છવ્વીસ',
+    'સત્તાવીસ',
+    'અઠ્ઠાવીસ',
+    'ઓગણત્રીસ',
+    'ત્રીસ',
+    'એકત્રીસ',
+    'બત્રીસ',
+    'તેત્રીસ',
+    'ચોત્રીસ',
+    'પાંત્રીસ',
+    'છત્રીસ',
+    'સાડત્રીસ',
+    'અડત્રીસ',
+    'ઓગણચાળીસ',
+    'ચાળીસ',
+    'એકતાળીસ',
+    'બેતાળીસ',
+    'તેતાળીસ',
+    'ચુમ્માળીસ',
+    'પિસ્તાળીસ',
+    'છેતાળીસ',
+    'સુડતાળીસ',
+    'અડતાળીસ',
+    'ઓગણપચાસ',
+    'પચાસ',
+    'એકાવન',
+    'બાવન',
+    'ત્રેપન',
+    'ચોપન',
+    'પંચાવન',
+    'છપ્પન',
+    'સત્તાવન',
+    'અઠ્ઠાવન',
+    'ઓગણસાઠ',
+    'સાઠ',
+    'એકસઠ',
+    'બાસઠ',
+    'ત્રેસઠ',
+    'ચોસઠ',
+    'પાંસઠ',
+    'છાસઠ',
+    'સડસઠ',
+    'અડસઠ',
+    'ઓગણસિત્તેર',
+    'સિત્તેર',
+    'એકોત્તેર',
+    'બોત્તેર',
+    'તોત્તેર',
+    'ચુમ્મોત્તેર',
+    'પંચોત્તેર',
+    'છોત્તેર',
+    'સત્ત્યોત્તેર',
+    'અઠ્ઠ્યોત્તેર',
+    'ઓગણએંસી',
+    'એંસી',
+    'એક્યાસી',
+    'બ્યાસી',
+    'ત્ર્યાસી',
+    'ચોર્યાસી',
+    'પંચ્યાસી',
+    'છ્યાસી',
+    'સત્યાસી',
+    'અઠ્ઠ્યાસી',
+    'નેવ્યાસી',
+    'નેવું',
+    'એકાણું',
+    'બાણું',
+    'ત્રાણું',
+    'ચોર્યાણું',
+    'પંચાણું',
+    'છ્યાણું',
+    'સત્તાણું',
+    'અઠ્ઠ્યાણું',
+    'નવ્વાણું',
+    'સો',
+  ];
+
+  static const _months = {
+    1: 'જાન્યુઆરી',
+    2: 'ફેબ્રુઆરી',
+    3: 'માર્ચ',
+    4: 'એપ્રિલ',
+    5: 'મે',
+    6: 'જૂન',
+    7: 'જુલાઈ',
+    8: 'ઓગસ્ટ',
+    9: 'સપ્ટેમ્બર',
+    10: 'ઓક્ટોબર',
+    11: 'નવેમ્બર',
+    12: 'ડિસેમ્બર',
+  };
+
+  /// Converts an integer 1–99 to its Gujarati spoken form.
+  static String _numberToGujarati(int n) {
+    if (n <= 0) return '';
+    if (n < _ones.length) return _ones[n];
+    if (n < 200) return 'એકસો ${_ones[n - 100]}'.trim();
+    return n.toString(); // fallback for large numbers
+  }
+
+  /// Converts a number to its Gujarati ordinal form (1st, 2nd, …).
+  static String _ordinalGujarati(int n) {
+    const ordinals = {
+      1: 'પ્રથમ',
+      2: 'બીજું',
+      3: 'ત્રીજું',
+      4: 'ચોથું',
+      5: 'પાંચમું',
+      6: 'છઠ્ઠું',
+      7: 'સાતમું',
+      8: 'આઠમું',
+      9: 'નવમું',
+      10: 'દસમું',
+      11: 'અગિયારમું',
+      12: 'બારમું',
+      13: 'તેરમું',
+      14: 'ચૌદમું',
+      15: 'પંદરમું',
+    };
+    if (ordinals.containsKey(n)) return ordinals[n]!;
+    return '${_numberToGujarati(n)}મું';
+  }
+
+  /// Converts a 2-digit year (00–99) to a Gujarati century spoken form.
+  /// e.g. 75 → "ઓગણીસો પંચોત્તેર"  (1975),  05 → "બે હજાર પાંચ" (2005)
+  static String _yearToGujarati(int yy) {
+    if (yy >= 0 && yy <= 30) {
+      // Assume 21st century: 2000–2030
+      return yy == 0 ? 'બે હજાર' : 'બે હજાર ${_numberToGujarati(yy)}';
+    }
+    // Assume 20th century: 1931–1999
+    return 'ઓગણીસો ${_numberToGujarati(yy)}';
+  }
+
+  /// Converts a full 4-digit year to its Gujarati spoken form.
+  /// 2000 → "બે હજાર", 2036 → "બે હજાર છત્રીસ", 1980 → "ઓગણીસસો એંસી"
+  static String _fullYearToGujarati(int yr) {
+    if (yr >= 2000 && yr < 2100) {
+      final r = yr - 2000;
+      return r == 0 ? 'બે હજાર' : 'બે હજાર ${_numberToGujarati(r)}';
+    }
+    // General: e.g. 1980 → ઓગણીસસો (19) + એંસી (80)
+    final hundreds = yr ~/ 100;
+    final remainder = yr % 100;
+    final h = _numberToGujarati(hundreds);
+    final r = _numberToGujarati(remainder);
+    return r.isEmpty ? '${h}સો' : '${h}સો $r';
+  }
+
+  /// Normalizes Gujarati text for more natural TTS output.
+  static String _normalizeForTts(String text) {
+    var t = text;
+
+    // Vachanamrut parenthetical references: (લોયા ૬) → વચનામૃત લોયા નું છઠ્ઠું
+    // Formats seen: (LOCATION NUMBER) and (LOCATIONનું NUMBER)
+    // Location words used across all kiran texts:
+    const vachanamrutLocations = {
+      'પ્રથમ': 'ગઢડા પ્રથમ',
+      'પ્રથમનું': 'ગઢડા પ્રથમ',
+      'મધ્ય': 'ગઢડા મધ્ય',
+      'મધ્યનું': 'ગઢડા મધ્ય',
+      'અંત્ય': 'ગઢડા અંત્ય',
+      'અંત્યનું': 'ગઢડા અંત્ય',
+      'છેલ્લા': 'ગઢડા અંત્ય',
+      'છેલ્લાનું': 'ગઢડા અંત્ય',
+      'સારંગપુર': 'સારંગપુર',
+      'સારંગપુરનું': 'સારંગપુર',
+      'કારિયાણી': 'કારિયાણી',
+      'કારિયાણીનું': 'કારિયાણી',
+      'લોયા': 'લોયા',
+      'લોયાનું': 'લોયા',
+      'પંચાળા': 'પંચાળા',
+      'પંચાળાનું': 'પંચાળા',
+      'વરતાલ': 'વરતાલ',
+      'વરતાલનું': 'વરતાલ',
+      'અમદાવાદ': 'અમદાવાદ',
+      'અમદાવાદનું': 'અમદાવાદ',
+    };
+    t = t.replaceAllMapped(
+      RegExp(r'\(([\u0A80-\u0AFF]+)\s+([\u0AE6-\u0AEF\u0AB0\u0AAA\d]{1,3})\)'),
+      (m) {
+        final word = m.group(1)!;
+        final location = vachanamrutLocations[word];
+        if (location == null) return m.group(0)!; // not a vachanamrut ref
+        final n = _parseGujaratiInt(m.group(2)!);
+        return 'વચનામૃત $location નું ${_ordinalGujarati(n)}.';
+      },
+    );
+
+    // Expand common abbreviations before anything else
+    t = t.replaceAll(RegExp(r'ગુ\.'), 'ગુણાતીતાનંદ');
+    t = t.replaceAll(RegExp(r'તા\.'), 'તારીખ');
+    t = t.replaceAll(RegExp(r'સં\.'), 'સંવત');
+    t = t.replaceAll(RegExp(r'સંવત્\u200C'), 'સંવત'); // virama + ZWJ
+    t = t.replaceAll(RegExp(r'ઈ\.સ\.'), 'ઈસ્વી સન');
+    t = t.replaceAll(RegExp(r'વ\.'), 'વર્ષ');
+
+    // Tithi (lunar day) names: સુદ/સુદિ/વદ/વદિ followed by a number
+    // e.g. "વદિ-ર" → "વદિ બીજ", "સુદિ-૧૦" → "સુદિ દસમ"
+    const tithiNames = {
+      1: 'એકમ',
+      2: 'બીજ',
+      3: 'ત્રીજ',
+      4: 'ચોથ',
+      5: 'પાંચમ',
+      6: 'છઠ',
+      7: 'સાતમ',
+      8: 'આઠમ',
+      9: 'નોમ',
+      10: 'દસમ',
+      11: 'અગિયારસ',
+      12: 'બારસ',
+      13: 'તેરસ',
+      14: 'ચૌદસ',
+      15: 'પૂનમ',
+    };
+    t = t.replaceAllMapped(
+      RegExp(r'(સુદ|સુદિ|વદ|વદિ)[-‐\s]+([\u0AE6-\u0AEF\u0AB0\u0AAA\d]{1,2})'),
+      (m) {
+        final n = _parseGujaratiInt(m.group(2)!);
+        final name = tithiNames[n] ?? _numberToGujarati(n);
+        return '${m.group(1)} $name';
+      },
+    );
+
+    // Samvat / year number after "સંવત": e.g. "સંવત ર૦૩૬ના" → "સંવત બે હજાર છત્રીસ ના"
+    // Must run before the date pattern. Matches 3–4 digit-like chars (including ર/પ lookalikes).
+    // Gujarati digit + letter lookalike chars: \u0AE6-\u0AEF (digits), \u0AB0 (ર=2), \u0AAA (પ=5)
+    t = t.replaceAllMapped(
+      RegExp(
+        r'(સંવત)\s+([\u0AE6-\u0AEF\u0AB0][\u0AE6-\u0AEF\u0AB0\u0AAA]{2,3})',
+      ),
+      (m) {
+        final yr = _parseGujaratiInt(m.group(2)!);
+        return '${m.group(1)} ${_fullYearToGujarati(yr)}';
+      },
+    );
+
+    // Gujarati date pattern: DD-MM-YY or DD-MM-YYYY
+    // Also matches letter lookalikes ર (U+0AB0) and પ (U+0AAA) used as digits in manuscripts
+    final datePattern = RegExp(
+      r'([\u0AE6-\u0AEF\d\u0AB0\u0AAA]{1,2})-([\u0AE6-\u0AEF\d\u0AB0\u0AAA]{1,2})-([\u0AE6-\u0AEF\d\u0AB0\u0AAA]{2,4})',
+    );
+    t = t.replaceAllMapped(datePattern, (m) {
+      final day = _parseGujaratiInt(m.group(1)!);
+      final month = _parseGujaratiInt(m.group(2)!);
+      final rawYear = _parseGujaratiInt(m.group(3)!);
+      final monthName = _months[month] ?? _numberToGujarati(month);
+      final dayWord = _numberToGujarati(day);
+      final yearWord =
+          m.group(3)!.length <= 2
+              ? _yearToGujarati(rawYear)
+              : _fullYearToGujarati(rawYear);
+      return '$dayWord, $monthName, $yearWord';
+    });
+
+    // Standalone Gujarati year like ૨૦૩૧ (4-digit) surrounded by whitespace
+    // Also handles ર as first digit (e.g. ર૦૩૬)
+    final yearPattern = RegExp(
+      r'(?<!\S)([\u0AE6-\u0AEF\u0AB0][\u0AE6-\u0AEF\u0AAA\u0AB0]{3})(?!\S)',
+    );
+    t = t.replaceAllMapped(yearPattern, (m) {
+      final yr = _parseGujaratiInt(m.group(1)!);
+      return _fullYearToGujarati(yr);
+    });
+
+    return t;
   }
 
   List<String> _prepareTtsChunks(String html) {
@@ -441,11 +762,30 @@ class _KiranReadPageState extends State<KiranReadPage>
             // Collapse multiple spaces/nbsp into one
             .replaceAll(RegExp(r'[ \t]+'), ' ')
             .trim();
-    return decoded
-        .split(RegExp(r'\n+'))
-        .map((s) => s.trim())
-        .where((s) => s.isNotEmpty)
-        .toList();
+    // Apply Gujarati text normalization (abbreviations, dates, numbers)
+    final normalized = _normalizeForTts(decoded);
+    // Split into sentence-level chunks for more natural pauses.
+    // Split on sentence-ending punctuation followed by whitespace or end-of-string.
+    // Gujarati danda (।), ?, ! are strong boundaries.
+    // Period (.) only when followed by a space + non-digit (to preserve dates/abbreviations).
+    final sentences = <String>[];
+    for (final paragraph in normalized.split(RegExp(r'\n+'))) {
+      final trimmed = paragraph.trim();
+      if (trimmed.isEmpty) continue;
+      // Split on: danda, ?, ! — or period followed by space+non-digit
+      final parts = trimmed
+          .splitMapJoin(
+            RegExp(r'(?<=[।?!])|(?<=\.(?=\s+[^\d]))'),
+            onNonMatch: (s) => s,
+            onMatch: (_) => '\n',
+          )
+          .split('\n');
+      for (final part in parts) {
+        final s = part.trim();
+        if (s.isNotEmpty) sentences.add(s);
+      }
+    }
+    return sentences;
   }
 
   void _speakCurrentChunk() {
