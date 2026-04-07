@@ -2852,6 +2852,12 @@ abstract class AppLocalizations {
   /// **'Use colorful theme for each part'**
   String get useColorfulPartStyleDescription;
 
+  /// No description provided for @ttsSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Text-to-Speech'**
+  String get ttsSettings;
+
   /// No description provided for @ttsEnabled.
   ///
   /// In en, this message translates to:

@@ -1526,10 +1526,13 @@ class AppLocalizationsGu extends AppLocalizations {
       'સાક્ષાત્ સવિતા ના દરેક ભાગ માટે અલગ અલગ રંગો વાપરો';
 
   @override
+  String get ttsSettings => 'ટેક્સ્ટ-ટુ-સ્પીચ';
+
+  @override
   String get ttsEnabled => 'ટેક્સ્ટ-ટુ-સ્પીચ';
 
   @override
-  String get ttsEnabledDescription => 'TTS વડે કિરણ સ્વરૂપે સાંભળો';
+  String get ttsEnabledDescription => 'TTS નો ઉપયોગ કરીને કિરણને સાંભળો';
 
   @override
   String get ttsSpeechRate => 'બોલવાની ઝડપ';

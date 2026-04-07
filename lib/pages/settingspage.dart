@@ -887,27 +887,40 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
       ),
+    ];
+  }
 
-      // Text-to-Speech Toggle (not supported on iOS)
-      if (!Platform.isIOS)
-        Card(
-          child: SwitchListTile(
-            secondary: const Icon(Icons.record_voice_over_outlined),
-            title: Text(AppLocalizations.of(context)!.ttsEnabled),
-            subtitle: Text(AppLocalizations.of(context)!.ttsEnabledDescription),
-            value: _ttsEnabled,
-            onChanged: (bool value) {
-              setState(() {
-                _ttsEnabled = value;
-                _updateHasUnsavedChanges();
-              });
-              if (value) _loadTtsVoices();
-            },
-          ),
+  List<Widget> _buildTtsSettingsSection() {
+    // TTS is not supported on iOS — return nothing
+    if (Platform.isIOS) return [];
+
+    return [
+      _buildSectionHeader(
+        context,
+        AppLocalizations.of(context)!.ttsSettings,
+        Icons.record_voice_over_outlined,
+      ),
+      const SizedBox(height: 8),
+
+      // Enable / disable TTS
+      Card(
+        child: SwitchListTile(
+          secondary: const Icon(Icons.record_voice_over_outlined),
+          title: Text(AppLocalizations.of(context)!.ttsEnabled),
+          subtitle: Text(AppLocalizations.of(context)!.ttsEnabledDescription),
+          value: _ttsEnabled,
+          onChanged: (bool value) {
+            setState(() {
+              _ttsEnabled = value;
+              _updateHasUnsavedChanges();
+            });
+            if (value) _loadTtsVoices();
+          },
         ),
+      ),
 
-      // Speech Rate (only visible when TTS is enabled, not on iOS)
-      if (!Platform.isIOS && _ttsEnabled)
+      // Speech Rate (only visible when TTS is enabled)
+      if (_ttsEnabled)
         Card(
           child: ListTile(
             leading: const Icon(Icons.speed_outlined),
@@ -930,8 +943,8 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
 
-      // Voice picker (only visible when TTS is enabled, not on iOS)
-      if (!Platform.isIOS && _ttsEnabled)
+      // Voice picker (only visible when TTS is enabled)
+      if (_ttsEnabled)
         Card(
           child: ListTile(
             leading: const Icon(Icons.mic_none_outlined),
@@ -1418,6 +1431,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     // Text Settings Section
                     ..._buildTextSettingsSection(),
+                    const SizedBox(height: 24),
+                    // Text-to-Speech Section
+                    ..._buildTtsSettingsSection(),
                     const SizedBox(height: 24),
                     // Theme & Appearance Section
                     ..._buildThemeSettingsSection(),

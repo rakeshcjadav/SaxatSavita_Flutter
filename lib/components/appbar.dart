@@ -27,6 +27,7 @@ AppBar buildAppBar(
         color: Theme.of(context).colorScheme.onPrimary,
       ),
     ),
+    centerTitle: false,
     elevation: 5,
     actions: [
       if (actionItems?.contains(ActionOptions.aashirvachan) ?? false)

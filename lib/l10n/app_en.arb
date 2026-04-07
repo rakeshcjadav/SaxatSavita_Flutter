@@ -705,6 +705,7 @@
     "edgePaddingDescription": "Horizontal padding",
     "useColorfulPartStyle": "Colorful Part Style",
     "useColorfulPartStyleDescription": "Use colorful theme for each part",
+    "ttsSettings": "Text-to-Speech",
     "ttsEnabled": "Text-to-Speech",
     "ttsEnabledDescription": "Read Kiran aloud using speech synthesis",
     "ttsSpeechRate": "Speech Rate",

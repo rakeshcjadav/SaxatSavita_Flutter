@@ -1521,6 +1521,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Use colorful theme for each part';
 
   @override
+  String get ttsSettings => 'Text-to-Speech';
+
+  @override
   String get ttsEnabled => 'Text-to-Speech';
 
   @override
