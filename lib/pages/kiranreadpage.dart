@@ -264,7 +264,10 @@ class _KiranReadPageState extends State<KiranReadPage>
     _tts = null;
 
     // Stop and dispose audio player.
-    // Null the field FIRST so any in-flight async methods see null and bail out.
+    // Null the field FIRST so any concurrent async methods bail out.
+    // Do NOT call stop() separately — just_audio's dispose() handles stop
+    // internally. Calling both as fire-and-forget creates a native race that
+    // corrupts the Android AudioService and crashes the next player init.
     _audioScrollTimer?.cancel();
     _audioScrollTimer = null;
     _audioPlayerStateSubscription?.cancel();
@@ -273,7 +276,6 @@ class _KiranReadPageState extends State<KiranReadPage>
     _audioCurrentIndexSubscription = null;
     final playerToDispose = _audioPlayer;
     _audioPlayer = null;
-    playerToDispose?.stop();
     playerToDispose?.dispose();
 
     super.dispose();
@@ -496,10 +498,6 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   Future<void> _startAudio() async {
     if (!mounted) return;
-    if (_audioPlayer == null) await _initAudio();
-    // Re-check after the await — widget may have been disposed
-    if (!mounted || _audioPlayer == null) return;
-    if (_isAutoScrolling) _stopAutoScroll();
 
     final partFolder = 'assets/audios/${widget.partNumber}';
     final kiranNum = _parseGujaratiInt(widget.kiranInfo.number).toString();
@@ -509,12 +507,18 @@ class _KiranReadPageState extends State<KiranReadPage>
     final int progress = widget.kiranUserInfo.progress;
     final bool fromBeginning = progress <= 0;
 
-    // Capture a local reference — dispose() will null the field.
-    final player = _audioPlayer!;
+    if (_isAutoScrolling) _stopAutoScroll();
 
     try {
+      // Init is inside try-catch: AudioPlayer() creation or platform-channel
+      // setup can throw if the previous native player is still tearing down.
+      if (_audioPlayer == null) await _initAudio();
+      if (!mounted || _audioPlayer == null) return;
+
+      // Capture a local reference — dispose() will null the field.
+      final player = _audioPlayer!;
+
       if (fromBeginning && _isStutiAvailable) {
-        // Build stuti+kiran playlist
         final playlist = ConcatenatingAudioSource(
           children: [
             AudioSource.asset(stutiPath),
@@ -532,7 +536,6 @@ class _KiranReadPageState extends State<KiranReadPage>
         if (!mounted) return;
         _kiranAudioDuration = player.duration;
         _isPlayingStuti = false;
-        // Seek to saved progress position
         if (progress > 0 && _kiranAudioDuration != null) {
           await player.seek(
             Duration(
@@ -554,7 +557,12 @@ class _KiranReadPageState extends State<KiranReadPage>
       if (!mounted) return;
       _startAudioScrollSync();
     } catch (e) {
-      debugPrint('Audio play error: $e');
+      debugPrint('Audio start error: $e');
+      // Reset the player so the next tap creates a clean instance instead
+      // of retrying against a potentially broken native player.
+      final bad = _audioPlayer;
+      _audioPlayer = null;
+      bad?.dispose();
     }
   }
 
