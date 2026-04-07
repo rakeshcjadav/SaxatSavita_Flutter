@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
@@ -71,13 +72,24 @@ class _KiranReadPageState extends State<KiranReadPage>
   double _contentHeight = 0;
   bool _isInitialized = false;
 
+  // Audio player variables
+  AudioPlayer? _audioPlayer;
+  bool _isAudioAvailable = false;
+  bool _isStutiAvailable = false;
+  bool _isAudioSpeaking = false;
+  bool _isAudioPaused = false;
+  bool _isPlayingStuti = false;
+  Duration? _stutiAudioDuration;
+  Duration? _kiranAudioDuration;
+  Timer? _audioScrollTimer;
+
   // TTS variables
   FlutterTts? _tts;
   bool _isTtsSpeaking = false;
   bool _isTtsPaused = false;
   List<String> _ttsChunks = [];
   int _currentTtsChunk = 0;
-  bool _isTtsDrivingScroll = false; // true while TTS is actively driving scroll
+  bool _isTtsDrivingScroll = false; // true while TTS/audio is actively driving scroll
   List<double> _ttsScrollTargets =
       []; // char-weighted scroll position per chunk
 
@@ -154,6 +166,9 @@ class _KiranReadPageState extends State<KiranReadPage>
     if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
       searchKiranContent(widget.searchQuery!);
     }
+
+    // Check if pre-recorded audio is available for this kiran
+    _checkAudioAvailability();
   }
 
   Future<void> searchKiranContent(String query) async {
@@ -174,6 +189,29 @@ class _KiranReadPageState extends State<KiranReadPage>
         _performScrollToMatch();
       });
     });
+  }
+
+  // ── Audio availability check ─────────────────────────────────────────────
+
+  Future<void> _checkAudioAvailability() async {
+    final partFolder = 'assets/audios/${widget.partNumber}';
+    final kiranNum = widget.kiranInfo.number.trim();
+    bool kiranFound = false;
+    bool stutiFound = false;
+    try {
+      await rootBundle.load('$partFolder/kiran_$kiranNum.mp3');
+      kiranFound = true;
+    } catch (_) {}
+    try {
+      await rootBundle.load('$partFolder/stuti.mp3');
+      stutiFound = true;
+    } catch (_) {}
+    if (mounted) {
+      setState(() {
+        _isAudioAvailable = kiranFound;
+        _isStutiAvailable = stutiFound;
+      });
+    }
   }
 
   @override
@@ -222,6 +260,13 @@ class _KiranReadPageState extends State<KiranReadPage>
     _tts?.stop();
     _tts = null;
 
+    // Stop and dispose audio player
+    _audioScrollTimer?.cancel();
+    _audioScrollTimer = null;
+    _audioPlayer?.stop();
+    _audioPlayer?.dispose();
+    _audioPlayer = null;
+
     super.dispose();
   }
 
@@ -260,12 +305,29 @@ class _KiranReadPageState extends State<KiranReadPage>
       case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
         _pauseTimer();
+        // Pause audio playback when app goes to background
+        if (_isAudioSpeaking && !_isAudioPaused) {
+          _audioPlayer?.pause();
+          _stopAudioScrollSync();
+          setState(() {
+            _isAudioPaused = true;
+            _isTtsDrivingScroll = false;
+          });
+        }
         break;
       case AppLifecycleState.resumed:
         _resumeTimer();
         break;
       case AppLifecycleState.hidden:
         _pauseTimer();
+        if (_isAudioSpeaking && !_isAudioPaused) {
+          _audioPlayer?.pause();
+          _stopAudioScrollSync();
+          setState(() {
+            _isAudioPaused = true;
+            _isTtsDrivingScroll = false;
+          });
+        }
         break;
     }
   }
@@ -378,7 +440,158 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
   }
 
+  // ── Audio (pre-recorded MP3) ──────────────────────────────────────────────
+
+  Future<void> _initAudio() async {
+    _audioPlayer ??= AudioPlayer();
+
+    // Listen for playback completion
+    _audioPlayer!.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        _onAudioCompleted();
+      }
+    });
+
+    // Track whether we are playing the stuti segment (first in playlist)
+    _audioPlayer!.currentIndexStream.listen((index) {
+      if (mounted) {
+        setState(() {
+          _isPlayingStuti = index == 0 && _isStutiAvailable;
+        });
+      }
+    });
+  }
+
+  void _onAudioCompleted() {
+    _stopAudioScrollSync();
+    if (mounted) {
+      setState(() {
+        _isAudioSpeaking = false;
+        _isAudioPaused = false;
+        _isPlayingStuti = false;
+        _isTtsDrivingScroll = false;
+      });
+    }
+  }
+
+  Future<void> _startAudio() async {
+    if (_audioPlayer == null) await _initAudio();
+    if (_isAutoScrolling) _stopAutoScroll();
+
+    final partFolder = 'assets/audios/${widget.partNumber}';
+    final kiranPath = '$partFolder/kiran_${widget.kiranInfo.number.trim()}.mp3';
+    final stutiPath = '$partFolder/stuti.mp3';
+
+    final int progress = widget.kiranUserInfo.progress;
+    final bool fromBeginning = progress <= 0;
+
+    try {
+      if (fromBeginning && _isStutiAvailable) {
+        // Build stuti+kiran playlist
+        final playlist = ConcatenatingAudioSource(children: [
+          AudioSource.asset(stutiPath),
+          AudioSource.asset(kiranPath),
+        ]);
+        await _audioPlayer!.setAudioSource(playlist);
+        _stutiAudioDuration =
+            _audioPlayer!.sequence?[0].duration ?? const Duration(seconds: 60);
+        _kiranAudioDuration =
+            _audioPlayer!.sequence?[1].duration;
+        _isPlayingStuti = true;
+      } else {
+        await _audioPlayer!.setAudioSource(AudioSource.asset(kiranPath));
+        _kiranAudioDuration = _audioPlayer!.duration;
+        _isPlayingStuti = false;
+        // Seek to saved progress position
+        if (progress > 0 && _kiranAudioDuration != null) {
+          final seekMs =
+              (_kiranAudioDuration!.inMilliseconds * progress / 100).round();
+          await _audioPlayer!.seek(Duration(milliseconds: seekMs));
+        }
+      }
+
+      _isTtsDrivingScroll = true;
+      setState(() {
+        _isAudioSpeaking = true;
+        _isAudioPaused = false;
+      });
+      await _audioPlayer!.play();
+      _startAudioScrollSync();
+    } catch (e) {
+      debugPrint('Audio play error: $e');
+    }
+  }
+
+  Future<void> _pauseOrResumeAudio() async {
+    if (_isAudioPaused) {
+      await _audioPlayer?.play();
+      _isTtsDrivingScroll = true;
+      _startAudioScrollSync();
+      setState(() => _isAudioPaused = false);
+    } else {
+      await _audioPlayer?.pause();
+      _isTtsDrivingScroll = false;
+      _stopAudioScrollSync();
+      setState(() => _isAudioPaused = true);
+    }
+  }
+
+  Future<void> _stopAudio() async {
+    await _audioPlayer?.stop();
+    _stopAudioScrollSync();
+    if (mounted) {
+      setState(() {
+        _isAudioSpeaking = false;
+        _isAudioPaused = false;
+        _isPlayingStuti = false;
+        _isTtsDrivingScroll = false;
+      });
+    }
+  }
+
+  // ── Audio scroll sync ─────────────────────────────────────────────────────
+
+  void _startAudioScrollSync() {
+    _audioScrollTimer?.cancel();
+    _audioScrollTimer = Timer.periodic(const Duration(milliseconds: 50), (_) {
+      if (!mounted || !_scrollController.hasClients || _contentHeight <= 0) {
+        return;
+      }
+      if (_isPlayingStuti) {
+        // Don't scroll during stuti; wait for kiran to start
+        return;
+      }
+      final player = _audioPlayer;
+      if (player == null) return;
+
+      Duration position = player.position;
+      final stutiDur = _stutiAudioDuration ?? Duration.zero;
+      // If we played stuti first, subtract its duration from position
+      if (_isStutiAvailable && stutiDur.inMilliseconds > 0) {
+        position = position - stutiDur;
+        if (position.isNegative) position = Duration.zero;
+      }
+
+      final kiranDur = _kiranAudioDuration;
+      if (kiranDur == null || kiranDur.inMilliseconds == 0) return;
+
+      final ratio = position.inMilliseconds / kiranDur.inMilliseconds;
+      final target = (ratio * _contentHeight).clamp(0.0, _contentHeight);
+      _scrollController.animateTo(
+        target,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.linear,
+      );
+    });
+  }
+
+  void _stopAudioScrollSync() {
+    _audioScrollTimer?.cancel();
+    _audioScrollTimer = null;
+  }
+
   // ── TTS ──────────────────────────────────────────────────────────────────
+
 
   Future<void> _initTts() async {
     _tts = FlutterTts();
@@ -2433,33 +2646,51 @@ class _KiranReadPageState extends State<KiranReadPage>
                 iconSize: 28,
               ),
             ),
-          // TTS play/pause and stop buttons (only when TTS is enabled in settings)
-          if (!Platform.isIOS && _isReadingMode && appSettingsNotifier.value.ttsEnabled) ...[
+          // Audio / TTS play-pause-stop buttons
+          if (_isReadingMode &&
+              (_isAudioAvailable ||
+                  (!Platform.isIOS &&
+                      appSettingsNotifier.value.ttsEnabled))) ...[
             IconButton(
               onPressed: () {
-                if (_isTtsSpeaking) {
-                  _pauseOrResumeTts();
+                if (_isAudioAvailable) {
+                  if (_isAudioSpeaking) {
+                    _pauseOrResumeAudio();
+                  } else {
+                    _startAudio();
+                  }
                 } else {
-                  _startTts();
+                  if (_isTtsSpeaking) {
+                    _pauseOrResumeTts();
+                  } else {
+                    _startTts();
+                  }
                 }
               },
               icon: Icon(
-                _isTtsSpeaking && !_isTtsPaused
+                (_isAudioAvailable
+                        ? (_isAudioSpeaking && !_isAudioPaused)
+                        : (_isTtsSpeaking && !_isTtsPaused))
                     ? Icons.pause_circle_outline
                     : Icons.play_circle_outline,
-                color: _isTtsSpeaking ? Colors.blue : null,
+                color: (_isAudioAvailable ? _isAudioSpeaking : _isTtsSpeaking)
+                    ? Colors.blue
+                    : null,
               ),
-              tooltip:
-                  _isTtsSpeaking
+              tooltip: _isAudioAvailable
+                  ? (_isAudioSpeaking
+                      ? (_isAudioPaused ? 'Resume' : 'Pause')
+                      : 'Play Audio')
+                  : (_isTtsSpeaking
                       ? (_isTtsPaused ? 'Resume' : 'Pause TTS')
-                      : 'Read Aloud',
+                      : 'Read Aloud'),
               iconSize: 28,
             ),
-            if (_isTtsSpeaking)
+            if (_isAudioAvailable ? _isAudioSpeaking : _isTtsSpeaking)
               IconButton(
-                onPressed: _stopTts,
+                onPressed: _isAudioAvailable ? _stopAudio : _stopTts,
                 icon: const Icon(Icons.stop_circle_outlined, color: Colors.red),
-                tooltip: 'Stop TTS',
+                tooltip: 'Stop',
                 iconSize: 28,
               ),
           ],

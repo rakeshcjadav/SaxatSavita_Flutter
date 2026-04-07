@@ -63,6 +63,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   table_calendar: ^3.1.3
   flutter_tts: ^4.2.0
+  just_audio: ^0.9.40
 
   connectivity_plus: ^7.0.0
 
@@ -103,6 +104,7 @@ flutter:
       - assets/book/saxatsavita/part3/
       - assets/book/saxatsavita/part4/
       - assets/book/saxatsavita/part5/
+      - assets/audios/part1/
       #- assets/saxat_savita/
       #- assets/stickers/
       - assets/template_previews/
