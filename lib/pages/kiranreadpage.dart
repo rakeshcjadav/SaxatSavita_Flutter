@@ -263,16 +263,18 @@ class _KiranReadPageState extends State<KiranReadPage>
     _tts?.stop();
     _tts = null;
 
-    // Stop and dispose audio player
+    // Stop and dispose audio player.
+    // Null the field FIRST so any in-flight async methods see null and bail out.
     _audioScrollTimer?.cancel();
     _audioScrollTimer = null;
     _audioPlayerStateSubscription?.cancel();
     _audioPlayerStateSubscription = null;
     _audioCurrentIndexSubscription?.cancel();
     _audioCurrentIndexSubscription = null;
-    _audioPlayer?.stop();
-    _audioPlayer?.dispose();
+    final playerToDispose = _audioPlayer;
     _audioPlayer = null;
+    playerToDispose?.stop();
+    playerToDispose?.dispose();
 
     super.dispose();
   }
@@ -456,17 +458,22 @@ class _KiranReadPageState extends State<KiranReadPage>
     await _audioPlayerStateSubscription?.cancel();
     await _audioCurrentIndexSubscription?.cancel();
 
+    // Guard: widget may have been disposed while we were awaiting
+    if (!mounted || _audioPlayer == null) return;
+
     // Listen for playback completion
-    _audioPlayerStateSubscription =
-        _audioPlayer!.playerStateStream.listen((state) {
+    _audioPlayerStateSubscription = _audioPlayer!.playerStateStream.listen((
+      state,
+    ) {
       if (state.processingState == ProcessingState.completed) {
         _onAudioCompleted();
       }
     });
 
     // Track whether we are playing the stuti segment (first in playlist)
-    _audioCurrentIndexSubscription =
-        _audioPlayer!.currentIndexStream.listen((index) {
+    _audioCurrentIndexSubscription = _audioPlayer!.currentIndexStream.listen((
+      index,
+    ) {
       if (mounted) {
         setState(() {
           _isPlayingStuti = index == 0 && _isStutiAvailable;
@@ -488,7 +495,10 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   Future<void> _startAudio() async {
+    if (!mounted) return;
     if (_audioPlayer == null) await _initAudio();
+    // Re-check after the await — widget may have been disposed
+    if (!mounted || _audioPlayer == null) return;
     if (_isAutoScrolling) _stopAutoScroll();
 
     final partFolder = 'assets/audios/${widget.partNumber}';
@@ -499,6 +509,9 @@ class _KiranReadPageState extends State<KiranReadPage>
     final int progress = widget.kiranUserInfo.progress;
     final bool fromBeginning = progress <= 0;
 
+    // Capture a local reference — dispose() will null the field.
+    final player = _audioPlayer!;
+
     try {
       if (fromBeginning && _isStutiAvailable) {
         // Build stuti+kiran playlist
@@ -508,31 +521,37 @@ class _KiranReadPageState extends State<KiranReadPage>
             AudioSource.asset(kiranPath),
           ],
         );
-        await _audioPlayer!.setAudioSource(playlist);
+        await player.setAudioSource(playlist);
+        if (!mounted) return;
         _stutiAudioDuration =
-            _audioPlayer!.sequence?[0].duration ?? const Duration(seconds: 60);
-        _kiranAudioDuration = _audioPlayer!.sequence?[1].duration;
+            player.sequence?[0].duration ?? const Duration(seconds: 60);
+        _kiranAudioDuration = player.sequence?[1].duration;
         _isPlayingStuti = true;
       } else {
-        await _audioPlayer!.setAudioSource(AudioSource.asset(kiranPath));
-        _kiranAudioDuration = _audioPlayer!.duration;
+        await player.setAudioSource(AudioSource.asset(kiranPath));
+        if (!mounted) return;
+        _kiranAudioDuration = player.duration;
         _isPlayingStuti = false;
         // Seek to saved progress position
         if (progress > 0 && _kiranAudioDuration != null) {
-          final seekMs =
-              (_kiranAudioDuration!.inMilliseconds * progress / 100).round();
-          await _audioPlayer!.seek(Duration(milliseconds: seekMs));
+          await player.seek(
+            Duration(
+              milliseconds:
+                  (_kiranAudioDuration!.inMilliseconds * progress / 100)
+                      .round(),
+            ),
+          );
+          if (!mounted) return;
         }
       }
 
       _isTtsDrivingScroll = true;
-      if (mounted) {
-        setState(() {
-          _isAudioSpeaking = true;
-          _isAudioPaused = false;
-        });
-      }
-      await _audioPlayer!.play();
+      setState(() {
+        _isAudioSpeaking = true;
+        _isAudioPaused = false;
+      });
+      await player.play();
+      if (!mounted) return;
       _startAudioScrollSync();
     } catch (e) {
       debugPrint('Audio play error: $e');
@@ -540,16 +559,20 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   Future<void> _pauseOrResumeAudio() async {
+    final player = _audioPlayer;
+    if (player == null) return;
     if (_isAudioPaused) {
-      await _audioPlayer?.play();
+      await player.play();
+      if (!mounted) return;
       _isTtsDrivingScroll = true;
       _startAudioScrollSync();
-      if (mounted) setState(() => _isAudioPaused = false);
+      setState(() => _isAudioPaused = false);
     } else {
-      await _audioPlayer?.pause();
+      await player.pause();
+      if (!mounted) return;
       _isTtsDrivingScroll = false;
       _stopAudioScrollSync();
-      if (mounted) setState(() => _isAudioPaused = true);
+      setState(() => _isAudioPaused = true);
     }
   }
 
