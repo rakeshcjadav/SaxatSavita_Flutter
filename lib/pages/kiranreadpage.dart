@@ -89,7 +89,8 @@ class _KiranReadPageState extends State<KiranReadPage>
   bool _isTtsPaused = false;
   List<String> _ttsChunks = [];
   int _currentTtsChunk = 0;
-  bool _isTtsDrivingScroll = false; // true while TTS/audio is actively driving scroll
+  bool _isTtsDrivingScroll =
+      false; // true while TTS/audio is actively driving scroll
   List<double> _ttsScrollTargets =
       []; // char-weighted scroll position per chunk
 
@@ -195,7 +196,7 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   Future<void> _checkAudioAvailability() async {
     final partFolder = 'assets/audios/${widget.partNumber}';
-    final kiranNum = widget.kiranInfo.number.trim();
+    final kiranNum = _parseGujaratiInt(widget.kiranInfo.number).toString();
     bool kiranFound = false;
     bool stutiFound = false;
     try {
@@ -479,7 +480,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     if (_isAutoScrolling) _stopAutoScroll();
 
     final partFolder = 'assets/audios/${widget.partNumber}';
-    final kiranPath = '$partFolder/kiran_${widget.kiranInfo.number.trim()}.mp3';
+    final kiranNum = _parseGujaratiInt(widget.kiranInfo.number).toString();
+    final kiranPath = '$partFolder/kiran_$kiranNum.mp3';
     final stutiPath = '$partFolder/stuti.mp3';
 
     final int progress = widget.kiranUserInfo.progress;
@@ -488,15 +490,16 @@ class _KiranReadPageState extends State<KiranReadPage>
     try {
       if (fromBeginning && _isStutiAvailable) {
         // Build stuti+kiran playlist
-        final playlist = ConcatenatingAudioSource(children: [
-          AudioSource.asset(stutiPath),
-          AudioSource.asset(kiranPath),
-        ]);
+        final playlist = ConcatenatingAudioSource(
+          children: [
+            AudioSource.asset(stutiPath),
+            AudioSource.asset(kiranPath),
+          ],
+        );
         await _audioPlayer!.setAudioSource(playlist);
         _stutiAudioDuration =
             _audioPlayer!.sequence?[0].duration ?? const Duration(seconds: 60);
-        _kiranAudioDuration =
-            _audioPlayer!.sequence?[1].duration;
+        _kiranAudioDuration = _audioPlayer!.sequence?[1].duration;
         _isPlayingStuti = true;
       } else {
         await _audioPlayer!.setAudioSource(AudioSource.asset(kiranPath));
@@ -591,7 +594,6 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   // ── TTS ──────────────────────────────────────────────────────────────────
-
 
   Future<void> _initTts() async {
     _tts = FlutterTts();
@@ -1693,7 +1695,9 @@ class _KiranReadPageState extends State<KiranReadPage>
                               // Defer setState to avoid "Build scheduled during frame"
                               // since scroll notifications can fire during layout.
                               if (_isAutoScrollEnabled && _isAutoScrolling) {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
                                   if (mounted) _stopAutoScroll();
                                 });
                               }
@@ -2673,17 +2677,19 @@ class _KiranReadPageState extends State<KiranReadPage>
                         : (_isTtsSpeaking && !_isTtsPaused))
                     ? Icons.pause_circle_outline
                     : Icons.play_circle_outline,
-                color: (_isAudioAvailable ? _isAudioSpeaking : _isTtsSpeaking)
-                    ? Colors.blue
-                    : null,
+                color:
+                    (_isAudioAvailable ? _isAudioSpeaking : _isTtsSpeaking)
+                        ? Colors.blue
+                        : null,
               ),
-              tooltip: _isAudioAvailable
-                  ? (_isAudioSpeaking
-                      ? (_isAudioPaused ? 'Resume' : 'Pause')
-                      : 'Play Audio')
-                  : (_isTtsSpeaking
-                      ? (_isTtsPaused ? 'Resume' : 'Pause TTS')
-                      : 'Read Aloud'),
+              tooltip:
+                  _isAudioAvailable
+                      ? (_isAudioSpeaking
+                          ? (_isAudioPaused ? 'Resume' : 'Pause')
+                          : 'Play Audio')
+                      : (_isTtsSpeaking
+                          ? (_isTtsPaused ? 'Resume' : 'Pause TTS')
+                          : 'Read Aloud'),
               iconSize: 28,
             ),
             if (_isAudioAvailable ? _isAudioSpeaking : _isTtsSpeaking)
