@@ -1652,7 +1652,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get resume => 'વાંચન કરો';
 
   @override
-  String get kiran_calendar => 'કિરણ કૅલેન્ડર';
+  String get kiran_calendar => 'કિરણ ઉદ્ગમ કૅલેન્ડર';
 
   @override
   String get kirans_by_date => 'તારીખ ક્રમે';

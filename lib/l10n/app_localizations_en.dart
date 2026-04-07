@@ -1647,7 +1647,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resume => 'Resume';
 
   @override
-  String get kiran_calendar => 'Kiran Calendar';
+  String get kiran_calendar => 'Kiran Origin Calendar';
 
   @override
   String get kirans_by_date => 'Kirans by Date';

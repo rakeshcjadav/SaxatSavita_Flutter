@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -247,21 +248,61 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_voicesLoaded) return;
     try {
       final tts = FlutterTts();
+      // Setting a language first ensures iOS returns the full voice list.
+      await tts.setLanguage('gu-IN');
       final raw = await tts.getVoices;
-      if (raw == null) return;
+      debugPrint('TTS raw voices count: ${(raw as List?)?.length ?? 0}');
+      if (raw == null || (raw as List).isEmpty) {
+        if (mounted) setState(() => _voicesLoaded = true);
+        return;
+      }
 
-      final voices =
-          (raw as List)
-              .cast<Map>()
-              // Keep only installed, offline Gujarati voices
+      final allVoices = (raw as List).cast<Map>();
+      debugPrint('First voice keys: ${allVoices.first.keys.toList()}');
+      debugPrint('First voice: ${allVoices.first}');
+
+      final allGujaratiVoices =
+          allVoices
+              .where(
+                (v) => (v['locale']?.toString() ?? '').toLowerCase().startsWith(
+                  'gu',
+                ),
+              )
+              .toList();
+      debugPrint('Gujarati voices count: ${allGujaratiVoices.length}');
+
+      // If no Gujarati voices found, fall back to Indian English voices.
+      final candidateVoices =
+          allGujaratiVoices.isNotEmpty
+              ? allGujaratiVoices
+              : allVoices
+                  .where(
+                    (v) =>
+                        (v['locale']?.toString() ?? '').toLowerCase() ==
+                            'en-in' ||
+                        (v['locale']?.toString() ?? '').toLowerCase() ==
+                            'en_in',
+                  )
+                  .toList();
+      debugPrint(
+        'Candidate voices count after fallback: ${candidateVoices.length}',
+      );
+
+      // Prefer installed offline voices; fall back to all candidate voices
+      // (iOS Simulator returns all voices as notInstalled).
+      final installedOffline =
+          candidateVoices
               .where(
                 (v) =>
                     v['networkConnectionRequired'] != true &&
-                    v['notInstalled'] != true &&
-                    (v['locale']?.toString() ?? '').toLowerCase().startsWith(
-                      'gu',
-                    ),
+                    v['notInstalled'] != true,
               )
+              .toList();
+      final source =
+          installedOffline.isNotEmpty ? installedOffline : candidateVoices;
+
+      final voices =
+          source
               .map(
                 (v) => {
                   'name': v['name']?.toString() ?? '',
@@ -847,25 +888,26 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
 
-      // Text-to-Speech Toggle
-      Card(
-        child: SwitchListTile(
-          secondary: const Icon(Icons.record_voice_over_outlined),
-          title: Text(AppLocalizations.of(context)!.ttsEnabled),
-          subtitle: Text(AppLocalizations.of(context)!.ttsEnabledDescription),
-          value: _ttsEnabled,
-          onChanged: (bool value) {
-            setState(() {
-              _ttsEnabled = value;
-              _updateHasUnsavedChanges();
-            });
-            if (value) _loadTtsVoices();
-          },
+      // Text-to-Speech Toggle (not supported on iOS)
+      if (!Platform.isIOS)
+        Card(
+          child: SwitchListTile(
+            secondary: const Icon(Icons.record_voice_over_outlined),
+            title: Text(AppLocalizations.of(context)!.ttsEnabled),
+            subtitle: Text(AppLocalizations.of(context)!.ttsEnabledDescription),
+            value: _ttsEnabled,
+            onChanged: (bool value) {
+              setState(() {
+                _ttsEnabled = value;
+                _updateHasUnsavedChanges();
+              });
+              if (value) _loadTtsVoices();
+            },
+          ),
         ),
-      ),
 
-      // Speech Rate (only visible when TTS is enabled)
-      if (_ttsEnabled)
+      // Speech Rate (only visible when TTS is enabled, not on iOS)
+      if (!Platform.isIOS && _ttsEnabled)
         Card(
           child: ListTile(
             leading: const Icon(Icons.speed_outlined),
@@ -888,8 +930,8 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
 
-      // Voice picker (only visible when TTS is enabled)
-      if (_ttsEnabled)
+      // Voice picker (only visible when TTS is enabled, not on iOS)
+      if (!Platform.isIOS && _ttsEnabled)
         Card(
           child: ListTile(
             leading: const Icon(Icons.mic_none_outlined),

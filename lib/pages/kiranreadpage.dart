@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -77,7 +78,8 @@ class _KiranReadPageState extends State<KiranReadPage>
   List<String> _ttsChunks = [];
   int _currentTtsChunk = 0;
   bool _isTtsDrivingScroll = false; // true while TTS is actively driving scroll
-  List<double> _ttsScrollTargets = []; // char-weighted scroll position per chunk
+  List<double> _ttsScrollTargets =
+      []; // char-weighted scroll position per chunk
 
   bool _hasDataChanged = false;
   int _initialReadingProgress = 0;
@@ -1474,9 +1476,13 @@ class _KiranReadPageState extends State<KiranReadPage>
                         return NotificationListener<ScrollNotification>(
                           onNotification: (notification) {
                             if (notification is UserScrollNotification) {
-                              // User started scrolling manually
+                              // User started scrolling manually.
+                              // Defer setState to avoid "Build scheduled during frame"
+                              // since scroll notifications can fire during layout.
                               if (_isAutoScrollEnabled && _isAutoScrolling) {
-                                _stopAutoScroll();
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  if (mounted) _stopAutoScroll();
+                                });
                               }
                             } else if (notification is ScrollEndNotification) {
                               // User stopped scrolling
@@ -2428,7 +2434,7 @@ class _KiranReadPageState extends State<KiranReadPage>
               ),
             ),
           // TTS play/pause and stop buttons (only when TTS is enabled in settings)
-          if (_isReadingMode && appSettingsNotifier.value.ttsEnabled) ...[
+          if (!Platform.isIOS && _isReadingMode && appSettingsNotifier.value.ttsEnabled) ...[
             IconButton(
               onPressed: () {
                 if (_isTtsSpeaking) {

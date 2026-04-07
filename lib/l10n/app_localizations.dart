@@ -3095,7 +3095,7 @@ abstract class AppLocalizations {
   /// No description provided for @kiran_calendar.
   ///
   /// In en, this message translates to:
-  /// **'Kiran Calendar'**
+  /// **'Kiran Origin Calendar'**
   String get kiran_calendar;
 
   /// No description provided for @kirans_by_date.
