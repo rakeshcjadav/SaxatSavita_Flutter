@@ -1758,7 +1758,9 @@ class _KiranReadPageState extends State<KiranReadPage>
                 CustomHtmlWidget(
                   htmlContent:
                       _search.isActive && _search.textController.text.isNotEmpty
-                          ? _search.getHighlightedContent(getKiranContent(contentData))
+                          ? _search.getHighlightedContent(
+                            getKiranContent(contentData),
+                          )
                           : getKiranContent(contentData),
 
                   onAddNote: (selectedText) async {
@@ -1882,9 +1884,10 @@ class _KiranReadPageState extends State<KiranReadPage>
                       _search.matchCount > 0) ...[
                     IconButton(
                       icon: const Icon(Icons.keyboard_arrow_up),
-                      onPressed: _search.currentMatchIndex > 0
-                          ? _search.previousMatch
-                          : null,
+                      onPressed:
+                          _search.currentMatchIndex > 0
+                              ? _search.previousMatch
+                              : null,
                       tooltip: 'Previous match',
                     ),
                     IconButton(

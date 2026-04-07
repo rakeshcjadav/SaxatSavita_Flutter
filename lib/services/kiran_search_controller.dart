@@ -7,10 +7,10 @@ class KiranSearchController {
   KiranSearchController({
     required ScrollController scrollController,
     required VoidCallback onStateChanged,
-  })  : _scrollController = scrollController,
-        _onStateChanged = onStateChanged,
-        _textController = TextEditingController(),
-        _focusNode = FocusNode();
+  }) : _scrollController = scrollController,
+       _onStateChanged = onStateChanged,
+       _textController = TextEditingController(),
+       _focusNode = FocusNode();
 
   final ScrollController _scrollController;
   final VoidCallback _onStateChanged;
@@ -69,10 +69,7 @@ class KiranSearchController {
     final lowerContent = plainContent.toLowerCase();
     final lowerQuery = query.toLowerCase();
 
-    String strQuery = lowerQuery.replaceAll(
-      "[-\\[\\]\\+\\*\"\\\\().{}]+",
-      "",
-    );
+    String strQuery = lowerQuery.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
     final List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
 
     final pattern = RegExp(

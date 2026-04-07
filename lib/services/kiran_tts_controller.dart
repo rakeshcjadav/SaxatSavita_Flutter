@@ -54,8 +54,7 @@ class KiranTtsController {
 
   Future<void> init() async {
     _tts = FlutterTts();
-    final lang =
-        appSettingsNotifier.value.language == 'gu' ? 'gu-IN' : 'en-US';
+    final lang = appSettingsNotifier.value.language == 'gu' ? 'gu-IN' : 'en-US';
     await _tts!.setLanguage(lang);
     final savedVoice = appSettingsNotifier.value.ttsVoice;
     if (savedVoice != null && savedVoice.contains('|')) {
@@ -114,8 +113,7 @@ class KiranTtsController {
       final partNum = int.tryParse(partNumber.replaceAll('part', '')) ?? 1;
       final partWord = numberToGujarati(partNum);
       final num = kiranNumber.replaceAll('.', '').trim();
-      final intro =
-          'સાક્ષાત્ સવિતા. ભાગ $partWord. કિરણ $num. $kiranTitle.';
+      final intro = 'સાક્ષાત્ સવિતા. ભાગ $partWord. કિરણ $num. $kiranTitle.';
       _chunks.insert(0, intro);
     }
     if (_chunks.isEmpty) return;
