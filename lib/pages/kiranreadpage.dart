@@ -74,6 +74,8 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   // Audio player variables
   AudioPlayer? _audioPlayer;
+  StreamSubscription? _audioPlayerStateSubscription;
+  StreamSubscription? _audioCurrentIndexSubscription;
   bool _isAudioAvailable = false;
   bool _isStutiAvailable = false;
   bool _isAudioSpeaking = false;
@@ -264,6 +266,10 @@ class _KiranReadPageState extends State<KiranReadPage>
     // Stop and dispose audio player
     _audioScrollTimer?.cancel();
     _audioScrollTimer = null;
+    _audioPlayerStateSubscription?.cancel();
+    _audioPlayerStateSubscription = null;
+    _audioCurrentIndexSubscription?.cancel();
+    _audioCurrentIndexSubscription = null;
     _audioPlayer?.stop();
     _audioPlayer?.dispose();
     _audioPlayer = null;
@@ -446,15 +452,21 @@ class _KiranReadPageState extends State<KiranReadPage>
   Future<void> _initAudio() async {
     _audioPlayer ??= AudioPlayer();
 
+    // Cancel any previous subscriptions before re-subscribing
+    await _audioPlayerStateSubscription?.cancel();
+    await _audioCurrentIndexSubscription?.cancel();
+
     // Listen for playback completion
-    _audioPlayer!.playerStateStream.listen((state) {
+    _audioPlayerStateSubscription =
+        _audioPlayer!.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
         _onAudioCompleted();
       }
     });
 
     // Track whether we are playing the stuti segment (first in playlist)
-    _audioPlayer!.currentIndexStream.listen((index) {
+    _audioCurrentIndexSubscription =
+        _audioPlayer!.currentIndexStream.listen((index) {
       if (mounted) {
         setState(() {
           _isPlayingStuti = index == 0 && _isStutiAvailable;
@@ -514,10 +526,12 @@ class _KiranReadPageState extends State<KiranReadPage>
       }
 
       _isTtsDrivingScroll = true;
-      setState(() {
-        _isAudioSpeaking = true;
-        _isAudioPaused = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isAudioSpeaking = true;
+          _isAudioPaused = false;
+        });
+      }
       await _audioPlayer!.play();
       _startAudioScrollSync();
     } catch (e) {
@@ -530,12 +544,12 @@ class _KiranReadPageState extends State<KiranReadPage>
       await _audioPlayer?.play();
       _isTtsDrivingScroll = true;
       _startAudioScrollSync();
-      setState(() => _isAudioPaused = false);
+      if (mounted) setState(() => _isAudioPaused = false);
     } else {
       await _audioPlayer?.pause();
       _isTtsDrivingScroll = false;
       _stopAudioScrollSync();
-      setState(() => _isAudioPaused = true);
+      if (mounted) setState(() => _isAudioPaused = true);
     }
   }
 
