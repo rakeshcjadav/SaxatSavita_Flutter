@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
@@ -28,6 +27,7 @@ import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
+import 'package:saxatsavita_flutter/services/kiran_tts_controller.dart';
 
 class KiranReadPage extends StatefulWidget {
   const KiranReadPage({
@@ -86,15 +86,10 @@ class _KiranReadPageState extends State<KiranReadPage>
   Timer? _audioScrollTimer;
 
   // TTS variables
-  FlutterTts? _tts;
-  bool _isTtsSpeaking = false;
-  bool _isTtsPaused = false;
-  List<String> _ttsChunks = [];
-  int _currentTtsChunk = 0;
+  KiranTtsController? _ttsController;
+  // ignore: unused_field
   bool _isTtsDrivingScroll =
       false; // true while TTS/audio is actively driving scroll
-  List<double> _ttsScrollTargets =
-      []; // char-weighted scroll position per chunk
 
   bool _hasDataChanged = false;
   int _initialReadingProgress = 0;
@@ -260,8 +255,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     _metaTabController?.dispose();
 
     // Stop and dispose TTS
-    _tts?.stop();
-    _tts = null;
+    _ttsController?.dispose();
+    _ttsController = null;
 
     // Stop and dispose audio player.
     // Null the field FIRST so any concurrent async methods bail out.
@@ -638,177 +633,48 @@ class _KiranReadPageState extends State<KiranReadPage>
     _audioScrollTimer = null;
   }
 
-  // ── TTS ──────────────────────────────────────────────────────────────────
+  // ── TTS (delegated to KiranTtsController) ────────────────────────────────
 
-  Future<void> _initTts() async {
-    _tts = FlutterTts();
-    final lang = appSettingsNotifier.value.language == 'gu' ? 'gu-IN' : 'en-US';
-    await _tts!.setLanguage(lang);
-    // Apply saved voice if set
-    final savedVoice = appSettingsNotifier.value.ttsVoice;
-    if (savedVoice != null && savedVoice.contains('|')) {
-      final parts = savedVoice.split('|');
-      await _tts!.setVoice({'name': parts[0], 'locale': parts[1]});
-    }
-    await _tts!.setSpeechRate(appSettingsNotifier.value.ttsSpeechRate);
-    await _tts!.setVolume(1.0);
-    await _tts!.setPitch(1.0);
-    _tts!.setCompletionHandler(() {
-      _currentTtsChunk++;
-      if (_currentTtsChunk < _ttsChunks.length) {
-        // Brief pause between sentences for more natural-sounding speech
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (mounted && _isTtsSpeaking && !_isTtsPaused) {
-            _speakCurrentChunk();
-          }
-        });
-      } else {
-        _isTtsDrivingScroll = false;
-        _pauseTimer();
-        if (mounted) {
-          setState(() {
-            _isTtsSpeaking = false;
-            _isTtsPaused = false;
-            _currentTtsChunk = 0;
-          });
-        }
-      }
-    });
-    _tts!.setErrorHandler((msg) {
-      debugPrint('TTS error: $msg');
-      if (mounted) {
-        setState(() {
-          _isTtsSpeaking = false;
-          _isTtsPaused = false;
-        });
-      }
-    });
+  KiranTtsController _getTtsController() {
+    return _ttsController ??= KiranTtsController(
+      scrollController: _scrollController,
+      onStateChanged: () {
+        if (mounted) setState(() {});
+      },
+      onComplete: _pauseTimer,
+      onScrollDrivingChanged: (v) {
+        _isTtsDrivingScroll = v;
+      },
+    );
   }
 
-  // ── Gujarati TTS text normalization ──────────────────────────────────────
-
-  static const _gujaratiDigits = {
-    '૦': 0, '૧': 1, '૨': 2, '૩': 3, '૪': 4,
-    '૫': 5, '૬': 6, '૭': 7, '૮': 8, '૯': 9,
-    // Letter lookalikes commonly used as digits in Gujarati manuscripts
-    'ર': 2, // GUJARATI LETTER RA (U+0AB0) written in place of digit ૨
-    'પ': 5, // GUJARATI LETTER PA (U+0AAA) written in place of digit ૫
-  };
-
-  /// Converts a string of Gujarati (or ASCII) digits to an integer.
-  static int _parseGujaratiInt(String s) {
-    var result = 0;
-    for (final ch in s.runes.map(String.fromCharCode)) {
-      final d = _gujaratiDigits[ch] ?? int.tryParse(ch);
-      if (d != null) result = result * 10 + d;
-    }
-    return result;
+  Future<void> _startTts() async {
+    if (_kiranContentData == null) return;
+    if (_isAutoScrolling) _stopAutoScroll();
+    await _getTtsController().start(
+      content: getKiranContent(_kiranContentData!),
+      partNumber: widget.partNumber,
+      kiranNumber: widget.kiranInfo.number,
+      kiranTitle: widget.kiranInfo.title,
+    );
   }
 
-  static const _ones = [
-    '',
-    'એક',
-    'બે',
-    'ત્રણ',
-    'ચાર',
-    'પાંચ',
-    'છ',
-    'સાત',
-    'આઠ',
-    'નવ',
-    'દસ',
-    'અગિયાર',
-    'બાર',
-    'તેર',
-    'ચૌદ',
-    'પંદર',
-    'સોળ',
-    'સત્તર',
-    'અઢાર',
-    'ઓગણીસ',
-    'વીસ',
-    'એકવીસ',
-    'બાવીસ',
-    'તેવીસ',
-    'ચોવીસ',
-    'પચ્ચીસ',
-    'છવ્વીસ',
-    'સત્તાવીસ',
-    'અઠ્ઠાવીસ',
-    'ઓગણત્રીસ',
-    'ત્રીસ',
-    'એકત્રીસ',
-    'બત્રીસ',
-    'તેત્રીસ',
-    'ચોત્રીસ',
-    'પાંત્રીસ',
-    'છત્રીસ',
-    'સાડત્રીસ',
-    'અડત્રીસ',
-    'ઓગણચાળીસ',
-    'ચાળીસ',
-    'એકતાળીસ',
-    'બેતાળીસ',
-    'તેતાળીસ',
-    'ચુમ્માળીસ',
-    'પિસ્તાળીસ',
-    'છેતાળીસ',
-    'સુડતાળીસ',
-    'અડતાળીસ',
-    'ઓગણપચાસ',
-    'પચાસ',
-    'એકાવન',
-    'બાવન',
-    'ત્રેપન',
-    'ચોપન',
-    'પંચાવન',
-    'છપ્પન',
-    'સત્તાવન',
-    'અઠ્ઠાવન',
-    'ઓગણસાઠ',
-    'સાઠ',
-    'એકસઠ',
-    'બાસઠ',
-    'ત્રેસઠ',
-    'ચોસઠ',
-    'પાંસઠ',
-    'છાસઠ',
-    'સડસઠ',
-    'અડસઠ',
-    'ઓગણસિત્તેર',
-    'સિત્તેર',
-    'એકોત્તેર',
-    'બોત્તેર',
-    'તોત્તેર',
-    'ચુમ્મોત્તેર',
-    'પંચોત્તેર',
-    'છોત્તેર',
-    'સત્ત્યોત્તેર',
-    'અઠ્ઠ્યોત્તેર',
-    'ઓગણએંસી',
-    'એંસી',
-    'એક્યાસી',
-    'બ્યાસી',
-    'ત્ર્યાસી',
-    'ચોર્યાસી',
-    'પંચ્યાસી',
-    'છ્યાસી',
-    'સત્યાસી',
-    'અઠ્ઠ્યાસી',
-    'નેવ્યાસી',
-    'નેવું',
-    'એકાણું',
-    'બાણું',
-    'ત્રાણું',
-    'ચોર્યાણું',
-    'પંચાણું',
-    'છ્યાણું',
-    'સત્તાણું',
-    'અઠ્ઠ્યાણું',
-    'નવ્વાણું',
-    'સો',
-  ];
+  Future<void> _stopTts() => _getTtsController().stop();
+  Future<void> _pauseOrResumeTts() => _getTtsController().pauseOrResume();
 
+  // Private Gujarati text-utility stubs — forward to KiranTtsController statics.
+  // These let the legacy private helpers (_normalizeForTts, _prepareTtsChunks)
+  // continue to compile until a follow-up cleanup pass removes them.
+  static int _parseGujaratiInt(String s) =>
+      KiranTtsController.parseGujaratiInt(s);
+  static String _numberToGujarati(int n) =>
+      KiranTtsController.numberToGujarati(n);
+  static String _ordinalGujarati(int n) =>
+      KiranTtsController.ordinalGujarati(n);
+  static String _yearToGujarati(int yy) =>
+      KiranTtsController.yearToGujarati(yy);
+  static String _fullYearToGujarati(int yr) =>
+      KiranTtsController.fullYearToGujarati(yr);
   static const _months = {
     1: 'જાન્યુઆરી',
     2: 'ફેબ્રુઆરી',
@@ -824,63 +690,11 @@ class _KiranReadPageState extends State<KiranReadPage>
     12: 'ડિસેમ્બર',
   };
 
-  /// Converts an integer 1–99 to its Gujarati spoken form.
-  static String _numberToGujarati(int n) {
-    if (n <= 0) return '';
-    if (n < _ones.length) return _ones[n];
-    if (n < 200) return 'એકસો ${_ones[n - 100]}'.trim();
-    return n.toString(); // fallback for large numbers
-  }
 
-  /// Converts a number to its Gujarati ordinal form (1st, 2nd, …).
-  static String _ordinalGujarati(int n) {
-    const ordinals = {
-      1: 'પ્રથમ',
-      2: 'બીજું',
-      3: 'ત્રીજું',
-      4: 'ચોથું',
-      5: 'પાંચમું',
-      6: 'છઠ્ઠું',
-      7: 'સાતમું',
-      8: 'આઠમું',
-      9: 'નવમું',
-      10: 'દસમું',
-      11: 'અગિયારમું',
-      12: 'બારમું',
-      13: 'તેરમું',
-      14: 'ચૌદમું',
-      15: 'પંદરમું',
-    };
-    if (ordinals.containsKey(n)) return ordinals[n]!;
-    return '${_numberToGujarati(n)}મું';
-  }
 
-  /// Converts a 2-digit year (00–99) to a Gujarati century spoken form.
-  /// e.g. 75 → "ઓગણીસો પંચોત્તેર"  (1975),  05 → "બે હજાર પાંચ" (2005)
-  static String _yearToGujarati(int yy) {
-    if (yy >= 0 && yy <= 30) {
-      // Assume 21st century: 2000–2030
-      return yy == 0 ? 'બે હજાર' : 'બે હજાર ${_numberToGujarati(yy)}';
-    }
-    // Assume 20th century: 1931–1999
-    return 'ઓગણીસો ${_numberToGujarati(yy)}';
-  }
 
-  /// Converts a full 4-digit year to its Gujarati spoken form.
-  /// 2000 → "બે હજાર", 2036 → "બે હજાર છત્રીસ", 1980 → "ઓગણીસસો એંસી"
-  static String _fullYearToGujarati(int yr) {
-    if (yr >= 2000 && yr < 2100) {
-      final r = yr - 2000;
-      return r == 0 ? 'બે હજાર' : 'બે હજાર ${_numberToGujarati(r)}';
-    }
-    // General: e.g. 1980 → ઓગણીસસો (19) + એંસી (80)
-    final hundreds = yr ~/ 100;
-    final remainder = yr % 100;
-    final h = _numberToGujarati(hundreds);
-    final r = _numberToGujarati(remainder);
-    return r.isEmpty ? '${h}સો' : '${h}સો $r';
-  }
 
+  // ignore: unused_element
   /// Normalizes Gujarati text for more natural TTS output.
   static String _normalizeForTts(String text) {
     var t = text;
@@ -1002,6 +816,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     return t;
   }
 
+  // ignore: unused_element
   List<String> _prepareTtsChunks(String html) {
     final withNewlines = html
         .replaceAll(RegExp(r'</p>', caseSensitive: false), '\n')
@@ -1055,125 +870,9 @@ class _KiranReadPageState extends State<KiranReadPage>
     return sentences;
   }
 
-  /// Rebuilds char-weighted scroll targets whenever chunks or scroll extent change.
-  /// Targets point to the START of each chunk (not the end), offset upward by
-  /// two line-heights so the spoken sentence is near the top of the viewport.
-  /// The line-height offset scales with the user's font size so larger fonts
-  /// don't push the active sentence off-screen.
-  void _recomputeTtsScrollTargets() {
-    if (_ttsChunks.isEmpty || !_scrollController.hasClients) return;
-    final maxExtent = _scrollController.position.maxScrollExtent;
-    if (maxExtent <= 0) return;
-    final totalChars = _ttsChunks.fold(0, (s, c) => s + c.length);
-    if (totalChars == 0) return;
-    // One line-height ≈ fontSize × 1.5 (Flutter default line spacing).
-    final lineHeight = appSettingsNotifier.value.fontSize * 1.5;
-    var cumulativeBefore = 0;
-    _ttsScrollTargets = List.generate(_ttsChunks.length, (i) {
-      // Scroll to the START of this chunk, then back up by 2 line-heights for
-      // visual breathing room above the sentence being spoken.
-      final startPos = (cumulativeBefore / totalChars) * maxExtent;
-      cumulativeBefore += _ttsChunks[i].length;
-      return (startPos - lineHeight * 2.0).clamp(0.0, maxExtent);
-    });
-  }
 
-  void _speakCurrentChunk() {
-    if (_currentTtsChunk < _ttsChunks.length) {
-      _tts?.speak(_ttsChunks[_currentTtsChunk]);
-      if (_isTtsDrivingScroll && _scrollController.hasClients) {
-        // Lazily build targets on first use or if not yet populated.
-        if (_ttsScrollTargets.length != _ttsChunks.length) {
-          _recomputeTtsScrollTargets();
-        }
-        if (_ttsScrollTargets.isNotEmpty) {
-          final target = _ttsScrollTargets[_currentTtsChunk];
-          // Estimate how long this chunk will take to speak.
-          // flutter_tts rate 0.5 ≈ normal speed (~22 Gujarati chars/sec).
-          final chunkChars = _ttsChunks[_currentTtsChunk].length;
-          final rate = appSettingsNotifier.value.ttsSpeechRate.clamp(0.1, 1.0);
-          final charsPerSec = 22.0 * (rate / 0.5);
-          final estimatedMs = ((chunkChars / charsPerSec) * 1000).round();
-          final duration = Duration(
-            milliseconds: estimatedMs.clamp(300, 12000),
-          );
-          _scrollController.animateTo(
-            target,
-            duration: duration,
-            curve: Curves.linear,
-          );
-        }
-      }
-    }
-  }
 
-  Future<void> _startTts() async {
-    if (_tts == null) await _initTts();
-    if (_isAutoScrolling) _stopAutoScroll();
-    _isTtsDrivingScroll = true;
-    if (_kiranContentData != null && _ttsChunks.isEmpty) {
-      _ttsChunks = _prepareTtsChunks(getKiranContent(_kiranContentData!));
-      // Prepend an intro chunk: "સાક્ષાત્ સવિતા, ભાગ <part>, કિરણ <number>, <title>"
-      final partNum =
-          int.tryParse(widget.partNumber.replaceAll('part', '')) ?? 1;
-      final partWord = _numberToGujarati(partNum);
-      final kiranNumber = widget.kiranInfo.number.replaceAll('.', '').trim();
-      final kiranTitle = widget.kiranInfo.title.trim();
-      final intro =
-          'સાક્ષાત્ સવિતા. ભાગ $partWord. કિરણ $kiranNumber. $kiranTitle.';
-      _ttsChunks = [intro, ..._ttsChunks];
-    }
-    if (_ttsChunks.isEmpty) return;
-    _ttsScrollTargets = []; // will be (re)computed on first _speakCurrentChunk
-    await _tts!.setSpeechRate(appSettingsNotifier.value.ttsSpeechRate);
-    await _tts!.setLanguage(
-      appSettingsNotifier.value.language == 'gu' ? 'gu-IN' : 'en-US',
-    );
-    // Re-apply voice preference on every play (user may have changed it)
-    final savedVoice = appSettingsNotifier.value.ttsVoice;
-    if (savedVoice != null && savedVoice.contains('|')) {
-      final parts = savedVoice.split('|');
-      await _tts!.setVoice({'name': parts[0], 'locale': parts[1]});
-    }
-    if (mounted)
-      setState(() {
-        _isTtsSpeaking = true;
-        _isTtsPaused = false;
-      });
-    _speakCurrentChunk();
-  }
 
-  Future<void> _stopTts() async {
-    await _tts?.stop();
-    _isTtsDrivingScroll = false;
-    _ttsScrollTargets = [];
-    if (mounted) {
-      setState(() {
-        _isTtsSpeaking = false;
-        _isTtsPaused = false;
-        _currentTtsChunk = 0;
-      });
-    }
-  }
-
-  Future<void> _pauseOrResumeTts() async {
-    if (_isTtsPaused) {
-      _isTtsDrivingScroll = true;
-      await _tts?.setSpeechRate(appSettingsNotifier.value.ttsSpeechRate);
-      await _tts?.speak(_ttsChunks[_currentTtsChunk]);
-      if (mounted)
-        setState(() {
-          _isTtsPaused = false;
-        });
-    } else {
-      _isTtsDrivingScroll = false;
-      await _tts?.pause();
-      if (mounted)
-        setState(() {
-          _isTtsPaused = true;
-        });
-    }
-  }
 
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -2709,7 +2408,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                     _startAudio();
                   }
                 } else {
-                  if (_isTtsSpeaking) {
+                  if (_ttsController?.isSpeaking ?? false) {
                     _pauseOrResumeTts();
                   } else {
                     _startTts();
@@ -2719,11 +2418,11 @@ class _KiranReadPageState extends State<KiranReadPage>
               icon: Icon(
                 (_isAudioAvailable
                         ? (_isAudioSpeaking && !_isAudioPaused)
-                        : (_isTtsSpeaking && !_isTtsPaused))
+                        : ((_ttsController?.isSpeaking ?? false) && !(_ttsController?.isPaused ?? false)))
                     ? Icons.pause_circle_outline
                     : Icons.play_circle_outline,
                 color:
-                    (_isAudioAvailable ? _isAudioSpeaking : _isTtsSpeaking)
+                    (_isAudioAvailable ? _isAudioSpeaking : (_ttsController?.isSpeaking ?? false))
                         ? Colors.blue
                         : null,
               ),
@@ -2732,12 +2431,12 @@ class _KiranReadPageState extends State<KiranReadPage>
                       ? (_isAudioSpeaking
                           ? (_isAudioPaused ? 'Resume' : 'Pause')
                           : 'Play Audio')
-                      : (_isTtsSpeaking
-                          ? (_isTtsPaused ? 'Resume' : 'Pause TTS')
+                      : ((_ttsController?.isSpeaking ?? false)
+                          ? ((_ttsController?.isPaused ?? false) ? 'Resume' : 'Pause TTS')
                           : 'Read Aloud'),
               iconSize: 28,
             ),
-            if (_isAudioAvailable ? _isAudioSpeaking : _isTtsSpeaking)
+            if (_isAudioAvailable ? _isAudioSpeaking : (_ttsController?.isSpeaking ?? false))
               IconButton(
                 onPressed: _isAudioAvailable ? _stopAudio : _stopTts,
                 icon: const Icon(Icons.stop_circle_outlined, color: Colors.red),
@@ -2790,7 +2489,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     final localizations = AppLocalizations.of(context)!;
 
     // Stop TTS if running
-    if (_isTtsSpeaking) await _stopTts();
+    if (_ttsController?.isSpeaking ?? false) await _stopTts();
 
     // Stop stopwatch to capture correct elapsed time
     _stopwatch.stop();
