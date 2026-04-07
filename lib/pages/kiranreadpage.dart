@@ -28,6 +28,7 @@ import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 import 'package:saxatsavita_flutter/services/kiran_tts_controller.dart';
+import 'package:saxatsavita_flutter/services/kiran_search_controller.dart';
 
 class KiranReadPage extends StatefulWidget {
   const KiranReadPage({
@@ -102,13 +103,8 @@ class _KiranReadPageState extends State<KiranReadPage>
   ReadingEvent? _currentReadingEvent;
   bool _isReadingMode = true; // vs browse mode
 
-  // Search functionality state
-  bool _isSearchMode = false;
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _searchFocusNode = FocusNode();
-  String _currentKiranContent = '';
-  List<int> _searchMatches = [];
-  int _currentMatchIndex = -1;
+  // Search functionality
+  late final KiranSearchController _search;
 
   // Tab controller for the optional TabBar meta layout
   TabController? _metaTabController;
@@ -117,6 +113,14 @@ class _KiranReadPageState extends State<KiranReadPage>
   void initState() {
     super.initState();
     _futureKiranContent = _loadKiranContent();
+
+    // Initialize search controller
+    _search = KiranSearchController(
+      scrollController: _scrollController,
+      onStateChanged: () {
+        if (mounted) setState(() {});
+      },
+    );
 
     // Initialize tab controller when using the TabBar meta layout
     if (RemoteConfigService().kiranMetaEnabled &&
@@ -179,13 +183,11 @@ class _KiranReadPageState extends State<KiranReadPage>
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _isSearchMode = true;
-        _searchController.text = widget.searchQuery!;
-        _performSearch(widget.searchQuery!);
-        _pauseTimer();
-        _performScrollToMatch();
-      });
+      _search.textController.text = widget.searchQuery!;
+      _search.open();
+      _search.performSearch(widget.searchQuery!);
+      _pauseTimer();
+      _search.performScrollToMatch();
     });
   }
 
@@ -247,9 +249,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     // Dispose ValueNotifiers
     _elapsedNotifier.dispose();
 
-    // Dispose search controllers
-    _searchController.dispose();
-    _searchFocusNode.dispose();
+    // Dispose search controller
+    _search.dispose();
 
     // Dispose tab controller if used
     _metaTabController?.dispose();
@@ -690,10 +691,6 @@ class _KiranReadPageState extends State<KiranReadPage>
     12: 'ડિસેમ્બર',
   };
 
-
-
-
-
   // ignore: unused_element
   /// Normalizes Gujarati text for more natural TTS output.
   static String _normalizeForTts(String text) {
@@ -870,10 +867,6 @@ class _KiranReadPageState extends State<KiranReadPage>
     return sentences;
   }
 
-
-
-
-
   // ─────────────────────────────────────────────────────────────────────────
 
   void _startAutoScroll() {
@@ -930,12 +923,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   void closeSearch() {
-    _isSearchMode = false;
-    if (!_isSearchMode) {
-      _searchController.clear();
-      _searchMatches.clear();
-      _currentMatchIndex = -1;
-    }
+    _search.close();
   }
 
   void _stopAutoScroll() {
@@ -1033,8 +1021,8 @@ class _KiranReadPageState extends State<KiranReadPage>
         '<p><footer>${contentData['main']['footer'] ?? ''}</footer></p>'
         '<header>${AppLocalizations.of(context)!.kiran_end}</header>';
 
-    // Cache the content for search functionality
-    _currentKiranContent = _getPlainTextFromHtml(content);
+    // Cache plain-text content for search functionality
+    _search.setContent(KiranSearchController.getPlainText(content));
 
     return content;
   }
@@ -1212,28 +1200,24 @@ class _KiranReadPageState extends State<KiranReadPage>
                 },
               ),
             IconButton(
-              icon: Icon(_isSearchMode ? Icons.close : Icons.search),
+              icon: Icon(_search.isActive ? Icons.close : Icons.search),
               tooltip:
-                  _isSearchMode
+                  _search.isActive
                       ? AppLocalizations.of(context)!.close_search
                       : AppLocalizations.of(context)!.search_in_kiran,
               onPressed: () {
-                setState(() {
-                  _isSearchMode = !_isSearchMode;
-                  if (!_isSearchMode) {
-                    _searchController.clear();
-                    _searchMatches.clear();
-                    _currentMatchIndex = -1;
-                    _resumeTimer();
-                  } else {
-                    // Auto-focus search input when opening
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      _searchFocusNode.requestFocus();
-                    });
-                    _pauseTimer();
-                    _stopAutoScroll();
-                  }
-                });
+                if (_search.isActive) {
+                  _search.close();
+                  _resumeTimer();
+                } else {
+                  _search.open();
+                  // Auto-focus search input when opening
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _search.focusNode.requestFocus();
+                  });
+                  _pauseTimer();
+                  _stopAutoScroll();
+                }
               },
             ),
             /*IconButton(
@@ -1352,7 +1336,7 @@ class _KiranReadPageState extends State<KiranReadPage>
             children: [
               if (_isReadingMode) displayExtraInfos(context),
               // Search bar
-              if (_isSearchMode) _buildSearchBar(),
+              if (_search.isActive) _buildSearchBar(),
               if (_isReadingMode)
                 LinearProgressIndicator(
                   value: widget.kiranUserInfo.progress.toDouble() / 100.0,
@@ -1735,8 +1719,8 @@ class _KiranReadPageState extends State<KiranReadPage>
             children: [
               if (!RemoteConfigService().useCustomHtmlWidget)
                 ...HtmlToTextSpan.convertToWidgets(
-                  _isSearchMode && _searchController.text.isNotEmpty
-                      ? _getHighlightedContentForTextSpan(
+                  _search.isActive && _search.textController.text.isNotEmpty
+                      ? _search.getHighlightedContentForTextSpan(
                         getKiranContent(contentData),
                       )
                       : getKiranContent(contentData),
@@ -1773,8 +1757,8 @@ class _KiranReadPageState extends State<KiranReadPage>
               if (RemoteConfigService().useCustomHtmlWidget)
                 CustomHtmlWidget(
                   htmlContent:
-                      _isSearchMode && _searchController.text.isNotEmpty
-                          ? _getHighlightedContent(getKiranContent(contentData))
+                      _search.isActive && _search.textController.text.isNotEmpty
+                          ? _search.getHighlightedContent(getKiranContent(contentData))
                           : getKiranContent(contentData),
 
                   onAddNote: (selectedText) async {
@@ -1883,8 +1867,8 @@ class _KiranReadPageState extends State<KiranReadPage>
       child: Column(
         children: [
           TextField(
-            controller: _searchController,
-            focusNode: _searchFocusNode,
+            controller: _search.textController,
+            focusNode: _search.focusNode,
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)!.search_hint,
               prefixIcon: Icon(
@@ -1894,28 +1878,30 @@ class _KiranReadPageState extends State<KiranReadPage>
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (_searchController.text.isNotEmpty &&
-                      _searchMatches.isNotEmpty) ...[
+                  if (_search.textController.text.isNotEmpty &&
+                      _search.matchCount > 0) ...[
                     IconButton(
                       icon: const Icon(Icons.keyboard_arrow_up),
-                      onPressed: _currentMatchIndex > 0 ? _previousMatch : null,
+                      onPressed: _search.currentMatchIndex > 0
+                          ? _search.previousMatch
+                          : null,
                       tooltip: 'Previous match',
                     ),
                     IconButton(
                       icon: const Icon(Icons.keyboard_arrow_down),
                       onPressed:
-                          _currentMatchIndex < _searchMatches.length - 1
-                              ? _nextMatch
+                          _search.currentMatchIndex < _search.matchCount - 1
+                              ? _search.nextMatch
                               : null,
                       tooltip: 'Next match',
                     ),
                   ],
-                  if (_searchController.text.isNotEmpty)
+                  if (_search.textController.text.isNotEmpty)
                     IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () {
-                        _searchController.clear();
-                        _performSearch('');
+                        _search.textController.clear();
+                        _search.performSearch('');
                       },
                     ),
                 ],
@@ -1926,15 +1912,15 @@ class _KiranReadPageState extends State<KiranReadPage>
               filled: true,
               fillColor: Theme.of(context).colorScheme.surface,
             ),
-            onChanged: _performSearch,
+            onChanged: _search.performSearch,
             textInputAction: TextInputAction.search,
           ),
-          if (_searchController.text.isNotEmpty) ...[
+          if (_search.textController.text.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
-              _searchMatches.isEmpty
+              _search.matchCount == 0
                   ? AppLocalizations.of(context)!.no_match_found
-                  : '${_currentMatchIndex + 1} of ${_searchMatches.length}',
+                  : '${_search.currentMatchIndex + 1} of ${_search.matchCount}',
               style: Theme.of(
                 context,
               ).textTheme.bodySmall?.copyWith(color: Colors.grey),
@@ -1943,299 +1929,6 @@ class _KiranReadPageState extends State<KiranReadPage>
         ],
       ),
     );
-  }
-
-  void _performSearch(String query) {
-    query = query.trim();
-    if (query.isEmpty) {
-      setState(() {
-        _searchMatches.clear();
-        _currentMatchIndex = -1;
-      });
-      return;
-    }
-
-    // Get the plain text content from the HTML
-    String plainContent = _currentKiranContent;
-    if (plainContent.isEmpty) {
-      // Extract from HTML if not already cached
-      plainContent = _getPlainTextFromHtml(_currentKiranContent);
-    }
-
-    final List<int> matches = [];
-    final lowerContent = plainContent.toLowerCase();
-    final lowerQuery = query.toLowerCase();
-
-    String strQuery = lowerQuery.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
-    List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
-
-    final pattern = RegExp(
-      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
-      caseSensitive: false,
-    );
-
-    Iterable<RegExpMatch> matchesIterable = pattern.allMatches(lowerContent);
-    for (RegExpMatch match in matchesIterable) {
-      matches.add(match.start);
-    }
-
-    setState(() {
-      _searchMatches = matches;
-      _currentMatchIndex = matches.isNotEmpty ? 0 : -1;
-    });
-  }
-
-  String _getPlainTextFromHtml(String html) {
-    // Simple HTML tag removal - could be improved with proper HTML parsing
-    // Remove all HTML tags using regex
-    return html.replaceAll(RegExp(r'<[^>]*>', multiLine: true), '').trim();
-  }
-
-  String _getHighlightedContent(String content) {
-    if (_searchController.text.isEmpty || _searchMatches.isEmpty) {
-      return content;
-    }
-
-    String highlighted = content;
-    final query = _searchController.text.trim();
-    String strQuery = query.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
-    List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
-
-    // Build a pattern that matches any of the words (case-insensitive)
-    final pattern = RegExp(
-      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
-      caseSensitive: false,
-    );
-
-    // Split content into segments outside and inside <a>...</a>
-    final anchorRegExp = RegExp(
-      r'(<a\b[^>]*>)',
-      caseSensitive: false,
-      dotAll: true,
-    );
-    final anchorMatches = anchorRegExp.allMatches(highlighted).toList();
-
-    // Find all matches and store their positions
-    final matches = pattern.allMatches(highlighted).toList();
-    if (matches.isEmpty) return content;
-
-    // Build the highlighted string
-    final buffer = StringBuffer();
-    int lastMatchEnd = 0;
-    int matchCounter = 0;
-
-    for (final match in matches) {
-      // Add text before the match
-      buffer.write(highlighted.substring(lastMatchEnd, match.start));
-
-      bool isInsideAnchor = false;
-      for (final anchorMatch in anchorMatches) {
-        if (match.start >= anchorMatch.start && match.end <= anchorMatch.end) {
-          debugPrint(
-            'Found match: ${match.group(0)} at ${match.start}-${match.end}',
-          );
-          debugPrint(
-            'Anchor found match: ${anchorMatch.group(0)} at ${anchorMatch.start}-${anchorMatch.end}',
-          );
-          // Match is inside an anchor tag, skip highlighting
-          buffer.write(highlighted.substring(match.start, match.end));
-          lastMatchEnd = match.end;
-          isInsideAnchor = true;
-          break;
-        }
-      }
-
-      if (isInsideAnchor) {
-        continue; // Skip to next match
-      }
-
-      final isCurrentMatch = matchCounter == _currentMatchIndex;
-      final matchId = 'search-match-$matchCounter';
-      final highlightClass =
-          isCurrentMatch ? 'current-highlight' : 'search-highlight';
-      final backgroundColor = isCurrentMatch ? '#ff9800' : '#ffeb3b';
-
-      // Add the highlighted match
-      buffer.write(
-        '<span id="$matchId" class="$highlightClass" style="background-color: $backgroundColor; color: black; padding: 2px; border-radius: 2px;">${match.group(0)}</span>',
-      );
-
-      lastMatchEnd = match.end;
-      matchCounter++;
-    }
-    // Add any remaining text after the last match
-    buffer.write(highlighted.substring(lastMatchEnd));
-
-    return buffer.toString();
-  }
-
-  String _getHighlightedContentForTextSpan(String content) {
-    if (_searchController.text.isEmpty || _searchMatches.isEmpty) {
-      return content;
-    }
-
-    final query = _searchController.text.trim();
-    String strQuery = query.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
-    List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
-
-    // Build a pattern that matches any of the words (case-insensitive)
-    final pattern = RegExp(
-      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
-      caseSensitive: false,
-    );
-
-    // Get plain text content for matching (strip HTML tags)
-    final plainText = _getPlainTextFromHtml(content);
-
-    // Find all matches in plain text
-    final plainMatches = pattern.allMatches(plainText).toList();
-    if (plainMatches.isEmpty) return content;
-
-    // Now we need to map plain text positions to HTML positions
-    // This is complex, so we'll use a simpler approach:
-    // Parse the content and wrap matches with <mark> tags
-
-    final buffer = StringBuffer();
-    int plainPos = 0;
-    int matchCounter = 0;
-
-    // Track which plain text match we're looking for
-    int currentPlainMatchIndex = 0;
-
-    for (int i = 0; i < content.length; i++) {
-      final char = content[i];
-
-      // Check if we're at the start of an HTML tag
-      if (char == '<') {
-        // Find the end of the tag
-        final tagEnd = content.indexOf('>', i);
-        if (tagEnd != -1) {
-          // Add the entire tag to the buffer
-          buffer.write(content.substring(i, tagEnd + 1));
-          i = tagEnd;
-          continue;
-        }
-      }
-
-      // Check if we're at the start of a match in plain text
-      if (currentPlainMatchIndex < plainMatches.length) {
-        final match = plainMatches[currentPlainMatchIndex];
-
-        if (plainPos == match.start) {
-          // Start of a match
-          final isCurrentMatch = matchCounter == _currentMatchIndex;
-          buffer.write('<mark data-current="$isCurrentMatch">');
-
-          // Write the matched text
-          final matchLength = match.end - match.start;
-          int charsWritten = 0;
-          int j = i;
-
-          while (charsWritten < matchLength && j < content.length) {
-            final c = content[j];
-            if (c == '<') {
-              // Skip HTML tags within the match
-              final tagEnd = content.indexOf('>', j);
-              if (tagEnd != -1) {
-                buffer.write(content.substring(j, tagEnd + 1));
-                j = tagEnd + 1;
-                continue;
-              }
-            }
-            buffer.write(c);
-            charsWritten++;
-            j++;
-          }
-
-          buffer.write('</mark>');
-          i = j - 1; // -1 because the loop will increment
-          plainPos += matchLength;
-          currentPlainMatchIndex++;
-          matchCounter++;
-          continue;
-        }
-      }
-
-      // Regular character
-      buffer.write(char);
-      plainPos++;
-    }
-
-    return buffer.toString();
-  }
-
-  void _previousMatch() {
-    if (_currentMatchIndex > 0) {
-      // Provide haptic feedback
-      HapticFeedback.selectionClick();
-
-      setState(() {
-        _currentMatchIndex--;
-      });
-      _scrollToMatch();
-    }
-  }
-
-  void _nextMatch() {
-    if (_currentMatchIndex < _searchMatches.length - 1) {
-      // Provide haptic feedback
-      HapticFeedback.selectionClick();
-
-      setState(() {
-        _currentMatchIndex++;
-      });
-      _scrollToMatch();
-    }
-  }
-
-  void _scrollToMatch() {
-    if (_searchMatches.isEmpty || _currentMatchIndex < 0) return;
-
-    // First trigger a rebuild to update highlighting immediately
-    setState(() {});
-
-    // Then handle scrolling after the widget rebuilds
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _performScrollToMatch();
-    });
-  }
-
-  void _performScrollToMatch() {
-    if (!_scrollController.hasClients ||
-        _searchMatches.isEmpty ||
-        _currentMatchIndex < 0) {
-      return;
-    }
-
-    try {
-      // Get the position of the current match in the text
-      final matchPosition = _searchMatches[_currentMatchIndex];
-      final plainText = _currentKiranContent;
-
-      if (plainText.isEmpty || matchPosition >= plainText.length) return;
-
-      // Calculate approximate scroll position based on text position
-      final totalTextLength = plainText.length;
-      final matchRatio = matchPosition / totalTextLength;
-
-      // Get scroll constraints
-      final maxScrollExtent = _scrollController.position.maxScrollExtent;
-      final viewportHeight = _scrollController.position.viewportDimension;
-
-      // Calculate target position - aim to put the match in the center of the viewport
-      final targetScrollOffset =
-          (maxScrollExtent * matchRatio) - (viewportHeight * 0.2);
-      final clampedOffset = targetScrollOffset.clamp(0.0, maxScrollExtent);
-
-      // Animate to the position
-      _scrollController.animateTo(
-        clampedOffset,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOutCubic,
-      );
-    } catch (e) {
-      debugPrint('Error scrolling to match: $e');
-    }
   }
 
   Future<void> _openNoteEditor({String? selectedText}) async {
@@ -2418,11 +2111,14 @@ class _KiranReadPageState extends State<KiranReadPage>
               icon: Icon(
                 (_isAudioAvailable
                         ? (_isAudioSpeaking && !_isAudioPaused)
-                        : ((_ttsController?.isSpeaking ?? false) && !(_ttsController?.isPaused ?? false)))
+                        : ((_ttsController?.isSpeaking ?? false) &&
+                            !(_ttsController?.isPaused ?? false)))
                     ? Icons.pause_circle_outline
                     : Icons.play_circle_outline,
                 color:
-                    (_isAudioAvailable ? _isAudioSpeaking : (_ttsController?.isSpeaking ?? false))
+                    (_isAudioAvailable
+                            ? _isAudioSpeaking
+                            : (_ttsController?.isSpeaking ?? false))
                         ? Colors.blue
                         : null,
               ),
@@ -2432,11 +2128,15 @@ class _KiranReadPageState extends State<KiranReadPage>
                           ? (_isAudioPaused ? 'Resume' : 'Pause')
                           : 'Play Audio')
                       : ((_ttsController?.isSpeaking ?? false)
-                          ? ((_ttsController?.isPaused ?? false) ? 'Resume' : 'Pause TTS')
+                          ? ((_ttsController?.isPaused ?? false)
+                              ? 'Resume'
+                              : 'Pause TTS')
                           : 'Read Aloud'),
               iconSize: 28,
             ),
-            if (_isAudioAvailable ? _isAudioSpeaking : (_ttsController?.isSpeaking ?? false))
+            if (_isAudioAvailable
+                ? _isAudioSpeaking
+                : (_ttsController?.isSpeaking ?? false))
               IconButton(
                 onPressed: _isAudioAvailable ? _stopAudio : _stopTts,
                 icon: const Icon(Icons.stop_circle_outlined, color: Colors.red),
