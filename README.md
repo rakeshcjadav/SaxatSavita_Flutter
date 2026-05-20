@@ -1,4 +1,4 @@
-# 📱 Sakshaat Savita (સાક્ષાત્ સવિતા)
+# 📱 Sakshat Savita (સાક્ષાત્ સવિતા)
 
 > A comprehensive digital spiritual reading companion for the complete Sakshaat Savita collection
 
