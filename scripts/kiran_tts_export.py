@@ -141,8 +141,9 @@ def full_year_to_gujarati(yr: int) -> str:
 #   \u0AB0         ર (lookalike for 2)
 #   \u0AAA         પ (lookalike for 5)
 
+# Optional whitespace: (મધ્યનું ૧૩) and compact (મધ્યનું૧૩)
 _RE_VACHANAMRUT = re.compile(
-    r'\(([\u0A80-\u0AFF]+)\s+([\u0AE6-\u0AEF\u0AB0\u0AAA\d]{1,3})\)'
+    r'\(([\u0A80-\u0AFF]+?)\s*([\u0AE6-\u0AEF\u0AB0\u0AAA\d]{1,3})\)'
 )
 _RE_TITHI = re.compile(
     r'(સુદ|સુદિ|વદ|વદિ)[-\u2010\s]+([\u0AE6-\u0AEF\u0AB0\u0AAA\d]{1,2})'

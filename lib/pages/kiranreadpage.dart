@@ -722,7 +722,7 @@ class _KiranReadPageState extends State<KiranReadPage>
       'અમદાવાદનું': 'અમદાવાદ',
     };
     t = t.replaceAllMapped(
-      RegExp(r'\(([\u0A80-\u0AFF]+)\s+([\u0AE6-\u0AEF\u0AB0\u0AAA\d]{1,3})\)'),
+      RegExp(r'\(([\u0A80-\u0AFF]+?)\s*([\u0AE6-\u0AEF\u0AB0\u0AAA\d]{1,3})\)'),
       (m) {
         final word = m.group(1)!;
         final location = vachanamrutLocations[word];
