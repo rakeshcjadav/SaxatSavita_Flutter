@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
@@ -387,6 +388,22 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
     });
   }
 
+  /// Signs in anonymously with Firebase - only used in debug builds for
+  /// Firebase Test Lab Robo tests where no Google account is available.
+  Future<void> _signInAnonymouslyForTesting() async {
+    try {
+      await FirebaseAuth.instance.signInAnonymously();
+      if (mounted) {
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
+        );
+      }
+    } catch (e) {
+      debugPrint('Anonymous sign-in failed: $e');
+    }
+  }
+
   String _errorMessageFromSignInException(GoogleSignInException e) {
     // In practice, an application should likely have specific handling for most
     // or all of the, but for simplicity this just handles cancel, and reports
@@ -710,6 +727,19 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
                   */
                   const SizedBox(height: 25),
                 ] else ...<Widget>[
+                  // Debug-only bypass for Firebase Test Lab (no Google account on virtual device)
+                  if (kDebugMode) ...[
+                    const SizedBox(height: 8),
+                    Center(
+                      child: TextButton(
+                        onPressed: _signInAnonymouslyForTesting,
+                        child: const Text(
+                          'Enter without sign-in (debug only)',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                  ],
                   // #enddocregion ExplicitSignIn
                   const Text(
                     'This platform does not have a known authentication method',
