@@ -87,48 +87,72 @@ gcloud firebase test android run \
 
 ## Script Configuration Explained
 
-### Test Flow Structure
+### Test Flow Structure (Current Firebase Format)
 ```json
-{
-  "crawlGuidance": {
-    "crawlActions": [
-      // Ordered sequence of UI interactions
+[
+  {
+    "id": 1000,
+    "crawlStage": "pre_crawl",
+    "actions": [
+      {
+        "eventType": "ADB_SHELL_COMMAND",
+        "command": "pm clear __%APP_PACKAGE_NAME%__"
+      }
     ]
   },
-  "testTimeout": "15m",        // Maximum test duration
-  "crawlTimeoutSec": 900,      // Crawl timeout in seconds
-  "roboDirectives": [
-    // Special handling rules
-  ]
-}
+  {
+    "id": 1001,
+    "contextDescriptor": {
+      "condition": "app_under_test_shown"
+    },
+    "actions": [
+      {
+        "eventType": "WAIT",
+        "delayTime": 7000
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(Settings|સેટિંગ્સ)"
+          }
+        ]
+      }
+    ]
+  }
+]
 ```
 
 ### Action Types Used
-- `WAIT`: Pauses execution for specified time
-- `CLICK`: Taps on UI elements
-- `SWIPE`: Swipe gestures for navigation
-- `SCROLL`: Scrolls content up/down
-- `KEY_EVENT`: Hardware key presses (BACK button)
-- `TYPE_TEXT`: Text input for search/forms
+- `WAIT`: pauses execution for a fixed duration (`delayTime` in ms)
+- `VIEW_CLICKED`: taps an identified UI element
+- `VIEW_TEXT_CHANGED`: inputs text in a target field
+- `PRESSED_EDITOR_ACTION`: submits input using IME action
+- `PRESSED_BACK`: sends Android back key event
+- `TAKE_SCREENSHOT`: captures a named screenshot in test artifacts
+- `ADB_SHELL_COMMAND`: executes adb shell commands (for example, `pm clear`)
 
 ### Element Matching Strategies
-- `text`: Exact text matching
-- `contentDescription`: Accessibility description
-- `hint`: Input field hint text
-- `className`: Android widget class names
-- `description`: General element description
+- `elementDescriptors.text`: exact visible text
+- `elementDescriptors.textRegex`: regex matching for multilingual labels
+- `elementDescriptors.resourceId` / `resourceIdRegex`: Android resource IDs
+- `elementDescriptors.contentDescription` / `contentDescriptionRegex`: accessibility labels
+- `visionText`: OCR text matching when hierarchy matching is not sufficient
 
 ## Customization Options
 
 ### 1. Modify Test Flow
-Edit `crawlActions` array to add/remove/modify test steps:
+Edit the `actions` list inside your script object to add/remove/modify test steps:
 
 ```json
 {
-  "action": "CLICK",
-  "elementMatcher": {
-    "text": "Your Button Text"
-  },
+  "eventType": "VIEW_CLICKED",
+  "elementDescriptors": [
+    {
+      "text": "Your Button Text"
+    }
+  ],
   "description": "Description of what this does",
   "optional": true
 }
@@ -137,20 +161,29 @@ Edit `crawlActions` array to add/remove/modify test steps:
 ### 2. Add New Test Scenarios
 ```json
 {
-  "action": "TYPE_TEXT",
-  "text": "નવું ટેસ્ટ",
+  "eventType": "VIEW_TEXT_CHANGED",
+  "replacementText": "navi test",
+  "elementDescriptors": [
+    {
+      "className": "android.widget.EditText"
+    }
+  ],
   "description": "Test new search term",
   "optional": true
 }
 ```
 
 ### 3. Skip Sensitive Actions
-Use `roboDirectives` to avoid problematic UI elements:
+Use ignore actions to avoid problematic UI elements:
 
 ```json
 {
-  "text": "Dangerous Action",
-  "directive": "IGNORE",
+  "eventType": "ELEMENT_IGNORED",
+  "elementDescriptors": [
+    {
+      "textRegex": "(Delete|Remove|Dangerous Action)"
+    }
+  ],
   "description": "Skip this during testing"
 }
 ```
@@ -199,19 +232,24 @@ Use `roboDirectives` to avoid problematic UI elements:
 
 **Element Not Found:**
 ```json
-// Add optional flag and alternative matchers
-"optional": true,
-"elementMatcher": {
-  "text": "Primary Text",
-  "contentDescription": "Fallback Description"
+{
+  "eventType": "VIEW_CLICKED",
+  "optional": true,
+  "elementDescriptors": [
+    {
+      "text": "Primary Text"
+    },
+    {
+      "contentDescription": "Fallback Description"
+    }
+  ]
 }
 ```
 
 **Timing Issues:**
 ```json
-// Increase wait times for slow operations
 {
-  "action": "WAIT",
+  "eventType": "WAIT",
   "delayTime": 5000,
   "description": "Wait for Firebase initialization"
 }
@@ -219,10 +257,8 @@ Use `roboDirectives` to avoid problematic UI elements:
 
 **Navigation Problems:**
 ```json
-// Use multiple back navigation attempts
 {
-  "action": "KEY_EVENT", 
-  "key": "BACK",
+  "eventType": "PRESSED_BACK",
   "description": "Navigate back"
 }
 ```
