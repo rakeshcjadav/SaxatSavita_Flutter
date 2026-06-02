@@ -4,6 +4,57 @@ from collections import OrderedDict
 re_kirannumber = re.compile('[૦૧૨૩૪૫૬૭૮૯૦૧ર૩૪પ૬૭૮૯]+\\.')
 re_continuation = re.compile('[ે્ંિીુૂાૈોી]+')
 
+GU_TO_ASCII = str.maketrans(
+    "૦૧૨૩૪૫૬૭૮૯"
+    "રપ",
+    "0123456789"
+    "25",
+)
+
+_D = r"[\u0AE6-\u0AEF\u0AB0\u0AAA\d]+"
+DATE_RE = re.compile(r"તા\.?\s*(" + _D + r")-(" + _D + r")-(" + _D + r")")
+
+
+def _to_int(gu_str):
+    return int(gu_str.translate(GU_TO_ASCII))
+
+
+def _normalize_year(yy):
+    if yy >= 100:
+        return yy
+    return 1900 + yy if yy >= 50 else 2000 + yy
+
+
+def ExtractDateFromContent(content):
+    m = DATE_RE.search(content)
+    if not m:
+        return ""
+    try:
+        d = _to_int(m.group(1))
+        mo = _to_int(m.group(2))
+        y = _normalize_year(_to_int(m.group(3)))
+        if 1 <= d <= 31 and 1 <= mo <= 12 and 1900 <= y <= 2100:
+            return f"{d}-{mo}-{y}"
+    except (ValueError, OverflowError):
+        pass
+    return ""
+
+
+def ExtractKiranDate(kiran_data):
+    meta_date = kiran_data.get("meta", {}).get("date", "").strip()
+    if meta_date:
+        parts = meta_date.split("-")
+        if len(parts) == 3:
+            try:
+                d = int(parts[0])
+                mo = int(parts[1])
+                y = _normalize_year(int(parts[2]))
+                if 1 <= d <= 31 and 1 <= mo <= 12 and 1900 <= y <= 2100:
+                    return f"{d}-{mo}-{y}"
+            except ValueError:
+                pass
+    return ExtractDateFromContent(kiran_data["main"]["content"])
+
 file_content_template = {
     "main": {
         "place": "પીપલાણા",
@@ -31,7 +82,8 @@ kiran_entry_template = {
     "index" : 0,
     "number": "",
     "title": "",
-    "word_count" : 0
+    "word_count" : 0,
+    "date": ""
 }
 
 meaning_list = {
@@ -128,6 +180,7 @@ def ExtractKirans(book, inputfile, location, directory, range, fileErrorLog, bFo
         kiran_entry["number"] = file_content[nIndex]["main"]["number"]
         kiran_entry["title"] = file_content[nIndex]["main"]["title"]
         kiran_entry["word_count"] = wordCount
+        kiran_entry["date"] = ExtractKiranDate(file_content[nIndex])
         kiran_list["list"].append(kiran_entry)
 
         nIndex += 1
@@ -230,7 +283,7 @@ def ExtractMeanings(inputfile):
     nIndex = 1
     for line in input:
         if line.strip() != None:
-            pair = re.split(tabs, line, 2)
+            pair = re.split(tabs, line, maxsplit=2)
             meaning = copy.deepcopy(meaning_item_template)
             meaning["index"] = nIndex
             meaning["word"] = pair[0]

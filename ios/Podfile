@@ -1,6 +1,9 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '16.0'
 
+# Match firebase_core/ios/firebase_sdk_version.rb (cloud_firestore 6.4.x is incompatible with 12.14+ pipeline APIs).
+$FirebaseSDKVersion = '12.13.0'
+
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 

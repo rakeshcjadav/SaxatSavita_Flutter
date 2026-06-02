@@ -1,0 +1,271 @@
+[
+  {
+    "id": 1000,
+    "description": "Reset app data before crawl for deterministic startup",
+    "crawlStage": "pre_crawl",
+    "actions": [
+      {
+        "eventType": "ADB_SHELL_COMMAND",
+        "command": "pm clear __%APP_PACKAGE_NAME%__"
+      }
+    ]
+  },
+  {
+    "id": 1001,
+    "description": "Handle sign-in screen: use debug bypass (debug APK) or fall back to Google sign-in",
+    "maxNumberOfRuns": 3,
+    "contextDescriptor": {
+      "condition": "element_present",
+      "elementDescriptors": [
+        {
+          "text": "Sign in with Google"
+        }
+      ]
+    },
+    "actions": [
+      {
+        "eventType": "WAIT",
+        "delayTime": 2000,
+        "description": "Let sign-in page fully render"
+      },
+      {
+        "eventType": "TAKE_SCREENSHOT",
+        "screenshotName": "00_sign_in_screen"
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(?i)enter without sign.in"
+          }
+        ],
+        "description": "Tap debug bypass button (debug APK on Test Lab - no Google account needed)"
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "text": "Sign in with Google"
+          }
+        ],
+        "description": "Fallback: tap Google sign-in button if debug bypass not shown"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 5000,
+        "description": "Wait for auth / navigation"
+      },
+      {
+        "eventType": "PRESSED_BACK",
+        "optional": true,
+        "description": "Dismiss any Credential Manager system dialog if Google sign-in was used"
+      }
+    ]
+  },
+  {
+    "id": 1002,
+    "description": "Dismiss Google account chooser / consent dialogs that appear over the app",
+    "maxNumberOfRuns": 5,
+    "contextDescriptor": {
+      "condition": "element_present",
+      "elementDescriptors": [
+        {
+          "textRegex": "(?i)(choose an account|pick an account|sign in to|use this account|continue as)"
+        }
+      ]
+    },
+    "actions": [
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(?i)(continue|use this account|sign in)"
+          }
+        ],
+        "description": "Accept the first Google account offered"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 3000,
+        "optional": true
+      }
+    ]
+  },
+  {
+    "id": 1003,
+    "description": "Dismiss migration / loading dialog shown after successful sign-in",
+    "maxNumberOfRuns": 3,
+    "contextDescriptor": {
+      "condition": "element_present",
+      "elementDescriptors": [
+        {
+          "textRegex": "(?i)(migrating|migration|syncing|loading data|please wait)"
+        }
+      ]
+    },
+    "actions": [
+      {
+        "eventType": "WAIT",
+        "delayTime": 8000,
+        "description": "Wait for migration to finish"
+      },
+      {
+        "eventType": "TAKE_SCREENSHOT",
+        "screenshotName": "01_post_signin",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "id": 1004,
+    "description": "Core guided journey: home -> search -> settings -> aashirvachan",
+    "contextDescriptor": {
+      "condition": "app_under_test_shown"
+    },
+    "actions": [
+      {
+        "eventType": "WAIT",
+        "delayTime": 7000,
+        "description": "Let splash/init complete"
+      },
+      {
+        "eventType": "DISABLE_KEYBOARD",
+        "description": "Prevent keyboard from blocking interactions"
+      },
+      {
+        "eventType": "TAKE_SCREENSHOT",
+        "screenshotName": "02_home_loaded"
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(Search through all Kirans|Search|\\u0aa4\\u0aae\\u0abe\\u0aae \\u0a95\\u0abf\\u0ab0\\u0aa3\\u0acb \\u0ab6\\u0acb\\u0aa7\\u0acb|\\u0ab6\\u0acb\\u0aa7\\u0acb)"
+          }
+        ],
+        "description": "Open global search"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 1500,
+        "optional": true
+      },
+      {
+        "eventType": "VIEW_TEXT_CHANGED",
+        "optional": true,
+        "replacementText": "kiran",
+        "elementDescriptors": [
+          {
+            "className": "android.widget.EditText"
+          }
+        ],
+        "description": "Type search query if an EditText is present"
+      },
+      {
+        "eventType": "PRESSED_EDITOR_ACTION",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "className": "android.widget.EditText"
+          }
+        ]
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 2000,
+        "optional": true
+      },
+      {
+        "eventType": "PRESSED_BACK",
+        "optional": true,
+        "description": "Return from search"
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(Settings|App Settings|\\u0ab8\\u0ac7\\u0a9f\\u0abf\\u0a82\\u0a97\\u0acd\\u0ab8|\\u0a8f\\u0aaa \\u0ab8\\u0ac7\\u0a9f\\u0abf\\u0a82\\u0a97\\u0acd\\u0ab8)"
+          }
+        ],
+        "description": "Open settings"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 1500,
+        "optional": true
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(Application Language|Language|\\u0a8f\\u0aaa\\u0acd\\u0ab2\\u0abf\\u0a95\\u0ac7\\u0ab6\\u0aa8\\u0aa8\\u0ac0 \\u0aad\\u0abe\\u0ab7\\u0abe|\\u0aad\\u0abe\\u0ab7\\u0abe)"
+          }
+        ],
+        "description": "Open language picker if visible"
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(English|\\u0a85\\u0a82\\u0a97\\u0acd\\u0ab0\\u0ac7\\u0a9c\\u0ac0|\\u0a97\\u0ac1\\u0a9c\\u0ab0\\u0abe\\u0aa4\\u0ac0)"
+          }
+        ],
+        "description": "Toggle or confirm a language option"
+      },
+      {
+        "eventType": "PRESSED_BACK",
+        "optional": true
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(Aashirvachan|\\u0a86\\u0ab6\\u0ac0\\u0ab0\\u0acd\\u0ab5\\u0a9a\\u0aa8)"
+          }
+        ],
+        "description": "Open aashirvachan section"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 1500,
+        "optional": true
+      },
+      {
+        "eventType": "PRESSED_BACK",
+        "optional": true
+      },
+      {
+        "eventType": "TAKE_SCREENSHOT",
+        "screenshotName": "02_guided_flow_end",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "id": 1005,
+    "description": "Dismiss common permission/consent dialogs during crawl",
+    "maxNumberOfRuns": 30,
+    "contextDescriptor": {
+      "condition": "always"
+    },
+    "actions": [
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "elementDescriptors": [
+          {
+            "textRegex": "(?i)(allow|while using the app|continue|ok|cancel|not now|later|skip|don.t allow)"
+          }
+        ]
+      }
+    ]
+  }
+]

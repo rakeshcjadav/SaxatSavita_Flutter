@@ -5,7 +5,11 @@ cd "$(dirname "$0")/.."
 
 # Build the release app bundle
 echo "🚀 Starting iOS release build process..."
+
 flutter clean
+flutter pub get
+# Must run after pub get: Xcode uses Runner.xcworkspace Package.resolved for archives.
+bash "$(dirname "$0")/pin_firebase_ios_sdk.sh"
 flutter build ipa --release
 
 # Extract version from pubspec.yaml
