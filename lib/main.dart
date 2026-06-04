@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -76,23 +78,8 @@ void main() async {
 
   if (!kIsWeb) {
     // Initialize Firebase Analytics (only on mobile)
-    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-
-    // Initialize Analytics Service
-    AnalyticsService().initialize(analytics);
+    AnalyticsService().initialize(FirebaseAnalytics.instance);
     print('Firebase Analytics initialized successfully');
-
-    // Initialize Remote Config
-    await RemoteConfigService().initialize();
-    print('Firebase Remote Config initialized successfully');
-
-    // Initialize In-App Review Service
-    await InAppReviewService().initialize();
-    print('In-App Review Service initialized successfully');
-
-    // Initialize Home Widget Service
-    await HomeWidgetService().initialize();
-    print('Home Widget Service initialized successfully');
   }
 
   // Load JSON data
@@ -104,6 +91,36 @@ void main() async {
   runApp(
     SakshatSavitaApp(analytics: kIsWeb ? null : FirebaseAnalytics.instance),
   );
+
+  // Defer non-critical init so runApp() and the first frame are not blocked.
+  // Blocking here caused "Input dispatching timed out (No focused window)" ANRs
+  // when users tapped during startup before a Flutter window had focus.
+  if (!kIsWeb) {
+    unawaited(_initializeDeferredServices());
+  }
+}
+
+Future<void> _initializeDeferredServices() async {
+  try {
+    await RemoteConfigService().initialize();
+    print('Firebase Remote Config initialized successfully');
+  } catch (e) {
+    print('Remote Config initialization error: $e');
+  }
+
+  try {
+    await InAppReviewService().initialize();
+    print('In-App Review Service initialized successfully');
+  } catch (e) {
+    print('In-App Review Service initialization error: $e');
+  }
+
+  try {
+    await HomeWidgetService().initialize();
+    print('Home Widget Service initialized successfully');
+  } catch (e) {
+    print('Home Widget Service initialization error: $e');
+  }
 }
 
 class SakshatSavitaApp extends StatelessWidget {

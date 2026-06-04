@@ -26,23 +26,18 @@ class SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Remove native splash only after Flutter has a rendered, focusable window.
+      FlutterNativeSplash.remove();
       _checkAuthAndNavigate();
     });
   }
 
   Future<void> _checkAuthAndNavigate() async {
     try {
-      FlutterNativeSplash.remove(); // remove splash after init
-
-      // Wait for a minimum splash display time
-      //await Future.delayed(const Duration(seconds: 1));
-
       if (!mounted) return;
 
       // For web, skip Firebase Auth and go directly to homepage
       if (kIsWeb) {
-        FlutterNativeSplash.remove();
-
         if (!mounted) return;
 
         await Navigator.pushReplacement(
@@ -103,40 +98,30 @@ class SplashPageState extends State<SplashPage> {
         // Check if this is the first time user
         final isFirstTime = await FirstTimeUserService.isFirstTimeUser();
 
-        if (shouldGoToProfile) {
-          if (mounted) {
-            debugPrint('_handleAuthenticationEvent : Routing to Profile Page');
-            await Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => const ProfilePage(continueAfterProfile: true),
-              ),
-            );
-          }
-        }
+        if (!mounted) return;
 
-        if (isFirstTime) {
-          if (mounted) {
-            // Show welcome screen for first-time users
-            await Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-            );
-          }
+        if (shouldGoToProfile) {
+          debugPrint('_handleAuthenticationEvent : Routing to Profile Page');
+          await Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => const ProfilePage(continueAfterProfile: true),
+            ),
+          );
+        } else if (isFirstTime) {
+          await Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+          );
         } else {
-          if (mounted) {
-            // Go directly to main navigation for returning users
-            await Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const MainNavigation()),
-            );
-          }
+          await Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainNavigation()),
+          );
         }
       } else {
         if (!mounted) return;
-
-        FlutterNativeSplash.remove(); // remove splash after init
 
         await Navigator.pushReplacement(
           context,
