@@ -5,11 +5,29 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 
 class InAppUpdateService {
   static final InAppUpdateService _instance = InAppUpdateService._internal();
   factory InAppUpdateService() => _instance;
   InAppUpdateService._internal();
+
+  static bool _startupCheckScheduled = false;
+
+  /// Schedule a single automatic update check after the main UI is shown.
+  void scheduleStartupCheck(BuildContext context) {
+    if (_startupCheckScheduled || kIsWeb || !Platform.isAndroid) {
+      return;
+    }
+    _startupCheckScheduled = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(const Duration(seconds: 3));
+      if (context.mounted) {
+        await checkForUpdate(context, isManualCheck: false);
+      }
+    });
+  }
 
   /// Check for available updates
   Future<void> checkForUpdate(
@@ -35,20 +53,60 @@ class InAppUpdateService {
     BuildContext context, {
     bool isManualCheck = false,
   }) async {
-    if (kDebugMode) return;
+    // Play In-App Updates only work on release builds installed from Play.
+    if (kDebugMode) {
+      debugPrint(
+        'Skipping in-app update check in debug mode. '
+        'Install a Play Store release build to test updates.',
+      );
+      if (isManualCheck && context.mounted) {
+        _handleUpdateError(
+          context,
+          'ERROR_APP_NOT_OWNED: In-app updates require a Play Store release build.',
+        );
+      }
+      return;
+    }
+
     try {
       final updateInfo = await InAppUpdate.checkForUpdate();
+      _logUpdateInfo(updateInfo, isManualCheck: isManualCheck);
 
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        if (context.mounted) {
-          await _showUpdateDialog(
-            context,
-            updateInfo,
-            isManualCheck: isManualCheck,
-          );
-        }
-      } else if (isManualCheck && context.mounted) {
-        _showNoUpdateDialog(context);
+      switch (updateInfo.updateAvailability) {
+        case UpdateAvailability.updateAvailable:
+          if (!context.mounted) return;
+
+          if (updateInfo.immediateUpdateAllowed ||
+              updateInfo.flexibleUpdateAllowed) {
+            await _showUpdateDialog(
+              context,
+              updateInfo,
+              isManualCheck: isManualCheck,
+            );
+          } else {
+            debugPrint(
+              'Update available on Play but in-app flow not allowed. '
+              'Opening Play Store fallback.',
+            );
+            await _showPlayStoreUpdateDialog(context, isManualCheck: isManualCheck);
+          }
+        case UpdateAvailability.developerTriggeredUpdateInProgress:
+          debugPrint('Resuming in-progress Play in-app update');
+          if (context.mounted) {
+            await _performUpdate(context, updateInfo);
+          }
+        case UpdateAvailability.updateNotAvailable:
+        case UpdateAvailability.unknown:
+          final remoteConfigHasUpdate = await _remoteConfigIndicatesNewerVersion();
+          if (remoteConfigHasUpdate && context.mounted) {
+            debugPrint(
+              'Play API reported no in-app update; Remote Config indicates '
+              'a newer version. Showing Play Store fallback.',
+            );
+            await _showPlayStoreUpdateDialog(context, isManualCheck: isManualCheck);
+          } else if (isManualCheck && context.mounted) {
+            _showNoUpdateDialog(context);
+          }
       }
     } catch (e) {
       debugPrint('Android update check failed: $e');
@@ -63,6 +121,89 @@ class InAppUpdateService {
         );
       }
     }
+  }
+
+  void _logUpdateInfo(AppUpdateInfo updateInfo, {required bool isManualCheck}) {
+    debugPrint(
+      'In-app update check (manual=$isManualCheck): $updateInfo',
+    );
+  }
+
+  Future<bool> _remoteConfigIndicatesNewerVersion() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      final remoteConfig = RemoteConfigService();
+      return remoteConfig.hasNewerVersion(packageInfo.version);
+    } catch (e) {
+      debugPrint('Remote Config version check failed: $e');
+      return false;
+    }
+  }
+
+  Future<void> _showPlayStoreUpdateDialog(
+    BuildContext context, {
+    bool isManualCheck = false,
+  }) async {
+    final localizations = AppLocalizations.of(context)!;
+    final remoteConfig = RemoteConfigService();
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.system_update,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  localizations.updateAvailable,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            remoteConfig.updateMessage.isNotEmpty
+                ? remoteConfig.updateMessage
+                : localizations.updateAvailableMessage,
+            style: const TextStyle(fontSize: 18),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                localizations.later,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _openPlayStore();
+              },
+              child: Text(
+                localizations.updateNow,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   /// Check for iOS updates by directing to App Store
@@ -376,18 +517,17 @@ class InAppUpdateService {
   ) async {
     try {
       if (updateInfo.immediateUpdateAllowed) {
-        // Immediate update - app will restart automatically
         await InAppUpdate.performImmediateUpdate();
       } else if (updateInfo.flexibleUpdateAllowed) {
-        // Flexible update - user can continue using app while downloading
         await InAppUpdate.startFlexibleUpdate();
 
-        // Listen for download completion
         InAppUpdate.completeFlexibleUpdate().then((_) {
           if (context.mounted) {
             _showFlexibleUpdateCompleteDialog(context);
           }
         });
+      } else if (context.mounted) {
+        await _openPlayStore();
       }
     } catch (e) {
       debugPrint('Update failed: $e');
@@ -488,15 +628,7 @@ class InAppUpdateService {
 
   /// Check for updates automatically on app start (background check)
   Future<void> checkForUpdateOnAppStart(BuildContext context) async {
-    if (kIsWeb) return;
-
-    // Only check automatically on Android, and only if app has been running for a while
-    if (Platform.isAndroid) {
-      await Future.delayed(const Duration(seconds: 3));
-      if (context.mounted) {
-        await checkForUpdate(context, isManualCheck: false);
-      }
-    }
+    scheduleStartupCheck(context);
   }
 
   /// Get current app version

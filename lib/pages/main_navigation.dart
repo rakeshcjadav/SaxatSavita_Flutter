@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
+import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
 
 // Import full pages (they will be rendered without their scaffold)
 import 'package:saxatsavita_flutter/pages/dashboard_page.dart';
@@ -24,6 +25,7 @@ class _MainNavigationState extends State<MainNavigation> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _selectedIndex);
+    InAppUpdateService().scheduleStartupCheck(context);
   }
 
   @override

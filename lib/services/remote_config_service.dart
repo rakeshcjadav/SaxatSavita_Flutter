@@ -38,7 +38,7 @@ class RemoteConfigService {
             'App is under maintenance. Please try again later.',
         'force_update_required': false,
         'minimum_supported_version': '2.0.0',
-        'latest_version': '2.15.0',
+        'latest_version': '2.25.0',
         'update_message':
             'A new version is available. Please update for the best experience.',
 
@@ -145,7 +145,7 @@ class RemoteConfigService {
   String get minimumSupportedVersion =>
       _remoteConfig?.getString('minimum_supported_version') ?? '2.0.0';
   String get latestVersion =>
-      _remoteConfig?.getString('latest_version') ?? '2.15.0';
+      _remoteConfig?.getString('latest_version') ?? '2.25.0';
   String get updateMessage =>
       _remoteConfig?.getString('update_message') ??
       'A new version is available. Please update for the best experience.';
