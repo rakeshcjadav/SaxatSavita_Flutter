@@ -15,6 +15,17 @@ class UserProfileService {
 
   UserProfile? _cachedProfile;
 
+  /// Local-only profile read for fast startup routing (no Firestore).
+  Future<UserProfile> getLocalUserProfile() async {
+    if (_cachedProfile != null) {
+      return _cachedProfile!;
+    }
+
+    final profile = await _loadFromLocalStorage();
+    _cachedProfile = profile;
+    return profile;
+  }
+
   /// Get the current user profile
   Future<UserProfile> getUserProfile() async {
     // Return cached profile if available

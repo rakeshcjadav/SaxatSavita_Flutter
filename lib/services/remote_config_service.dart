@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +22,7 @@ class RemoteConfigService {
       // Set config settings
       await _remoteConfig!.setConfigSettings(
         RemoteConfigSettings(
-          fetchTimeout: const Duration(seconds: 10),
+          fetchTimeout: const Duration(seconds: 5),
           minimumFetchInterval:
               kDebugMode
                   ? const Duration(seconds: 10)
@@ -82,15 +84,31 @@ class RemoteConfigService {
             true, // true = TabBar layout, false = AppBar icon + bottom sheet
       });
 
-      // Fetch and activate
-      await _remoteConfig!.fetchAndActivate();
-
       _initialized = true;
-      debugPrint('✅ Remote Config initialized successfully');
-      _logAllValues();
+      debugPrint('✅ Remote Config ready with defaults');
+
+      unawaited(_fetchAndActivateInBackground());
     } catch (e) {
       debugPrint('❌ Error initializing Remote Config: $e');
-      _initialized = false;
+      _initialized = _remoteConfig != null;
+    }
+  }
+
+  Future<void> _fetchAndActivateInBackground() async {
+    if (_remoteConfig == null) return;
+
+    try {
+      final activated = await _remoteConfig!
+          .fetchAndActivate()
+          .timeout(const Duration(seconds: 5));
+      debugPrint(
+        '✅ Remote Config background fetch complete (activated: $activated)',
+      );
+      _logAllValues();
+    } catch (e) {
+      debugPrint(
+        '⚠️ Remote Config background fetch failed, using defaults: $e',
+      );
     }
   }
 

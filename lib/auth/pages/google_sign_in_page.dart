@@ -10,6 +10,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/profile_page.dart';
+import 'package:saxatsavita_flutter/services/startup_sync_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
 
@@ -24,9 +25,6 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   GoogleSignInAccount? _currentUser;
   String _errorMessage = '';
   bool _isAppleSignInAvailable = false;
-  String _migrationMessage = '';
-  double _migrationProgress = 0.0;
-
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn.instance;
 
@@ -149,128 +147,26 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   Future<void> onSuccessfulSignIn() async {
     debugPrint('_handleAuthenticationEvent : Route determination started');
 
-    // Show migration progress dialog
-    if (mounted) {
-      final l10n = AppLocalizations.of(context)!;
-      setState(() {
-        _migrationMessage = l10n.migrating_data;
-        _migrationProgress = 0.0;
-      });
+    final shouldGoToProfile = await Utils.shouldNavigateToProfileLocally();
 
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder:
-            (dialogContext) => StatefulBuilder(
-              builder: (context, setDialogState) {
-                return PopScope(
-                  canPop: false,
-                  child: Dialog(
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const CircularProgressIndicator(),
-                          const SizedBox(height: 24),
-                          LinearProgressIndicator(
-                            value: _migrationProgress,
-                            backgroundColor:
-                                Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerHighest,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).colorScheme.primary,
-                            ),
-                            minHeight: 4,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            _migrationMessage.isNotEmpty
-                                ? _migrationMessage
-                                : l10n.migrating_data,
-                            style: Theme.of(context).textTheme.titleMedium,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n.migration_wait_message,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withOpacity(0.7),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+    StartupSyncService.syncSignedInUserDataInBackground();
+
+    if (!mounted) return;
+
+    if (shouldGoToProfile) {
+      debugPrint('_handleAuthenticationEvent : Routing to Profile Page');
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ProfilePage(continueAfterProfile: true),
+        ),
       );
-    }
-
-    // Check if migration is needed and perform it
-    await Utils.checkAndPerformMigration(
-      onProgress: (message, progress) {
-        if (mounted) {
-          final l10n = AppLocalizations.of(context)!;
-          setState(() {
-            // Map progress values to localized messages
-            if (progress <= 0.25) {
-              _migrationMessage = l10n.migrating_reading_history;
-            } else if (progress <= 0.75) {
-              _migrationMessage = l10n.migrating_kiran_progress;
-            } else {
-              _migrationMessage = l10n.migration_complete;
-            }
-            _migrationProgress = progress;
-          });
-        }
-      },
-    );
-
-    // Close migration dialog
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
-
-    debugPrint('_handleAuthenticationEvent : Migration done');
-
-    await Utils.loadUserdatafromFirebase();
-
-    // Check if user has profile data to determine navigation
-    bool shouldGoToProfile = await Utils.shouldNavigateToProfile();
-
-    setState(() {
-      _errorMessage =
-          shouldGoToProfile
-              ? 'Navigation to Profile'
-              : 'Navigation to HomePage';
-    });
-
-    // Navigate based on profile completeness
-    if (mounted) {
-      if (shouldGoToProfile) {
-        debugPrint('_handleAuthenticationEvent : Routing to Profile Page');
-        await Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ProfilePage(continueAfterProfile: true),
-          ),
-        );
-      } else {
-        debugPrint('_handleAuthenticationEvent : Routing to HomePage');
-        await Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainNavigation()),
-        );
-      }
+    } else {
+      debugPrint('_handleAuthenticationEvent : Routing to HomePage');
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainNavigation()),
+      );
     }
 
     debugPrint('_handleAuthenticationEvent : Navigation completed');

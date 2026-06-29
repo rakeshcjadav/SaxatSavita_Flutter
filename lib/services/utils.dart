@@ -330,9 +330,17 @@ class Utils {
     return await UserProfileService().getUserProfile();
   }
 
+  /// Set to true to re-enable reading-history / kiran migration on startup.
+  static const bool enableLegacyDataMigration = false;
+
   static Future<void> checkAndPerformMigration({
     Function(String message, double progress)? onProgress,
   }) async {
+    if (!enableLegacyDataMigration) {
+      debugPrint('Legacy data migration is disabled; skipping.');
+      return;
+    }
+
     debugPrint('Checking and performing data migration if needed...');
     onProgress?.call('Migrating reading history...', 0.25);
     await ReadingHistoryMigrationService().autoMigrateCurrentUser();
@@ -460,6 +468,26 @@ class Utils {
             ],
           ),
     );
+  }
+
+  /// Fast profile check using local cache only (for splash / sign-in routing).
+  static Future<bool> shouldNavigateToProfileLocally() async {
+    try {
+      final profile = await UserProfileService().getLocalUserProfile();
+
+      if (profile.firstName.isNotEmpty && profile.lastName.isNotEmpty) {
+        debugPrint('Local profile complete - going to HomePage');
+        return false;
+      }
+
+      debugPrint('Local profile incomplete - going to Profile Page');
+      return true;
+    } catch (e) {
+      debugPrint(
+        'Error reading local profile, assuming new user - going to Profile Page: $e',
+      );
+      return true;
+    }
   }
 
   static Future<bool> shouldNavigateToProfile() async {
