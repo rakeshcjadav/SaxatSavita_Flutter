@@ -1,0 +1,21 @@
+name: quill_native_bridge_windows
+description: No-op Windows quill bridge stub for Android/iOS-only builds.
+version: 0.0.2
+publish_to: none
+
+environment:
+  sdk: ^3.7.2
+  flutter: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  quill_native_bridge_platform_interface: ^0.0.2
+
+flutter:
+  plugin:
+    implements: quill_native_bridge
+    platforms:
+      windows:
+        dartPluginClass: QuillNativeBridgeWindows
+        fileName: quill_native_bridge_windows.dart
