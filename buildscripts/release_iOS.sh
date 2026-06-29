@@ -10,6 +10,8 @@ flutter clean
 flutter pub get
 # Must run after pub get: Xcode uses Runner.xcworkspace Package.resolved for archives.
 bash "$(dirname "$0")/pin_firebase_ios_sdk.sh"
+# Ensure generated SPM manifest matches Runner deployment target (Firebase needs iOS 15+).
+flutter build ios --config-only --release
 flutter build ipa --release
 
 # Extract version from pubspec.yaml

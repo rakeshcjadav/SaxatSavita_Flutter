@@ -33,5 +33,22 @@ for RESOLVED in \
   fi
 done
 
+# FlutterGeneratedPluginSwiftPackage defaults to iOS 13.0; Firebase SPM plugins need 15+.
+# Match the Podfile / Xcode deployment target so archives do not fail integrity checks.
+PKG_MANIFEST="$ROOT/ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift"
+MIN_IOS=$(grep -E "^platform :ios," "$ROOT/ios/Podfile" | sed -E "s/.*'([0-9.]+)'.*/\1/")
+if [ -f "$PKG_MANIFEST" ] && [ -n "$MIN_IOS" ]; then
+  python3 - "$PKG_MANIFEST" "$MIN_IOS" <<'PY'
+import pathlib, re, sys
+
+path, version = sys.argv[1:3]
+text = pathlib.Path(path).read_text()
+updated = re.sub(r'\.iOS\("[0-9.]+"\)', f'.iOS("{version}")', text, count=1)
+if updated != text:
+    pathlib.Path(path).write_text(updated)
+    print(f"Synced FlutterGeneratedPluginSwiftPackage minimum iOS to {version}")
+PY
+fi
+
 # Drop cached SPM artifacts so Xcode re-fetches the pinned revision.
 rm -rf "$ROOT/build/ios/SourcePackages"
