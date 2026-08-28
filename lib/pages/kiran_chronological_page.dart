@@ -11,6 +11,8 @@ import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
+import 'package:saxatsavita_flutter/widgets/kiran_place_line.dart';
+import 'package:saxatsavita_flutter/widgets/village_filter_sheet.dart';
 
 // ---------------------------------------------------------------------------
 // Data models
@@ -53,7 +55,10 @@ class KiranChronologicalPage extends StatefulWidget {
 }
 
 class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
+  List<_ChronoEntry> _allEntries = [];
   List<_ListRow> _rows = [];
+  List<String> _villages = [];
+  String? _villageFilter;
   bool _loading = true;
 
   @override
@@ -79,10 +84,36 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
           );
         }).toList();
 
-    // Build flat list with year section headers
+    final villageSet = <String>{};
+    for (final entry in entries) {
+      villageSet.addAll(entry.kiranInfo.places);
+      if (entry.kiranInfo.places.isEmpty && entry.kiranInfo.place.isNotEmpty) {
+        villageSet.add(entry.kiranInfo.place);
+      }
+    }
+    final villages = villageSet.toList()..sort();
+
+    if (mounted) {
+      setState(() {
+        _allEntries = entries;
+        _villages = villages;
+        _loading = false;
+        _rebuildRows();
+      });
+    }
+  }
+
+  void _rebuildRows() {
+    final filtered =
+        _villageFilter == null || _villageFilter!.isEmpty
+            ? _allEntries
+            : _allEntries
+                .where((e) => e.kiranInfo.visitsVillage(_villageFilter!))
+                .toList();
+
     final List<_ListRow> rows = [];
     int? currentYear;
-    for (final entry in entries) {
+    for (final entry in filtered) {
       final year = entry.date?.year;
       if (year != null && year != currentYear) {
         rows.add(_YearRow(year));
@@ -90,16 +121,20 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
       }
       rows.add(_EntryRow(entry));
     }
-    // Undated entries are already at the end (sorted by sort_kirans_by_date.py)
-    // They have no year header — they fall under the last year group or
-    // get a dedicated header if there was no dated entry before them.
+    _rows = rows;
+  }
 
-    if (mounted) {
-      setState(() {
-        _rows = rows;
-        _loading = false;
-      });
-    }
+  Future<void> _pickVillage() async {
+    final result = await showVillageFilterSheet(
+      context: context,
+      villages: _villages,
+      selected: _villageFilter,
+    );
+    if (!mounted || result == null) return;
+    setState(() {
+      _villageFilter = result.isEmpty ? null : result;
+      _rebuildRows();
+    });
   }
 
   // ── Navigation ─────────────────────────────────────────────────────────────
@@ -181,35 +216,78 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: buildAppBar(context, title: l10n.kirans_by_date),
+      appBar: buildAppBar(
+        context,
+        title: l10n.kirans_by_date,
+        extraActions: [
+          IconButton(
+            icon: Icon(
+              _villageFilter == null
+                  ? Icons.filter_alt_outlined
+                  : Icons.filter_alt,
+            ),
+            tooltip: l10n.filter_by_village,
+            onPressed: _villages.isEmpty ? null : _pickVillage,
+          ),
+        ],
+      ),
       body:
           _loading
               ? const Center(child: CircularProgressIndicator())
-              : Scrollbar(
-                controller: _scrollController,
-                thumbVisibility: true,
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: _rows.length,
-                  itemBuilder: (context, index) {
-                    final row = _rows[index];
-                    if (row is _YearRow) {
-                      return _buildYearHeader(row.year, context);
-                    }
-                    final entry = (row as _EntryRow).entry;
-                    // Show divider between consecutive entry tiles
-                    final showDivider =
-                        index + 1 < _rows.length &&
-                        _rows[index + 1] is _EntryRow;
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildEntryTile(entry, context, l10n),
-                        if (showDivider) const Divider(height: 1, indent: 0),
-                      ],
-                    );
-                  },
-                ),
+              : Column(
+                children: [
+                  if (_villageFilter != null)
+                    villageFilterChip(
+                      context: context,
+                      village: _villageFilter!,
+                      onCleared: () {
+                        setState(() {
+                          _villageFilter = null;
+                          _rebuildRows();
+                        });
+                      },
+                    ),
+                  Expanded(
+                    child:
+                        _rows.isEmpty
+                            ? Center(
+                              child: Text(
+                                l10n.no_filtered_results,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                            )
+                            : Scrollbar(
+                              controller: _scrollController,
+                              thumbVisibility: true,
+                              child: ListView.builder(
+                                controller: _scrollController,
+                                itemCount: _rows.length,
+                                itemBuilder: (context, index) {
+                                  final row = _rows[index];
+                                  if (row is _YearRow) {
+                                    return _buildYearHeader(row.year, context);
+                                  }
+                                  final entry = (row as _EntryRow).entry;
+                                  final showDivider =
+                                      index + 1 < _rows.length &&
+                                      _rows[index + 1] is _EntryRow;
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      _buildEntryTile(entry, context, l10n),
+                                      if (showDivider)
+                                        const Divider(height: 1, indent: 0),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                  ),
+                ],
               ),
     );
   }
@@ -269,44 +347,50 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
           fontWeight: FontWeight.w500,
         ),
       ),
-      subtitle: Row(
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PartChip(
-            partNumber: entry.partNumber,
-            accentColor: partAccent,
-            l10n: l10n,
-          ),
-          if (fullDate.isNotEmpty) ...[
-            const SizedBox(width: 6),
-            Text(
-              fullDate,
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
-            ),
-          ],
-          if (progress > 0) ...[
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 60,
-              child: LinearProgressIndicator(
-                value: progress / 100.0,
-                minHeight: 4,
-                borderRadius: BorderRadius.circular(2),
-                backgroundColor: colorScheme.surfaceContainerHighest,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  partAccent.withValues(alpha: 0.6),
-                ),
+          Row(
+            children: [
+              _PartChip(
+                partNumber: entry.partNumber,
+                accentColor: partAccent,
+                l10n: l10n,
               ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              '${Utils.toGujaratiNumerals(progress.toString())}%',
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
-            ),
-          ],
+              if (fullDate.isNotEmpty) ...[
+                const SizedBox(width: 6),
+                Text(
+                  fullDate,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
+                ),
+              ],
+              if (progress > 0) ...[
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 60,
+                  child: LinearProgressIndicator(
+                    value: progress / 100.0,
+                    minHeight: 4,
+                    borderRadius: BorderRadius.circular(2),
+                    backgroundColor: colorScheme.surfaceContainerHighest,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      partAccent.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '${Utils.toGujaratiNumerals(progress.toString())}%',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
+                ),
+              ],
+            ],
+          ),
+          KiranPlaceLine(kiranInfo: entry.kiranInfo),
         ],
       ),
       trailing: Icon(

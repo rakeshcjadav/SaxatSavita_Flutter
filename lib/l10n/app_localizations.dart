@@ -404,6 +404,18 @@ abstract class AppLocalizations {
   /// **'Place'**
   String get kiran_place;
 
+  /// No description provided for @filter_by_village.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by village'**
+  String get filter_by_village;
+
+  /// No description provided for @all_villages.
+  ///
+  /// In en, this message translates to:
+  /// **'All villages'**
+  String get all_villages;
+
   /// No description provided for @kiran_venue.
   ///
   /// In en, this message translates to:
@@ -419,7 +431,7 @@ abstract class AppLocalizations {
   /// No description provided for @kiran_moral.
   ///
   /// In en, this message translates to:
-  /// **'Moral'**
+  /// **'Teaching'**
   String get kiran_moral;
 
   /// No description provided for @kiran_history.

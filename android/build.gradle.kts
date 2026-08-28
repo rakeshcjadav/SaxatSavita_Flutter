@@ -6,20 +6,22 @@ allprojects {
 }
 
 subprojects {
-    afterEvaluate {
-        tasks.withType<JavaCompile>().configureEach {
-            if (project.hasProperty("android")) {
-                sourceCompatibility = "21"
-                targetCompatibility = "21"
+    pluginManager.withPlugin("com.android.library") {
+        extensions.configure<com.android.build.api.dsl.LibraryExtension>("android") {
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_17
+                targetCompatibility = JavaVersion.VERSION_17
             }
         }
-        
-        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-            if (project.hasProperty("android")) {
-                compilerOptions {
-                    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
-                }
-            }
+    }
+    // Plugins often reset Java 8 in their own android {} block; override after evaluation.
+    // Skip :app — Gradle 9 finalizes its toolchain and rejects later JavaCompile mutations.
+    afterEvaluate {
+        if (name == "app") return@afterEvaluate
+        tasks.withType<JavaCompile>().configureEach {
+            sourceCompatibility = JavaVersion.VERSION_17.toString()
+            targetCompatibility = JavaVersion.VERSION_17.toString()
+            options.compilerArgs.add("-Xlint:-options")
         }
     }
 }

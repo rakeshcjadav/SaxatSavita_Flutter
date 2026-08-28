@@ -80,8 +80,8 @@ class RemoteConfigService {
             true, // Toggle between HtmlToTextSpan and CustomHtmlWidget
         // Layout options
         'kiran_meta_enabled': false, // false = hide kiran meta info completely
-        'kiran_meta_as_tab_bar':
-            true, // true = TabBar layout, false = AppBar icon + bottom sheet
+        'kiran_meta_inline':
+            false, // true = full panel in kiran scroll, false = compact strip + sheet
       });
 
       _initialized = true;
@@ -98,9 +98,9 @@ class RemoteConfigService {
     if (_remoteConfig == null) return;
 
     try {
-      final activated = await _remoteConfig!
-          .fetchAndActivate()
-          .timeout(const Duration(seconds: 5));
+      final activated = await _remoteConfig!.fetchAndActivate().timeout(
+        const Duration(seconds: 5),
+      );
       debugPrint(
         '✅ Remote Config background fetch complete (activated: $activated)',
       );
@@ -207,14 +207,14 @@ class RemoteConfigService {
   bool get useCustomHtmlWidget =>
       _remoteConfig?.getBool('use_custom_html_widget') ?? false;
 
-  /// false → hide kiran meta info completely (no icon, no tab, no bottom sheet)
+  /// false → hide kiran meta info completely (no icon, no strip, no panel)
   bool get kiranMetaEnabled =>
       _remoteConfig?.getBool('kiran_meta_enabled') ?? true;
 
-  /// true  → show kiran meta info in a TabBar (Reading / Info tabs)
-  /// false → show via AppBar icon + modal bottom sheet (default)
-  bool get kiranMetaAsTabBar =>
-      _remoteConfig?.getBool('kiran_meta_as_tab_bar') ?? false;
+  /// true  → full meta panel at the top of the kiran scroll
+  /// false → compact date/place strip + AppBar icon + bottom sheet (default)
+  bool get kiranMetaInline =>
+      _remoteConfig?.getBool('kiran_meta_inline') ?? false;
 
   /// Get a custom string value
   String getString(String key, {String defaultValue = ''}) {

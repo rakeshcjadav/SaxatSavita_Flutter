@@ -541,6 +541,17 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             ),
           ],
         ),
+        if (kiran.placeLine.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            kiran.placeLine,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.outline,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
         const SizedBox(height: 8),
         // 2. All data from KiranUserInfo
         Row(

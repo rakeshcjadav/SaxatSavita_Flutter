@@ -76,9 +76,29 @@ class KiranCalendarService {
   }
 
   /// Returns entries for [day], or an empty list if none.
-  List<KiranCalendarEntry> entriesFor(DateTime day) {
+  /// When [village] is set, only kirans that sat in that village are returned.
+  List<KiranCalendarEntry> entriesFor(DateTime day, {String? village}) {
     if (_calendar == null) return [];
-    return _calendar![_normalise(day)] ?? [];
+    final list = _calendar![_normalise(day)] ?? [];
+    if (village == null || village.isEmpty) return list;
+    return list.where((e) => e.kiranInfo.visitsVillage(village)).toList();
+  }
+
+  /// Unique villages across all dated kirans, sorted.
+  List<String> get allVillages {
+    if (_calendar == null) return const [];
+    final set = <String>{};
+    for (final entries in _calendar!.values) {
+      for (final entry in entries) {
+        set.addAll(entry.kiranInfo.places);
+        if (entry.kiranInfo.places.isEmpty &&
+            entry.kiranInfo.place.isNotEmpty) {
+          set.add(entry.kiranInfo.place);
+        }
+      }
+    }
+    final list = set.toList()..sort();
+    return list;
   }
 
   /// Returns all dates that have at least one kiran.

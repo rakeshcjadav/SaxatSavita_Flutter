@@ -52,7 +52,7 @@ class KiranReadPage extends StatefulWidget {
 }
 
 class _KiranReadPageState extends State<KiranReadPage>
-    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+    with WidgetsBindingObserver {
   late Future<Map<String, dynamic>> _futureKiranContent;
   Map<String, dynamic>? _kiranContentData; // cached for AppBar info sheet
   final ScrollController _scrollController = ScrollController();
@@ -106,9 +106,6 @@ class _KiranReadPageState extends State<KiranReadPage>
   // Search functionality
   late final KiranSearchController _search;
 
-  // Tab controller for the optional TabBar meta layout
-  TabController? _metaTabController;
-
   @override
   void initState() {
     super.initState();
@@ -121,12 +118,6 @@ class _KiranReadPageState extends State<KiranReadPage>
         if (mounted) setState(() {});
       },
     );
-
-    // Initialize tab controller when using the TabBar meta layout
-    if (RemoteConfigService().kiranMetaEnabled &&
-        RemoteConfigService().kiranMetaAsTabBar) {
-      _metaTabController = TabController(length: 2, vsync: this);
-    }
 
     // Set reading mode
     _isReadingMode = widget.readingMode == ReadingMode.reading;
@@ -251,9 +242,6 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     // Dispose search controller
     _search.dispose();
-
-    // Dispose tab controller if used
-    _metaTabController?.dispose();
 
     // Stop and dispose TTS
     _ttsController?.dispose();
@@ -1189,7 +1177,7 @@ class _KiranReadPageState extends State<KiranReadPage>
               },
             ),
             if (RemoteConfigService().kiranMetaEnabled &&
-                !RemoteConfigService().kiranMetaAsTabBar)
+                !RemoteConfigService().kiranMetaInline)
               IconButton(
                 icon: const Icon(Icons.info_outline),
                 tooltip: AppLocalizations.of(context)!.kiran_info,
@@ -1243,72 +1231,8 @@ class _KiranReadPageState extends State<KiranReadPage>
             );
             _resumeTimer();
           },
-          bottom:
-              RemoteConfigService().kiranMetaEnabled &&
-                      RemoteConfigService().kiranMetaAsTabBar
-                  ? TabBar(
-                    controller: _metaTabController,
-                    tabs: [
-                      Tab(text: AppLocalizations.of(context)!.kiran),
-                      Tab(text: AppLocalizations.of(context)!.kiran_summary),
-                    ],
-                  )
-                  : null,
         ),
-        body:
-            RemoteConfigService().kiranMetaEnabled &&
-                    RemoteConfigService().kiranMetaAsTabBar
-                ? TabBarView(
-                  controller: _metaTabController,
-                  children: [
-                    _buildReadingBody(),
-                    FutureBuilder<Map<String, dynamic>>(
-                      future: _futureKiranContent,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Text('Error: ${snapshot.error}'),
-                          );
-                        } else if (!snapshot.hasData) {
-                          return const Center(child: Text('No content found.'));
-                        }
-                        final contentData = snapshot.data!;
-                        // Ensure cache is populated even if Reading tab was never shown
-                        _kiranContentData ??= contentData;
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            left: 16.0,
-                            right: 16.0,
-                            top: 0.0,
-                            bottom: 16.0,
-                          ),
-                          child: Scrollbar(
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsets.only(
-                                left: 4.0,
-                                right: 4.0,
-                                top: 16.0,
-                                bottom: 0.0,
-                              ),
-                              child: SafeArea(
-                                child: _buildKiranMetaPanel(
-                                  contentData,
-                                  context,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                )
-                : _buildReadingBody(),
+        body: _buildReadingBody(),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             _pauseTimer();
@@ -1321,7 +1245,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
   }
 
-  /// Builds the main reading body (used directly or as a tab in TabBar layout).
+  /// Builds the main reading body.
   Widget _buildReadingBody() {
     return Stack(
       children: [
@@ -1416,37 +1340,54 @@ class _KiranReadPageState extends State<KiranReadPage>
                             _isInitialized = true;
                           });
                         }
-                        return NotificationListener<ScrollNotification>(
-                          onNotification: (notification) {
-                            if (notification is UserScrollNotification) {
-                              // User started scrolling manually.
-                              // Defer setState to avoid "Build scheduled during frame"
-                              // since scroll notifications can fire during layout.
-                              if (_isAutoScrollEnabled && _isAutoScrolling) {
-                                WidgetsBinding.instance.addPostFrameCallback((
-                                  _,
-                                ) {
-                                  if (mounted) _stopAutoScroll();
-                                });
-                              }
-                            } else if (notification is ScrollEndNotification) {
-                              // User stopped scrolling
-                              if (_isAutoScrollEnabled &&
-                                  !_isAutoScrolling &&
-                                  _autoScrollDelayTimer == null) {
-                                // Optionally, resume auto-scroll after a short delay
-                                Future.delayed(const Duration(seconds: 1), () {
-                                  if (mounted &&
-                                      !_isAutoScrolling &&
-                                      _autoScrollDelayTimer == null) {
-                                    _startAutoScrollWithDelay();
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (RemoteConfigService().kiranMetaEnabled &&
+                                !RemoteConfigService().kiranMetaInline)
+                              _buildKiranMetaStrip(contentData, context),
+                            Expanded(
+                              child: NotificationListener<ScrollNotification>(
+                                onNotification: (notification) {
+                                  if (notification is UserScrollNotification) {
+                                    // User started scrolling manually.
+                                    // Defer setState to avoid "Build scheduled during frame"
+                                    // since scroll notifications can fire during layout.
+                                    if (_isAutoScrollEnabled &&
+                                        _isAutoScrolling) {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                            if (mounted) _stopAutoScroll();
+                                          });
+                                    }
+                                  } else if (notification
+                                      is ScrollEndNotification) {
+                                    // User stopped scrolling
+                                    if (_isAutoScrollEnabled &&
+                                        !_isAutoScrolling &&
+                                        _autoScrollDelayTimer == null) {
+                                      // Optionally, resume auto-scroll after a short delay
+                                      Future.delayed(
+                                        const Duration(seconds: 1),
+                                        () {
+                                          if (mounted &&
+                                              !_isAutoScrolling &&
+                                              _autoScrollDelayTimer == null) {
+                                            _startAutoScrollWithDelay();
+                                          }
+                                        },
+                                      );
+                                    }
                                   }
-                                });
-                              }
-                            }
-                            return false;
-                          },
-                          child: _buildKiranContentWidget(contentData, context),
+                                  return false;
+                                },
+                                child: _buildKiranContentWidget(
+                                  contentData,
+                                  context,
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),
@@ -1486,15 +1427,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
   }
 
-  /// Builds the meta info panel (locations, date, moral, summary) shown above the kiran text.
-  Widget _buildKiranMetaPanel(
-    Map<String, dynamic> contentData,
-    BuildContext context,
-  ) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
+  List<String> _parseKiranLocations(Map<String, dynamic> contentData) {
     final String place =
         (contentData['main']?['place'] as String? ?? '').trim();
     final String venue =
@@ -1504,7 +1437,6 @@ class _KiranReadPageState extends State<KiranReadPage>
             .map((e) => e.toString().trim())
             .where((e) => e.isNotEmpty)
             .toList();
-    // "venue, place" per sitting. Fall back to the old single fields.
     if (locations.isEmpty) {
       if (venue.isNotEmpty && place.isNotEmpty) {
         locations.add('$venue, $place');
@@ -1512,6 +1444,104 @@ class _KiranReadPageState extends State<KiranReadPage>
         locations.add(place);
       }
     }
+    return locations;
+  }
+
+  /// Compact date/place strip under the title (layout A). Tapping opens the sheet.
+  Widget _buildKiranMetaStrip(
+    Map<String, dynamic> contentData,
+    BuildContext context,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final locations = _parseKiranLocations(contentData);
+    final date = (contentData['meta']?['date'] as String? ?? '').trim();
+    if (locations.isEmpty && date.isEmpty) return const SizedBox.shrink();
+
+    final placeLabel =
+        locations.isEmpty
+            ? ''
+            : locations.length == 1
+            ? locations.first
+            : '${locations.first} +${locations.length - 1}';
+
+    final mutedStyle = Theme.of(
+      context,
+    ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant);
+
+    return Material(
+      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+      child: InkWell(
+        onTap: () => _showKiranInfoSheet(context, contentData),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (placeLabel.isNotEmpty)
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            size: 16,
+                            color: colorScheme.primary,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              placeLabel,
+                              style: mutedStyle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    if (date.isNotEmpty) ...[
+                      if (placeLabel.isNotEmpty) const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            size: 16,
+                            color: colorScheme.primary,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              date,
+                              style: mutedStyle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, size: 20, color: colorScheme.outline),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the meta info panel (locations, date, moral, summary).
+  Widget _buildKiranMetaPanel(
+    Map<String, dynamic> contentData,
+    BuildContext context, {
+    bool showDisclaimer = false,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    final List<String> locations = _parseKiranLocations(contentData);
     final String date = (contentData['meta']?['date'] as String? ?? '').trim();
     final String moral =
         (contentData['meta']?['moral'] as String? ?? '').trim();
@@ -1627,7 +1657,13 @@ class _KiranReadPageState extends State<KiranReadPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        sectionBlock(Icons.article, "AI Generated", ""),
+        if (showDisclaimer) ...[
+          Text(
+            l10n.kiran_info,
+            style: textTheme.labelSmall?.copyWith(color: colorScheme.outline),
+          ),
+          const SizedBox(height: 8),
+        ],
         if (locations.isNotEmpty) ...[
           sectionBlock(
             Icons.location_on,
@@ -1746,6 +1782,18 @@ class _KiranReadPageState extends State<KiranReadPage>
           ),
           child: Column(
             children: [
+              if (RemoteConfigService().kiranMetaEnabled &&
+                  RemoteConfigService().kiranMetaInline) ...[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: _buildKiranMetaPanel(
+                    contentData,
+                    context,
+                    showDisclaimer: true,
+                  ),
+                ),
+                const Divider(height: 24),
+              ],
               if (!RemoteConfigService().useCustomHtmlWidget)
                 ...HtmlToTextSpan.convertToWidgets(
                   _search.isActive && _search.textController.text.isNotEmpty

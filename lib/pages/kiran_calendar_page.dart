@@ -8,6 +8,8 @@ import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/kiran_calendar_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
+import 'package:saxatsavita_flutter/widgets/kiran_place_line.dart';
+import 'package:saxatsavita_flutter/widgets/village_filter_sheet.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class KiranCalendarPage extends StatefulWidget {
@@ -30,6 +32,7 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
   DateTime _focusedDay = _todayIn2000();
   DateTime? _selectedDay = _todayIn2000();
   List<KiranCalendarEntry> _selectedEntries = [];
+  String? _villageFilter;
 
   @override
   void initState() {
@@ -51,12 +54,33 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
     setState(() {
       _selectedDay = selectedDay;
       _focusedDay = focusedDay;
-      _selectedEntries = _service.entriesFor(selectedDay);
+      _selectedEntries = _service.entriesFor(
+        selectedDay,
+        village: _villageFilter,
+      );
     });
   }
 
   List<KiranCalendarEntry> _eventLoader(DateTime day) =>
-      _service.entriesFor(day);
+      _service.entriesFor(day, village: _villageFilter);
+
+  Future<void> _pickVillage() async {
+    final result = await showVillageFilterSheet(
+      context: context,
+      villages: _service.allVillages,
+      selected: _villageFilter,
+    );
+    if (!mounted || result == null) return;
+    setState(() {
+      _villageFilter = result.isEmpty ? null : result;
+      if (_selectedDay != null) {
+        _selectedEntries = _service.entriesFor(
+          _selectedDay!,
+          village: _villageFilter,
+        );
+      }
+    });
+  }
 
   Future<void> _openKiran(KiranCalendarEntry entry) async {
     final kiranUserInfo = KiranUserService().getKiranUserInfo(
@@ -133,6 +157,15 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
         title: l10n.kiran_calendar,
         extraActions: [
           IconButton(
+            icon: Icon(
+              _villageFilter == null
+                  ? Icons.filter_alt_outlined
+                  : Icons.filter_alt,
+            ),
+            tooltip: l10n.filter_by_village,
+            onPressed: _pickVillage,
+          ),
+          IconButton(
             icon: const Icon(Icons.format_list_numbered_outlined),
             tooltip: l10n.kirans_by_date,
             onPressed:
@@ -145,6 +178,21 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
               ? const Center(child: CircularProgressIndicator())
               : Column(
                 children: [
+                  if (_villageFilter != null)
+                    villageFilterChip(
+                      context: context,
+                      village: _villageFilter!,
+                      onCleared: () {
+                        setState(() {
+                          _villageFilter = null;
+                          if (_selectedDay != null) {
+                            _selectedEntries = _service.entriesFor(
+                              _selectedDay!,
+                            );
+                          }
+                        });
+                      },
+                    ),
                   _buildCalendar(colorScheme),
                   const Divider(height: 1),
                   Expanded(child: _buildDayPanel(colorScheme, l10n)),
@@ -155,6 +203,7 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
 
   Widget _buildCalendar(ColorScheme colorScheme) {
     return TableCalendar<KiranCalendarEntry>(
+      key: ValueKey(_villageFilter ?? ''),
       firstDay: DateTime.utc(2000, 1, 1),
       lastDay: DateTime.utc(2000, 12, 31),
       focusedDay: _focusedDay,
@@ -317,38 +366,44 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
           fontWeight: FontWeight.w500,
         ),
       ),
-      subtitle: Row(
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PartBadge(partNumber: entry.partNumber, accentColor: partAccent),
-          const SizedBox(width: 6),
-          Text(
-            fullDate,
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
-          ),
-          if (progress > 0) ...[
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 60,
-              child: LinearProgressIndicator(
-                value: progress / 100.0,
-                minHeight: 4,
-                borderRadius: BorderRadius.circular(2),
-                backgroundColor: colorScheme.surfaceContainerHighest,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  partAccent.withValues(alpha: 0.6),
-                ),
+          Row(
+            children: [
+              _PartBadge(partNumber: entry.partNumber, accentColor: partAccent),
+              const SizedBox(width: 6),
+              Text(
+                fullDate,
+                style: Theme.of(
+                  context,
+                ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
               ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              '$progress%',
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
-            ),
-          ],
+              if (progress > 0) ...[
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 60,
+                  child: LinearProgressIndicator(
+                    value: progress / 100.0,
+                    minHeight: 4,
+                    borderRadius: BorderRadius.circular(2),
+                    backgroundColor: colorScheme.surfaceContainerHighest,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      partAccent.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '$progress%',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
+                ),
+              ],
+            ],
+          ),
+          KiranPlaceLine(kiranInfo: entry.kiranInfo),
         ],
       ),
       trailing: Icon(

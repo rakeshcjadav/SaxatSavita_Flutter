@@ -163,13 +163,19 @@ class AppLocalizationsGu extends AppLocalizations {
   String get kiran_place => 'સ્થળ';
 
   @override
+  String get filter_by_village => 'ગામ પ્રમાણે ફિલ્ટર';
+
+  @override
+  String get all_villages => 'બધાં ગામ';
+
+  @override
   String get kiran_venue => 'સ્થાન';
 
   @override
   String get kiran_date => 'તારીખ';
 
   @override
-  String get kiran_moral => 'નૈતિક';
+  String get kiran_moral => 'શિક્ષણ';
 
   @override
   String get kiran_history => 'ઇતિહાસ';

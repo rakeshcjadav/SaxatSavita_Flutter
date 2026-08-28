@@ -12,6 +12,8 @@ Structure of each entry in the output list:
     "title":      "...",
     "word_count": 800,
     "date":       "20-5-1975"   # 'D-M-YYYY'; empty string if unknown
+    "place":      "પીપલાણા"     # first village; empty string if unknown
+    "places":     ["પીપલાણા", "જૂનાગઢ"]  # unique villages in sitting order
   }
 
 Entries without a date are placed at the END of the list, sorted by part
@@ -63,6 +65,8 @@ for part_num in range(1, 6):
                 "title":      entry.get("title", ""),
                 "word_count": entry.get("word_count", 0),
                 "date":       entry.get("date", ""),
+                "place":      entry.get("place", ""),
+                "places":     list(entry.get("places") or []),
             }
         )
 

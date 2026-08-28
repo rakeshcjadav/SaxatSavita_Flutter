@@ -163,13 +163,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kiran_place => 'Place';
 
   @override
+  String get filter_by_village => 'Filter by village';
+
+  @override
+  String get all_villages => 'All villages';
+
+  @override
   String get kiran_venue => 'Venue';
 
   @override
   String get kiran_date => 'Date';
 
   @override
-  String get kiran_moral => 'Moral';
+  String get kiran_moral => 'Teaching';
 
   @override
   String get kiran_history => 'History';
