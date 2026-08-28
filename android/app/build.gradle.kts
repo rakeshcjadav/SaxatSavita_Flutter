@@ -42,6 +42,9 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
+        manifestPlaceholders["applicationName"] =
+            "com.farenidham.books.saxatsavita.app.SaxatSavitaApplication"
     }
 
     signingConfigs {
@@ -77,4 +80,5 @@ kotlin {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    implementation("androidx.multidex:multidex:2.0.1")
 }
