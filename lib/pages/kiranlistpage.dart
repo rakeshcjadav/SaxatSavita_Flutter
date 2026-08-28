@@ -15,6 +15,9 @@ import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
+import 'package:saxatsavita_flutter/widgets/kiran_place_line.dart';
+import 'package:saxatsavita_flutter/widgets/kiran_meta_sheet.dart';
+import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class Kiranlistpage extends StatefulWidget {
@@ -442,26 +445,49 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     KiranUserInfo kiranUserInfo,
   ) {
     return [
-      ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+      Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        child: Row(
           children: [
-            _buildFavoriteButton(kiran, kiranUserInfo),
-            _buildNoteButton(kiran, kiranUserInfo),
-          ],
-        ),
-        trailing: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildFavoriteButton(kiran, kiranUserInfo),
+                    const SizedBox(width: 12),
+                    _buildNoteButton(kiran, kiranUserInfo),
+                    if (RemoteConfigService().kiranMetaEnabled) ...[
+                      const SizedBox(width: 12),
+                      _buildInfoButton(kiran, kiranUserInfo),
+                    ],
+                  ],
+                ),
+              ),
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Theme.of(context).colorScheme.onPrimary,
-          ),
-          onPressed: () {
-            _navigateToKiranReadPage(kiran, kiranUserInfo);
-          },
-          child: Text(AppLocalizations.of(context)!.read),
+            const SizedBox(width: 8),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              ),
+              onPressed: () {
+                _navigateToKiranReadPage(kiran, kiranUserInfo);
+              },
+              child: Text(AppLocalizations.of(context)!.read),
+            ),
+          ],
         ),
       ),
     ];
@@ -541,17 +567,10 @@ class _KiranlistpageState extends State<Kiranlistpage> {
             ),
           ],
         ),
-        if (kiran.placeLine.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          Text(
-            kiran.placeLine,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+        KiranPlaceLine(
+          kiranInfo: kiran,
+          color: Theme.of(context).textTheme.titleMedium?.color,
+        ),
         const SizedBox(height: 8),
         // 2. All data from KiranUserInfo
         Row(
@@ -586,11 +605,14 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               color: Colors.grey.withValues(alpha: 0.3),
             ),
             const SizedBox(width: 4),
-            Text(
-              AppLocalizations.of(
-                context,
-              )!.time_to_read(Utils.getEstimatedReadingTime(kiran.wordCount)),
-              style: Theme.of(context).textTheme.bodySmall,
+            Flexible(
+              child: Text(
+                AppLocalizations.of(
+                  context,
+                )!.time_to_read(Utils.getEstimatedReadingTime(kiran.wordCount)),
+                style: Theme.of(context).textTheme.bodySmall,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -621,9 +643,12 @@ class _KiranlistpageState extends State<Kiranlistpage> {
               ).colorScheme.primary.withValues(alpha: 0.3),
             ),
             const SizedBox(width: 4),
-            Text(
-              getReadCount(kiranUserInfo),
-              style: Theme.of(context).textTheme.bodySmall,
+            Expanded(
+              child: Text(
+                getReadCount(kiranUserInfo),
+                style: Theme.of(context).textTheme.bodySmall,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -670,6 +695,16 @@ class _KiranlistpageState extends State<Kiranlistpage> {
     return AppLocalizations.of(context)!.reading_count(kiranUserInfo.readCount);
   }
 
+  double get _cardActionIconSize =>
+      appSettingsNotifier.value.fontSize.clamp(18.0, 24.0);
+
+  ButtonStyle get _cardActionIconStyle => IconButton.styleFrom(
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    visualDensity: VisualDensity.compact,
+    padding: const EdgeInsets.all(4),
+    minimumSize: const Size(40, 40),
+  );
+
   Container _buildFavoriteButton(KiranInfo kiran, KiranUserInfo kiranUserInfo) {
     return Container(
       alignment: Alignment.center,
@@ -687,7 +722,8 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 kiranUserInfo.toggleFavourite();
               });
             },
-            iconSize: appSettingsNotifier.value.fontSize,
+            style: _cardActionIconStyle,
+            iconSize: _cardActionIconSize,
             icon: Icon(
               kiranUserInfo.isFavourite == 1
                   ? Icons.favorite
@@ -732,12 +768,60 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 ),
               );
             },
-            iconSize: appSettingsNotifier.value.fontSize,
+            style: _cardActionIconStyle,
+            iconSize: _cardActionIconSize,
             icon: Icon(Icons.note),
           ),
           Text(
             AppLocalizations.of(context)!.notes,
             style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _buildInfoButton(KiranInfo kiran, KiranUserInfo kiranUserInfo) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            onPressed: () {
+              showKiranMetaSheetForKiran(
+                context: context,
+                partId: widget.bookPart.id,
+                kiranIndex: kiran.index,
+                onAddNote: (selectedText) async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => NoteEditorPage(
+                            kiranUserInfo: kiranUserInfo,
+                            kiranTitle:
+                                '${AppLocalizations.of(context)!.kiran} ${kiran.number.replaceAll(".", "")}',
+                            selectedText: selectedText,
+                          ),
+                    ),
+                  );
+                },
+              );
+            },
+            style: _cardActionIconStyle,
+            iconSize: _cardActionIconSize,
+            icon: const Icon(Icons.info_outline),
+          ),
+          Text(
+            AppLocalizations.of(context)!.kiran_info_short,
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
           ),
         ],
       ),

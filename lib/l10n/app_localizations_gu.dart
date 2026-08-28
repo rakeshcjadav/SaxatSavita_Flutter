@@ -184,7 +184,13 @@ class AppLocalizationsGu extends AppLocalizations {
   String get kiran_summary => 'સારાંશ';
 
   @override
-  String get kiran_info => 'કિરણની માહિતી ( AI Generated )';
+  String get kiran_info => 'કિરણની માહિતી';
+
+  @override
+  String get kiran_info_short => 'માહિતી';
+
+  @override
+  String get kiran_info_ai_generated => 'AI દ્વારા તૈયાર';
 
   @override
   String get tag_line => '।। વિચાર કરો તો ખબર પડે ।।';

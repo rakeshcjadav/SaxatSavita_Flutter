@@ -11,13 +11,8 @@ class CustomHtmlWidget extends StatefulWidget {
     this.onAddNote,
     this.onCreateQuoteImage,
     this.onSingleTap,
+    this.wrapInSelectionArea = true,
   }) {
-    // Initialize the custom tag registry if needed
-    // This can be used to register custom HTML tags for rendering
-    // For example, you can register a custom tag for <slok> or <dq>
-    // to style them differently in the HTML content.
-    // Here, we are just creating an instance of CustomTagRegistry.
-    // You can expand this as per your requirements.
     customTagRegistry.registerCustomTags();
   }
 
@@ -25,6 +20,7 @@ class CustomHtmlWidget extends StatefulWidget {
   final void Function(String)? onAddNote;
   final void Function(String)? onCreateQuoteImage;
   final void Function()? onSingleTap;
+  final bool wrapInSelectionArea;
 
   final CustomTagRegistry customTagRegistry = CustomTagRegistry();
 
@@ -35,8 +31,6 @@ class CustomHtmlWidget extends StatefulWidget {
 class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
   String _selectedText = '';
   bool _isTextSelected = false;
-
-  SelectableRegionState selectableRegionState = SelectableRegionState();
 
   void _handleAddNote(String selectedText) {
     debugPrint('Add note for selected text: "$selectedText"');
@@ -53,16 +47,36 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
     Color fontColor = Theme.of(context).colorScheme.primary;
     String htmlContent = widget.htmlContent.replaceAll('&nbsp; &nbsp;', '⠀ ');
 
-    // Get custom colors or use theme defaults
     final Color surfaceColor = Theme.of(context).colorScheme.primaryContainer;
     final Color textColor = Theme.of(context).colorScheme.onPrimary;
 
+    final htmlChild = ValueListenableBuilder<AppSettings>(
+      valueListenable: appSettingsNotifier,
+      builder: (context, settings, child) {
+        return Html(
+          data: htmlContent,
+          extensions: [...widget.customTagRegistry.buildExtensions(context)],
+          style: {
+            "body": Style(
+              color: fontColor,
+              fontSize: FontSize(
+                Theme.of(context).textTheme.bodyLarge!.fontSize!,
+              ),
+              textAlign: TextAlign.justify,
+              lineHeight: LineHeight(appSettingsNotifier.value.lineHeight),
+            ),
+          },
+        );
+      },
+    );
+
+    if (!widget.wrapInSelectionArea) return htmlChild;
+
     return Theme(
       data: Theme.of(context).copyWith(
-        colorScheme: Theme.of(context).colorScheme.copyWith(
-          surface: surfaceColor, // Toolbar background
-          onSurface: textColor, // Text color
-        ),
+        colorScheme: Theme.of(
+          context,
+        ).colorScheme.copyWith(surface: surfaceColor, onSurface: textColor),
       ),
       child: SelectionArea(
         onSelectionChanged: (selection) {
@@ -105,7 +119,6 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
           behavior: _isTextSelected ? null : HitTestBehavior.translucent,
           onDoubleTap: () {
             if (_isTextSelected) {
-              // Clear selection by rebuilding the widget
               setState(() {
                 _selectedText = '';
                 _isTextSelected = false;
@@ -116,29 +129,7 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
             debugPrint('CustomHtmlWidget tapped');
             widget.onSingleTap?.call();
           },
-          child: ValueListenableBuilder<AppSettings>(
-            valueListenable: appSettingsNotifier,
-            builder: (context, settings, child) {
-              return Html(
-                data: htmlContent,
-                extensions: [
-                  ...widget.customTagRegistry.buildExtensions(context),
-                ],
-                style: {
-                  "body": Style(
-                    color: fontColor,
-                    fontSize: FontSize(
-                      Theme.of(context).textTheme.bodyLarge!.fontSize!,
-                    ),
-                    textAlign: TextAlign.justify,
-                    lineHeight: LineHeight(
-                      appSettingsNotifier.value.lineHeight,
-                    ),
-                  ),
-                },
-              );
-            },
-          ),
+          child: htmlChild,
         ),
       ),
     );

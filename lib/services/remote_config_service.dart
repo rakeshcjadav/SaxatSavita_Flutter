@@ -79,9 +79,9 @@ class RemoteConfigService {
         'use_custom_html_widget':
             true, // Toggle between HtmlToTextSpan and CustomHtmlWidget
         // Layout options
-        'kiran_meta_enabled': false, // false = hide kiran meta info completely
+        'kiran_meta_enabled': true, // false = hide kiran meta info completely
         'kiran_meta_inline':
-            false, // true = full panel in kiran scroll, false = compact strip + sheet
+            false, // true = full panel in kiran scroll, false = FAB + bottom sheet
       });
 
       _initialized = true;
@@ -207,12 +207,12 @@ class RemoteConfigService {
   bool get useCustomHtmlWidget =>
       _remoteConfig?.getBool('use_custom_html_widget') ?? false;
 
-  /// false → hide kiran meta info completely (no icon, no strip, no panel)
+  /// false → hide kiran meta info completely (no FAB, no panel)
   bool get kiranMetaEnabled =>
       _remoteConfig?.getBool('kiran_meta_enabled') ?? true;
 
   /// true  → full meta panel at the top of the kiran scroll
-  /// false → compact date/place strip + AppBar icon + bottom sheet (default)
+  /// false → FAB + bottom sheet (default)
   bool get kiranMetaInline =>
       _remoteConfig?.getBool('kiran_meta_inline') ?? false;
 

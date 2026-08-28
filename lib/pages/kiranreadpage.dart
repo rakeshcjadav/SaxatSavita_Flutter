@@ -29,6 +29,8 @@ import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 import 'package:saxatsavita_flutter/services/kiran_tts_controller.dart';
 import 'package:saxatsavita_flutter/services/kiran_search_controller.dart';
+import 'package:saxatsavita_flutter/widgets/kiran_meta_panel.dart';
+import 'package:saxatsavita_flutter/widgets/kiran_meta_sheet.dart';
 
 class KiranReadPage extends StatefulWidget {
   const KiranReadPage({
@@ -105,6 +107,7 @@ class _KiranReadPageState extends State<KiranReadPage>
 
   // Search functionality
   late final KiranSearchController _search;
+  String _metaSelectedText = '';
 
   @override
   void initState() {
@@ -1134,7 +1137,6 @@ class _KiranReadPageState extends State<KiranReadPage>
           context,
           title:
               '${AppLocalizations.of(context)!.kiran} ${widget.kiranInfo.number.replaceAll(".", "")}',
-          actionItems: [ActionOptions.settings],
           extraActions: [
             IconButton(
               icon: Icon(
@@ -1176,17 +1178,6 @@ class _KiranReadPageState extends State<KiranReadPage>
                 }
               },
             ),
-            if (RemoteConfigService().kiranMetaEnabled &&
-                !RemoteConfigService().kiranMetaInline)
-              IconButton(
-                icon: const Icon(Icons.info_outline),
-                tooltip: AppLocalizations.of(context)!.kiran_info,
-                onPressed: () {
-                  if (_kiranContentData != null) {
-                    _showKiranInfoSheet(context, _kiranContentData!);
-                  }
-                },
-              ),
             IconButton(
               icon: Icon(_search.isActive ? Icons.close : Icons.search),
               tooltip:
@@ -1199,7 +1190,6 @@ class _KiranReadPageState extends State<KiranReadPage>
                   _resumeTimer();
                 } else {
                   _search.open();
-                  // Auto-focus search input when opening
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     _search.focusNode.requestFocus();
                   });
@@ -1208,39 +1198,74 @@ class _KiranReadPageState extends State<KiranReadPage>
                 }
               },
             ),
-            /*IconButton(
-              icon: Icon(
-                _useCustomHtmlWidget ? Icons.view_agenda : Icons.text_fields,
-              ),
-              tooltip:
-                  _useCustomHtmlWidget
-                      ? 'Using CustomHtmlWidget'
-                      : 'Using HtmlToTextSpan',
-              onPressed: () {
-                setState(() {
-                  _useCustomHtmlWidget = !_useCustomHtmlWidget;
-                });
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              color:
+                  Theme.of(context).colorScheme.brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.surfaceContainerHigh
+                      : Theme.of(context).colorScheme.primary,
+              onSelected: (value) async {
+                if (value == 'notes') {
+                  _pauseTimer();
+                  await _openNoteEditor();
+                  _resumeTimer();
+                } else if (value == 'settings') {
+                  _pauseTimer();
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SettingsPage()),
+                  );
+                  _resumeTimer();
+                }
               },
-            ),*/
+              itemBuilder: (context) {
+                final l10n = AppLocalizations.of(context)!;
+                final colorScheme = Theme.of(context).colorScheme;
+                final isDark = colorScheme.brightness == Brightness.dark;
+                final itemColor =
+                    isDark ? colorScheme.onSurface : colorScheme.onPrimary;
+                final itemStyle = Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(color: itemColor);
+                return [
+                  PopupMenuItem(
+                    value: 'notes',
+                    child: Row(
+                      children: [
+                        Icon(Icons.note_add, size: 20, color: itemColor),
+                        const SizedBox(width: 12),
+                        Text(l10n.notes, style: itemStyle),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'settings',
+                    child: Row(
+                      children: [
+                        Icon(Icons.settings, size: 20, color: itemColor),
+                        const SizedBox(width: 12),
+                        Text(l10n.settings, style: itemStyle),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+            ),
           ],
-          onSettingsPressed: () async {
-            _pauseTimer();
-            await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const SettingsPage()),
-            );
-            _resumeTimer();
-          },
         ),
         body: _buildReadingBody(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            _pauseTimer();
-            await _openNoteEditor();
-            _resumeTimer();
-          },
-          child: Icon(Icons.note_add),
-        ),
+        floatingActionButton:
+            RemoteConfigService().kiranMetaEnabled
+                ? FloatingActionButton(
+                  tooltip: AppLocalizations.of(context)!.kiran_info,
+                  onPressed: () {
+                    if (_kiranContentData != null) {
+                      _showKiranInfoSheet(context, _kiranContentData!);
+                    }
+                  },
+                  child: const Icon(Icons.info_outline),
+                )
+                : null,
       ),
     );
   }
@@ -1340,54 +1365,37 @@ class _KiranReadPageState extends State<KiranReadPage>
                             _isInitialized = true;
                           });
                         }
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            if (RemoteConfigService().kiranMetaEnabled &&
-                                !RemoteConfigService().kiranMetaInline)
-                              _buildKiranMetaStrip(contentData, context),
-                            Expanded(
-                              child: NotificationListener<ScrollNotification>(
-                                onNotification: (notification) {
-                                  if (notification is UserScrollNotification) {
-                                    // User started scrolling manually.
-                                    // Defer setState to avoid "Build scheduled during frame"
-                                    // since scroll notifications can fire during layout.
-                                    if (_isAutoScrollEnabled &&
-                                        _isAutoScrolling) {
-                                      WidgetsBinding.instance
-                                          .addPostFrameCallback((_) {
-                                            if (mounted) _stopAutoScroll();
-                                          });
-                                    }
-                                  } else if (notification
-                                      is ScrollEndNotification) {
-                                    // User stopped scrolling
-                                    if (_isAutoScrollEnabled &&
-                                        !_isAutoScrolling &&
-                                        _autoScrollDelayTimer == null) {
-                                      // Optionally, resume auto-scroll after a short delay
-                                      Future.delayed(
-                                        const Duration(seconds: 1),
-                                        () {
-                                          if (mounted &&
-                                              !_isAutoScrolling &&
-                                              _autoScrollDelayTimer == null) {
-                                            _startAutoScrollWithDelay();
-                                          }
-                                        },
-                                      );
-                                    }
+                        return NotificationListener<ScrollNotification>(
+                          onNotification: (notification) {
+                            if (notification is UserScrollNotification) {
+                              // User started scrolling manually.
+                              // Defer setState to avoid "Build scheduled during frame"
+                              // since scroll notifications can fire during layout.
+                              if (_isAutoScrollEnabled && _isAutoScrolling) {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  if (mounted) _stopAutoScroll();
+                                });
+                              }
+                            } else if (notification is ScrollEndNotification) {
+                              // User stopped scrolling
+                              if (_isAutoScrollEnabled &&
+                                  !_isAutoScrolling &&
+                                  _autoScrollDelayTimer == null) {
+                                // Optionally, resume auto-scroll after a short delay
+                                Future.delayed(const Duration(seconds: 1), () {
+                                  if (mounted &&
+                                      !_isAutoScrolling &&
+                                      _autoScrollDelayTimer == null) {
+                                    _startAutoScrollWithDelay();
                                   }
-                                  return false;
-                                },
-                                child: _buildKiranContentWidget(
-                                  contentData,
-                                  context,
-                                ),
-                              ),
-                            ),
-                          ],
+                                });
+                              }
+                            }
+                            return false;
+                          },
+                          child: _buildKiranContentWidget(contentData, context),
                         );
                       },
                     ),
@@ -1427,275 +1435,77 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
   }
 
-  List<String> _parseKiranLocations(Map<String, dynamic> contentData) {
-    final String place =
-        (contentData['main']?['place'] as String? ?? '').trim();
-    final String venue =
-        (contentData['meta']?['venue'] as String? ?? '').trim();
-    final List<String> locations =
-        (contentData['meta']?['locations'] as List<dynamic>? ?? [])
-            .map((e) => e.toString().trim())
-            .where((e) => e.isNotEmpty)
-            .toList();
-    if (locations.isEmpty) {
-      if (venue.isNotEmpty && place.isNotEmpty) {
-        locations.add('$venue, $place');
-      } else if (place.isNotEmpty) {
-        locations.add(place);
-      }
-    }
-    return locations;
-  }
-
-  /// Compact date/place strip under the title (layout A). Tapping opens the sheet.
-  Widget _buildKiranMetaStrip(
-    Map<String, dynamic> contentData,
-    BuildContext context,
-  ) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final locations = _parseKiranLocations(contentData);
-    final date = (contentData['meta']?['date'] as String? ?? '').trim();
-    if (locations.isEmpty && date.isEmpty) return const SizedBox.shrink();
-
-    final placeLabel =
-        locations.isEmpty
-            ? ''
-            : locations.length == 1
-            ? locations.first
-            : '${locations.first} +${locations.length - 1}';
-
-    final mutedStyle = Theme.of(
-      context,
-    ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant);
-
-    return Material(
-      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-      child: InkWell(
-        onTap: () => _showKiranInfoSheet(context, contentData),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (placeLabel.isNotEmpty)
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            size: 16,
-                            color: colorScheme.primary,
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              placeLabel,
-                              style: mutedStyle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    if (date.isNotEmpty) ...[
-                      if (placeLabel.isNotEmpty) const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            size: 16,
-                            color: colorScheme.primary,
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              date,
-                              style: mutedStyle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              Icon(Icons.chevron_right, size: 20, color: colorScheme.outline),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   /// Builds the meta info panel (locations, date, moral, summary).
   Widget _buildKiranMetaPanel(
     Map<String, dynamic> contentData,
     BuildContext context, {
-    bool showDisclaimer = false,
+    bool showAiCaption = false,
   }) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    final List<String> locations = _parseKiranLocations(contentData);
-    final String date = (contentData['meta']?['date'] as String? ?? '').trim();
-    final String moral =
-        (contentData['meta']?['moral'] as String? ?? '').trim();
-    final String history =
-        (contentData['meta']?['history'] as String? ?? '').trim();
-    final List<String> summary =
-        (contentData['meta']?['summary'] as List<dynamic>? ?? [])
-            .map((e) => e.toString().trim())
-            .where((e) => e.isNotEmpty)
-            .toList();
-
-    final bool hasAnything =
-        locations.isNotEmpty ||
-        date.isNotEmpty ||
-        moral.isNotEmpty ||
-        history.isNotEmpty ||
-        summary.isNotEmpty;
-
-    if (!hasAnything) return const SizedBox.shrink();
-
-    final titleStyle = textTheme.titleMedium!.copyWith(
-      color: Theme.of(context).colorScheme.primary,
-      overflow: TextOverflow.ellipsis,
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final panel = KiranMetaPanel.fromContent(
+      contentData,
+      showAiCaption: showAiCaption,
+      onAddNote: (selectedText) async {
+        _pauseTimer();
+        await _openNoteEditor(selectedText: selectedText);
+        _resumeTimer();
+      },
+      onCreateQuoteImage: (selectedText) async {
+        _pauseTimer();
+        await _openQuoteEditor(selectedText: selectedText);
+        _resumeTimer();
+      },
     );
 
-    final contentFontSize = appSettingsNotifier.value.fontSize;
-    final contentStyle = textTheme.bodyMedium!.copyWith(
-      color: colorScheme.primary,
-      fontSize: contentFontSize,
-    );
+    if (!RemoteConfigService().useCustomHtmlWidget) return panel;
 
-    String toGujaratiNumeral(int n) {
-      return n
-          .toString()
-          .replaceAll('0', '૦')
-          .replaceAll('1', '૧')
-          .replaceAll('2', '૨')
-          .replaceAll('3', '૩')
-          .replaceAll('4', '૪')
-          .replaceAll('5', '૫')
-          .replaceAll('6', '૬')
-          .replaceAll('7', '૭')
-          .replaceAll('8', '૮')
-          .replaceAll('9', '૯');
-    }
-
-    Widget numberedItem(int index, String html) {
-      final number = toGujaratiNumeral(index);
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 6.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child:
-                  RemoteConfigService().useCustomHtmlWidget
-                      ? CustomHtmlWidget(
-                        htmlContent: '<b>$number.</b> $html',
-                        onAddNote: null,
-                        onCreateQuoteImage: null,
-                        onSingleTap: null,
-                      )
-                      : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: HtmlToTextSpan.convertToWidgets(
-                          '<b>$number.</b> $html',
-                          contentStyle,
-                          context,
-                          textAlign: TextAlign.justify,
-                          lineHeight: appSettingsNotifier.value.lineHeight,
-                        ),
-                      ),
-            ),
-          ],
+    return Theme(
+      data: theme.copyWith(
+        colorScheme: colorScheme.copyWith(
+          surface: colorScheme.primaryContainer,
+          onSurface: colorScheme.onPrimary,
         ),
-      );
-    }
-
-    Widget sectionBlock(IconData icon, String label, String value) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 24, color: colorScheme.primary),
-              const SizedBox(width: 6),
-              Text(label, style: titleStyle),
+      ),
+      child: SelectionArea(
+        onSelectionChanged: (selection) {
+          _metaSelectedText = selection?.plainText.trim() ?? '';
+        },
+        contextMenuBuilder: (menuContext, selectableRegionState) {
+          final l10nMenu = AppLocalizations.of(menuContext)!;
+          return AdaptiveTextSelectionToolbar.buttonItems(
+            anchors: selectableRegionState.contextMenuAnchors,
+            buttonItems: [
+              ContextMenuButtonItem(
+                label: l10nMenu.add_notes,
+                onPressed: () {
+                  ContextMenuController.removeAny();
+                  final text = _metaSelectedText;
+                  if (text.isEmpty) return;
+                  _pauseTimer();
+                  _openNoteEditor(
+                    selectedText: text,
+                  ).then((_) => _resumeTimer());
+                },
+              ),
+              ContextMenuButtonItem(
+                label: l10nMenu.create_quote_image,
+                onPressed: () {
+                  ContextMenuController.removeAny();
+                  final text = _metaSelectedText;
+                  if (text.isEmpty) return;
+                  _pauseTimer();
+                  _openQuoteEditor(
+                    selectedText: text,
+                  ).then((_) => _resumeTimer());
+                },
+              ),
+              ...selectableRegionState.contextMenuButtonItems,
             ],
-          ),
-          const SizedBox(height: 4),
-          if (value.isNotEmpty)
-            RemoteConfigService().useCustomHtmlWidget
-                ? CustomHtmlWidget(
-                  htmlContent: value,
-                  onAddNote: null,
-                  onCreateQuoteImage: null,
-                  onSingleTap: null,
-                )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: HtmlToTextSpan.convertToWidgets(
-                    value,
-                    contentStyle,
-                    context,
-                    textAlign: TextAlign.justify,
-                    lineHeight: appSettingsNotifier.value.lineHeight,
-                  ),
-                ),
-        ],
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (showDisclaimer) ...[
-          Text(
-            l10n.kiran_info,
-            style: textTheme.labelSmall?.copyWith(color: colorScheme.outline),
-          ),
-          const SizedBox(height: 8),
-        ],
-        if (locations.isNotEmpty) ...[
-          sectionBlock(
-            Icons.location_on,
-            l10n.kiran_place,
-            locations.length == 1 ? locations.first : '',
-          ),
-          if (locations.length > 1)
-            ...locations.indexed.map(
-              ((int, String) entry) => numberedItem(entry.$1 + 1, entry.$2),
-            ),
-        ],
-        if (date.isNotEmpty) ...[
-          const Divider(height: 16),
-          sectionBlock(Icons.calendar_today, l10n.kiran_date, date),
-        ],
-        if (moral.isNotEmpty) ...[
-          const Divider(height: 16),
-          sectionBlock(Icons.lightbulb, l10n.kiran_moral, moral),
-        ],
-        if (history.isNotEmpty) ...[
-          const Divider(height: 16),
-          sectionBlock(Icons.history_edu, l10n.kiran_history, history),
-        ],
-        if (summary.isNotEmpty) ...[
-          const Divider(height: 16),
-          sectionBlock(Icons.format_list_bulleted, l10n.kiran_summary, ''),
-          const SizedBox(height: 4),
-          ...summary.indexed.map(
-            ((int, String) entry) => numberedItem(entry.$1 + 1, entry.$2),
-          ),
-        ],
-      ],
+          );
+        },
+        child: Theme(data: theme, child: panel),
+      ),
     );
   }
 
@@ -1704,64 +1514,18 @@ class _KiranReadPageState extends State<KiranReadPage>
     BuildContext context,
     Map<String, dynamic> contentData,
   ) {
-    showModalBottomSheet(
+    showKiranMetaSheet(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (sheetContext) {
-        return DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.5,
-          minChildSize: 0.3,
-          maxChildSize: 0.9,
-          builder: (_, controller) {
-            return Column(
-              children: [
-                const SizedBox(height: 8),
-                // drag handle
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      AppLocalizations.of(context)!.kiran_info,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-                const Divider(height: 1),
-                Expanded(
-                  child: SingleChildScrollView(
-                    controller: controller,
-                    padding: EdgeInsets.only(
-                      left: 16 + appSettingsNotifier.value.edgePadding,
-                      right: 16 + appSettingsNotifier.value.edgePadding,
-                      top: 16,
-                      bottom: 16,
-                    ),
-                    child: SafeArea(
-                      child: _buildKiranMetaPanel(contentData, context),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
+      content: Future.value(contentData),
+      onAddNote: (selectedText) async {
+        _pauseTimer();
+        await _openNoteEditor(selectedText: selectedText);
+        _resumeTimer();
+      },
+      onCreateQuoteImage: (selectedText) async {
+        _pauseTimer();
+        await _openQuoteEditor(selectedText: selectedText);
+        _resumeTimer();
       },
     );
   }
@@ -1789,7 +1553,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                   child: _buildKiranMetaPanel(
                     contentData,
                     context,
-                    showDisclaimer: true,
+                    showAiCaption: true,
                   ),
                 ),
                 const Divider(height: 24),

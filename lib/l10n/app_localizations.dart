@@ -449,8 +449,20 @@ abstract class AppLocalizations {
   /// No description provided for @kiran_info.
   ///
   /// In en, this message translates to:
-  /// **'Kiran Info ( AI Generated )'**
+  /// **'Kiran Info'**
   String get kiran_info;
+
+  /// No description provided for @kiran_info_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get kiran_info_short;
+
+  /// No description provided for @kiran_info_ai_generated.
+  ///
+  /// In en, this message translates to:
+  /// **'AI generated'**
+  String get kiran_info_ai_generated;
 
   /// No description provided for @tag_line.
   ///

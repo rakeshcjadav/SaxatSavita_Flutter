@@ -184,7 +184,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kiran_summary => 'Summary';
 
   @override
-  String get kiran_info => 'Kiran Info ( AI Generated )';
+  String get kiran_info => 'Kiran Info';
+
+  @override
+  String get kiran_info_short => 'Info';
+
+  @override
+  String get kiran_info_ai_generated => 'AI generated';
 
   @override
   String get tag_line => '।। વિચાર કરો તો ખબર પડે ।।';

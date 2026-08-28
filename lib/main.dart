@@ -215,6 +215,16 @@ class SakshatSavitaApp extends StatelessWidget {
               foregroundColor: colorScheme.onPrimary,
               centerTitle: true,
             ),
+            floatingActionButtonTheme: FloatingActionButtonThemeData(
+              backgroundColor:
+                  colorScheme.brightness == Brightness.dark
+                      ? colorScheme.surfaceContainerHigh
+                      : colorScheme.primary,
+              foregroundColor:
+                  colorScheme.brightness == Brightness.dark
+                      ? colorScheme.primary
+                      : colorScheme.onPrimary,
+            ),
             drawerTheme: DrawerThemeData(
               backgroundColor: colorScheme.surfaceContainer,
               shape: const RoundedRectangleBorder(
