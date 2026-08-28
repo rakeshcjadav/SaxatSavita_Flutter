@@ -163,6 +163,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get kiran_place => 'સ્થળ';
 
   @override
+  String get kiran_venue => 'સ્થાન';
+
+  @override
   String get kiran_date => 'તારીખ';
 
   @override

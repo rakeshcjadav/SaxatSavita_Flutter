@@ -1486,7 +1486,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
   }
 
-  /// Builds the meta info panel (place, date, moral, summary) shown above the kiran text.
+  /// Builds the meta info panel (locations, date, moral, summary) shown above the kiran text.
   Widget _buildKiranMetaPanel(
     Map<String, dynamic> contentData,
     BuildContext context,
@@ -1497,6 +1497,21 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     final String place =
         (contentData['main']?['place'] as String? ?? '').trim();
+    final String venue =
+        (contentData['meta']?['venue'] as String? ?? '').trim();
+    final List<String> locations =
+        (contentData['meta']?['locations'] as List<dynamic>? ?? [])
+            .map((e) => e.toString().trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+    // "venue, place" per sitting. Fall back to the old single fields.
+    if (locations.isEmpty) {
+      if (venue.isNotEmpty && place.isNotEmpty) {
+        locations.add('$venue, $place');
+      } else if (place.isNotEmpty) {
+        locations.add(place);
+      }
+    }
     final String date = (contentData['meta']?['date'] as String? ?? '').trim();
     final String moral =
         (contentData['meta']?['moral'] as String? ?? '').trim();
@@ -1509,7 +1524,7 @@ class _KiranReadPageState extends State<KiranReadPage>
             .toList();
 
     final bool hasAnything =
-        place.isNotEmpty ||
+        locations.isNotEmpty ||
         date.isNotEmpty ||
         moral.isNotEmpty ||
         history.isNotEmpty ||
@@ -1527,6 +1542,53 @@ class _KiranReadPageState extends State<KiranReadPage>
       color: colorScheme.primary,
       fontSize: contentFontSize,
     );
+
+    String toGujaratiNumeral(int n) {
+      return n
+          .toString()
+          .replaceAll('0', '૦')
+          .replaceAll('1', '૧')
+          .replaceAll('2', '૨')
+          .replaceAll('3', '૩')
+          .replaceAll('4', '૪')
+          .replaceAll('5', '૫')
+          .replaceAll('6', '૬')
+          .replaceAll('7', '૭')
+          .replaceAll('8', '૮')
+          .replaceAll('9', '૯');
+    }
+
+    Widget numberedItem(int index, String html) {
+      final number = toGujaratiNumeral(index);
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 6.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child:
+                  RemoteConfigService().useCustomHtmlWidget
+                      ? CustomHtmlWidget(
+                        htmlContent: '<b>$number.</b> $html',
+                        onAddNote: null,
+                        onCreateQuoteImage: null,
+                        onSingleTap: null,
+                      )
+                      : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: HtmlToTextSpan.convertToWidgets(
+                          '<b>$number.</b> $html',
+                          contentStyle,
+                          context,
+                          textAlign: TextAlign.justify,
+                          lineHeight: appSettingsNotifier.value.lineHeight,
+                        ),
+                      ),
+            ),
+          ],
+        ),
+      );
+    }
 
     Widget sectionBlock(IconData icon, String label, String value) {
       return Column(
@@ -1566,8 +1628,17 @@ class _KiranReadPageState extends State<KiranReadPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         sectionBlock(Icons.article, "AI Generated", ""),
-        if (place.isNotEmpty)
-          sectionBlock(Icons.location_on, l10n.kiran_place, place),
+        if (locations.isNotEmpty) ...[
+          sectionBlock(
+            Icons.location_on,
+            l10n.kiran_place,
+            locations.length == 1 ? locations.first : '',
+          ),
+          if (locations.length > 1)
+            ...locations.indexed.map(
+              ((int, String) entry) => numberedItem(entry.$1 + 1, entry.$2),
+            ),
+        ],
         if (date.isNotEmpty) ...[
           const Divider(height: 16),
           sectionBlock(Icons.calendar_today, l10n.kiran_date, date),
@@ -1584,51 +1655,9 @@ class _KiranReadPageState extends State<KiranReadPage>
           const Divider(height: 16),
           sectionBlock(Icons.format_list_bulleted, l10n.kiran_summary, ''),
           const SizedBox(height: 4),
-          ...summary.indexed.map(((int, String) entry) {
-            final number = (entry.$1 + 1)
-                .toString()
-                .replaceAll('0', '૦')
-                .replaceAll('1', '૧')
-                .replaceAll('2', '૨')
-                .replaceAll('3', '૩')
-                .replaceAll('4', '૪')
-                .replaceAll('5', '૫')
-                .replaceAll('6', '૬')
-                .replaceAll('7', '૭')
-                .replaceAll('8', '૮')
-                .replaceAll('9', '૯');
-            final bullet = entry.$2;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 6.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //CustomHtmlWidget(htmlContent: '<b>$number.</b>'),
-                  Expanded(
-                    child:
-                        RemoteConfigService().useCustomHtmlWidget
-                            ? CustomHtmlWidget(
-                              htmlContent: '<b>$number.</b> $bullet',
-                              onAddNote: null,
-                              onCreateQuoteImage: null,
-                              onSingleTap: null,
-                            )
-                            : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: HtmlToTextSpan.convertToWidgets(
-                                '<b>$number.</b> $bullet',
-                                contentStyle,
-                                context,
-                                textAlign: TextAlign.justify,
-                                lineHeight:
-                                    appSettingsNotifier.value.lineHeight,
-                              ),
-                            ),
-                  ),
-                ],
-              ),
-            );
-          }),
+          ...summary.indexed.map(
+            ((int, String) entry) => numberedItem(entry.$1 + 1, entry.$2),
+          ),
         ],
       ],
     );

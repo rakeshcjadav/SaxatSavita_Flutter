@@ -163,6 +163,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kiran_place => 'Place';
 
   @override
+  String get kiran_venue => 'Venue';
+
+  @override
   String get kiran_date => 'Date';
 
   @override

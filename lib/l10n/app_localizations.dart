@@ -404,6 +404,12 @@ abstract class AppLocalizations {
   /// **'Place'**
   String get kiran_place;
 
+  /// No description provided for @kiran_venue.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue'**
+  String get kiran_venue;
+
   /// No description provided for @kiran_date.
   ///
   /// In en, this message translates to:
