@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -72,7 +73,12 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
       final doc =
           await userDoc!.collection('appSettings').doc('settings').get();
       if (doc.exists && doc.data() != null) {
-        return AppSettings.fromJson(doc.data()!);
+        final data = doc.data()!;
+        final settings = AppSettings.fromJson(data);
+        if (!data.containsKey('appFontSize')) {
+          unawaited(syncAppSettings(settings));
+        }
+        return settings;
       }
     } catch (e) {
       debugPrint('Error loading AppSettings from Firebase: $e');
@@ -538,8 +544,12 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
     return userDoc!.collection('appSettings').doc('settings').snapshots().map((
       doc,
     ) {
-      if (doc.exists && doc.data() != null) {
-        return AppSettings.fromJson(doc.data()!);
+      try {
+        if (doc.exists && doc.data() != null) {
+          return AppSettings.fromJson(doc.data()!);
+        }
+      } catch (e) {
+        debugPrint('Error parsing AppSettings snapshot: $e');
       }
       return null;
     });

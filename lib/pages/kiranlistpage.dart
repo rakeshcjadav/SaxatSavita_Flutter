@@ -696,7 +696,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
   }
 
   double get _cardActionIconSize =>
-      appSettingsNotifier.value.fontSize.clamp(18.0, 24.0);
+      appSettingsNotifier.value.appFontSize.clamp(18.0, 24.0);
 
   ButtonStyle get _cardActionIconStyle => IconButton.styleFrom(
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,

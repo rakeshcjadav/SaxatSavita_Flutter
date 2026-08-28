@@ -314,7 +314,7 @@ class _BookmainpageState extends State<BookMainpage> {
                       children: [
                         Icon(
                           Icons.timer,
-                          size: appSettingsNotifier.value.fontSize * 0.8,
+                          size: appSettingsNotifier.value.appFontSize * 0.8,
                         ),
                         const SizedBox(width: 5),
                         SingleChildScrollView(

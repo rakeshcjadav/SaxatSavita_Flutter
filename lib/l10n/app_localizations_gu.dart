@@ -199,7 +199,10 @@ class AppLocalizationsGu extends AppLocalizations {
   String get kiran => 'કિરણ';
 
   @override
-  String get font_size => 'અક્ષરની સાઇઝ';
+  String get font_size => 'વાંચન અક્ષરની સાઇઝ';
+
+  @override
+  String get app_font_size => 'એપ અક્ષરની સાઇઝ';
 
   @override
   String get line_height => 'લાઇન હાઇટ';

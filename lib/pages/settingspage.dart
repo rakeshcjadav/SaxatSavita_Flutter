@@ -31,6 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // Temporary settings (modified but not yet saved)
   late double _fontSize;
+  late double _appFontSize;
   late double _lineHeight;
   late Color _themeColor;
   late DynamicSchemeVariant _themeVariant;
@@ -72,6 +73,10 @@ class _SettingsPageState extends State<SettingsPage> {
   void _loadOriginalSettings() {
     _originalSettings = appSettingsNotifier.value;
     _fontSize = _originalSettings.fontSize;
+    _appFontSize = _originalSettings.appFontSize.clamp(
+      AppSettings.minAppFontSize,
+      AppSettings.maxAppFontSize,
+    );
     _lineHeight = _originalSettings.lineHeight;
     _themeColor = _originalSettings.themeColor;
     _themeVariant = _originalSettings.themeVariant;
@@ -378,6 +383,10 @@ class _SettingsPageState extends State<SettingsPage> {
       }
     }
     _fontSize = _originalSettings.fontSize;
+    _appFontSize = _originalSettings.appFontSize.clamp(
+      AppSettings.minAppFontSize,
+      AppSettings.maxAppFontSize,
+    );
     _lineHeight = _originalSettings.lineHeight;
     _themeColor = _originalSettings.themeColor;
     _themeVariant = _originalSettings.themeVariant;
@@ -397,6 +406,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool get _settingsChanged {
     final current = _createCurrentSettings();
     return _originalSettings.fontSize != current.fontSize ||
+        _originalSettings.appFontSize != current.appFontSize ||
         _originalSettings.lineHeight != current.lineHeight ||
         _originalSettings.themeColor != current.themeColor ||
         _originalSettings.themeVariant != current.themeVariant ||
@@ -417,6 +427,7 @@ class _SettingsPageState extends State<SettingsPage> {
   AppSettings _createCurrentSettings() {
     return AppSettings(
       fontSize: _fontSize,
+      appFontSize: _appFontSize,
       lineHeight: _lineHeight,
       themeColor: _themeColor,
       themeVariant: _themeVariant,
@@ -751,7 +762,40 @@ class _SettingsPageState extends State<SettingsPage> {
 
   List<Widget> _buildTextSettingsSection() {
     return <Widget>[
-      // Reading Preferences Section
+      _buildSectionHeader(
+        context,
+        AppLocalizations.of(context)!.app_font_size,
+        Icons.text_format,
+      ),
+      const SizedBox(height: 8),
+
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.text_format),
+          title: Text(
+            '${AppLocalizations.of(context)!.app_font_size}: ${_appFontSize.round()}',
+          ),
+          subtitle: Slider(
+            min: AppSettings.minAppFontSize,
+            max: AppSettings.maxAppFontSize,
+            divisions: 10,
+            value: _appFontSize.clamp(
+              AppSettings.minAppFontSize,
+              AppSettings.maxAppFontSize,
+            ),
+            label: _appFontSize.round().toString(),
+            onChanged: (value) {
+              setState(() {
+                _appFontSize = value;
+              });
+              _updateHasUnsavedChanges();
+            },
+          ),
+        ),
+      ),
+
+      const SizedBox(height: 16),
+
       _buildSectionHeader(
         context,
         AppLocalizations.of(context)!.reading_preferences,
@@ -759,7 +803,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       const SizedBox(height: 8),
 
-      // Font Size
       Card(
         child: ListTile(
           leading: const Icon(Icons.text_fields),

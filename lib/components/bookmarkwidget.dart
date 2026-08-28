@@ -52,7 +52,7 @@ class _BookmarkwidgetState extends State<Bookmarkwidget> {
             const SizedBox(width: 18),
             Icon(
               Icons.history,
-              size: appSettingsNotifier.value.fontSize * 0.6,
+              size: appSettingsNotifier.value.appFontSize * 0.6,
               color: Theme.of(
                 context,
               ).colorScheme.primary.withValues(alpha: 0.3),
@@ -61,7 +61,7 @@ class _BookmarkwidgetState extends State<Bookmarkwidget> {
             Text(
               getUpdatedAt(widget.bookmark),
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontSize: appSettingsNotifier.value.fontSize * 0.6,
+                fontSize: appSettingsNotifier.value.appFontSize * 0.6,
               ),
             ),
           ],

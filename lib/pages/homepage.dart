@@ -222,7 +222,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   iconAlignment: IconAlignment.start,
                   icon: Icon(
                     Icons.menu_book,
-                    size: appSettingsNotifier.value.fontSize,
+                    size: appSettingsNotifier.value.appFontSize,
                   ),
                   style: ButtonStyle(
                     padding: const WidgetStatePropertyAll(
@@ -344,7 +344,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       iconAlignment: IconAlignment.start,
                       icon: Icon(
                         Icons.menu_book,
-                        size: appSettingsNotifier.value.fontSize,
+                        size: appSettingsNotifier.value.appFontSize,
                       ),
                       style: ButtonStyle(
                         padding: const WidgetStatePropertyAll(

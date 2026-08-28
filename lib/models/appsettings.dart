@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppSettings {
   double fontSize;
+  double appFontSize;
   double lineHeight;
   Color themeColor;
   DynamicSchemeVariant themeVariant = DynamicSchemeVariant.neutral;
@@ -17,8 +18,12 @@ class AppSettings {
   double ttsSpeechRate;
   String? ttsVoice; // stored as "name|locale"
 
+  static const double maxAppFontSize = 25.0;
+  static const double minAppFontSize = 15.0;
+
   AppSettings({
     required this.fontSize,
+    required double appFontSize,
     required this.lineHeight,
     required this.themeColor,
     required this.themeVariant,
@@ -33,32 +38,46 @@ class AppSettings {
     required this.ttsEnabled,
     required this.ttsSpeechRate,
     this.ttsVoice,
-  });
+  }) : appFontSize = appFontSize
+           .clamp(minAppFontSize, maxAppFontSize)
+           .toDouble();
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
-    return AppSettings(
-      fontSize: json['fontSize']?.toDouble() ?? 18.0,
-      lineHeight: json['lineHeight']?.toDouble() ?? 2.0,
-      themeColor: Color(json['themeColor'] ?? Colors.deepOrange.value),
-      themeVariant: _parseThemeVariant(json['themeVariant']),
-      brightness:
-          json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
-      themeContrastLevel: json['themeContrastLevel']?.toDouble() ?? 0.5,
-      readingSpeed: json['readingSpeed']?.toDouble() ?? 200.0,
-      language: json['language'] ?? 'gu',
-      keepScreenOn: json['keepScreenOn'] ?? false,
-      showEdgeNavButtons: json['showEdgeNavButtons'] ?? true,
-      edgePadding: json['edgePadding']?.toDouble() ?? 16.0,
-      useColorfulPartStyle: json['useColorfulPartStyle'] ?? false,
-      ttsEnabled: json['ttsEnabled'] ?? false,
-      ttsSpeechRate: json['ttsSpeechRate']?.toDouble() ?? 0.5,
-      ttsVoice: json['ttsVoice'] as String?,
-    );
+    try {
+      return AppSettings(
+        fontSize: _readDouble(json['fontSize'], 18.0),
+        appFontSize: _parseAppFontSize(json),
+        lineHeight: _readDouble(json['lineHeight'], 2.0),
+        themeColor: Color(
+          json['themeColor'] is num
+              ? (json['themeColor'] as num).toInt()
+              : Colors.deepOrange.toARGB32(),
+        ),
+        themeVariant: _parseThemeVariant(json['themeVariant']),
+        brightness:
+            json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
+        themeContrastLevel: _readDouble(json['themeContrastLevel'], 0.5),
+        readingSpeed: _readDouble(json['readingSpeed'], 200.0),
+        language:
+            json['language'] is String ? json['language'] as String : 'gu',
+        keepScreenOn: json['keepScreenOn'] == true,
+        showEdgeNavButtons: json['showEdgeNavButtons'] != false,
+        edgePadding: _readDouble(json['edgePadding'], 16.0),
+        useColorfulPartStyle: json['useColorfulPartStyle'] == true,
+        ttsEnabled: json['ttsEnabled'] == true,
+        ttsSpeechRate: _readDouble(json['ttsSpeechRate'], 0.5),
+        ttsVoice: json['ttsVoice'] is String ? json['ttsVoice'] as String : null,
+      );
+    } catch (e) {
+      debugPrint('AppSettings.fromJson failed, using defaults: $e');
+      return copyAppSettings(appSettingsDefault);
+    }
   }
 
   Map<String, dynamic> toJson() {
     return {
       'fontSize': fontSize,
+      'appFontSize': appFontSize,
       'lineHeight': lineHeight,
       'themeColor': themeColor.value,
       'themeVariant': themeVariant.name,
@@ -76,7 +95,23 @@ class AppSettings {
     };
   }
 
-  static DynamicSchemeVariant _parseThemeVariant(String? variant) {
+  static double _readDouble(dynamic value, double fallback) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? fallback;
+    return fallback;
+  }
+
+  static double _parseAppFontSize(Map<String, dynamic> json) {
+    if (json.containsKey('appFontSize') && json['appFontSize'] != null) {
+      return _readDouble(json['appFontSize'], 18.0);
+    }
+    return _readDouble(json['fontSize'], 18.0);
+  }
+
+  static DynamicSchemeVariant _parseThemeVariant(dynamic variant) {
+    if (variant is! String) {
+      return DynamicSchemeVariant.tonalSpot;
+    }
     switch (variant) {
       case 'fruitSalad':
         return DynamicSchemeVariant.fruitSalad;
@@ -103,6 +138,7 @@ class AppSettings {
 ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
   AppSettings(
     fontSize: 18,
+    appFontSize: 18,
     lineHeight: 2.0,
     themeColor: Colors.deepOrange,
     themeVariant: DynamicSchemeVariant.tonalSpot,
@@ -121,6 +157,7 @@ ValueNotifier<AppSettings> appSettingsNotifier = ValueNotifier<AppSettings>(
 
 AppSettings appSettingsDefault = AppSettings(
   fontSize: 18,
+  appFontSize: 18,
   lineHeight: 2.0,
   themeColor: Colors.deepOrange,
   themeVariant: DynamicSchemeVariant.tonalSpot,
@@ -139,6 +176,7 @@ AppSettings appSettingsDefault = AppSettings(
 AppSettings copyAppSettings(
   AppSettings settings, {
   double? fontSize,
+  double? appFontSize,
   double? lineHeight,
   Color? themeColor,
   DynamicSchemeVariant? themeVariant,
@@ -157,6 +195,7 @@ AppSettings copyAppSettings(
 }) {
   return AppSettings(
     fontSize: fontSize ?? settings.fontSize,
+    appFontSize: appFontSize ?? settings.appFontSize,
     lineHeight: lineHeight ?? settings.lineHeight,
     themeColor: themeColor ?? settings.themeColor,
     themeVariant: themeVariant ?? settings.themeVariant,

@@ -199,7 +199,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kiran => 'Kiran';
 
   @override
-  String get font_size => 'Font Size';
+  String get font_size => 'Reading text size';
+
+  @override
+  String get app_font_size => 'App text size';
 
   @override
   String get line_height => 'Line Height';

@@ -59,9 +59,7 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
           style: {
             "body": Style(
               color: fontColor,
-              fontSize: FontSize(
-                Theme.of(context).textTheme.bodyLarge!.fontSize!,
-              ),
+              fontSize: FontSize(settings.fontSize),
               textAlign: TextAlign.justify,
               lineHeight: LineHeight(appSettingsNotifier.value.lineHeight),
             ),

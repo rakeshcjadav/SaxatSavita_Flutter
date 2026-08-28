@@ -139,6 +139,10 @@ class SakshatSavitaApp extends StatelessWidget {
           brightness: settings.brightness,
           dynamicSchemeVariant: settings.themeVariant,
         );
+        double uiFont(double delta) => (settings.appFontSize + delta).clamp(
+          12.0,
+          AppSettings.maxAppFontSize,
+        );
         return MaterialApp(
           navigatorKey: NavigationService.navigatorKey, // Assign the key here
           navigatorObservers:
@@ -162,50 +166,50 @@ class SakshatSavitaApp extends StatelessWidget {
             fontFamily: 'NotoSansGujarati',
             iconTheme: IconThemeData(
               color: colorScheme.primary,
-              size: settings.fontSize,
+              size: uiFont(0),
             ),
             textTheme: TextTheme(
               bodyLarge: TextStyle(
-                fontSize: settings.fontSize,
+                fontSize: uiFont(0),
                 color: colorScheme.primary,
               ),
               bodyMedium: TextStyle(
-                fontSize: settings.fontSize - 2,
+                fontSize: uiFont(-2),
                 color: colorScheme.primary,
               ),
               bodySmall: TextStyle(
-                fontSize: settings.fontSize - 4,
+                fontSize: uiFont(-4),
                 color: colorScheme.primary,
               ),
 
               titleLarge: TextStyle(
-                fontSize: settings.fontSize + 4,
+                fontSize: uiFont(4),
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary,
               ),
               titleMedium: TextStyle(
-                fontSize: settings.fontSize + 2,
+                fontSize: uiFont(2),
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary,
               ),
               titleSmall: TextStyle(
-                fontSize: settings.fontSize,
+                fontSize: uiFont(0),
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary,
               ),
 
               labelLarge: TextStyle(
-                fontSize: settings.fontSize,
+                fontSize: uiFont(0),
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary,
               ),
               labelMedium: TextStyle(
-                fontSize: settings.fontSize - 2,
+                fontSize: uiFont(-2),
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary,
               ),
               labelSmall: TextStyle(
-                fontSize: settings.fontSize - 4,
+                fontSize: uiFont(-4),
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary,
               ),
@@ -273,7 +277,7 @@ class SakshatSavitaApp extends StatelessWidget {
             popupMenuTheme: PopupMenuThemeData(
               color: colorScheme.primaryContainer,
               textStyle: TextStyle(
-                fontSize: settings.fontSize - 2,
+                fontSize: uiFont(-2),
                 color: colorScheme.primary,
               ),
               shape: RoundedRectangleBorder(
