@@ -1,8 +1,8 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '16.0'
 
-# Match firebase_core/ios/firebase_sdk_version.rb (cloud_firestore 6.4.x is incompatible with 12.14+ pipeline APIs).
-$FirebaseSDKVersion = '12.13.0'
+# Match firebase_core 4.15.0 (ios/firebase_sdk_version.rb).
+$FirebaseSDKVersion = '12.19.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -42,5 +42,9 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      # Xcode 27 errors if any target is below iOS 15.
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+    end
   end
 end

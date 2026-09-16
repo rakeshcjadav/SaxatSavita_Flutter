@@ -45,7 +45,7 @@ dependencies:
   flutter_native_splash: ^2.4.6
   path_provider: ^2.1.5
   flutter_html: ^3.0.0
-  html: ^0.15.4
+  html: 0.15.6
   package_info_plus: ^10.0.0
   shared_preferences: ^2.2.2
   device_info_plus: ^13.0.0
@@ -85,6 +85,8 @@ dev_dependencies:
 dependency_overrides:
   quill_native_bridge_windows:
     path: packages/quill_native_bridge_windows_stub
+  # flutter_html 3.0.0 still calls html's internal qs.matches(), removed in 0.15.7.
+  html: 0.15.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

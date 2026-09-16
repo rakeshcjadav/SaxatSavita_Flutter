@@ -1,11 +1,10 @@
 #!/bin/bash
-# Pin Firebase iOS SPM packages to 12.13.0 (matches firebase_core).
-# cloud_firestore 6.4.x does not compile against Firebase iOS SDK 12.14+ pipeline APIs.
+# Pin Firebase iOS SPM packages to firebase_core's SDK (12.19.0).
 
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-FIREBASE_IOS_SDK_REVISION="d10045cace0b4c335c4efa8f7df7e9a9fc5a7c60"
-GAM_REVISION="c2c76bebcfbb90d90ea10599f934f9af160e1604"
+FIREBASE_IOS_SDK_REVISION="27eaab3918e0bf78711cf1abf240577176326432"
+GAM_REVISION="8fe40b69bd53241847814422101188465f7ff728"
 
 pin_file() {
   python3 - "$1" "$FIREBASE_IOS_SDK_REVISION" "$GAM_REVISION" <<'PY'
@@ -15,9 +14,9 @@ with open(path, encoding="utf-8") as f:
     data = json.load(f)
 for pin in data.get("pins", []):
     if pin.get("identity") == "firebase-ios-sdk":
-        pin["state"] = {"revision": firebase_rev, "version": "12.13.0"}
+        pin["state"] = {"revision": firebase_rev, "version": "12.19.0"}
     elif pin.get("identity") == "googleappmeasurement":
-        pin["state"] = {"revision": gam_rev, "version": "12.13.0"}
+        pin["state"] = {"revision": gam_rev, "version": "12.19.0"}
 with open(path, "w", encoding="utf-8") as f:
     json.dump(data, f, indent=2)
     f.write("\n")
@@ -29,7 +28,7 @@ for RESOLVED in \
   "$ROOT/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"; do
   if [ -f "$RESOLVED" ]; then
     pin_file "$RESOLVED"
-    echo "Pinned Firebase iOS SDK 12.13.0 in $RESOLVED"
+    echo "Pinned Firebase iOS SDK 12.19.0 in $RESOLVED"
   fi
 done
 
