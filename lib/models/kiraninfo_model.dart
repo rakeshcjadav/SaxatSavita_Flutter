@@ -1,3 +1,21 @@
+class KiranHaribhakt {
+  final String name;
+  final String role; // host | reader
+
+  const KiranHaribhakt({required this.name, required this.role});
+
+  bool get isHost => role == 'host';
+
+  factory KiranHaribhakt.fromMap(Map<String, dynamic> map) {
+    return KiranHaribhakt(
+      name: (map['name'] as String? ?? '').trim(),
+      role: (map['role'] as String? ?? 'reader').trim(),
+    );
+  }
+
+  Map<String, dynamic> toMap() => {'name': name, 'role': role};
+}
+
 class KiranInfo {
   final int index;
   final String number;
@@ -6,6 +24,7 @@ class KiranInfo {
   final String date; // 'DD-MM-YY' ASCII, empty if unknown
   final String place; // first village, empty if unknown
   final List<String> places; // unique villages in sitting order
+  final List<KiranHaribhakt> haribhakts;
 
   KiranInfo({
     required this.index,
@@ -15,6 +34,7 @@ class KiranInfo {
     this.date = '',
     this.place = '',
     this.places = const [],
+    this.haribhakts = const [],
   });
 
   /// Villages from first sitting to last, e.g. `પીપલાણા → જૂનાગઢ`.
@@ -34,6 +54,14 @@ class KiranInfo {
     if (places.isEmpty && place.isNotEmpty) {
       places.add(place);
     }
+    final List<KiranHaribhakt> haribhakts =
+        (map['haribhakts'] as List<dynamic>? ?? [])
+            .whereType<Map>()
+            .map(
+              (item) => KiranHaribhakt.fromMap(Map<String, dynamic>.from(item)),
+            )
+            .where((item) => item.name.isNotEmpty)
+            .toList();
     return KiranInfo(
       index: map['index'] ?? 0,
       number: map['number'] ?? '',
@@ -42,6 +70,7 @@ class KiranInfo {
       date: map['date'] ?? '',
       place: place.isNotEmpty ? place : (places.isNotEmpty ? places.first : ''),
       places: places,
+      haribhakts: haribhakts,
     );
   }
 
@@ -54,6 +83,7 @@ class KiranInfo {
       'date': date,
       'place': place,
       'places': places,
+      'haribhakts': haribhakts.map((item) => item.toMap()).toList(),
     };
   }
 }

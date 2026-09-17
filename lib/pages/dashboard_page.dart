@@ -106,6 +106,7 @@ class _DashboardPageState extends State<DashboardPage> {
           DrawerItem.aashirvachan,
           DrawerItem.notes,
           DrawerItem.search,
+          DrawerItem.haribhakts,
           DrawerItem.readingPlans,
           DrawerItem.readingHistory,
           DrawerItem.quotesImageGenerator,

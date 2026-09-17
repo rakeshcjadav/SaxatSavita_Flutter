@@ -644,6 +644,60 @@ abstract class AppLocalizations {
   /// **'Kiran Title'**
   String get title_match;
 
+  /// No description provided for @haribhakt_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Haribhakt'**
+  String get haribhakt_match;
+
+  /// No description provided for @haribhakts.
+  ///
+  /// In en, this message translates to:
+  /// **'Haribhakts'**
+  String get haribhakts;
+
+  /// No description provided for @haribhakt_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search haribhakt names'**
+  String get haribhakt_search_hint;
+
+  /// No description provided for @haribhakt_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No named haribhakts found'**
+  String get haribhakt_empty;
+
+  /// No description provided for @haribhakt_no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No haribhakts match this search'**
+  String get haribhakt_no_matches;
+
+  /// No description provided for @haribhakt_role_host.
+  ///
+  /// In en, this message translates to:
+  /// **'Host'**
+  String get haribhakt_role_host;
+
+  /// No description provided for @haribhakt_role_reader.
+  ///
+  /// In en, this message translates to:
+  /// **'Reader'**
+  String get haribhakt_role_reader;
+
+  /// Number of kirans a haribhakt appears in
+  ///
+  /// In en, this message translates to:
+  /// **'{count} kirans'**
+  String haribhakt_kiran_count(int count);
+
+  /// Link to the full kiran list for one haribhakt
+  ///
+  /// In en, this message translates to:
+  /// **'See all kirans for {name}'**
+  String see_all_kirans_for(String name);
+
   /// No description provided for @filters.
   ///
   /// In en, this message translates to:

@@ -14,6 +14,7 @@ import 'package:saxatsavita_flutter/pages/homepage.dart';
 import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
+import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
@@ -321,6 +322,7 @@ class SakshatSavitaApp extends StatelessWidget {
                   infoItem: AppDataService().getInfoValue("preface")!,
                 ),
             '/search': (context) => const Kiransearchpage(),
+            '/haribhakts': (context) => const HaribhaktListPage(),
             '/settings': (context) => const SettingsPage(),
             '/aashirvachan': (context) => const Aashirvachanpage(),
             '/kiran-calendar': (context) => const KiranCalendarPage(),

@@ -14,6 +14,7 @@ Structure of each entry in the output list:
     "date":       "20-5-1975"   # 'D-M-YYYY'; empty string if unknown
     "place":      "પીપલાણા"     # first village; empty string if unknown
     "places":     ["પીપલાણા", "જૂનાગઢ"]  # unique villages in sitting order
+    "haribhakts": [{"name": "વજુભાઈ ટાંક", "role": "host"}]
   }
 
 Entries without a date are placed at the END of the list, sorted by part
@@ -67,6 +68,7 @@ for part_num in range(1, 6):
                 "date":       entry.get("date", ""),
                 "place":      entry.get("place", ""),
                 "places":     list(entry.get("places") or []),
+                "haribhakts": list(entry.get("haribhakts") or []),
             }
         )
 

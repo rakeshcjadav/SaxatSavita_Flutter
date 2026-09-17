@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/models/meanings_model.dart';
+import 'package:saxatsavita_flutter/services/haribhakt_service.dart';
 
 class Bookservice {
   static final Bookservice _instance = Bookservice._internal();
@@ -87,6 +88,16 @@ class Bookservice {
     }
   }
 
+  int partNumberForKiranIndex(int kiranIndex) {
+    for (int partNumber = 1; partNumber <= 5; partNumber++) {
+      if (kiranIndex >= getStartKiranIndex(partNumber) &&
+          kiranIndex <= getEndKiranIndex(partNumber)) {
+        return partNumber;
+      }
+    }
+    return 1;
+  }
+
   String getPartTitle(BuildContext context, int partNumber) {
     try {
       final locale = Localizations.localeOf(context);
@@ -117,6 +128,7 @@ class Bookservice {
         }
       }
       _meanings = await loadMeanings(bookName);
+      await HaribhaktService().load(bookName: bookName);
     }
   }
 

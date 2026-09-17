@@ -307,6 +307,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get title_match => 'Kiran Title';
 
   @override
+  String get haribhakt_match => 'Haribhakt';
+
+  @override
+  String get haribhakts => 'Haribhakts';
+
+  @override
+  String get haribhakt_search_hint => 'Search haribhakt names';
+
+  @override
+  String get haribhakt_empty => 'No named haribhakts found';
+
+  @override
+  String get haribhakt_no_matches => 'No haribhakts match this search';
+
+  @override
+  String get haribhakt_role_host => 'Host';
+
+  @override
+  String get haribhakt_role_reader => 'Reader';
+
+  @override
+  String haribhakt_kiran_count(int count) {
+    return '$count kirans';
+  }
+
+  @override
+  String see_all_kirans_for(String name) {
+    return 'See all kirans for $name';
+  }
+
+  @override
   String get filters => 'Filters';
 
   @override

@@ -15,6 +15,7 @@ enum DrawerItem {
   information,
   notes,
   search,
+  haribhakts,
   readingPlans,
   readingHistory,
   quotesImageGenerator,
@@ -275,6 +276,14 @@ class _DrawerState extends State<MyDrawer> {
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/search');
+        },
+      ),
+      DrawerItem.haribhakts => ListTile(
+        leading: const Icon(Icons.people_outline),
+        title: Text(AppLocalizations.of(context)!.haribhakts, style: textStyle),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/haribhakts');
         },
       ),
       DrawerItem.readingPlans => ListTile(

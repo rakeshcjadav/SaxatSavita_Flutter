@@ -798,6 +798,7 @@ class _KiranlistpageState extends State<Kiranlistpage> {
                 context: context,
                 partId: widget.bookPart.id,
                 kiranIndex: kiran.index,
+                kiranInfo: kiran,
                 onAddNote: (selectedText) async {
                   await Navigator.push(
                     context,

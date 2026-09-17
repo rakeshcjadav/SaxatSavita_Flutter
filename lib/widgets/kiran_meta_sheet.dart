@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
+import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
 import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 import 'package:saxatsavita_flutter/widgets/kiran_meta_panel.dart';
 
@@ -20,12 +22,14 @@ Future<void> showKiranMetaSheetForKiran({
   required BuildContext context,
   required String partId,
   required int kiranIndex,
+  KiranInfo? kiranInfo,
   Future<void> Function(String selectedText)? onAddNote,
   Future<void> Function(String selectedText)? onCreateQuoteImage,
 }) {
   return showKiranMetaSheet(
     context: context,
     content: loadKiranContentJson(partId: partId, kiranIndex: kiranIndex),
+    kiranInfo: kiranInfo,
     onAddNote: onAddNote,
     onCreateQuoteImage: onCreateQuoteImage,
   );
@@ -34,6 +38,7 @@ Future<void> showKiranMetaSheetForKiran({
 Future<void> showKiranMetaSheet({
   required BuildContext context,
   required Future<Map<String, dynamic>> content,
+  KiranInfo? kiranInfo,
   Future<void> Function(String selectedText)? onAddNote,
   Future<void> Function(String selectedText)? onCreateQuoteImage,
 }) {
@@ -123,7 +128,9 @@ Future<void> showKiranMetaSheet({
                         ),
                         child: SafeArea(
                           child: _SelectableKiranMeta(
+                            pageContext: context,
                             contentData: snapshot.data!,
+                            kiranInfo: kiranInfo,
                             onAddNote: onAddNote,
                             onCreateQuoteImage: onCreateQuoteImage,
                           ),
@@ -143,12 +150,16 @@ Future<void> showKiranMetaSheet({
 
 class _SelectableKiranMeta extends StatefulWidget {
   const _SelectableKiranMeta({
+    required this.pageContext,
     required this.contentData,
+    this.kiranInfo,
     this.onAddNote,
     this.onCreateQuoteImage,
   });
 
+  final BuildContext pageContext;
   final Map<String, dynamic> contentData;
+  final KiranInfo? kiranInfo;
   final Future<void> Function(String selectedText)? onAddNote;
   final Future<void> Function(String selectedText)? onCreateQuoteImage;
 
@@ -165,6 +176,11 @@ class _SelectableKiranMetaState extends State<_SelectableKiranMeta> {
     final colorScheme = theme.colorScheme;
     final panel = KiranMetaPanel.fromContent(
       widget.contentData,
+      haribhakts: widget.kiranInfo?.haribhakts ?? const [],
+      onHaribhaktTap: (name) {
+        Navigator.pop(context);
+        openHaribhaktDetail(widget.pageContext, name);
+      },
       onAddNote: widget.onAddNote,
       onCreateQuoteImage: widget.onCreateQuoteImage,
     );

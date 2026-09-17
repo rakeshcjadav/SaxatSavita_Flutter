@@ -150,6 +150,31 @@
     "search_min_chars": "Enter at least 2 characters to search",
     "content_match": "Kiran Content",
     "title_match": "Kiran Title",
+    "haribhakt_match": "Haribhakt",
+    "haribhakts": "Haribhakts",
+    "haribhakt_search_hint": "Search haribhakt names",
+    "haribhakt_empty": "No named haribhakts found",
+    "haribhakt_no_matches": "No haribhakts match this search",
+    "haribhakt_role_host": "Host",
+    "haribhakt_role_reader": "Reader",
+    "haribhakt_kiran_count": "{count} kirans",
+    "@haribhakt_kiran_count": {
+        "description": "Number of kirans a haribhakt appears in",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "see_all_kirans_for": "See all kirans for {name}",
+    "@see_all_kirans_for": {
+        "description": "Link to the full kiran list for one haribhakt",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     
     "filters": "Filters",
     "clear_all_filters": "Clear All",

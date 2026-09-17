@@ -307,6 +307,37 @@ class AppLocalizationsGu extends AppLocalizations {
   String get title_match => 'કિરણ શીર્ષક';
 
   @override
+  String get haribhakt_match => 'હરિભક્ત';
+
+  @override
+  String get haribhakts => 'હરિભક્તો';
+
+  @override
+  String get haribhakt_search_hint => 'હરિભક્તના નામ શોધો';
+
+  @override
+  String get haribhakt_empty => 'નામધારી હરિભક્તો મળ્યા નથી';
+
+  @override
+  String get haribhakt_no_matches => 'આ શોધ સાથે કોઈ હરિભક્ત મેળ ખાતા નથી';
+
+  @override
+  String get haribhakt_role_host => 'યજમાન';
+
+  @override
+  String get haribhakt_role_reader => 'વાંચનાર';
+
+  @override
+  String haribhakt_kiran_count(int count) {
+    return '$count કિરણો';
+  }
+
+  @override
+  String see_all_kirans_for(String name) {
+    return '$nameનાં બધાં કિરણો જુઓ';
+  }
+
+  @override
   String get filters => 'ફિલ્ટર્સ';
 
   @override

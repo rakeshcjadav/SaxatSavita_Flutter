@@ -1,14 +1,34 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "name": "Flutter",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main.dart" // Adjust the path to your main Dart file if necessary
-        }  
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "SaxatSavita (Android)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "toolArgs": ["-d", "android"]
+        },
+        {
+            "name": "SaxatSavita (Android profile)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "flutterMode": "profile",
+            "toolArgs": ["-d", "android"]
+        },
+        {
+            "name": "SaxatSavita (Android release)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "flutterMode": "release",
+            "toolArgs": ["-d", "android"]
+        }
     ]
 }

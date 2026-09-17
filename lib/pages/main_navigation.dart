@@ -51,6 +51,7 @@ class _MainNavigationState extends State<MainNavigation> {
                   DrawerItem.aashirvachan,
                   DrawerItem.notes,
                   DrawerItem.search,
+                  DrawerItem.haribhakts,
                   DrawerItem.readingPlans,
                   DrawerItem.readingHistory,
                   DrawerItem.quotesImageGenerator,

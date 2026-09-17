@@ -3,6 +3,7 @@ import 'package:saxatsavita_flutter/components/custom_html_widget.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 
 List<String> parseKiranLocations(Map<String, dynamic> contentData) {
@@ -32,6 +33,8 @@ class KiranMetaPanel extends StatelessWidget {
     required this.moral,
     required this.history,
     required this.summary,
+    this.haribhakts = const [],
+    this.onHaribhaktTap,
     this.showAiCaption = false,
     this.onAddNote,
     this.onCreateQuoteImage,
@@ -40,6 +43,8 @@ class KiranMetaPanel extends StatelessWidget {
   factory KiranMetaPanel.fromContent(
     Map<String, dynamic> contentData, {
     Key? key,
+    List<KiranHaribhakt> haribhakts = const [],
+    void Function(String name)? onHaribhaktTap,
     bool showAiCaption = false,
     Future<void> Function(String selectedText)? onAddNote,
     Future<void> Function(String selectedText)? onCreateQuoteImage,
@@ -55,6 +60,8 @@ class KiranMetaPanel extends StatelessWidget {
               .map((e) => e.toString().trim())
               .where((e) => e.isNotEmpty)
               .toList(),
+      haribhakts: haribhakts,
+      onHaribhaktTap: onHaribhaktTap,
       showAiCaption: showAiCaption,
       onAddNote: onAddNote,
       onCreateQuoteImage: onCreateQuoteImage,
@@ -66,6 +73,8 @@ class KiranMetaPanel extends StatelessWidget {
   final String moral;
   final String history;
   final List<String> summary;
+  final List<KiranHaribhakt> haribhakts;
+  final void Function(String name)? onHaribhaktTap;
   final bool showAiCaption;
   final Future<void> Function(String selectedText)? onAddNote;
   final Future<void> Function(String selectedText)? onCreateQuoteImage;
@@ -75,7 +84,8 @@ class KiranMetaPanel extends StatelessWidget {
       date.isEmpty &&
       moral.isEmpty &&
       history.isEmpty &&
-      summary.isEmpty;
+      summary.isEmpty &&
+      haribhakts.isEmpty;
 
   static String toGujaratiNumeral(int n) {
     return n
@@ -150,7 +160,8 @@ class KiranMetaPanel extends StatelessWidget {
           );
         }
 
-        final hasContext = locations.isNotEmpty || date.isNotEmpty;
+        final hasContext =
+            locations.isNotEmpty || date.isNotEmpty || haribhakts.isNotEmpty;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,6 +179,11 @@ class KiranMetaPanel extends StatelessWidget {
               _ContextCard(
                 locations: locations,
                 date: date,
+                haribhakts: haribhakts,
+                onHaribhaktTap: onHaribhaktTap,
+                peopleLabel: l10n.haribhakts,
+                hostLabel: l10n.haribhakt_role_host,
+                readerLabel: l10n.haribhakt_role_reader,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
                 fontSize: settings.fontSize,
@@ -203,6 +219,11 @@ class _ContextCard extends StatelessWidget {
   const _ContextCard({
     required this.locations,
     required this.date,
+    required this.haribhakts,
+    required this.onHaribhaktTap,
+    required this.peopleLabel,
+    required this.hostLabel,
+    required this.readerLabel,
     required this.colorScheme,
     required this.textTheme,
     required this.fontSize,
@@ -210,6 +231,11 @@ class _ContextCard extends StatelessWidget {
 
   final List<String> locations;
   final String date;
+  final List<KiranHaribhakt> haribhakts;
+  final void Function(String name)? onHaribhaktTap;
+  final String peopleLabel;
+  final String hostLabel;
+  final String readerLabel;
   final ColorScheme colorScheme;
   final TextTheme textTheme;
   final double fontSize;
@@ -252,6 +278,51 @@ class _ContextCard extends StatelessWidget {
               connectorColor: connectorColor,
               firstLineHeight: fontSize * 1.35,
               child: Text(date, style: textStyle),
+            ),
+          ],
+          if (haribhakts.isNotEmpty) ...[
+            if (locations.isNotEmpty || date.isNotEmpty)
+              const SizedBox(height: 10),
+            _ContextRow(
+              icon: Icons.people_outline,
+              iconColor: iconColor,
+              showConnectorBelow: false,
+              connectorColor: connectorColor,
+              firstLineHeight: fontSize * 1.35,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    peopleLabel,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final person in haribhakts)
+                        ActionChip(
+                          avatar: Icon(
+                            person.isHost
+                                ? Icons.home_outlined
+                                : Icons.menu_book_outlined,
+                            size: 16,
+                          ),
+                          label: Text(person.name),
+                          tooltip: person.isHost ? hostLabel : readerLabel,
+                          onPressed:
+                              onHaribhaktTap == null
+                                  ? null
+                                  : () => onHaribhaktTap!(person.name),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ],

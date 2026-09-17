@@ -149,6 +149,31 @@
     "search_min_chars": "શોધવા માટે ઓછામાં ઓછા 2 અક્ષરો દાખલ કરો",
     "content_match": "કિરણ સામગ્રી",
     "title_match": "કિરણ શીર્ષક",
+    "haribhakt_match": "હરિભક્ત",
+    "haribhakts": "હરિભક્તો",
+    "haribhakt_search_hint": "હરિભક્તના નામ શોધો",
+    "haribhakt_empty": "નામધારી હરિભક્તો મળ્યા નથી",
+    "haribhakt_no_matches": "આ શોધ સાથે કોઈ હરિભક્ત મેળ ખાતા નથી",
+    "haribhakt_role_host": "યજમાન",
+    "haribhakt_role_reader": "વાંચનાર",
+    "haribhakt_kiran_count": "{count} કિરણો",
+    "@haribhakt_kiran_count": {
+        "description": "Number of kirans a haribhakt appears in",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "see_all_kirans_for": "{name}નાં બધાં કિરણો જુઓ",
+    "@see_all_kirans_for": {
+        "description": "Link to the full kiran list for one haribhakt",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     
     "filters": "ફિલ્ટર્સ",
     "clear_all_filters": "બધા સાફ કરો",

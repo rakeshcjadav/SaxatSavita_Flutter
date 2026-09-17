@@ -8,9 +8,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
+import 'package:saxatsavita_flutter/models/haribhakt_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
+import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
+import 'package:saxatsavita_flutter/services/haribhakt_service.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
@@ -163,6 +166,7 @@ class SearchResult {
   final int partNumber;
   final String snippet;
   final bool isContentMatch;
+  final bool isHaribhaktMatch;
   final double relevanceScore;
 
   SearchResult({
@@ -170,6 +174,7 @@ class SearchResult {
     required this.partNumber,
     required this.snippet,
     this.isContentMatch = false,
+    this.isHaribhaktMatch = false,
     this.relevanceScore = 0.0,
   });
 }
@@ -197,11 +202,17 @@ class _KiransearchpageState extends State<Kiransearchpage> {
   Set<int> _selectedParts = {1, 2, 3, 4, 5}; // All parts selected by default
   bool _showTitleMatches = true;
   bool _showContentMatches = true;
+  bool _showHaribhaktMatches = true;
   bool _isFiltersExpanded = false; // Collapsible filter state
 
   // Search history state
   final SearchHistoryService _searchHistoryService = SearchHistoryService();
   bool _showSearchSuggestions = false;
+
+  HaribhaktItem? get _exactHaribhaktMatch {
+    if (!_hasSearched) return null;
+    return HaribhaktService().findByName(_searchController.text.trim());
+  }
 
   @override
   void initState() {
@@ -263,6 +274,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       for (int partNumber in _availableParts) {
         await _kiranListService.loadPart('saxatsavita', 'part$partNumber');
       }
+      await HaribhaktService().load();
     } catch (e) {
       debugPrint('Error loading parts: $e');
     }
@@ -458,6 +470,19 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         }
       }
 
+      final haribhaktHits = HaribhaktService().searchKirans(query);
+      for (final hit in haribhaktHits) {
+        results.add(
+          SearchResult(
+            kiranInfo: hit.kiranInfo,
+            partNumber: hit.partNumber,
+            snippet: hit.names.join(', '),
+            isHaribhaktMatch: true,
+            relevanceScore: hit.names.any((name) => name == query) ? 20.0 : 8.0,
+          ),
+        );
+      }
+
       // Sort results by relevance score (highest first)
       results.sort((a, b) {
         // Primary sort: by relevance score (descending)
@@ -513,6 +538,9 @@ class _KiransearchpageState extends State<Kiransearchpage> {
           }
 
           // Filter by match type
+          if (result.isHaribhaktMatch) {
+            return _showHaribhaktMatches;
+          }
           if (result.isContentMatch && !_showContentMatches) {
             return false;
           }
@@ -561,6 +589,13 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     });
   }
 
+  void _toggleHaribhaktFilter() {
+    setState(() {
+      _showHaribhaktMatches = !_showHaribhaktMatches;
+      _applyFilters();
+    });
+  }
+
   int _getActiveFiltersCount() {
     int count = 0;
 
@@ -570,6 +605,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     // Count disabled match type filters
     if (!_showTitleMatches) count++;
     if (!_showContentMatches) count++;
+    if (!_showHaribhaktMatches) count++;
 
     return count;
   }
@@ -1000,6 +1036,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 _selectedParts = {1, 2, 3, 4, 5};
                 _showTitleMatches = true;
                 _showContentMatches = true;
+                _showHaribhaktMatches = true;
                 _applyFilters();
               });
             },
@@ -1021,7 +1058,10 @@ class _KiransearchpageState extends State<Kiransearchpage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Match Type Filters
-              Row(
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     '${AppLocalizations.of(context)!.match_type} : ',
@@ -1047,7 +1087,6 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                     selectedColor:
                         Theme.of(context).colorScheme.primaryContainer,
                   ),
-                  const SizedBox(width: 8),
                   FilterChip(
                     selected: _showContentMatches,
                     onSelected: (_) => _toggleMatchTypeFilter(true),
@@ -1064,6 +1103,26 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                         _showContentMatches
                             ? const Icon(Icons.check)
                             : const Icon(Icons.article),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    selectedColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  FilterChip(
+                    selected: _showHaribhaktMatches,
+                    onSelected: (_) => _toggleHaribhaktFilter(),
+                    label: Text(AppLocalizations.of(context)!.haribhakt_match),
+                    labelStyle: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(
+                      color:
+                          _showHaribhaktMatches
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.onSurface,
+                    ),
+                    avatar:
+                        _showHaribhaktMatches
+                            ? const Icon(Icons.check)
+                            : const Icon(Icons.people_outline),
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     selectedColor:
                         Theme.of(context).colorScheme.primaryContainer,
@@ -1245,6 +1304,18 @@ class _KiransearchpageState extends State<Kiransearchpage> {
             ],
           ),
         ),
+        if (_exactHaribhaktMatch != null)
+          ListTile(
+            leading: const Icon(Icons.people_outline),
+            title: Text(
+              AppLocalizations.of(
+                context,
+              )!.see_all_kirans_for(_exactHaribhaktMatch!.name),
+            ),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+            onTap:
+                () => openHaribhaktDetail(context, _exactHaribhaktMatch!.name),
+          ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -1316,13 +1387,19 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                   ),
                   const SizedBox(width: 8),
                   Icon(
-                    result.isContentMatch ? Icons.article : Icons.title,
+                    result.isHaribhaktMatch
+                        ? Icons.people_outline
+                        : result.isContentMatch
+                        ? Icons.article
+                        : Icons.title,
                     size: 16,
                     color: Theme.of(context).colorScheme.primary.withAlpha(127),
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    result.isContentMatch
+                    result.isHaribhaktMatch
+                        ? AppLocalizations.of(context)!.haribhakt_match
+                        : result.isContentMatch
                         ? AppLocalizations.of(context)!.content_match
                         : AppLocalizations.of(context)!.title_match,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1346,7 +1423,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    result.isContentMatch
+                    result.isContentMatch || result.isHaribhaktMatch
                         ? Text(
                           '${result.kiranInfo.number} ${result.kiranInfo.title}',
                           style: Theme.of(context).textTheme.titleMedium

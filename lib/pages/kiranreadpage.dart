@@ -23,6 +23,7 @@ import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/pages/settingspage.dart';
 import 'package:saxatsavita_flutter/pages/simple_note_editor_page.dart';
 import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
+import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
@@ -1446,6 +1447,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     final panel = KiranMetaPanel.fromContent(
       contentData,
       showAiCaption: showAiCaption,
+      haribhakts: widget.kiranInfo.haribhakts,
+      onHaribhaktTap: (name) => openHaribhaktDetail(context, name),
       onAddNote: (selectedText) async {
         _pauseTimer();
         await _openNoteEditor(selectedText: selectedText);
@@ -1517,6 +1520,7 @@ class _KiranReadPageState extends State<KiranReadPage>
     showKiranMetaSheet(
       context: context,
       content: Future.value(contentData),
+      kiranInfo: widget.kiranInfo,
       onAddNote: (selectedText) async {
         _pauseTimer();
         await _openNoteEditor(selectedText: selectedText);
