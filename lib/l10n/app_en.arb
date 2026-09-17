@@ -166,6 +166,37 @@
             }
         }
     },
+    "haribhakt_people_count": "{count} haribhakts",
+    "@haribhakt_people_count": {
+        "description": "Number of people in the haribhakt list",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "haribhakt_host_count": "{count} as host",
+    "@haribhakt_host_count": {
+        "description": "How many kirans this person hosted",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "haribhakt_reader_count": "{count} as reader",
+    "@haribhakt_reader_count": {
+        "description": "How many kirans this person read",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "haribhakt_sort_name": "Sort by name",
+    "haribhakt_sort_count": "Sort by kirans",
+    "haribhakt_filter_all": "All",
+    "haribhakt_try_different_name": "Try a different name",
     "see_all_kirans_for": "See all kirans for {name}",
     "@see_all_kirans_for": {
         "description": "Link to the full kiran list for one haribhakt",

@@ -1305,16 +1305,41 @@ class _KiransearchpageState extends State<Kiransearchpage> {
           ),
         ),
         if (_exactHaribhaktMatch != null)
-          ListTile(
-            leading: const Icon(Icons.people_outline),
-            title: Text(
-              AppLocalizations.of(
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Material(
+              color: Theme.of(
                 context,
-              )!.see_all_kirans_for(_exactHaribhaktMatch!.name),
+              ).colorScheme.primaryContainer.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(12),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  child: Icon(
+                    Icons.people_outline,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+                title: Text(
+                  _exactHaribhaktMatch!.name,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.haribhakt_kiran_count(_exactHaribhaktMatch!.count),
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+                onTap:
+                    () => openHaribhaktDetail(
+                      context,
+                      _exactHaribhaktMatch!.name,
+                    ),
+              ),
             ),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap:
-                () => openHaribhaktDetail(context, _exactHaribhaktMatch!.name),
           ),
         Expanded(
           child: Padding(

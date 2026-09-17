@@ -23,6 +23,14 @@ class HaribhaktItem {
     required this.kirans,
   });
 
+  int get hostCount => kirans.where((ref) => ref.role == 'host').length;
+
+  int get readerCount => kirans.where((ref) => ref.role == 'reader').length;
+
+  bool get hasHost => hostCount > 0;
+
+  bool get hasReader => readerCount > 0;
+
   factory HaribhaktItem.fromMap(Map<String, dynamic> map) {
     final kirans =
         (map['kirans'] as List<dynamic>? ?? [])

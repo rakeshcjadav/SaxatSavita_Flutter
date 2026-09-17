@@ -300,32 +300,104 @@ class _ContextCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final person in haribhakts)
-                        ActionChip(
-                          avatar: Icon(
-                            person.isHost
-                                ? Icons.home_outlined
-                                : Icons.menu_book_outlined,
-                            size: 16,
+                  SelectionContainer.disabled(
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        for (final person in haribhakts)
+                          _HaribhaktNameChip(
+                            person: person,
+                            hostLabel: hostLabel,
+                            readerLabel: readerLabel,
+                            colorScheme: colorScheme,
+                            textTheme: textTheme,
+                            onTap:
+                                onHaribhaktTap == null
+                                    ? null
+                                    : () => onHaribhaktTap!(person.name),
                           ),
-                          label: Text(person.name),
-                          tooltip: person.isHost ? hostLabel : readerLabel,
-                          onPressed:
-                              onHaribhaktTap == null
-                                  ? null
-                                  : () => onHaribhaktTap!(person.name),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _HaribhaktNameChip extends StatelessWidget {
+  const _HaribhaktNameChip({
+    required this.person,
+    required this.hostLabel,
+    required this.readerLabel,
+    required this.colorScheme,
+    required this.textTheme,
+    this.onTap,
+  });
+
+  final KiranHaribhakt person;
+  final String hostLabel;
+  final String readerLabel;
+  final ColorScheme colorScheme;
+  final TextTheme textTheme;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isHost = person.isHost;
+    final background =
+        isHost ? colorScheme.primaryContainer : colorScheme.secondaryContainer;
+    final foreground =
+        isHost
+            ? colorScheme.onPrimaryContainer
+            : colorScheme.onSecondaryContainer;
+    final role = isHost ? hostLabel : readerLabel;
+
+    return Material(
+      color: background,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 8, 12, 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isHost ? Icons.home_outlined : Icons.menu_book_outlined,
+                size: 18,
+                color: foreground,
+              ),
+              const SizedBox(width: 8),
+              Text.rich(
+                TextSpan(
+                  text: person.name,
+                  style: textTheme.titleSmall?.copyWith(
+                    color: foreground,
+                    fontWeight: FontWeight.w600,
+                    height: 1.25,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: '\n$role',
+                      style: textTheme.labelSmall?.copyWith(
+                        color: foreground.withValues(alpha: 0.78),
+                        fontWeight: FontWeight.w500,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

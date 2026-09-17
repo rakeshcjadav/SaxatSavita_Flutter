@@ -22,6 +22,8 @@ class HaribhaktKiranHit {
   });
 }
 
+const _honorificTokens = {'ભાઈ', 'ભાઇ', 'બાપા', 'ભગત', 'બાઈ', 'બાઇ'};
+
 class HaribhaktService {
   static final HaribhaktService _instance = HaribhaktService._internal();
   factory HaribhaktService() => _instance;
@@ -29,6 +31,7 @@ class HaribhaktService {
 
   List<HaribhaktItem> _list = const [];
   Map<String, HaribhaktItem> _byName = const {};
+  Map<int, int>? _indexToPart;
 
   List<HaribhaktItem> get list => _list;
 
@@ -61,18 +64,29 @@ class HaribhaktService {
     final exact = <HaribhaktItem>[];
     final starts = <HaribhaktItem>[];
     final contains = <HaribhaktItem>[];
+    final skipContains = q.length < 2 || _honorificTokens.contains(q);
     for (final item in _list) {
       if (item.name == q) {
         exact.add(item);
-      } else if (item.name.startsWith(q) ||
-          item.name.split(' ').any((token) => token.startsWith(q))) {
+        continue;
+      }
+      final tokens = item.name.split(' ');
+      if (item.name.startsWith(q) ||
+          tokens.any((token) => token.startsWith(q))) {
         starts.add(item);
-      } else if (q.length >= 4 && item.name.contains(q)) {
+      } else if (!skipContains &&
+          (item.name.contains(q) ||
+              tokens.any(
+                (token) =>
+                    !_honorificTokens.contains(token) && token.contains(q),
+              ))) {
         contains.add(item);
       }
     }
     return [...exact, ...starts, ...contains];
   }
+
+  int? partNumberFor(int kiranIndex) => _partNumberFor(kiranIndex);
 
   List<HaribhaktKiranHit> searchKirans(String query) {
     final matches = searchNames(query);
@@ -107,14 +121,21 @@ class HaribhaktService {
   }
 
   int? _partNumberFor(int kiranIndex) {
+    _ensurePartMap();
+    return _indexToPart![kiranIndex];
+  }
+
+  void _ensurePartMap() {
+    if (_indexToPart != null) return;
+    final map = <int, int>{};
     final lists = KiranListService();
     for (int partNumber = 1; partNumber <= 5; partNumber++) {
       final list = lists.getKiranListFromPartNumber(partNumber);
       if (list == null) continue;
-      if (list.list.any((kiran) => kiran.index == kiranIndex)) {
-        return partNumber;
+      for (final kiran in list.list) {
+        map[kiran.index] = partNumber;
       }
     }
-    return null;
+    _indexToPart = map;
   }
 }

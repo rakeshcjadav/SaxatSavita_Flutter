@@ -165,6 +165,37 @@
             }
         }
     },
+    "haribhakt_people_count": "{count} હરિભક્તો",
+    "@haribhakt_people_count": {
+        "description": "Number of people in the haribhakt list",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "haribhakt_host_count": "{count} વાર યજમાન",
+    "@haribhakt_host_count": {
+        "description": "How many kirans this person hosted",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "haribhakt_reader_count": "{count} વાર વાંચનાર",
+    "@haribhakt_reader_count": {
+        "description": "How many kirans this person read",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "haribhakt_sort_name": "નામ પ્રમાણે",
+    "haribhakt_sort_count": "કિરણ પ્રમાણે",
+    "haribhakt_filter_all": "બધા",
+    "haribhakt_try_different_name": "બીજું નામ અજમાવો",
     "see_all_kirans_for": "{name}નાં બધાં કિરણો જુઓ",
     "@see_all_kirans_for": {
         "description": "Link to the full kiran list for one haribhakt",

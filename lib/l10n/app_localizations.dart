@@ -692,6 +692,48 @@ abstract class AppLocalizations {
   /// **'{count} kirans'**
   String haribhakt_kiran_count(int count);
 
+  /// Number of people in the haribhakt list
+  ///
+  /// In en, this message translates to:
+  /// **'{count} haribhakts'**
+  String haribhakt_people_count(int count);
+
+  /// How many kirans this person hosted
+  ///
+  /// In en, this message translates to:
+  /// **'{count} as host'**
+  String haribhakt_host_count(int count);
+
+  /// How many kirans this person read
+  ///
+  /// In en, this message translates to:
+  /// **'{count} as reader'**
+  String haribhakt_reader_count(int count);
+
+  /// No description provided for @haribhakt_sort_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by name'**
+  String get haribhakt_sort_name;
+
+  /// No description provided for @haribhakt_sort_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by kirans'**
+  String get haribhakt_sort_count;
+
+  /// No description provided for @haribhakt_filter_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get haribhakt_filter_all;
+
+  /// No description provided for @haribhakt_try_different_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different name'**
+  String get haribhakt_try_different_name;
+
   /// Link to the full kiran list for one haribhakt
   ///
   /// In en, this message translates to:

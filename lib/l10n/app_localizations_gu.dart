@@ -333,6 +333,33 @@ class AppLocalizationsGu extends AppLocalizations {
   }
 
   @override
+  String haribhakt_people_count(int count) {
+    return '$count હરિભક્તો';
+  }
+
+  @override
+  String haribhakt_host_count(int count) {
+    return '$count વાર યજમાન';
+  }
+
+  @override
+  String haribhakt_reader_count(int count) {
+    return '$count વાર વાંચનાર';
+  }
+
+  @override
+  String get haribhakt_sort_name => 'નામ પ્રમાણે';
+
+  @override
+  String get haribhakt_sort_count => 'કિરણ પ્રમાણે';
+
+  @override
+  String get haribhakt_filter_all => 'બધા';
+
+  @override
+  String get haribhakt_try_different_name => 'બીજું નામ અજમાવો';
+
+  @override
   String see_all_kirans_for(String name) {
     return '$nameનાં બધાં કિરણો જુઓ';
   }

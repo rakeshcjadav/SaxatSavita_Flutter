@@ -333,6 +333,33 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String haribhakt_people_count(int count) {
+    return '$count haribhakts';
+  }
+
+  @override
+  String haribhakt_host_count(int count) {
+    return '$count as host';
+  }
+
+  @override
+  String haribhakt_reader_count(int count) {
+    return '$count as reader';
+  }
+
+  @override
+  String get haribhakt_sort_name => 'Sort by name';
+
+  @override
+  String get haribhakt_sort_count => 'Sort by kirans';
+
+  @override
+  String get haribhakt_filter_all => 'All';
+
+  @override
+  String get haribhakt_try_different_name => 'Try a different name';
+
+  @override
   String see_all_kirans_for(String name) {
     return 'See all kirans for $name';
   }
