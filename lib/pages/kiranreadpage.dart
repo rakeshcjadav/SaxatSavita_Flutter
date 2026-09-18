@@ -1283,57 +1283,25 @@ class _KiranReadPageState extends State<KiranReadPage>
                 }
               },
             ),
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert),
-              color:
-                  Theme.of(context).colorScheme.brightness == Brightness.dark
-                      ? Theme.of(context).colorScheme.surfaceContainerHigh
-                      : Theme.of(context).colorScheme.primary,
-              onSelected: (value) async {
-                if (value == 'notes') {
-                  _pauseTimer();
-                  await _openNoteEditor();
-                  _resumeTimer();
-                } else if (value == 'settings') {
-                  _pauseTimer();
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SettingsPage()),
-                  );
-                  _resumeTimer();
-                }
+            IconButton(
+              icon: const Icon(Icons.note_add),
+              tooltip: AppLocalizations.of(context)!.notes,
+              onPressed: () async {
+                _pauseTimer();
+                await _openNoteEditor();
+                _resumeTimer();
               },
-              itemBuilder: (context) {
-                final l10n = AppLocalizations.of(context)!;
-                final colorScheme = Theme.of(context).colorScheme;
-                final isDark = colorScheme.brightness == Brightness.dark;
-                final itemColor =
-                    isDark ? colorScheme.onSurface : colorScheme.onPrimary;
-                final itemStyle = Theme.of(
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: AppLocalizations.of(context)!.settings,
+              onPressed: () async {
+                _pauseTimer();
+                await Navigator.push(
                   context,
-                ).textTheme.titleSmall?.copyWith(color: itemColor);
-                return [
-                  PopupMenuItem(
-                    value: 'notes',
-                    child: Row(
-                      children: [
-                        Icon(Icons.note_add, size: 20, color: itemColor),
-                        const SizedBox(width: 12),
-                        Text(l10n.notes, style: itemStyle),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'settings',
-                    child: Row(
-                      children: [
-                        Icon(Icons.settings, size: 20, color: itemColor),
-                        const SizedBox(width: 12),
-                        Text(l10n.settings, style: itemStyle),
-                      ],
-                    ),
-                  ),
-                ];
+                  MaterialPageRoute(builder: (_) => const SettingsPage()),
+                );
+                _resumeTimer();
               },
             ),
           ],

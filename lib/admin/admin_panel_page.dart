@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:saxatsavita_flutter/admin/widgets/user_detail_dialog.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/admin/widgets/data_export_dialog.dart';
 import 'package:saxatsavita_flutter/admin/models/admin_user_data.dart';
 import 'package:saxatsavita_flutter/admin/services/admin_service.dart';
@@ -145,17 +146,23 @@ class _AdminPanelPageState extends State<AdminPanelPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saxat Savita - Admin Panel'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadUsers),
+      appBar: buildAppBar(
+        context,
+        title: 'Saxat Savita - Admin Panel',
+        extraActions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _loadUsers,
+          ),
           IconButton(
             icon: const Icon(Icons.download),
+            tooltip: 'Export',
             onPressed: () => _showExportDialog(context),
           ),
           IconButton(
             icon: const Icon(Icons.logout),
+            tooltip: 'Sign out',
             onPressed: () => FirebaseAuth.instance.signOut(),
           ),
         ],

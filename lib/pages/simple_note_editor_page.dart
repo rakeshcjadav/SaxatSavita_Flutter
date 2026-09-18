@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
@@ -125,11 +126,11 @@ class _SimpleNoteEditorPageState extends State<SimpleNoteEditorPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '${AppLocalizations.of(context)!.notes} - ${widget.kiranTitle}',
-          ),
-          actions: [
+        appBar: buildAppBar(
+          context,
+          title:
+              '${AppLocalizations.of(context)!.notes} - ${widget.kiranTitle}',
+          extraActions: [
             IconButton(
               onPressed: _isModified ? _saveNote : null,
               icon: Icon(Icons.save, color: _isModified ? null : Colors.grey),

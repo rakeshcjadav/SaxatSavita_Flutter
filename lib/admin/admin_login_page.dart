@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:saxatsavita_flutter/admin/admin_panel_page.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/admin/services/admin_service.dart';
 import 'package:flutter/foundation.dart';
 
@@ -124,9 +125,9 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saxat Savita - Admin Access'),
-        centerTitle: true,
+      appBar: buildAppBar(
+        context,
+        title: 'Saxat Savita - Admin Access',
       ),
       body: Center(
         child: Container(

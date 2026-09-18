@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
 import 'package:saxatsavita_flutter/pages/main_navigation.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -664,7 +665,10 @@ class GoogleSignInPageState extends State<GoogleSignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.sakshatSavita)),
+      appBar: buildAppBar(
+        context,
+        title: AppLocalizations.of(context)!.sakshatSavita,
+      ),
       drawer: MyDrawer(
         items: [
           DrawerItem.aashirvachan,
