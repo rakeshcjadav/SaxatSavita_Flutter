@@ -54,6 +54,60 @@ enum _RoleFilter { all, host, reader, mentioned }
 
 enum _SortMode { count, name }
 
+class _RoleStyle {
+  const _RoleStyle({
+    required this.color,
+    required this.container,
+    required this.onContainer,
+  });
+
+  final Color color;
+  final Color container;
+  final Color onContainer;
+
+  static _RoleStyle of(BuildContext context, String role) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    switch (role) {
+      case 'host':
+        return dark
+            ? const _RoleStyle(
+                color: Color(0xFFFFB74D),
+                container: Color(0xFF5D4037),
+                onContainer: Color(0xFFFFE0B2),
+              )
+            : const _RoleStyle(
+                color: Color(0xFFEF6C00),
+                container: Color(0xFFFFE0B2),
+                onContainer: Color(0xFFBF360C),
+              );
+      case 'mentioned':
+        return dark
+            ? const _RoleStyle(
+                color: Color(0xFFCE93D8),
+                container: Color(0xFF4A148C),
+                onContainer: Color(0xFFE1BEE7),
+              )
+            : const _RoleStyle(
+                color: Color(0xFF7B1FA2),
+                container: Color(0xFFE1BEE7),
+                onContainer: Color(0xFF4A148C),
+              );
+      default:
+        return dark
+            ? const _RoleStyle(
+                color: Color(0xFF64B5F6),
+                container: Color(0xFF0D47A1),
+                onContainer: Color(0xFFBBDEFB),
+              )
+            : const _RoleStyle(
+                color: Color(0xFF1565C0),
+                container: Color(0xFFBBDEFB),
+                onContainer: Color(0xFF0D47A1),
+              );
+    }
+  }
+}
+
 class HaribhaktListPage extends StatefulWidget {
   const HaribhaktListPage({super.key});
 
@@ -176,6 +230,7 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
                                 _RoleFilterChip(
                                   label: l10n.haribhakt_role_host,
                                   icon: Icons.home_outlined,
+                                  role: 'host',
                                   selected: _roleFilter == _RoleFilter.host,
                                   onSelected:
                                       () => setState(
@@ -186,6 +241,7 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
                                 _RoleFilterChip(
                                   label: l10n.haribhakt_role_reader,
                                   icon: Icons.menu_book_outlined,
+                                  role: 'reader',
                                   selected: _roleFilter == _RoleFilter.reader,
                                   onSelected:
                                       () => setState(
@@ -196,6 +252,7 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
                                 _RoleFilterChip(
                                   label: l10n.haribhakt_role_mentioned,
                                   icon: Icons.chat_bubble_outline,
+                                  role: 'mentioned',
                                   selected: _roleFilter == _RoleFilter.mentioned,
                                   onSelected:
                                       () => setState(
@@ -395,22 +452,10 @@ class _RoleCount extends StatelessWidget {
   final int count;
   final String tooltip;
 
-  Color _color(ColorScheme colorScheme) {
-    switch (role) {
-      case 'host':
-        return colorScheme.primary;
-      case 'mentioned':
-        return colorScheme.tertiary;
-      default:
-        return colorScheme.secondary;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final active = count > 0;
-    final color = _color(colorScheme);
+    final color = _RoleStyle.of(context, role).color;
     return Tooltip(
       message: tooltip,
       child: Opacity(
@@ -595,6 +640,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                       value: formatHaribhaktCount(context, item.hostCount),
                       label: l10n.haribhakt_role_host,
                       icon: Icons.home_outlined,
+                      accent: _RoleStyle.of(context, 'host').color,
                       muted: !item.hasHost,
                     ),
                   ),
@@ -603,6 +649,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                       value: formatHaribhaktCount(context, item.readerCount),
                       label: l10n.haribhakt_role_reader,
                       icon: Icons.menu_book_outlined,
+                      accent: _RoleStyle.of(context, 'reader').color,
                       muted: !item.hasReader,
                     ),
                   ),
@@ -611,6 +658,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                       value: formatHaribhaktCount(context, item.mentionedCount),
                       label: l10n.haribhakt_role_mentioned,
                       icon: Icons.chat_bubble_outline,
+                      accent: _RoleStyle.of(context, 'mentioned').color,
                       muted: !item.hasMentioned,
                     ),
                   ),
@@ -635,6 +683,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                   _RoleFilterChip(
                     label: l10n.haribhakt_role_host,
                     icon: Icons.home_outlined,
+                    role: 'host',
                     selected: _roleFilter == _RoleFilter.host,
                     onSelected:
                         () => setState(() => _roleFilter = _RoleFilter.host),
@@ -642,6 +691,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                   _RoleFilterChip(
                     label: l10n.haribhakt_role_reader,
                     icon: Icons.menu_book_outlined,
+                    role: 'reader',
                     selected: _roleFilter == _RoleFilter.reader,
                     onSelected:
                         () => setState(() => _roleFilter = _RoleFilter.reader),
@@ -649,6 +699,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                   _RoleFilterChip(
                     label: l10n.haribhakt_role_mentioned,
                     icon: Icons.chat_bubble_outline,
+                    role: 'mentioned',
                     selected: _roleFilter == _RoleFilter.mentioned,
                     onSelected:
                         () =>
@@ -741,33 +792,11 @@ class HaribhaktRoleChip extends StatelessWidget {
   final String role;
   final String label;
 
-  Color _background(ColorScheme colorScheme) {
-    switch (role) {
-      case 'host':
-        return colorScheme.primaryContainer;
-      case 'mentioned':
-        return colorScheme.tertiaryContainer;
-      default:
-        return colorScheme.secondaryContainer;
-    }
-  }
-
-  Color _foreground(ColorScheme colorScheme) {
-    switch (role) {
-      case 'host':
-        return colorScheme.onPrimaryContainer;
-      case 'mentioned':
-        return colorScheme.onTertiaryContainer;
-      default:
-        return colorScheme.onSecondaryContainer;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final background = _background(colorScheme);
-    final foreground = _foreground(colorScheme);
+    final style = _RoleStyle.of(context, role);
+    final background = style.container;
+    final foreground = style.onContainer;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
@@ -798,22 +827,43 @@ class _RoleFilterChip extends StatelessWidget {
     required this.selected,
     required this.onSelected,
     this.icon,
+    this.role,
   });
 
   final String label;
   final bool selected;
   final VoidCallback onSelected;
   final IconData? icon;
+  final String? role;
 
   @override
   Widget build(BuildContext context) {
+    final style = role == null ? null : _RoleStyle.of(context, role!);
+    final selectedForeground = style?.onContainer;
     return FilterChip(
       selected: selected,
       onSelected: (_) => onSelected(),
-      avatar: icon == null ? null : Icon(icon, size: 16),
+      avatar:
+          icon == null
+              ? null
+              : Icon(
+                icon,
+                size: 16,
+                color: selected ? selectedForeground : style?.color,
+              ),
       label: Text(label),
+      labelStyle:
+          selected && selectedForeground != null
+              ? TextStyle(color: selectedForeground, fontWeight: FontWeight.w600)
+              : null,
+      selectedColor: style?.container,
+      checkmarkColor: selectedForeground,
       visualDensity: VisualDensity.compact,
       showCheckmark: icon == null,
+      side:
+          selected && style != null
+              ? BorderSide(color: style.color.withValues(alpha: 0.45))
+              : null,
     );
   }
 }
@@ -823,20 +873,23 @@ class _StatCell extends StatelessWidget {
     required this.value,
     required this.label,
     this.icon,
+    this.accent,
     this.muted = false,
   });
 
   final String value;
   final String label;
   final IconData? icon;
+  final Color? accent;
   final bool muted;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final valueColor = muted ? colorScheme.outline : colorScheme.primary;
+    final valueColor = accent ?? colorScheme.primary;
+    final labelColor = accent ?? colorScheme.outline;
     return Opacity(
-      opacity: muted ? 0.45 : 1,
+      opacity: muted ? 0.4 : 1,
       child: Column(
         children: [
           Text(
@@ -852,7 +905,7 @@ class _StatCell extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 14, color: colorScheme.outline),
+                Icon(icon, size: 14, color: labelColor),
                 const SizedBox(width: 4),
               ],
               Flexible(
@@ -863,7 +916,7 @@ class _StatCell extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(
                     context,
-                  ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
+                  ).textTheme.labelSmall?.copyWith(color: labelColor),
                 ),
               ),
             ],
