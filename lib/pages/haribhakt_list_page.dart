@@ -303,52 +303,134 @@ class _HaribhaktListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    return ListTile(
-      isThreeLine: item.roleTypeCount > 1,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      leading: SizedBox(
-        width: 40,
-        child: Text(
-          formatHaribhaktCount(context, item.count),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: colorScheme.primary,
+    final textTheme = Theme.of(context).textTheme;
+    return Semantics(
+      button: true,
+      label: item.name,
+      child: InkWell(
+        onTap: () => openHaribhaktDetail(context, item.name),
+        child: SizedBox(
+          height: 76,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 44,
+                  child: Text(
+                    formatHaribhaktCount(context, item.count),
+                    textAlign: TextAlign.center,
+                    style: textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.primary,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          _RoleCount(
+                            role: 'host',
+                            count: item.hostCount,
+                            tooltip: l10n.haribhakt_host_count(item.hostCount),
+                          ),
+                          const SizedBox(width: 14),
+                          _RoleCount(
+                            role: 'reader',
+                            count: item.readerCount,
+                            tooltip: l10n.haribhakt_reader_count(
+                              item.readerCount,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          _RoleCount(
+                            role: 'mentioned',
+                            count: item.mentionedCount,
+                            tooltip: l10n.haribhakt_mentioned_count(
+                              item.mentionedCount,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: colorScheme.outline,
+                ),
+              ],
+            ),
           ),
         ),
       ),
-      title: Text(item.name),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Wrap(
-          spacing: 6,
-          runSpacing: 4,
+    );
+  }
+}
+
+class _RoleCount extends StatelessWidget {
+  const _RoleCount({
+    required this.role,
+    required this.count,
+    required this.tooltip,
+  });
+
+  final String role;
+  final int count;
+  final String tooltip;
+
+  Color _color(ColorScheme colorScheme) {
+    switch (role) {
+      case 'host':
+        return colorScheme.primary;
+      case 'mentioned':
+        return colorScheme.tertiary;
+      default:
+        return colorScheme.secondary;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final active = count > 0;
+    final color = _color(colorScheme);
+    return Tooltip(
+      message: tooltip,
+      child: Opacity(
+        opacity: active ? 1 : 0.35,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            if (item.hasHost)
-              HaribhaktRoleChip(
-                role: 'host',
-                label: l10n.haribhakt_host_count(item.hostCount),
+            Icon(haribhaktRoleIcon(role), size: 14, color: color),
+            const SizedBox(width: 4),
+            Text(
+              active ? formatHaribhaktCount(context, count) : '–',
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+                fontFeatures: const [FontFeature.tabularFigures()],
               ),
-            if (item.hasReader)
-              HaribhaktRoleChip(
-                role: 'reader',
-                label: l10n.haribhakt_reader_count(item.readerCount),
-              ),
-            if (item.hasMentioned)
-              HaribhaktRoleChip(
-                role: 'mentioned',
-                label: l10n.haribhakt_mentioned_count(item.mentionedCount),
-              ),
+            ),
           ],
         ),
       ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        size: 14,
-        color: colorScheme.outline,
-      ),
-      onTap: () => openHaribhaktDetail(context, item.name),
     );
   }
 }
@@ -508,33 +590,30 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                       label: l10n.kirans,
                     ),
                   ),
-                  if (item.hasHost)
-                    Expanded(
-                      child: _StatCell(
-                        value: formatHaribhaktCount(context, item.hostCount),
-                        label: l10n.haribhakt_role_host,
-                        icon: Icons.home_outlined,
-                      ),
+                  Expanded(
+                    child: _StatCell(
+                      value: formatHaribhaktCount(context, item.hostCount),
+                      label: l10n.haribhakt_role_host,
+                      icon: Icons.home_outlined,
+                      muted: !item.hasHost,
                     ),
-                  if (item.hasReader)
-                    Expanded(
-                      child: _StatCell(
-                        value: formatHaribhaktCount(context, item.readerCount),
-                        label: l10n.haribhakt_role_reader,
-                        icon: Icons.menu_book_outlined,
-                      ),
+                  ),
+                  Expanded(
+                    child: _StatCell(
+                      value: formatHaribhaktCount(context, item.readerCount),
+                      label: l10n.haribhakt_role_reader,
+                      icon: Icons.menu_book_outlined,
+                      muted: !item.hasReader,
                     ),
-                  if (item.hasMentioned)
-                    Expanded(
-                      child: _StatCell(
-                        value: formatHaribhaktCount(
-                          context,
-                          item.mentionedCount,
-                        ),
-                        label: l10n.haribhakt_role_mentioned,
-                        icon: Icons.chat_bubble_outline,
-                      ),
+                  ),
+                  Expanded(
+                    child: _StatCell(
+                      value: formatHaribhaktCount(context, item.mentionedCount),
+                      label: l10n.haribhakt_role_mentioned,
+                      icon: Icons.chat_bubble_outline,
+                      muted: !item.hasMentioned,
                     ),
+                  ),
                 ],
               ),
             ),
@@ -591,43 +670,52 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
               tileColor: Utils.getPartColor(row.partNumber, context),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 2,
+                vertical: 4,
               ),
-              leading: Text(
-                row.kiranInfo.number.replaceAll('.', ''),
-                style: TextStyle(
-                  fontSize: 22,
-                  color: accent,
-                  fontWeight: FontWeight.bold,
+              leading: SizedBox(
+                width: 44,
+                child: Text(
+                  row.kiranInfo.number.replaceAll('.', ''),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: accent,
+                    fontWeight: FontWeight.bold,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
                 ),
               ),
-              title: Text(row.kiranInfo.title),
+              title: Text(
+                row.kiranInfo.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 4),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                  Row(
                     children: [
                       HaribhaktRoleChip(
                         role: row.ref.role,
                         label: haribhaktRoleLabel(l10n, row.ref.role),
                       ),
-                      Text(
-                        Bookservice().getPartTitle(context, row.partNumber),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: accent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      if (dateLabel.isNotEmpty)
-                        Text(
-                          dateLabel,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          [
+                            Bookservice().getPartTitle(
+                              context,
+                              row.partNumber,
+                            ),
+                            if (dateLabel.isNotEmpty) dateLabel,
+                          ].join(' · '),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.labelSmall
                               ?.copyWith(color: colorScheme.outline),
                         ),
+                      ),
                     ],
                   ),
                   KiranPlaceLine(kiranInfo: row.kiranInfo),
@@ -731,44 +819,57 @@ class _RoleFilterChip extends StatelessWidget {
 }
 
 class _StatCell extends StatelessWidget {
-  const _StatCell({required this.value, required this.label, this.icon});
+  const _StatCell({
+    required this.value,
+    required this.label,
+    this.icon,
+    this.muted = false,
+  });
 
   final String value;
   final String label;
   final IconData? icon;
+  final bool muted;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Column(
-      children: [
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.primary,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: 14, color: colorScheme.outline),
-              const SizedBox(width: 4),
-            ],
-            Flexible(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
-              ),
+    final valueColor = muted ? colorScheme.outline : colorScheme.primary;
+    return Opacity(
+      opacity: muted ? 0.45 : 1,
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: valueColor,
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
-          ],
-        ),
-      ],
+          ),
+          const SizedBox(height: 2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 14, color: colorScheme.outline),
+                const SizedBox(width: 4),
+              ],
+              Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: colorScheme.outline),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
