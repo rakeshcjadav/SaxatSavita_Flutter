@@ -41,7 +41,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "સ્ફૂરે પુરુષોત્તમભાઈ",
+                    "name": "પુરુષોત્તમભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -228,7 +228,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "અયોધ્યાપ્રસાદજી",
+                    "name": "અયોધ્યાપ્રસાદજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -291,7 +291,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "જાય કરશનબાપા",
+                    "name": "કરશનબાપા",
                     "role": "mentioned"
                 }
             ]
@@ -625,12 +625,7 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": [
-                {
-                    "name": "કઠણ વચનજી ધ્રુવ",
-                    "role": "mentioned"
-                }
-            ]
+            "haribhakts": []
         },
         {
             "date": "19-4-1978",
@@ -671,6 +666,10 @@
                 {
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કુશળકુંવરબાઈ",
+                    "role": "mentioned"
                 },
                 {
                     "name": "નારણદાસ",
@@ -840,7 +839,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "મુળજી",
+                    "name": "મૂળજી",
                     "role": "mentioned"
                 },
                 {
@@ -918,7 +917,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "મુળજી",
+                    "name": "મૂળજી",
                     "role": "mentioned"
                 },
                 {
@@ -1300,10 +1299,6 @@
                 {
                     "name": "ભગવાનદાસ",
                     "role": "mentioned"
-                },
-                {
-                    "name": "દ્યે કેશુભગત",
-                    "role": "mentioned"
                 }
             ]
         },
@@ -1320,7 +1315,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "માણાવદર છગનભગત",
+                    "name": "છગનભગત",
                     "role": "host"
                 },
                 {

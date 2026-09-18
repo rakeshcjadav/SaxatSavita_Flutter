@@ -304,7 +304,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "માંગરોળવાળાં ગોરધનભાઈ",
+                    "name": "માંગરોળવાળા ગોરધનભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -404,7 +404,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "બાપુ રતનજી જૂનાગઢ",
+                    "name": "બાપુ રતનજી",
                     "role": "mentioned"
                 }
             ]
@@ -433,7 +433,11 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "સૂર્યનારાયણ કુંતાજી",
+                    "name": "કુંતાજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કુશળકુંવરબાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -600,7 +604,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "ગણાય વીરાભગતના બાપ",
+                    "name": "વીરાભગત",
                     "role": "mentioned"
                 }
             ]
@@ -1068,10 +1072,6 @@
                 {
                     "name": "નાનજીભાઈ ફળદુ",
                     "role": "host"
-                },
-                {
-                    "name": "વાગે નાનજીભાઈ ફડદુ",
-                    "role": "host"
                 }
             ]
         },
@@ -1294,10 +1294,6 @@
                 },
                 {
                     "name": "કરમશી દામજી",
-                    "role": "mentioned"
-                },
-                {
-                    "name": "દાસ",
                     "role": "mentioned"
                 },
                 {
@@ -1567,7 +1563,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "અયોધ્યાપ્રસાદજી મહારાજનું દુઃખ",
+                    "name": "અયોધ્યાપ્રસાદજી મહારાજ",
                     "role": "mentioned"
                 },
                 {
@@ -1718,7 +1714,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "વિહારીલાલજી",
+                    "name": "વિહારીલાલજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -1755,7 +1751,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "વાળા પુનાભાઈ",
+                    "name": "ધારી ગુંદાળી વાળા પુનાભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -1903,7 +1899,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "કરવી પર્વતભાઈ",
+                    "name": "પર્વતભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -1990,7 +1986,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "સવજી",
+                    "name": "સવજી મહારાજ",
                     "role": "mentioned"
                 }
             ]

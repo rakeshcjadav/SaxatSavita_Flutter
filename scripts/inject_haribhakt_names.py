@@ -68,6 +68,7 @@ WS_RE = re.compile(r"[\s\u00a0]+")
 PREFIX_RE = re.compile(r"^(?:પ\.ભ\.|પભ\.|પ\.પૂ\.|પૂ\.|શ્રી|સંત)\s*")
 GUJ_WORD_RE = re.compile(r"[\u0A80-\u0AFF.]+")
 HONORIFIC_RE = re.compile(r"(ભાઈ|ભાઇ|બાપા|ભગત|બાઈ|બાઇ)")
+TITLE_TOKENS = {"મહારાજ"}
 
 READER_MARKERS = ("વાંચ્ય", "વાચ્ય", "બોલ્ય", "પ્રશ્ન પૂછ્ય", "વાંચતા")
 
@@ -172,13 +173,18 @@ AFTER_NAME_STOP = (
 ROLE_RANK = {"host": 0, "reader": 1, "mentioned": 2}
 
 
-def load_overrides() -> tuple[dict[str, str], set[str]]:
+def load_overrides() -> tuple[dict[str, str], set[str], set[str]]:
     if not ALIASES_PATH.exists():
-        return {}, set()
+        return {}, set(), set()
     data = json.loads(ALIASES_PATH.read_text(encoding="utf-8"))
     aliases = {str(k).strip(): str(v).strip() for k, v in (data.get("aliases") or {}).items()}
     drop = {str(x).strip() for x in (data.get("drop") or []) if str(x).strip()}
-    return aliases, drop
+    never_host = {
+        str(x).strip().replace("ભાઇ", "ભાઈ").replace("બાઇ", "બાઈ")
+        for x in (data.get("never_host") or [])
+        if str(x).strip()
+    }
+    return aliases, drop, never_host
 
 
 def strip_html(s: str) -> str:
@@ -291,7 +297,8 @@ def looks_like_person(name: str, require_honorific: bool = False) -> bool:
         return False
     if any(not _is_gujarati_letter_start(t) for t in tokens):
         return False
-    if any(t in STOP_TOKENS or t in FILLER_TOKENS for t in tokens):
+    body = tokens[:-1] if len(tokens) > 1 and tokens[-1] in TITLE_TOKENS else tokens
+    if any(t in STOP_TOKENS or t in FILLER_TOKENS for t in body):
         return False
     if not re.search(r"[\u0A80-\u0AFF]", name):
         return False
@@ -450,7 +457,7 @@ def name_from_host_window(window: str) -> str | None:
         t
         for t in GUJ_WORD_RE.findall(window)
         if t not in FILLER_TOKENS
-        and t not in STOP_TOKENS
+        and (t in TITLE_TOKENS or t not in STOP_TOKENS)
         and _is_gujarati_letter_start(t)
         and not re.search(r"[\u0AE6-\u0AEF0-9]", t)
     ]
@@ -472,6 +479,9 @@ def name_from_host_window(window: str) -> str | None:
     end = i + 1
     while end < len(tokens):
         nxt = tokens[end]
+        if nxt in TITLE_TOKENS:
+            end += 1
+            break
         if HONORIFIC_RE.search(nxt) or _given_name_token(nxt):
             break
         if nxt in FILLER_TOKENS or nxt in STOP_TOKENS or not _after_ok(nxt):
@@ -594,7 +604,9 @@ def merge_people(
     aliases: dict[str, str],
     drop: set[str],
     mentions: list[str] | None = None,
+    never_host: set[str] | None = None,
 ) -> list[dict[str, str]]:
+    skip_host = never_host or set()
     by_name: dict[str, str] = {}
     order: list[str] = []
     for role, names in (
@@ -607,15 +619,21 @@ def merge_people(
             name = apply_alias(name, aliases)
             if not name or name in drop or not looks_like_person(name):
                 continue
+            assigned = "mentioned" if name in skip_host and role == "host" else role
             if name not in by_name:
-                by_name[name] = role
+                by_name[name] = assigned
                 order.append(name)
-            elif ROLE_RANK[role] < ROLE_RANK[by_name[name]]:
-                by_name[name] = role
+            elif ROLE_RANK[assigned] < ROLE_RANK[by_name[name]]:
+                by_name[name] = assigned
     return collapse_shorter_names([{"name": n, "role": by_name[n]} for n in order])
 
 
-def extract_kiran(kdata: dict, aliases: dict[str, str], drop: set[str]) -> list[dict[str, str]]:
+def extract_kiran(
+    kdata: dict,
+    aliases: dict[str, str],
+    drop: set[str],
+    never_host: set[str] | None = None,
+) -> list[dict[str, str]]:
     meta = kdata.get("meta") or {}
     main = kdata.get("main") or {}
     content = strip_html(str(main.get("content") or ""))
@@ -623,11 +641,18 @@ def extract_kiran(kdata: dict, aliases: dict[str, str], drop: set[str]) -> list[
     hosts.extend(hosts_from_text(content))
     readers = readers_from_text(content)
     mentions = mentions_from_text(content)
-    return merge_people(hosts, readers, aliases, drop, mentions=mentions)
+    return merge_people(
+        hosts,
+        readers,
+        aliases,
+        drop,
+        mentions=mentions,
+        never_host=never_host,
+    )
 
 
 def main() -> None:
-    aliases, drop = load_overrides()
+    aliases, drop, never_host = load_overrides()
     drop |= STOP_NAMES
     global_map: dict[str, list[dict]] = defaultdict(list)
     kirans_with = 0
@@ -646,7 +671,9 @@ def main() -> None:
             kiran_idx = int(fname[len("kiran_") : -len(".json")])
             with (part_dir / fname).open(encoding="utf-8") as f:
                 kdata = json.load(f)
-            people_map[kiran_idx] = extract_kiran(kdata, aliases, drop)
+            people_map[kiran_idx] = extract_kiran(
+                kdata, aliases, drop, never_host=never_host
+            )
 
         changed = 0
         for entry in index["list"]:

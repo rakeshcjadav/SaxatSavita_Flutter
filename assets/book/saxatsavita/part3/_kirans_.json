@@ -29,7 +29,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "જૂનાગઢ નાથાભાઈ",
+                    "name": "નાથાભાઈ",
                     "role": "host"
                 }
             ]
@@ -54,7 +54,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "સવજી",
+                    "name": "સવજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -489,7 +489,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "રઘુવીરજી",
+                    "name": "રઘુવીરજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -1279,11 +1279,11 @@
                     "role": "host"
                 },
                 {
-                    "name": "કુશળકુંવરબાઈને સત્સંગ",
+                    "name": "કુશળકુંવરબાઈ",
                     "role": "mentioned"
                 },
                 {
-                    "name": "કરવો શુકદેવજી",
+                    "name": "શુકદેવજી",
                     "role": "mentioned"
                 }
             ]
@@ -1344,6 +1344,10 @@
                 {
                     "name": "પોપટભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કુશળકુંવરબાઈ",
+                    "role": "mentioned"
                 },
                 {
                     "name": "ત્રિકમભગત",
@@ -1692,7 +1696,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "વિહારીલાલજી મહારાજે યજ્ઞ",
+                    "name": "વિહારીલાલજી મહારાજ",
                     "role": "mentioned"
                 },
                 {
@@ -1817,11 +1821,11 @@
                     "role": "reader"
                 },
                 {
-                    "name": "સવજી",
+                    "name": "સવજી મહારાજ",
                     "role": "mentioned"
                 },
                 {
-                    "name": "જનકરાજા શુકદેવજી",
+                    "name": "જનકરાજા",
                     "role": "mentioned"
                 }
             ]
@@ -1969,8 +1973,8 @@
             ],
             "haribhakts": [
                 {
-                    "name": "કુશળકુંવરબાઈ કેટલો દાખડો",
-                    "role": "host"
+                    "name": "કુશળકુંવરબાઈ",
+                    "role": "mentioned"
                 },
                 {
                     "name": "લાલાબાપા",
@@ -2213,7 +2217,7 @@
                     "role": "host"
                 },
                 {
-                    "name": "લાલાભાઈ ગઢડે",
+                    "name": "લાલાભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -2256,6 +2260,10 @@
                 },
                 {
                     "name": "ગલુજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કુશળકુંવરબાઈ",
                     "role": "mentioned"
                 }
             ]

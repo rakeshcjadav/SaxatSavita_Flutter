@@ -329,7 +329,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "માંગરોળવાળાં ગોરધનભાઈ",
+                    "name": "માંગરોળવાળા ગોરધનભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -435,7 +435,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "બાપુ રતનજી જૂનાગઢ",
+                    "name": "બાપુ રતનજી",
                     "role": "mentioned"
                 }
             ]
@@ -465,7 +465,11 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "સૂર્યનારાયણ કુંતાજી",
+                    "name": "કુંતાજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કુશળકુંવરબાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -642,7 +646,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "ગણાય વીરાભગતના બાપ",
+                    "name": "વીરાભગત",
                     "role": "mentioned"
                 }
             ]
@@ -1133,10 +1137,6 @@
                 {
                     "name": "નાનજીભાઈ ફળદુ",
                     "role": "host"
-                },
-                {
-                    "name": "વાગે નાનજીભાઈ ફડદુ",
-                    "role": "host"
                 }
             ]
         },
@@ -1371,10 +1371,6 @@
                 },
                 {
                     "name": "કરમશી દામજી",
-                    "role": "mentioned"
-                },
-                {
-                    "name": "દાસ",
                     "role": "mentioned"
                 },
                 {
@@ -1661,7 +1657,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "અયોધ્યાપ્રસાદજી મહારાજનું દુઃખ",
+                    "name": "અયોધ્યાપ્રસાદજી મહારાજ",
                     "role": "mentioned"
                 },
                 {
@@ -1821,7 +1817,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "વિહારીલાલજી",
+                    "name": "વિહારીલાલજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -1859,7 +1855,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "વાળા પુનાભાઈ",
+                    "name": "ધારી ગુંદાળી વાળા પુનાભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -2013,7 +2009,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "કરવી પર્વતભાઈ",
+                    "name": "પર્વતભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -2105,7 +2101,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "સવજી",
+                    "name": "સવજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -3073,7 +3069,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "સવજી",
+                    "name": "સવજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -3546,7 +3542,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "મહાપુસ્ર્ષદાસ",
+                    "name": "મહાપુરુષદાસ",
                     "role": "mentioned"
                 }
             ]
@@ -3673,7 +3669,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "ગણાય અવલબાઈ",
+                    "name": "અવલબાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -3764,7 +3760,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "કુશળકુંવરબાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "part": 2,
@@ -3783,15 +3784,15 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "દીકરા ધરમશીભાઈ",
+                    "name": "નારાયણદાસ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ધરમશીભાઈ",
                     "role": "mentioned"
                 },
                 {
                     "name": "પ્રેમજીભાઈ",
-                    "role": "mentioned"
-                },
-                {
-                    "name": "વર્તે નારાયણદાસ",
                     "role": "mentioned"
                 }
             ]
@@ -3879,7 +3880,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "દીકરા મેઘજીભાઈ",
+                    "name": "મેઘજીભાઈ",
                     "role": "mentioned"
                 },
                 {
@@ -4740,7 +4741,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "જૂનાગઢ નાથાભાઈ",
+                    "name": "નાથાભાઈ",
                     "role": "host"
                 }
             ]
@@ -4766,7 +4767,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "સવજી",
+                    "name": "સવજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -5220,7 +5221,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "રઘુવીરજી",
+                    "name": "રઘુવીરજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -6059,11 +6060,11 @@
                     "role": "host"
                 },
                 {
-                    "name": "કુશળકુંવરબાઈને સત્સંગ",
+                    "name": "કુશળકુંવરબાઈ",
                     "role": "mentioned"
                 },
                 {
-                    "name": "કરવો શુકદેવજી",
+                    "name": "શુકદેવજી",
                     "role": "mentioned"
                 }
             ]
@@ -6127,6 +6128,10 @@
                 {
                     "name": "પોપટભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કુશળકુંવરબાઈ",
+                    "role": "mentioned"
                 },
                 {
                     "name": "ત્રિકમભગત",
@@ -6496,7 +6501,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "વિહારીલાલજી મહારાજે યજ્ઞ",
+                    "name": "વિહારીલાલજી મહારાજ",
                     "role": "mentioned"
                 },
                 {
@@ -6628,11 +6633,11 @@
                     "role": "reader"
                 },
                 {
-                    "name": "સવજી",
+                    "name": "સવજી મહારાજ",
                     "role": "mentioned"
                 },
                 {
-                    "name": "જનકરાજા શુકદેવજી",
+                    "name": "જનકરાજા",
                     "role": "mentioned"
                 }
             ]
@@ -6788,8 +6793,8 @@
             ],
             "haribhakts": [
                 {
-                    "name": "કુશળકુંવરબાઈ કેટલો દાખડો",
-                    "role": "host"
+                    "name": "કુશળકુંવરબાઈ",
+                    "role": "mentioned"
                 },
                 {
                     "name": "લાલાબાપા",
@@ -7043,7 +7048,7 @@
                     "role": "host"
                 },
                 {
-                    "name": "લાલાભાઈ ગઢડે",
+                    "name": "લાલાભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -7363,7 +7368,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "સ્ફૂરે પુરુષોત્તમભાઈ",
+                    "name": "પુરુષોત્તમભાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -7559,7 +7564,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "અયોધ્યાપ્રસાદજી",
+                    "name": "અયોધ્યાપ્રસાદજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -7626,7 +7631,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "જાય કરશનબાપા",
+                    "name": "કરશનબાપા",
                     "role": "mentioned"
                 }
             ]
@@ -7981,12 +7986,7 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": [
-                {
-                    "name": "કઠણ વચનજી ધ્રુવ",
-                    "role": "mentioned"
-                }
-            ]
+            "haribhakts": []
         },
         {
             "part": 4,
@@ -8029,6 +8029,10 @@
                 {
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કુશળકુંવરબાઈ",
+                    "role": "mentioned"
                 },
                 {
                     "name": "નારણદાસ",
@@ -8209,7 +8213,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "મુળજી",
+                    "name": "મૂળજી",
                     "role": "mentioned"
                 },
                 {
@@ -8292,7 +8296,7 @@
                     "role": "reader"
                 },
                 {
-                    "name": "મુળજી",
+                    "name": "મૂળજી",
                     "role": "mentioned"
                 },
                 {
@@ -8698,10 +8702,6 @@
                 {
                     "name": "ભગવાનદાસ",
                     "role": "mentioned"
-                },
-                {
-                    "name": "દ્યે કેશુભગત",
-                    "role": "mentioned"
                 }
             ]
         },
@@ -8719,7 +8719,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "માણાવદર છગનભગત",
+                    "name": "છગનભગત",
                     "role": "host"
                 },
                 {
@@ -9515,7 +9515,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "જૂનાગઢ ઓધવજીભાઈ",
+                    "name": "ઓધવજીભાઈ",
                     "role": "host"
                 }
             ]
@@ -9568,11 +9568,11 @@
             ],
             "haribhakts": [
                 {
-                    "name": "મુળજી",
+                    "name": "મૂળજી",
                     "role": "mentioned"
                 },
                 {
-                    "name": "કૃષ્ણજી ઈત્યાદિક",
+                    "name": "કૃષ્ણજી",
                     "role": "mentioned"
                 },
                 {
@@ -11115,10 +11115,6 @@
                 {
                     "name": "શાંતિભાઈ ચા વાળા",
                     "role": "host"
-                },
-                {
-                    "name": "બપોરે શાંતિભાઈ ચાવાળા",
-                    "role": "host"
                 }
             ]
         },
@@ -11230,7 +11226,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "વંશજ ધીરૂભાઈ ગઢાળીવાળા",
+                    "name": "ધીરૂભાઈ ગઢાળીવાળા",
                     "role": "host"
                 }
             ]
@@ -11570,10 +11566,6 @@
                 },
                 {
                     "name": "દેવજી પ્રેમજી",
-                    "role": "host"
-                },
-                {
-                    "name": "નિમિત્તે દેવજીભાઈ",
                     "role": "host"
                 },
                 {
@@ -12354,6 +12346,10 @@
                 },
                 {
                     "name": "ગલુજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કુશળકુંવરબાઈ",
                     "role": "mentioned"
                 }
             ]

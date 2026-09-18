@@ -20,7 +20,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "સવજી",
+                    "name": "સવજી મહારાજ",
                     "role": "mentioned"
                 }
             ]
@@ -465,7 +465,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "મહાપુસ્ર્ષદાસ",
+                    "name": "મહાપુરુષદાસ",
                     "role": "mentioned"
                 }
             ]
@@ -586,7 +586,7 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "ગણાય અવલબાઈ",
+                    "name": "અવલબાઈ",
                     "role": "mentioned"
                 }
             ]
@@ -671,7 +671,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "કુશળકુંવરબાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "28-5-1976",
@@ -689,15 +694,15 @@
                     "role": "mentioned"
                 },
                 {
-                    "name": "દીકરા ધરમશીભાઈ",
+                    "name": "નારાયણદાસ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ધરમશીભાઈ",
                     "role": "mentioned"
                 },
                 {
                     "name": "પ્રેમજીભાઈ",
-                    "role": "mentioned"
-                },
-                {
-                    "name": "વર્તે નારાયણદાસ",
                     "role": "mentioned"
                 }
             ]
@@ -780,7 +785,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "દીકરા મેઘજીભાઈ",
+                    "name": "મેઘજીભાઈ",
                     "role": "mentioned"
                 },
                 {
@@ -2507,10 +2512,6 @@
                 {
                     "name": "શાંતિભાઈ ચા વાળા",
                     "role": "host"
-                },
-                {
-                    "name": "બપોરે શાંતિભાઈ ચાવાળા",
-                    "role": "host"
                 }
             ]
         },
@@ -2615,7 +2616,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "વંશજ ધીરૂભાઈ ગઢાળીવાળા",
+                    "name": "ધીરૂભાઈ ગઢાળીવાળા",
                     "role": "host"
                 }
             ]
@@ -2937,10 +2938,6 @@
                 },
                 {
                     "name": "દેવજી પ્રેમજી",
-                    "role": "host"
-                },
-                {
-                    "name": "નિમિત્તે દેવજીભાઈ",
                     "role": "host"
                 },
                 {
