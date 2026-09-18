@@ -1,14 +1,30 @@
 {
-    "total": 152,
+    "total": 331,
     "list": [
         {
-            "name": "અનંતભાઈ",
-            "count": 2,
+            "name": "અજમેરા દલાલ",
+            "count": 1,
             "kirans": [
                 {
-                    "index": 318,
+                    "index": 380,
                     "role": "host"
-                },
+                }
+            ]
+        },
+        {
+            "name": "અજાબ નરસીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 511,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "અનંતભાઈ",
+            "count": 1,
+            "kirans": [
                 {
                     "index": 319,
                     "role": "host"
@@ -16,7 +32,17 @@
             ]
         },
         {
-            "name": "અમુભાઇ",
+            "name": "અભયસિંહજી દરબાર",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 595,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "અમુભાઈ",
             "count": 1,
             "kirans": [
                 {
@@ -58,12 +84,56 @@
             ]
         },
         {
+            "name": "અયોધ્યાપ્રસાદજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 513,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "અયોધ્યાપ્રસાદજી મહારાજનું દુઃખ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 92,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "અરજણભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 612,
                     "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "અરણીયાળા વાલજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 508,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "અર્જુનસિંહજી દરબાર",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 111,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 449,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -78,22 +148,76 @@
             ]
         },
         {
+            "name": "આંકડિયાવાળા નારણભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 184,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ઈશ્વરદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 535,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ઉકાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 378,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "ઉદ્ઘવજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 16,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ઉપલેટાવાળા લાલાબાપા",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 102,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 465,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ઓઈલમીલવાળા ખીમજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 505,
+                    "role": "host"
+                }
+            ]
+        },
+        {
             "name": "ઓધવજી ભગવાનજી",
             "count": 1,
             "kirans": [
                 {
                     "index": 220,
                     "role": "host"
-                }
-            ]
-        },
-        {
-            "name": "ઓધવજીભાઇ ચોટલિયા",
-            "count": 1,
-            "kirans": [
-                {
-                    "index": 414,
-                    "role": "reader"
                 }
             ]
         },
@@ -150,12 +274,56 @@
                     "role": "reader"
                 },
                 {
-                    "index": 508,
-                    "role": "reader"
+                    "index": 436,
+                    "role": "mentioned"
                 },
                 {
-                    "index": 632,
-                    "role": "host"
+                    "index": 508,
+                    "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "ઓધવજીભાઈ ચોટલિયા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 414,
+                    "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "કચરાભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 455,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કઠણ વચનજી ધ્રુવ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 538,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કડવીબાઈ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 434,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 440,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -166,6 +334,44 @@
                 {
                     "index": 34,
                     "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "કરમશી દામજી",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 62,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 75,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 113,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કરવી પર્વતભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 108,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કરવો શુકદેવજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 433,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -190,16 +396,6 @@
             ]
         },
         {
-            "name": "કરશનભાઇ હમીરભાઇ",
-            "count": 1,
-            "kirans": [
-                {
-                    "index": 378,
-                    "role": "host"
-                }
-            ]
-        },
-        {
             "name": "કરશનભાઈ",
             "count": 1,
             "kirans": [
@@ -211,11 +407,39 @@
         },
         {
             "name": "કલ્યાણજીભાઈ",
-            "count": 1,
+            "count": 2,
             "kirans": [
+                {
+                    "index": 58,
+                    "role": "mentioned"
+                },
                 {
                     "index": 166,
                     "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "કલ્યાણબાપા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 536,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કસિયાભાઈ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 85,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 217,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -248,12 +472,30 @@
             ]
         },
         {
-            "name": "કાનજીભાઇ",
-            "count": 1,
+            "name": "કાનજીબાપા",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 168,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 214,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કાનજીભાઈ",
+            "count": 2,
             "kirans": [
                 {
                     "index": 409,
                     "role": "reader"
+                },
+                {
+                    "index": 412,
+                    "role": "host"
                 }
             ]
         },
@@ -268,12 +510,180 @@
             ]
         },
         {
-            "name": "ખીમજીભાઈ",
+            "name": "કાયાભાઈ",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 33,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 113,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 478,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કાલીદાસ",
             "count": 1,
             "kirans": [
                 {
-                    "index": 505,
+                    "index": 518,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કાશીદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 218,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કુંડળવાળા રાયબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 506,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કુંતાજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 194,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કુબેરજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 70,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કુશળકુંવરબાઈ કેટલો દાખડો",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 472,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "કુશળકુંવરબાઈને સત્સંગ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 433,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કૃષ્ણજી",
+            "count": 5,
+            "kirans": [
+                {
+                    "index": 132,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 193,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 466,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 551,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 556,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કૃષ્ણજી ઈત્યાદિક",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 635,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કેશવભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 127,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "કેશુભગત",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 19,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 115,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ગણાય અવલબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 205,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ગણાય વીરાભગતના બાપ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 40,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ગલુજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 485,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -292,7 +702,37 @@
             ]
         },
         {
-            "name": "ગોરધનદાસ કાનજીભાઇ તલંગણાવાળા",
+            "name": "ગોંવિદભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 379,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "ગોપીનાથદાસજી પુરાણી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 550,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ગોરધનદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 440,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ગોરધનદાસ કાનજીભાઈ તલંગણાવાળા",
             "count": 1,
             "kirans": [
                 {
@@ -302,9 +742,21 @@
             ]
         },
         {
-            "name": "ગોરધનભાઇ",
-            "count": 1,
+            "name": "ગોરધનભાઈ",
+            "count": 4,
             "kirans": [
+                {
+                    "index": 51,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 91,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 147,
+                    "role": "mentioned"
+                },
                 {
                     "index": 484,
                     "role": "reader"
@@ -348,6 +800,16 @@
                 {
                     "index": 397,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "ઘનશ્યામદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 65,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -485,12 +947,8 @@
         },
         {
             "name": "છગનભગત",
-            "count": 2,
+            "count": 1,
             "kirans": [
-                {
-                    "index": 581,
-                    "role": "host"
-                },
                 {
                     "index": 582,
                     "role": "host"
@@ -540,6 +998,44 @@
             ]
         },
         {
+            "name": "જતનબાઈ",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 539,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 542,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 543,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "જનકરાજા શુકદેવજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 464,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "જમકુબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 85,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "જમનભાઈ",
             "count": 1,
             "kirans": [
@@ -560,12 +1056,42 @@
             ]
         },
         {
+            "name": "જાગાભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 196,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "જાદવજીભગત",
             "count": 1,
             "kirans": [
                 {
                     "index": 433,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "જાદવભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 340,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "જાય કરશનબાપા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 517,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -605,6 +1131,26 @@
             "kirans": [
                 {
                     "index": 394,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "જૂનાગઢ ઓધવજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 632,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "જૂનાગઢ નાથાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 364,
                     "role": "host"
                 }
             ]
@@ -728,6 +1274,64 @@
             ]
         },
         {
+            "name": "જેઠાભાઈના જમાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 204,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "જોગીદાસ ખુમાણ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 184,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 481,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ઝીણાભાઈ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 171,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 205,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ટીંબીવાળા ભોળાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 141,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ટ્રાન્સપોર્ટવાળા અનંતભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 318,
+                    "role": "host"
+                }
+            ]
+        },
+        {
             "name": "ડૉકટર રતિલાલભાઈ",
             "count": 1,
             "kirans": [
@@ -738,12 +1342,32 @@
             ]
         },
         {
-            "name": "ડોકટર નાદપરા",
+            "name": "તરકતળાવવાળા કરશનભાઈ લુવાર",
             "count": 1,
             "kirans": [
                 {
-                    "index": 226,
-                    "role": "host"
+                    "index": 212,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "તરકતળાવવાળા પ્રેમજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 374,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "તુલસીદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 67,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -758,13 +1382,53 @@
             ]
         },
         {
-            "name": "ત્રિભુવનભાઈ ઝવેરી",
-            "count": 39,
+            "name": "ત્રિકમજી",
+            "count": 1,
             "kirans": [
                 {
-                    "index": 262,
+                    "index": 380,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "ત્રિકમદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 132,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ત્રિકમભગત",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 41,
+                    "role": "mentioned"
                 },
+                {
+                    "index": 436,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ત્રિકમભગતના ભાણેજ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 87,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ત્રિભુવનભાઈ ઝવેરી",
+            "count": 38,
+            "kirans": [
                 {
                     "index": 263,
                     "role": "host"
@@ -920,6 +1584,24 @@
             ]
         },
         {
+            "name": "થાણાપીપળીવાળા ત્રિકમભગત",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 54,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 98,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 366,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "થોભણભાઈ",
             "count": 4,
             "kirans": [
@@ -952,6 +1634,46 @@
             ]
         },
         {
+            "name": "દાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 75,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "દાસજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 197,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "દીકરા ધરમશીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 212,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "દીકરા મેઘજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 217,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "દીપક સોલવન્ટવાળા રતિભાઈ",
             "count": 1,
             "kirans": [
@@ -962,16 +1684,40 @@
             ]
         },
         {
+            "name": "દેવજી પ્રેમજી",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 339,
+                    "role": "host"
+                },
+                {
+                    "index": 373,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "દેવજીભગત",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 30,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 142,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "દેવજીભાઈ",
-            "count": 4,
+            "count": 3,
             "kirans": [
                 {
                     "index": 37,
                     "role": "reader"
-                },
-                {
-                    "index": 380,
-                    "role": "host"
                 },
                 {
                     "index": 478,
@@ -998,12 +1744,60 @@
             ]
         },
         {
+            "name": "દેવશીભગત",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 158,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 520,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "દેવશીભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 182,
                     "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "દ્યે કેશુભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 580,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ધનજીભાઈ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 214,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 396,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ધરમપુરવાળા કુશળકુંવરબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 466,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1018,12 +1812,40 @@
             ]
         },
         {
+            "name": "ધરમશીભાઈ",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 300,
+                    "role": "host"
+                },
+                {
+                    "index": 301,
+                    "role": "host"
+                },
+                {
+                    "index": 628,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "ધરમશીભાઈ પંચાણભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 400,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "ધર્મવલ્લભદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 465,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1075,14 +1897,10 @@
         },
         {
             "name": "ધીરૂભાઈ ગઢાળીવાળા",
-            "count": 2,
+            "count": 1,
             "kirans": [
                 {
                     "index": 320,
-                    "role": "host"
-                },
-                {
-                    "index": 321,
                     "role": "host"
                 }
             ]
@@ -1098,7 +1916,17 @@
             ]
         },
         {
-            "name": "નરસિંહભાઇ",
+            "name": "નથુભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 229,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "નરસિંહભાઈ",
             "count": 1,
             "kirans": [
                 {
@@ -1108,22 +1936,12 @@
             ]
         },
         {
-            "name": "નરસીભાઇ ચનાભાઇ કાપડીઆ",
-            "count": 1,
-            "kirans": [
-                {
-                    "index": 223,
-                    "role": "host"
-                }
-            ]
-        },
-        {
             "name": "નરસીભાઈ",
             "count": 4,
             "kirans": [
                 {
-                    "index": 511,
-                    "role": "host"
+                    "index": 56,
+                    "role": "mentioned"
                 },
                 {
                     "index": 512,
@@ -1136,6 +1954,26 @@
                 {
                     "index": 514,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "નરસીભાઈ ચનાભાઈ કાપડીઆ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 223,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "નવાગામવાળા ડાયાબાપા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 53,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1160,25 +1998,21 @@
             ]
         },
         {
-            "name": "નાથાભાઇ ગોપાભાઇ",
-            "count": 1,
-            "kirans": [
-                {
-                    "index": 225,
-                    "role": "host"
-                }
-            ]
-        },
-        {
             "name": "નાથાભાઈ",
-            "count": 2,
+            "count": 1,
             "kirans": [
                 {
                     "index": 102,
                     "role": "reader"
-                },
+                }
+            ]
+        },
+        {
+            "name": "નાથાભાઈ ગોપાભાઈ",
+            "count": 1,
+            "kirans": [
                 {
-                    "index": 364,
+                    "index": 225,
                     "role": "host"
                 }
             ]
@@ -1278,12 +2112,62 @@
             ]
         },
         {
+            "name": "નારણદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 540,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "નારણભાઈ મનજીભાઈ માણાવદરિયા",
             "count": 1,
             "kirans": [
                 {
                     "index": 393,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "નારદજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 161,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "નારાયણદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 639,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "નિમિત્તે દેવજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 339,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "નિર્ગુણજીવનદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 633,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1307,6 +2191,102 @@
                 },
                 {
                     "index": 688,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "પરબતભાઈ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 338,
+                    "role": "host"
+                },
+                {
+                    "index": 339,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "પર્વતભાઈ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 427,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 449,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "પીજવાળા અવલબાઈ",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 202,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 228,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 568,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "પીઠવાજાળવાળા કરશનભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 628,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "પીઠવાજાળવાળા દેવશીભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 49,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "પીતાંબરભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 431,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "પુંજાભાઈ રાઘવ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 105,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "પુરુષોત્તમ મેઘજી જાદવ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 401,
                     "role": "host"
                 }
             ]
@@ -1395,7 +2375,7 @@
         },
         {
             "name": "પોપટભાઈ",
-            "count": 8,
+            "count": 9,
             "kirans": [
                 {
                     "index": 179,
@@ -1412,6 +2392,10 @@
                 {
                     "index": 436,
                     "role": "reader"
+                },
+                {
+                    "index": 437,
+                    "role": "mentioned"
                 },
                 {
                     "index": 449,
@@ -1442,6 +2426,36 @@
             ]
         },
         {
+            "name": "પ્રભુલાલ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 80,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "પ્રાગજીભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 196,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "પ્રેમજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 212,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "પ્રેમજીભાઈ મારડીયા",
             "count": 1,
             "kirans": [
@@ -1452,12 +2466,72 @@
             ]
         },
         {
+            "name": "ફાંસરીયાવાળા લોમાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 75,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "બંદરવાળા પ્રેમબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 207,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "બચુભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 650,
                     "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "બપોરે શાંતિભાઈ ચાવાળા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 314,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "બળદેવજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 123,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "બાપુ રતનજી જૂનાગઢ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 29,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "બાપુજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 104,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1508,12 +2582,22 @@
             ]
         },
         {
-            "name": "બાવનજીભાઇ ઉકાભાઇ માકડિયા",
+            "name": "બાલાપુરવાળા ગોવિંદભગત",
             "count": 1,
             "kirans": [
                 {
-                    "index": 378,
-                    "role": "host"
+                    "index": 52,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "બાલુભાઈ ખંભાતવાળા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 117,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1524,6 +2608,36 @@
                 {
                     "index": 567,
                     "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "ભક્ત ત્રિભુવનભાઈ ઝવેરી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 262,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "ભક્ત લાલજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 482,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "ભગવાનજી પરબત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 337,
+                    "role": "host"
                 }
             ]
         },
@@ -1706,6 +2820,66 @@
             ]
         },
         {
+            "name": "ભગવાનદાસ",
+            "count": 4,
+            "kirans": [
+                {
+                    "index": 126,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 222,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 580,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 622,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ભગુજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 487,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ભરતજી",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 6,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 149,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 349,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "ભવાનભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 87,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "ભવાનભાઈ ધરમશીભાઈ ત્રાંબડિયા",
             "count": 2,
             "kirans": [
@@ -1716,16 +2890,6 @@
                 {
                     "index": 301,
                     "role": "host"
-                }
-            ]
-        },
-        {
-            "name": "ભાણજીભાઇ કલોલા",
-            "count": 1,
-            "kirans": [
-                {
-                    "index": 412,
-                    "role": "reader"
                 }
             ]
         },
@@ -1780,6 +2944,26 @@
             ]
         },
         {
+            "name": "ભાણજીભાઈ કલોલા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 412,
+                    "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "ભાણાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 210,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "ભાનુભાઈ ગઢિયા",
             "count": 2,
             "kirans": [
@@ -1814,11 +2998,11 @@
             ]
         },
         {
-            "name": "મજીભાઈ મારડીયા",
+            "name": "મનજીભાઈ",
             "count": 1,
             "kirans": [
                 {
-                    "index": 48,
+                    "index": 393,
                     "role": "host"
                 }
             ]
@@ -1980,12 +3164,66 @@
             ]
         },
         {
-            "name": "માધવજીભાઇ જાવિયા",
+            "name": "મહાપુરુષદાસ",
             "count": 1,
             "kirans": [
                 {
-                    "index": 413,
-                    "role": "reader"
+                    "index": 121,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મહાપુસ્ર્ષદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 199,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "માંગરોળવાળા ગોરધનભાઈ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 6,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 38,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "માંગરોળવાળાં ગોરધનભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 23,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "માણાવદર છગનભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 581,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "માણાવદરવાળા પ્રેમજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 135,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2028,12 +3266,148 @@
             ]
         },
         {
-            "name": "માધાભાઇ રાજાભાઇ",
+            "name": "માધવજીભાઈ જાવિયા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 413,
+                    "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "માધાભાઈ રાજાભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 493,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "માનકૂવાવાળા મૂળજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 466,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "માવજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 377,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "માવાભગત",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 242,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 387,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મિંયાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 482,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મુકુંદદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 104,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મુક્તિજીવનદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 92,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મુળજી",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 551,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 556,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 635,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મુળજી બેટાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 612,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મુળદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 467,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મૂળજી",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 132,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 193,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "મૂળજી કાકા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 146,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2182,12 +3556,66 @@
             ]
         },
         {
-            "name": "રતિભાઇ",
+            "name": "રઘુનાથદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 104,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રઘુવીરજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 384,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રજપૂત ગલુજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 23,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રણછોડભગત",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 168,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 216,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રતિભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 375,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "રત્નાભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 397,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2208,6 +3636,82 @@
                 {
                     "index": 616,
                     "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "રવજી શેઠ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 648,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રવજી સુતાર",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 177,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 182,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 368,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રાજબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 432,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રાજાભાઈ",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 171,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 457,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 463,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રાધિકાજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 126,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "રામચંદ્રજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 185,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2284,6 +3788,16 @@
             ]
         },
         {
+            "name": "રામપ્રતાપભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 369,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "લક્ષ્મણભાઈ",
             "count": 3,
             "kirans": [
@@ -2302,22 +3816,30 @@
             ]
         },
         {
+            "name": "લક્ષ્મીજી",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 55,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 193,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 437,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "લક્ષ્મીદાસ કરશનભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 103,
                     "role": "reader"
-                }
-            ]
-        },
-        {
-            "name": "લક્ષ્મીદાસ બેચરભાઈ જાદવ",
-            "count": 1,
-            "kirans": [
-                {
-                    "index": 321,
-                    "role": "host"
                 }
             ]
         },
@@ -2386,6 +3908,46 @@
             ]
         },
         {
+            "name": "લાડકીબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 445,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "લાધાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 400,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "લાધીબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 440,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "લાલજી ગણેશ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 482,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "લાલજીભાઈ",
             "count": 1,
             "kirans": [
@@ -2416,6 +3978,128 @@
             ]
         },
         {
+            "name": "લાલાબાપા",
+            "count": 4,
+            "kirans": [
+                {
+                    "index": 144,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 200,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 205,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 472,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "લાલાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 243,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "લાલાભાઈ ગઢડે",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 483,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "લીંબુડાવાળા કરશનભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 105,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "લોધિકાવાળા અભયસિંહજી દરબાર",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 214,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "લોમાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 495,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વંથલીવાળા કલ્યાણબાપા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 478,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વંથલીવાળા કલ્યાણભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 229,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વંથલીવાળા રવજી શેઠ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 57,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વંશજ ધીરૂભાઈ ગઢાળીવાળા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 321,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "વજીબાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 413,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "વજુભાઈ ટાંક",
             "count": 3,
             "kirans": [
@@ -2429,6 +4113,26 @@
                 },
                 {
                     "index": 688,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "વર્તે નારાયણદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 212,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વલ્લભજી ભીમજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 338,
                     "role": "host"
                 }
             ]
@@ -2448,23 +4152,23 @@
             ]
         },
         {
-            "name": "વલ્લભભાઇ ટાંક",
-            "count": 2,
+            "name": "વલ્લભદાસ",
+            "count": 1,
             "kirans": [
                 {
-                    "index": 482,
-                    "role": "host"
-                },
-                {
-                    "index": 485,
-                    "role": "host"
+                    "index": 126,
+                    "role": "mentioned"
                 }
             ]
         },
         {
             "name": "વલ્લભભાઈ",
-            "count": 13,
+            "count": 15,
             "kirans": [
+                {
+                    "index": 56,
+                    "role": "mentioned"
+                },
                 {
                     "index": 57,
                     "role": "reader"
@@ -2484,6 +4188,10 @@
                 {
                     "index": 442,
                     "role": "reader"
+                },
+                {
+                    "index": 475,
+                    "role": "host"
                 },
                 {
                     "index": 476,
@@ -2520,8 +4228,22 @@
             ]
         },
         {
+            "name": "વલ્લભભાઈ ટાંક",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 482,
+                    "role": "host"
+                },
+                {
+                    "index": 485,
+                    "role": "host"
+                }
+            ]
+        },
+        {
             "name": "વલ્લભભાઈ સવજીભાઈ",
-            "count": 3,
+            "count": 2,
             "kirans": [
                 {
                     "index": 473,
@@ -2529,10 +4251,6 @@
                 },
                 {
                     "index": 474,
-                    "role": "host"
-                },
-                {
-                    "index": 475,
                     "role": "host"
                 }
             ]
@@ -2548,12 +4266,42 @@
             ]
         },
         {
-            "name": "વશરામભાઈ ભાલોડિયા",
+            "name": "વશરામભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 125,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વશરામભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 351,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "વાગે નાનજીભાઈ ફડદુ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 63,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "વામનજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 102,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2568,12 +4316,92 @@
             ]
         },
         {
+            "name": "વાળા પુનાભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 102,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વિદુરજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 129,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વિરજાણંદભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 73,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વિરાભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 40,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વિહામણભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 187,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વિહારીલાલજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 101,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "વિહારીલાલજી મહારાજે યજ્ઞ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 457,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "વૃજલાલભાઈ",
             "count": 1,
             "kirans": [
                 {
                     "index": 84,
                     "role": "reader"
+                }
+            ]
+        },
+        {
+            "name": "વ્રજલાલ મોહનલાલ કરશન ટાંક",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 380,
+                    "role": "host"
                 }
             ]
         },
@@ -2598,7 +4426,17 @@
             ]
         },
         {
-            "name": "શાંતિભાઇ કલોલા",
+            "name": "શાંતિભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 297,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "શાંતિભાઈ કલોલા",
             "count": 1,
             "kirans": [
                 {
@@ -2608,26 +4446,22 @@
             ]
         },
         {
-            "name": "શાંતિભાઇ પુરુષોત્તમ",
+            "name": "શાંતિભાઈ ચા વાળા",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 314,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "શાંતિભાઈ પુરુષોત્તમ",
             "count": 1,
             "kirans": [
                 {
                     "index": 467,
                     "role": "reader"
-                }
-            ]
-        },
-        {
-            "name": "શાંતિભાઈ ચા વાળા",
-            "count": 2,
-            "kirans": [
-                {
-                    "index": 297,
-                    "role": "host"
-                },
-                {
-                    "index": 314,
-                    "role": "host"
                 }
             ]
         },
@@ -2667,8 +4501,16 @@
         },
         {
             "name": "શામજીભગત",
-            "count": 1,
+            "count": 3,
             "kirans": [
+                {
+                    "index": 124,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 168,
+                    "role": "mentioned"
+                },
                 {
                     "index": 369,
                     "role": "reader"
@@ -2690,6 +4532,126 @@
             ]
         },
         {
+            "name": "શિવલાલભાઈ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 406,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 692,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "શુકદેવજી",
+            "count": 4,
+            "kirans": [
+                {
+                    "index": 55,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 73,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 562,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 564,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "સણોસરાવાળા રણછોડભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 179,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "સવજી",
+            "count": 4,
+            "kirans": [
+                {
+                    "index": 113,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 171,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 365,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 464,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "સવજીભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 475,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "સામતભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 108,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "સુંદરજી સુતાર",
+            "count": 3,
+            "kirans": [
+                {
+                    "index": 440,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 466,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 635,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "સુરદાસ",
+            "count": 2,
+            "kirans": [
+                {
+                    "index": 219,
+                    "role": "mentioned"
+                },
+                {
+                    "index": 518,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
             "name": "સુરેશભાઈ",
             "count": 1,
             "kirans": [
@@ -2700,12 +4662,72 @@
             ]
         },
         {
-            "name": "હરજીવનભાઈ લાધાભાઈ",
+            "name": "સૂર્યનારાયણ કુંતાજી",
             "count": 1,
             "kirans": [
                 {
-                    "index": 400,
+                    "index": 30,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "સ્ફૂરે પુરુષોત્તમભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 504,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "હનુમાનજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 81,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "હમીરભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 378,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "હરજી",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 169,
+                    "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "હરિભગત",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 601,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "હરિભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 506,
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2724,6 +4746,26 @@
                 {
                     "index": 304,
                     "role": "host"
+                }
+            ]
+        },
+        {
+            "name": "હરિશંકરભાઈ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 244,
+                    "role": "mentioned"
+                }
+            ]
+        },
+        {
+            "name": "હરી ગંગદાસ",
+            "count": 1,
+            "kirans": [
+                {
+                    "index": 205,
+                    "role": "mentioned"
                 }
             ]
         },

@@ -27,9 +27,17 @@ class HaribhaktItem {
 
   int get readerCount => kirans.where((ref) => ref.role == 'reader').length;
 
+  int get mentionedCount =>
+      kirans.where((ref) => ref.role == 'mentioned').length;
+
   bool get hasHost => hostCount > 0;
 
   bool get hasReader => readerCount > 0;
+
+  bool get hasMentioned => mentionedCount > 0;
+
+  int get roleTypeCount =>
+      [hasHost, hasReader, hasMentioned].where((flag) => flag).length;
 
   factory HaribhaktItem.fromMap(Map<String, dynamic> map) {
     final kirans =

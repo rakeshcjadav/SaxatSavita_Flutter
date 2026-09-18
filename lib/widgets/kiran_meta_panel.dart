@@ -184,6 +184,7 @@ class KiranMetaPanel extends StatelessWidget {
                 peopleLabel: l10n.haribhakts,
                 hostLabel: l10n.haribhakt_role_host,
                 readerLabel: l10n.haribhakt_role_reader,
+                mentionedLabel: l10n.haribhakt_role_mentioned,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
                 fontSize: settings.fontSize,
@@ -224,6 +225,7 @@ class _ContextCard extends StatelessWidget {
     required this.peopleLabel,
     required this.hostLabel,
     required this.readerLabel,
+    required this.mentionedLabel,
     required this.colorScheme,
     required this.textTheme,
     required this.fontSize,
@@ -236,6 +238,7 @@ class _ContextCard extends StatelessWidget {
   final String peopleLabel;
   final String hostLabel;
   final String readerLabel;
+  final String mentionedLabel;
   final ColorScheme colorScheme;
   final TextTheme textTheme;
   final double fontSize;
@@ -310,6 +313,7 @@ class _ContextCard extends StatelessWidget {
                             person: person,
                             hostLabel: hostLabel,
                             readerLabel: readerLabel,
+                            mentionedLabel: mentionedLabel,
                             colorScheme: colorScheme,
                             textTheme: textTheme,
                             onTap:
@@ -335,6 +339,7 @@ class _HaribhaktNameChip extends StatelessWidget {
     required this.person,
     required this.hostLabel,
     required this.readerLabel,
+    required this.mentionedLabel,
     required this.colorScheme,
     required this.textTheme,
     this.onTap,
@@ -343,20 +348,33 @@ class _HaribhaktNameChip extends StatelessWidget {
   final KiranHaribhakt person;
   final String hostLabel;
   final String readerLabel;
+  final String mentionedLabel;
   final ColorScheme colorScheme;
   final TextTheme textTheme;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final isHost = person.isHost;
-    final background =
-        isHost ? colorScheme.primaryContainer : colorScheme.secondaryContainer;
-    final foreground =
-        isHost
-            ? colorScheme.onPrimaryContainer
-            : colorScheme.onSecondaryContainer;
-    final role = isHost ? hostLabel : readerLabel;
+    final (background, foreground, role, icon) = switch (person.role) {
+      'host' => (
+        colorScheme.primaryContainer,
+        colorScheme.onPrimaryContainer,
+        hostLabel,
+        Icons.home_outlined,
+      ),
+      'mentioned' => (
+        colorScheme.tertiaryContainer,
+        colorScheme.onTertiaryContainer,
+        mentionedLabel,
+        Icons.chat_bubble_outline,
+      ),
+      _ => (
+        colorScheme.secondaryContainer,
+        colorScheme.onSecondaryContainer,
+        readerLabel,
+        Icons.menu_book_outlined,
+      ),
+    };
 
     return Material(
       color: background,
@@ -369,11 +387,7 @@ class _HaribhaktNameChip extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                isHost ? Icons.home_outlined : Icons.menu_book_outlined,
-                size: 18,
-                color: foreground,
-              ),
+              Icon(icon, size: 18, color: foreground),
               const SizedBox(width: 8),
               Text.rich(
                 TextSpan(

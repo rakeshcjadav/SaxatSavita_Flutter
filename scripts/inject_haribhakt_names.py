@@ -31,6 +31,18 @@ HOST_SUFFIXES = (
     "નાં મકાનમાં",
     "ના મકાન",
     "નાં મકાન",
+    "ની વાડીમાં",
+    "નાં વાડીમાં",
+    "ની વાડીએ",
+    "નાં વાડીએ",
+    "ના વાડીએ",
+    "ની વાડી",
+    "નાં વાડી",
+    "ના વાડી",
+    "ની ઘેરે",
+    "નાં ઘેરે",
+    "ની ઘેર",
+    "નાં ઘેર",
     "નાં ઘરે",
     "ના ઘરે",
     "ને ઘરે",
@@ -38,6 +50,13 @@ HOST_SUFFIXES = (
     "ને ત્યાં",
     "ના ત્યાં",
     "નાં ઘર",
+)
+
+# People named in a teaching, not sitting as host/reader.
+MENTION_SUFFIXES = (
+    "ની વાત વિસ્તારથી કરી",
+    "ની વાત કરી",
+    "ની પેઠે",
 )
 
 # Two people in one host phrase: "X અને Yના ઘરે" or "Xને ત્યાંથી Yને ત્યાં"
@@ -121,6 +140,8 @@ VENUE_FRAGMENTS = (
     "મશીન ટુલ્સ",
     "વાસ્તુ",
     "બોર્ડ",
+    "પડશાળા",
+    "વાડી",
 )
 
 AFTER_NAME_STOP = (
@@ -148,7 +169,7 @@ AFTER_NAME_STOP = (
     "સતિ",
 )
 
-ROLE_RANK = {"host": 0, "reader": 1}
+ROLE_RANK = {"host": 0, "reader": 1, "mentioned": 2}
 
 
 def load_overrides() -> tuple[dict[str, str], set[str]]:
@@ -212,6 +233,26 @@ FILLER_TOKENS = {
     "ઘરે",
     "ઘેર",
     "ત્યાંથી",
+    "ઉપર",
+    "પાસે",
+    "રસ્તામાં",
+    "આગળ",
+    "હોય",
+    "ત્યાં",
+    "સાથે",
+    "પત્ર",
+    "ખાતો",
+    "મેળાવીને",
+    "સંતમંડળ",
+    "થઈ",
+    "જે",
+    "મારાં",
+    "મારા",
+    "શું",
+    "હેત",
+    "પછે",
+    "દર્શન",
+    "એમ",
 }
 
 
@@ -248,11 +289,15 @@ def looks_like_person(name: str, require_honorific: bool = False) -> bool:
     tokens = name.split()
     if not tokens or len(tokens) > 5 or len(name) > 40:
         return False
+    if any(not _is_gujarati_letter_start(t) for t in tokens):
+        return False
     if any(t in STOP_TOKENS or t in FILLER_TOKENS for t in tokens):
         return False
     if not re.search(r"[\u0A80-\u0AFF]", name):
         return False
     if name.endswith("સ્વામી") or "સ્વામી" in name:
+        return False
+    if tokens[0] in STOP_NAMES:
         return False
     if require_honorific and not HONORIFIC_RE.search(name):
         return False
@@ -263,6 +308,10 @@ def apply_alias(name: str, aliases: dict[str, str]) -> str:
     if name in aliases:
         return aliases[name]
     return name
+
+
+def normalize_honorific_spelling(name: str) -> str:
+    return name.replace("ભાઇ", "ભાઈ").replace("બાઇ", "બાઈ")
 
 
 def _letter_before(text: str, idx: int) -> bool:
@@ -285,6 +334,10 @@ def _suffix_boundary(text: str, idx: int, suffix: str) -> bool:
     if suffix.endswith("મકાન") and rest.startswith("માં"):
         return False
     if suffix.endswith("મકાન") and rest.startswith("ના"):
+        return False
+    if suffix.endswith("વાડી") and rest.startswith(("એ", "માં")):
+        return False
+    if suffix.endswith("ઘેર") and rest.startswith("ે"):
         return False
     return True
 
@@ -349,13 +402,46 @@ def _given_name_token(token: str) -> bool:
         HONORIFIC_RE.search(t)
         or t.endswith("જી")
         or t.endswith("લાલ")
-        or t.endswith("શી")
         or t.endswith("દાસ")
     )
 
 
+def _has_person_marker(name: str) -> bool:
+    return bool(
+        HONORIFIC_RE.search(name)
+        or any(_given_name_token(t) for t in name.split())
+    )
+
+
+VERBISH_ENDINGS = ("તો", "તા", "તી", "તું", "તાં", "યો", "યા", "યું")
+
+
+def _is_gujarati_letter_start(token: str) -> bool:
+    return bool(token) and 0x0A85 <= ord(token[0]) <= 0x0AB9
+
+
+def _leading_name_token(token: str) -> bool:
+    """Given name or surname that may sit before an honorific/જી token."""
+    t = strip_agentive(token)
+    if t in FILLER_TOKENS or t in STOP_TOKENS:
+        return False
+    if HONORIFIC_RE.search(t):
+        return False
+    if not _is_gujarati_letter_start(t):
+        return False
+    if t.endswith(("માં", "માંથી", "થી", "ને", "ના", "ની", "નો", "નાં")):
+        return False
+    if t.endswith(VERBISH_ENDINGS):
+        return False
+    if any(p in t for p in AFTER_NAME_STOP):
+        return False
+    if not re.fullmatch(r"[\u0A80-\u0AFF]+", t):
+        return False
+    return len(t) >= 3
+
+
 def name_from_host_window(window: str) -> str | None:
-    """Name immediately before a host suffix (last honorific cluster).
+    """Name immediately before a host/mention suffix (last person cluster).
 
     Taking every token after the *first* honorific concatenated two people
     in one location/sentence (e.g. X અને Yના ઘરે, Xને ત્યાંથી Yને ત્યાં).
@@ -363,17 +449,26 @@ def name_from_host_window(window: str) -> str | None:
     tokens = [
         t
         for t in GUJ_WORD_RE.findall(window)
-        if t not in FILLER_TOKENS and t not in STOP_TOKENS
+        if t not in FILLER_TOKENS
+        and t not in STOP_TOKENS
+        and _is_gujarati_letter_start(t)
+        and not re.search(r"[\u0AE6-\u0AEF0-9]", t)
     ]
     if not tokens:
         return None
-    honor_idxs = [i for i, t in enumerate(tokens) if HONORIFIC_RE.search(t)]
-    if not honor_idxs:
+    anchors = [
+        i
+        for i, t in enumerate(tokens)
+        if HONORIFIC_RE.search(t) or _given_name_token(t)
+    ]
+    if not anchors:
         return None
-    i = honor_idxs[-1]
+    i = anchors[-1]
     begin = i
-    if i > 0 and _given_name_token(tokens[i - 1]):
-        begin = i - 1
+    extra = 0
+    while begin > 0 and extra < 1 and _leading_name_token(tokens[begin - 1]):
+        begin -= 1
+        extra += 1
     end = i + 1
     while end < len(tokens):
         nxt = tokens[end]
@@ -381,9 +476,11 @@ def name_from_host_window(window: str) -> str | None:
             break
         if nxt in FILLER_TOKENS or nxt in STOP_TOKENS or not _after_ok(nxt):
             break
+        if not _leading_name_token(nxt):
+            break
         end += 1
     name = clean_name(" ".join(tokens[begin:end]))
-    if looks_like_person(name, require_honorific=True):
+    if looks_like_person(name) and _has_person_marker(name):
         return name
     return None
 
@@ -399,17 +496,27 @@ def names_from_host_window(window: str) -> list[str]:
     return out
 
 
-def hosts_from_text(text: str) -> list[str]:
+def _clause_window(text: str, idx: int, chars: int) -> str:
+    start = max(0, idx - chars)
+    if start > 0:
+        while start < idx and not text[start].isspace():
+            start += 1
+        while start < idx and text[start].isspace():
+            start += 1
+    return _last_clause(text[start:idx])
+
+
+def _names_before_suffixes(text: str, suffixes: tuple[str, ...], window_chars: int = 50) -> list[str]:
     out: list[str] = []
     seen: set[str] = set()
-    for suffix in HOST_SUFFIXES:
+    for suffix in suffixes:
         start = 0
         while True:
             idx = text.find(suffix, start)
             if idx < 0:
                 break
             if _letter_before(text, idx) and _suffix_boundary(text, idx, suffix):
-                window = _last_clause(text[max(0, idx - 50) : idx])
+                window = _clause_window(text, idx, window_chars)
                 for name in names_from_host_window(window):
                     if name not in seen:
                         seen.add(name)
@@ -418,7 +525,17 @@ def hosts_from_text(text: str) -> list[str]:
     return out
 
 
+def hosts_from_text(text: str) -> list[str]:
+    return _names_before_suffixes(text, HOST_SUFFIXES)
+
+
+def mentions_from_text(text: str) -> list[str]:
+    return _names_before_suffixes(text, MENTION_SUFFIXES, window_chars=60)
+
+
 def _after_ok(token: str) -> bool:
+    if re.search(r"[\u0AE6-\u0AEF0-9]", token):
+        return False
     return not any(token.startswith(p) or p in token for p in AFTER_NAME_STOP)
 
 
@@ -472,13 +589,22 @@ def collapse_shorter_names(people: list[dict[str, str]]) -> list[dict[str, str]]
 
 
 def merge_people(
-    hosts: list[str], readers: list[str], aliases: dict[str, str], drop: set[str]
+    hosts: list[str],
+    readers: list[str],
+    aliases: dict[str, str],
+    drop: set[str],
+    mentions: list[str] | None = None,
 ) -> list[dict[str, str]]:
     by_name: dict[str, str] = {}
     order: list[str] = []
-    for role, names in (("host", hosts), ("reader", readers)):
+    for role, names in (
+        ("host", hosts),
+        ("reader", readers),
+        ("mentioned", mentions or []),
+    ):
         for raw in names:
-            name = apply_alias(clean_name(raw), aliases)
+            name = normalize_honorific_spelling(apply_alias(clean_name(raw), aliases))
+            name = apply_alias(name, aliases)
             if not name or name in drop or not looks_like_person(name):
                 continue
             if name not in by_name:
@@ -496,7 +622,8 @@ def extract_kiran(kdata: dict, aliases: dict[str, str], drop: set[str]) -> list[
     hosts = hosts_from_locations(meta.get("locations") or [])
     hosts.extend(hosts_from_text(content))
     readers = readers_from_text(content)
-    return merge_people(hosts, readers, aliases, drop)
+    mentions = mentions_from_text(content)
+    return merge_people(hosts, readers, aliases, drop, mentions=mentions)
 
 
 def main() -> None:
@@ -546,10 +673,15 @@ def main() -> None:
             for e in index["list"]
             if any(p.get("role") == "host" for p in (e.get("haribhakts") or []))
         )
+        with_mentioned = sum(
+            1
+            for e in index["list"]
+            if any(p.get("role") == "mentioned" for p in (e.get("haribhakts") or []))
+        )
         print(
             f"part{part_num}: {changed:3d} updated | "
             f"{sum(1 for e in index['list'] if e.get('haribhakts'))}/{len(index['list'])} "
-            f"have names | {with_host} with host"
+            f"have names | {with_host} with host | {with_mentioned} with mention"
         )
 
     items = []

@@ -157,6 +157,7 @@
     "haribhakt_no_matches": "No haribhakts match this search",
     "haribhakt_role_host": "Host",
     "haribhakt_role_reader": "Reader",
+    "haribhakt_role_mentioned": "Mentioned",
     "haribhakt_kiran_count": "{count} kirans",
     "@haribhakt_kiran_count": {
         "description": "Number of kirans a haribhakt appears in",
@@ -187,6 +188,15 @@
     "haribhakt_reader_count": "{count} as reader",
     "@haribhakt_reader_count": {
         "description": "How many kirans this person read",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "haribhakt_mentioned_count": "{count} mentioned",
+    "@haribhakt_mentioned_count": {
+        "description": "How many kirans mention this person in the talk",
         "placeholders": {
             "count": {
                 "type": "int"

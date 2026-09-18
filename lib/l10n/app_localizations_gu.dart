@@ -328,6 +328,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get haribhakt_role_reader => 'વાંચનાર';
 
   @override
+  String get haribhakt_role_mentioned => 'વાતમાં';
+
+  @override
   String haribhakt_kiran_count(int count) {
     return '$count કિરણો';
   }
@@ -345,6 +348,11 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String haribhakt_reader_count(int count) {
     return '$count વાર વાંચનાર';
+  }
+
+  @override
+  String haribhakt_mentioned_count(int count) {
+    return '$count વાર વાતમાં';
   }
 
   @override

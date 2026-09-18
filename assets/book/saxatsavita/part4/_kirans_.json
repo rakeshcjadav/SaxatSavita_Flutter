@@ -39,7 +39,12 @@
             "places": [
                 "જૂનાગઢ"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "સ્ફૂરે પુરુષોત્તમભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "5-11-1977",
@@ -53,7 +58,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "ખીમજીભાઈ",
+                    "name": "ઓઈલમીલવાળા ખીમજીભાઈ",
                     "role": "host"
                 }
             ]
@@ -73,6 +78,14 @@
                 {
                     "name": "જેઠાબાપા",
                     "role": "reader"
+                },
+                {
+                    "name": "હરિભાઈ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કુંડળવાળા રાયબાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -111,6 +124,10 @@
                 },
                 {
                     "name": "નાનજીભાઈ ફળદુ",
+                    "role": "host"
+                },
+                {
+                    "name": "અરણીયાળા વાલજીભાઈ",
                     "role": "host"
                 },
                 {
@@ -165,7 +182,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "નરસીભાઈ",
+                    "name": "અજાબ નરસીભાઈ",
                     "role": "host"
                 }
             ]
@@ -209,6 +226,10 @@
                 {
                     "name": "લક્ષ્મીદાસભગત",
                     "role": "reader"
+                },
+                {
+                    "name": "અયોધ્યાપ્રસાદજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -268,7 +289,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "જાય કરશનબાપા",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "18-11-1977",
@@ -280,7 +306,16 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "સુરદાસ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કાલીદાસ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "19-11-1977",
@@ -317,7 +352,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "દેવશીભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "21-11-1977",
@@ -526,7 +566,12 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "ઈશ્વરદાસ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "16-4-1978",
@@ -546,6 +591,10 @@
                 {
                     "name": "ધીરૂભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કલ્યાણબાપા",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -576,7 +625,12 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "કઠણ વચનજી ધ્રુવ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "19-4-1978",
@@ -592,6 +646,10 @@
                 {
                     "name": "ચંદુભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "જતનબાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -613,6 +671,10 @@
                 {
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "નારણદાસ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -638,7 +700,12 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "જતનબાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "23-4-1978",
@@ -654,6 +721,10 @@
                 {
                     "name": "રામજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "જતનબાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -748,7 +819,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "ગોપીનાથદાસજી પુરાણી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "31-8-1978",
@@ -762,7 +838,16 @@
                 "મુંજીયાસર",
                 "જૂનાગઢ"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "મુળજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કૃષ્ણજી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "1-9-1978",
@@ -831,6 +916,14 @@
                 {
                     "name": "રામજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "મુળજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કૃષ્ણજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -928,6 +1021,10 @@
                 {
                     "name": "પુરુષોત્તમભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "શુકદેવજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -957,6 +1054,10 @@
                 {
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "શુકદેવજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1011,7 +1112,12 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "પીજવાળા અવલબાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "27-9-1978",
@@ -1190,6 +1296,14 @@
                 {
                     "name": "જેઠાબાપા",
                     "role": "reader"
+                },
+                {
+                    "name": "ભગવાનદાસ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "દ્યે કેશુભગત",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1206,7 +1320,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "છગનભગત",
+                    "name": "માણાવદર છગનભગત",
                     "role": "host"
                 },
                 {
@@ -1406,7 +1520,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "અભયસિંહજી દરબાર",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "2-11-1978",

@@ -328,6 +328,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get haribhakt_role_reader => 'Reader';
 
   @override
+  String get haribhakt_role_mentioned => 'Mentioned';
+
+  @override
   String haribhakt_kiran_count(int count) {
     return '$count kirans';
   }
@@ -345,6 +348,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String haribhakt_reader_count(int count) {
     return '$count as reader';
+  }
+
+  @override
+  String haribhakt_mentioned_count(int count) {
+    return '$count mentioned';
   }
 
   @override

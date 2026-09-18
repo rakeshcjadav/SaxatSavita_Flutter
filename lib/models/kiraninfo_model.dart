@@ -1,10 +1,14 @@
 class KiranHaribhakt {
   final String name;
-  final String role; // host | reader
+  final String role; // host | reader | mentioned
 
   const KiranHaribhakt({required this.name, required this.role});
 
   bool get isHost => role == 'host';
+
+  bool get isReader => role == 'reader';
+
+  bool get isMentioned => role == 'mentioned';
 
   factory KiranHaribhakt.fromMap(Map<String, dynamic> map) {
     return KiranHaribhakt(

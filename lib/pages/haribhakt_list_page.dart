@@ -22,7 +22,25 @@ void openHaribhaktDetail(BuildContext context, String name) {
 }
 
 String haribhaktRoleLabel(AppLocalizations l10n, String role) {
-  return role == 'host' ? l10n.haribhakt_role_host : l10n.haribhakt_role_reader;
+  switch (role) {
+    case 'host':
+      return l10n.haribhakt_role_host;
+    case 'mentioned':
+      return l10n.haribhakt_role_mentioned;
+    default:
+      return l10n.haribhakt_role_reader;
+  }
+}
+
+IconData haribhaktRoleIcon(String role) {
+  switch (role) {
+    case 'host':
+      return Icons.home_outlined;
+    case 'mentioned':
+      return Icons.chat_bubble_outline;
+    default:
+      return Icons.menu_book_outlined;
+  }
 }
 
 String formatHaribhaktCount(BuildContext context, int count) {
@@ -32,7 +50,7 @@ String formatHaribhaktCount(BuildContext context, int count) {
       : digits;
 }
 
-enum _RoleFilter { all, host, reader }
+enum _RoleFilter { all, host, reader, mentioned }
 
 enum _SortMode { count, name }
 
@@ -76,6 +94,8 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
         items = items.where((item) => item.hasHost).toList();
       case _RoleFilter.reader:
         items = items.where((item) => item.hasReader).toList();
+      case _RoleFilter.mentioned:
+        items = items.where((item) => item.hasMentioned).toList();
       case _RoleFilter.all:
         items = List<HaribhaktItem>.from(items);
     }
@@ -170,6 +190,17 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
                                   onSelected:
                                       () => setState(
                                         () => _roleFilter = _RoleFilter.reader,
+                                      ),
+                                ),
+                                const SizedBox(width: 8),
+                                _RoleFilterChip(
+                                  label: l10n.haribhakt_role_mentioned,
+                                  icon: Icons.chat_bubble_outline,
+                                  selected: _roleFilter == _RoleFilter.mentioned,
+                                  onSelected:
+                                      () => setState(
+                                        () =>
+                                            _roleFilter = _RoleFilter.mentioned,
                                       ),
                                 ),
                               ],
@@ -273,7 +304,7 @@ class _HaribhaktListTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return ListTile(
-      isThreeLine: item.hasHost && item.hasReader,
+      isThreeLine: item.roleTypeCount > 1,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       leading: SizedBox(
         width: 40,
@@ -303,6 +334,11 @@ class _HaribhaktListTile extends StatelessWidget {
               HaribhaktRoleChip(
                 role: 'reader',
                 label: l10n.haribhakt_reader_count(item.readerCount),
+              ),
+            if (item.hasMentioned)
+              HaribhaktRoleChip(
+                role: 'mentioned',
+                label: l10n.haribhakt_mentioned_count(item.mentionedCount),
               ),
           ],
         ),
@@ -396,6 +432,10 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
         return _appearances.where((row) => row.ref.role == 'host').toList();
       case _RoleFilter.reader:
         return _appearances.where((row) => row.ref.role == 'reader').toList();
+      case _RoleFilter.mentioned:
+        return _appearances
+            .where((row) => row.ref.role == 'mentioned')
+            .toList();
       case _RoleFilter.all:
         return _appearances;
     }
@@ -443,7 +483,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
     final item = _item!;
     final colorScheme = Theme.of(context).colorScheme;
     final visible = _visible;
-    final showRoleFilter = item.hasHost && item.hasReader;
+    final showRoleFilter = item.roleTypeCount > 1;
     final locale = Localizations.localeOf(context).toString();
     final dateFormat = DateFormat.yMMMd(locale);
 
@@ -483,6 +523,17 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                         icon: Icons.menu_book_outlined,
                       ),
                     ),
+                  if (item.hasMentioned)
+                    Expanded(
+                      child: _StatCell(
+                        value: formatHaribhaktCount(
+                          context,
+                          item.mentionedCount,
+                        ),
+                        label: l10n.haribhakt_role_mentioned,
+                        icon: Icons.chat_bubble_outline,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -514,6 +565,14 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                     selected: _roleFilter == _RoleFilter.reader,
                     onSelected:
                         () => setState(() => _roleFilter = _RoleFilter.reader),
+                  ),
+                  _RoleFilterChip(
+                    label: l10n.haribhakt_role_mentioned,
+                    icon: Icons.chat_bubble_outline,
+                    selected: _roleFilter == _RoleFilter.mentioned,
+                    onSelected:
+                        () =>
+                            setState(() => _roleFilter = _RoleFilter.mentioned),
                   ),
                 ],
               ),
@@ -593,17 +652,33 @@ class HaribhaktRoleChip extends StatelessWidget {
   final String role;
   final String label;
 
-  bool get _isHost => role == 'host';
+  Color _background(ColorScheme colorScheme) {
+    switch (role) {
+      case 'host':
+        return colorScheme.primaryContainer;
+      case 'mentioned':
+        return colorScheme.tertiaryContainer;
+      default:
+        return colorScheme.secondaryContainer;
+    }
+  }
+
+  Color _foreground(ColorScheme colorScheme) {
+    switch (role) {
+      case 'host':
+        return colorScheme.onPrimaryContainer;
+      case 'mentioned':
+        return colorScheme.onTertiaryContainer;
+      default:
+        return colorScheme.onSecondaryContainer;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final background =
-        _isHost ? colorScheme.primaryContainer : colorScheme.secondaryContainer;
-    final foreground =
-        _isHost
-            ? colorScheme.onPrimaryContainer
-            : colorScheme.onSecondaryContainer;
+    final background = _background(colorScheme);
+    final foreground = _foreground(colorScheme);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
@@ -613,11 +688,7 @@ class HaribhaktRoleChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            _isHost ? Icons.home_outlined : Icons.menu_book_outlined,
-            size: 14,
-            color: foreground,
-          ),
+          Icon(haribhaktRoleIcon(role), size: 14, color: foreground),
           const SizedBox(width: 4),
           Text(
             label,

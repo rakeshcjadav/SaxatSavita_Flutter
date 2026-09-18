@@ -70,7 +70,16 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "માંગરોળવાળા ગોરધનભાઈ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ભરતજી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "12-6-1975",
@@ -195,7 +204,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "ઉદ્ઘવજી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "2-7-1975",
@@ -231,7 +245,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "કેશુભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "5-7-1975",
@@ -279,7 +298,16 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "રજપૂત ગલુજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "માંગરોળવાળાં ગોરધનભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "10-7-1975",
@@ -374,6 +402,10 @@
                 {
                     "name": "જેઠાબાપા",
                     "role": "reader"
+                },
+                {
+                    "name": "બાપુ રતનજી જૂનાગઢ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -395,6 +427,14 @@
                 {
                     "name": "હીરાભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "દેવજીભગત",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સૂર્યનારાયણ કુંતાજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -441,6 +481,10 @@
                 {
                     "name": "હીરાભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કાયાભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -512,7 +556,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "માંગરોળવાળા ગોરધનભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "28-7-1975",
@@ -545,6 +594,14 @@
                 {
                     "name": "લખમણભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "વિરાભગત",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગણાય વીરાભગતના બાપ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -562,6 +619,10 @@
                 {
                     "name": "જેઠાભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "ત્રિકમભગત",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -677,10 +738,6 @@
                     "role": "host"
                 },
                 {
-                    "name": "મજીભાઈ મારડીયા",
-                    "role": "host"
-                },
-                {
                     "name": "વલ્લભજીભાઈ મહેતા",
                     "role": "reader"
                 }
@@ -700,6 +757,10 @@
                 {
                     "name": "મોહનભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "પીઠવાજાળવાળા દેવશીભગત",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -730,7 +791,12 @@
             "places": [
                 "જૂનાગઢ"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "ગોરધનભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "11-8-1975",
@@ -746,6 +812,10 @@
                 {
                     "name": "ઓધવજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "બાલાપુરવાળા ગોવિંદભગત",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -767,6 +837,10 @@
                 {
                     "name": "ચંદુભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "નવાગામવાળા ડાયાબાપા",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -781,7 +855,12 @@
                 "જૂનાગઢ",
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "થાણાપીપળીવાળા ત્રિકમભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "14-8-1975",
@@ -814,6 +893,14 @@
                 {
                     "name": "લખમણભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "શુકદેવજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "લક્ષ્મીજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -839,6 +926,14 @@
                 {
                     "name": "રામજીભાઈ માણાવદરવાળા",
                     "role": "reader"
+                },
+                {
+                    "name": "નરસીભાઈ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વલ્લભભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -860,6 +955,10 @@
                 {
                     "name": "વલ્લભભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "વંથલીવાળા રવજી શેઠ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -881,6 +980,10 @@
                 {
                     "name": "મોહનભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કલ્યાણજીભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -944,6 +1047,10 @@
                 {
                     "name": "ચંદુભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કરમશી દામજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -960,6 +1067,10 @@
             "haribhakts": [
                 {
                     "name": "નાનજીભાઈ ફળદુ",
+                    "role": "host"
+                },
+                {
+                    "name": "વાગે નાનજીભાઈ ફડદુ",
                     "role": "host"
                 }
             ]
@@ -996,6 +1107,10 @@
                 {
                     "name": "મકવાણા નારણભાઈ વાલજીભાઈ",
                     "role": "host"
+                },
+                {
+                    "name": "ઘનશ્યામદાસ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1026,6 +1141,10 @@
                 {
                     "name": "મોહનભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "તુલસીદાસ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1072,7 +1191,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "કુબેરજી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "30-8-1975",
@@ -1130,6 +1254,14 @@
                 {
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "શુકદેવજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિરજાણંદભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1159,6 +1291,18 @@
                 {
                     "name": "ઓધવજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કરમશી દામજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "દાસ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ફાંસરીયાવાળા લોમાભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1230,7 +1374,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "પ્રભુલાલ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "1-10-1975",
@@ -1242,7 +1391,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "હનુમાનજી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "2-10-1975",
@@ -1299,6 +1453,14 @@
                 {
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "કસિયાભાઈ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "જમકુબાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1324,7 +1486,16 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "ત્રિકમભગતના ભાણેજ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ભવાનભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "8-10-1975",
@@ -1377,7 +1548,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "ગોરધનભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "12-10-1975",
@@ -1389,7 +1565,16 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "અયોધ્યાપ્રસાદજી મહારાજનું દુઃખ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તિજીવનદાસ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "13-10-1975",
@@ -1476,7 +1661,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "થાણાપીપળીવાળા ત્રિકમભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "21-10-1975",
@@ -1526,6 +1716,10 @@
                 {
                     "name": "બાબુભાઈ માણાવદરવાળા",
                     "role": "reader"
+                },
+                {
+                    "name": "વિહારીલાલજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1551,6 +1745,18 @@
                 {
                     "name": "ભગવાનજીભાઈ માસ્તર",
                     "role": "reader"
+                },
+                {
+                    "name": "વામનજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ઉપલેટાવાળા લાલાબાપા",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વાળા પુનાભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1599,6 +1805,18 @@
                 {
                     "name": "અમૃતલાલભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "મુકુંદદાસ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બાપુજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "રઘુનાથદાસ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1619,6 +1837,10 @@
                     "role": "host"
                 },
                 {
+                    "name": "પુંજાભાઈ રાઘવ",
+                    "role": "host"
+                },
+                {
                     "name": "બાબુભાઈ",
                     "role": "reader"
                 },
@@ -1629,6 +1851,10 @@
                 {
                     "name": "કાંતીલાલભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "લીંબુડાવાળા કરશનભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1671,7 +1897,16 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "સામતભગત",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કરવી પર્વતભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "31-10-1975",
@@ -1712,7 +1947,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "અર્જુનસિંહજી દરબાર",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "6-11-1975",
@@ -1740,6 +1980,18 @@
                 {
                     "name": "જેઠાભાઈ પુસ્ર્ષોત્તમ",
                     "role": "reader"
+                },
+                {
+                    "name": "કરમશી દામજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કાયાભાઈ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સવજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1765,7 +2017,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "કેશુભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "10-11-1975",
@@ -1794,7 +2051,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "બાલુભાઈ ખંભાતવાળા",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "12-11-1975",
@@ -1842,7 +2104,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "મહાપુરુષદાસ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "21-11-1975",
@@ -1866,7 +2133,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "બળદેવજી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "25-11-1975",
@@ -1878,7 +2150,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "શામજીભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "26-11-1975",
@@ -1890,7 +2167,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "વશરામભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "27-11-1975",
@@ -1902,7 +2184,20 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "રાધિકાજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વલ્લભદાસ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ભગવાનદાસ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "28-11-1975",
@@ -1914,7 +2209,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "કેશવભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "29-11-1975",
@@ -1938,7 +2238,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "વિદુરજી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "1-12-1975",
@@ -1983,6 +2288,18 @@
                 {
                     "name": "શાંતિલાલભગત",
                     "role": "reader"
+                },
+                {
+                    "name": "મૂળજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કૃષ્ણજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ત્રિકમદાસ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2020,7 +2337,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "માણાવદરવાળા પ્રેમજીભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "7-12-1975",
@@ -2110,6 +2432,10 @@
                 {
                     "name": "ઓધવજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "ટીંબીવાળા ભોળાભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2123,7 +2449,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "દેવજીભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "6-1-1976",
@@ -2156,7 +2487,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "લાલાબાપા",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "8-1-1976",
@@ -2180,7 +2516,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "મૂળજી કાકા",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "11-1-1976",
@@ -2196,6 +2537,10 @@
                 {
                     "name": "માધવજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "ગોરધનભાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2225,6 +2570,10 @@
                 {
                     "name": "ઓધવજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "ભરતજી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -2343,7 +2692,12 @@
             "places": [
                 "હળિયાદ"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "દેવશીભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "27-3-1976",
@@ -2379,7 +2733,12 @@
             "places": [
                 "હળિયાદ"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "નારદજી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "30-3-1976",
@@ -2473,7 +2832,20 @@
             "places": [
                 "હળિયાદ"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "શામજીભગત",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કાનજીબાપા",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "રણછોડભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "7-4-1976",
@@ -2486,6 +2858,10 @@
                 "હળિયાદ"
             ],
             "haribhakts": [
+                {
+                    "name": "હરજી",
+                    "role": "host"
+                },
                 {
                     "name": "ગોવિંદભગત",
                     "role": "reader"

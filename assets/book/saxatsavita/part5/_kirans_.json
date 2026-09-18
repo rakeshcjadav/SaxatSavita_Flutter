@@ -10,7 +10,12 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "હરિભગત",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "10-11-1978",
@@ -152,6 +157,10 @@
                 {
                     "name": "અરજણભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "મુળજી બેટાઈ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -328,7 +337,12 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "ભગવાનદાસ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "12-2-1979",
@@ -400,7 +414,16 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "પીઠવાજાળવાળા કરશનભાઈ",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ધરમશીભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "28-4-1979",
@@ -450,7 +473,7 @@
             ],
             "haribhakts": [
                 {
-                    "name": "ઓધવજીભાઈ",
+                    "name": "જૂનાગઢ ઓધવજીભાઈ",
                     "role": "host"
                 }
             ]
@@ -469,6 +492,10 @@
                 {
                     "name": "જેઠાબાપા",
                     "role": "reader"
+                },
+                {
+                    "name": "નિર્ગુણજીવનદાસ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -494,7 +521,20 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "મુળજી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કૃષ્ણજી ઈત્યાદિક",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સુંદરજી સુતાર",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "18-5-1979",
@@ -566,6 +606,10 @@
                 {
                     "name": "ભગવાનજીભાઈ માસ્તર",
                     "role": "reader"
+                },
+                {
+                    "name": "નારાયણદાસ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -685,6 +729,10 @@
                 {
                     "name": "ભાણજીભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "રવજી શેઠ",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1279,7 +1327,12 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "શિવલાલભાઈ",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "19-6-1980",

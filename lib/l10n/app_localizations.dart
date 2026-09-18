@@ -686,6 +686,12 @@ abstract class AppLocalizations {
   /// **'Reader'**
   String get haribhakt_role_reader;
 
+  /// No description provided for @haribhakt_role_mentioned.
+  ///
+  /// In en, this message translates to:
+  /// **'Mentioned'**
+  String get haribhakt_role_mentioned;
+
   /// Number of kirans a haribhakt appears in
   ///
   /// In en, this message translates to:
@@ -709,6 +715,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} as reader'**
   String haribhakt_reader_count(int count);
+
+  /// How many kirans mention this person in the talk
+  ///
+  /// In en, this message translates to:
+  /// **'{count} mentioned'**
+  String haribhakt_mentioned_count(int count);
 
   /// No description provided for @haribhakt_sort_name.
   ///
