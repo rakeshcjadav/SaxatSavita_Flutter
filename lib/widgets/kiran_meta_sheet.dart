@@ -39,6 +39,9 @@ Future<void> showKiranMetaSheet({
   required BuildContext context,
   required Future<Map<String, dynamic>> content,
   KiranInfo? kiranInfo,
+  String? selectedHaribhakt,
+  void Function(String name)? onHaribhaktTap,
+  void Function(String name)? onHaribhaktLongPress,
   Future<void> Function(String selectedText)? onAddNote,
   Future<void> Function(String selectedText)? onCreateQuoteImage,
 }) {
@@ -131,6 +134,9 @@ Future<void> showKiranMetaSheet({
                             pageContext: context,
                             contentData: snapshot.data!,
                             kiranInfo: kiranInfo,
+                            selectedHaribhakt: selectedHaribhakt,
+                            onHaribhaktTap: onHaribhaktTap,
+                            onHaribhaktLongPress: onHaribhaktLongPress,
                             onAddNote: onAddNote,
                             onCreateQuoteImage: onCreateQuoteImage,
                           ),
@@ -153,6 +159,9 @@ class _SelectableKiranMeta extends StatefulWidget {
     required this.pageContext,
     required this.contentData,
     this.kiranInfo,
+    this.selectedHaribhakt,
+    this.onHaribhaktTap,
+    this.onHaribhaktLongPress,
     this.onAddNote,
     this.onCreateQuoteImage,
   });
@@ -160,6 +169,9 @@ class _SelectableKiranMeta extends StatefulWidget {
   final BuildContext pageContext;
   final Map<String, dynamic> contentData;
   final KiranInfo? kiranInfo;
+  final String? selectedHaribhakt;
+  final void Function(String name)? onHaribhaktTap;
+  final void Function(String name)? onHaribhaktLongPress;
   final Future<void> Function(String selectedText)? onAddNote;
   final Future<void> Function(String selectedText)? onCreateQuoteImage;
 
@@ -177,9 +189,22 @@ class _SelectableKiranMetaState extends State<_SelectableKiranMeta> {
     final panel = KiranMetaPanel.fromContent(
       widget.contentData,
       haribhakts: widget.kiranInfo?.haribhakts ?? const [],
+      selectedHaribhakt: widget.selectedHaribhakt,
       onHaribhaktTap: (name) {
         Navigator.pop(context);
-        openHaribhaktDetail(widget.pageContext, name);
+        if (widget.onHaribhaktTap != null) {
+          widget.onHaribhaktTap!(name);
+        } else {
+          openHaribhaktDetail(widget.pageContext, name);
+        }
+      },
+      onHaribhaktLongPress: (name) {
+        Navigator.pop(context);
+        if (widget.onHaribhaktLongPress != null) {
+          widget.onHaribhaktLongPress!(name);
+        } else {
+          openHaribhaktDetail(widget.pageContext, name);
+        }
       },
       onAddNote: widget.onAddNote,
       onCreateQuoteImage: widget.onCreateQuoteImage,

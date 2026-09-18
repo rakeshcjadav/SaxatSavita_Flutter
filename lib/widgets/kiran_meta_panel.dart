@@ -35,6 +35,8 @@ class KiranMetaPanel extends StatelessWidget {
     required this.summary,
     this.haribhakts = const [],
     this.onHaribhaktTap,
+    this.onHaribhaktLongPress,
+    this.selectedHaribhakt,
     this.showAiCaption = false,
     this.onAddNote,
     this.onCreateQuoteImage,
@@ -45,6 +47,8 @@ class KiranMetaPanel extends StatelessWidget {
     Key? key,
     List<KiranHaribhakt> haribhakts = const [],
     void Function(String name)? onHaribhaktTap,
+    void Function(String name)? onHaribhaktLongPress,
+    String? selectedHaribhakt,
     bool showAiCaption = false,
     Future<void> Function(String selectedText)? onAddNote,
     Future<void> Function(String selectedText)? onCreateQuoteImage,
@@ -62,6 +66,8 @@ class KiranMetaPanel extends StatelessWidget {
               .toList(),
       haribhakts: haribhakts,
       onHaribhaktTap: onHaribhaktTap,
+      onHaribhaktLongPress: onHaribhaktLongPress,
+      selectedHaribhakt: selectedHaribhakt,
       showAiCaption: showAiCaption,
       onAddNote: onAddNote,
       onCreateQuoteImage: onCreateQuoteImage,
@@ -75,6 +81,8 @@ class KiranMetaPanel extends StatelessWidget {
   final List<String> summary;
   final List<KiranHaribhakt> haribhakts;
   final void Function(String name)? onHaribhaktTap;
+  final void Function(String name)? onHaribhaktLongPress;
+  final String? selectedHaribhakt;
   final bool showAiCaption;
   final Future<void> Function(String selectedText)? onAddNote;
   final Future<void> Function(String selectedText)? onCreateQuoteImage;
@@ -181,10 +189,13 @@ class KiranMetaPanel extends StatelessWidget {
                 date: date,
                 haribhakts: haribhakts,
                 onHaribhaktTap: onHaribhaktTap,
+                onHaribhaktLongPress: onHaribhaktLongPress,
+                selectedHaribhakt: selectedHaribhakt,
                 peopleLabel: l10n.haribhakts,
                 hostLabel: l10n.haribhakt_role_host,
                 readerLabel: l10n.haribhakt_role_reader,
                 mentionedLabel: l10n.haribhakt_role_mentioned,
+                chipHintLabel: l10n.haribhakt_chip_hint,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
                 fontSize: settings.fontSize,
@@ -222,10 +233,13 @@ class _ContextCard extends StatelessWidget {
     required this.date,
     required this.haribhakts,
     required this.onHaribhaktTap,
+    required this.onHaribhaktLongPress,
+    required this.selectedHaribhakt,
     required this.peopleLabel,
     required this.hostLabel,
     required this.readerLabel,
     required this.mentionedLabel,
+    required this.chipHintLabel,
     required this.colorScheme,
     required this.textTheme,
     required this.fontSize,
@@ -235,10 +249,13 @@ class _ContextCard extends StatelessWidget {
   final String date;
   final List<KiranHaribhakt> haribhakts;
   final void Function(String name)? onHaribhaktTap;
+  final void Function(String name)? onHaribhaktLongPress;
+  final String? selectedHaribhakt;
   final String peopleLabel;
   final String hostLabel;
   final String readerLabel;
   final String mentionedLabel;
+  final String chipHintLabel;
   final ColorScheme colorScheme;
   final TextTheme textTheme;
   final double fontSize;
@@ -314,12 +331,18 @@ class _ContextCard extends StatelessWidget {
                             hostLabel: hostLabel,
                             readerLabel: readerLabel,
                             mentionedLabel: mentionedLabel,
+                            chipHintLabel: chipHintLabel,
                             colorScheme: colorScheme,
                             textTheme: textTheme,
+                            selected: person.name == selectedHaribhakt,
                             onTap:
                                 onHaribhaktTap == null
                                     ? null
                                     : () => onHaribhaktTap!(person.name),
+                            onLongPress:
+                                onHaribhaktLongPress == null
+                                    ? null
+                                    : () => onHaribhaktLongPress!(person.name),
                           ),
                       ],
                     ),
@@ -340,18 +363,24 @@ class _HaribhaktNameChip extends StatelessWidget {
     required this.hostLabel,
     required this.readerLabel,
     required this.mentionedLabel,
+    required this.chipHintLabel,
     required this.colorScheme,
     required this.textTheme,
+    this.selected = false,
     this.onTap,
+    this.onLongPress,
   });
 
   final KiranHaribhakt person;
   final String hostLabel;
   final String readerLabel;
   final String mentionedLabel;
+  final String chipHintLabel;
   final ColorScheme colorScheme;
   final TextTheme textTheme;
+  final bool selected;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -382,34 +411,48 @@ class _HaribhaktNameChip extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 8, 12, 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 18, color: foreground),
-              const SizedBox(width: 8),
-              Text.rich(
-                TextSpan(
-                  text: person.name,
-                  style: textTheme.titleSmall?.copyWith(
-                    color: foreground,
-                    fontWeight: FontWeight.w600,
-                    height: 1.25,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: '\n$role',
-                      style: textTheme.labelSmall?.copyWith(
-                        color: foreground.withValues(alpha: 0.78),
-                        fontWeight: FontWeight.w500,
-                        height: 1.2,
-                      ),
-                    ),
-                  ],
-                ),
+        onLongPress: onLongPress,
+        child: Tooltip(
+          message: chipHintLabel,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: selected ? foreground : Colors.transparent,
+                width: 1.5,
               ),
-            ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 12, 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 18, color: foreground),
+                  const SizedBox(width: 8),
+                  Text.rich(
+                    TextSpan(
+                      text: person.name,
+                      style: textTheme.titleSmall?.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w600,
+                        height: 1.25,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: '\n$role',
+                          style: textTheme.labelSmall?.copyWith(
+                            color: foreground.withValues(alpha: 0.78),
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

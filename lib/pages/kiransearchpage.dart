@@ -729,6 +729,16 @@ class _KiransearchpageState extends State<Kiransearchpage> {
       return;
     }
 
+    final query = _searchController.text.trim();
+    String? highlightHaribhakt;
+    if (result.isHaribhaktMatch && result.snippet.isNotEmpty) {
+      final names = result.snippet.split(', ');
+      highlightHaribhakt = names.firstWhere(
+        (name) => name == query || name.contains(query) || query.contains(name),
+        orElse: () => names.first,
+      );
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -737,7 +747,8 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               partNumber: "part${result.partNumber}",
               kiranInfo: result.kiranInfo,
               kiranUserInfo: kiranUserInfo,
-              searchQuery: _searchController.text.trim(),
+              searchQuery: result.isContentMatch ? query : null,
+              highlightHaribhakt: highlightHaribhakt,
               readingMode: ReadingMode.reading,
             ),
       ),

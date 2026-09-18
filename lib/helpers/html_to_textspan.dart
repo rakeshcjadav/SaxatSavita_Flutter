@@ -19,6 +19,15 @@ class HtmlToTextSpan {
     }
   }
 
+  static Color? _colorFromCss(String? style) {
+    if (style == null || style.isEmpty) return null;
+    final match = RegExp(
+      r'color:\s*#([0-9a-fA-F]{6})',
+    ).firstMatch(style);
+    if (match == null) return null;
+    return Color(int.parse('FF${match.group(1)}', radix: 16));
+  }
+
   /// Converts HTML string to a list of widgets with proper formatting and alignment
   static List<Widget> convertToWidgets(
     String htmlContent,
@@ -336,6 +345,18 @@ class HtmlToTextSpan {
         case 'strong':
           _debugPrint('[HtmlToTextSpan]   -> Applying bold style');
           newStyle = currentStyle.copyWith(fontWeight: FontWeight.bold);
+          final haribhaktKind = node.attributes['data-haribhakt'];
+          if (haribhaktKind != null) {
+            final fromStyle = _colorFromCss(node.attributes['style']);
+            final scheme = Theme.of(context).colorScheme;
+            newStyle = newStyle.copyWith(
+              color:
+                  fromStyle ??
+                  (haribhaktKind == 'current'
+                      ? scheme.tertiary
+                      : scheme.secondary),
+            );
+          }
           break;
         case 'i':
         case 'em':

@@ -368,6 +368,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get haribhakt_try_different_name => 'Try a different name';
 
   @override
+  String get haribhakt_open_profile => 'Open profile';
+
+  @override
+  String get haribhakt_chip_hint =>
+      'Tap to find in kiran. Long-press to open profile.';
+
+  @override
   String see_all_kirans_for(String name) {
     return 'See all kirans for $name';
   }

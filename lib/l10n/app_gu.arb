@@ -206,6 +206,8 @@
     "haribhakt_sort_count": "કિરણ પ્રમાણે",
     "haribhakt_filter_all": "બધા",
     "haribhakt_try_different_name": "બીજું નામ અજમાવો",
+    "haribhakt_open_profile": "પ્રોફાઇલ ખોલો",
+    "haribhakt_chip_hint": "કિરણમાં શોધવા ટૅપ કરો. પ્રોફાઇલ ખોલવા લાંબા સમય સુધી દબાવો.",
     "see_all_kirans_for": "{name}નાં બધાં કિરણો જુઓ",
     "@see_all_kirans_for": {
         "description": "Link to the full kiran list for one haribhakt",

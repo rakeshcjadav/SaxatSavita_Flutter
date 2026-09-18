@@ -368,6 +368,13 @@ class AppLocalizationsGu extends AppLocalizations {
   String get haribhakt_try_different_name => 'બીજું નામ અજમાવો';
 
   @override
+  String get haribhakt_open_profile => 'પ્રોફાઇલ ખોલો';
+
+  @override
+  String get haribhakt_chip_hint =>
+      'કિરણમાં શોધવા ટૅપ કરો. પ્રોફાઇલ ખોલવા લાંબા સમય સુધી દબાવો.';
+
+  @override
   String see_all_kirans_for(String name) {
     return '$nameનાં બધાં કિરણો જુઓ';
   }

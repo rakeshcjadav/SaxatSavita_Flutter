@@ -29,6 +29,7 @@ class KiranSearchController {
   bool get isActive => _isActive;
   int get matchCount => _matches.length;
   int get currentMatchIndex => _currentMatchIndex;
+  String get plainText => _currentContent;
 
   // ── Content cache ────────────────────────────────────────────────────────
 
@@ -115,24 +116,20 @@ class KiranSearchController {
   }
 
   void performScrollToMatch() {
-    if (!_scrollController.hasClients ||
-        _matches.isEmpty ||
-        _currentMatchIndex < 0) {
-      return;
-    }
+    if (_matches.isEmpty || _currentMatchIndex < 0) return;
+    scrollToPlainOffset(_matches[_currentMatchIndex]);
+  }
+
+  void scrollToPlainOffset(int matchPosition) {
+    if (!_scrollController.hasClients) return;
 
     try {
-      final matchPosition = _matches[_currentMatchIndex];
       final plainText = _currentContent;
-
       if (plainText.isEmpty || matchPosition >= plainText.length) return;
 
-      final totalTextLength = plainText.length;
-      final matchRatio = matchPosition / totalTextLength;
-
+      final matchRatio = matchPosition / plainText.length;
       final maxScrollExtent = _scrollController.position.maxScrollExtent;
       final viewportHeight = _scrollController.position.viewportDimension;
-
       final targetScrollOffset =
           (maxScrollExtent * matchRatio) - (viewportHeight * 0.2);
       final clampedOffset = targetScrollOffset.clamp(0.0, maxScrollExtent);

@@ -207,6 +207,8 @@
     "haribhakt_sort_count": "Sort by kirans",
     "haribhakt_filter_all": "All",
     "haribhakt_try_different_name": "Try a different name",
+    "haribhakt_open_profile": "Open profile",
+    "haribhakt_chip_hint": "Tap to find in kiran. Long-press to open profile.",
     "see_all_kirans_for": "See all kirans for {name}",
     "@see_all_kirans_for": {
         "description": "Link to the full kiran list for one haribhakt",

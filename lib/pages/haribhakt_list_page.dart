@@ -455,6 +455,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
               partNumber: 'part$partNumber',
               kiranInfo: kiranInfo,
               kiranUserInfo: kiranUserInfo,
+              highlightHaribhakt: widget.name,
               readingMode: ReadingMode.reading,
               existingEvent: existingEvent,
             ),

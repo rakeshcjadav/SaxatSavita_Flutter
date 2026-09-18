@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
+import 'package:saxatsavita_flutter/helpers/haribhakt_text_highlight.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
@@ -40,6 +41,7 @@ class KiranReadPage extends StatefulWidget {
     required this.kiranInfo,
     required this.kiranUserInfo,
     this.searchQuery,
+    this.highlightHaribhakt,
     this.readingMode = ReadingMode.reading,
     this.existingEvent,
   });
@@ -47,6 +49,7 @@ class KiranReadPage extends StatefulWidget {
   final KiranInfo kiranInfo;
   final KiranUserInfo kiranUserInfo;
   final String? searchQuery;
+  final String? highlightHaribhakt;
   final ReadingMode readingMode;
   final ReadingEvent? existingEvent;
 
@@ -109,6 +112,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   // Search functionality
   late final KiranSearchController _search;
   String _metaSelectedText = '';
+  String? _focusedHaribhakt;
 
   @override
   void initState() {
@@ -162,6 +166,12 @@ class _KiranReadPageState extends State<KiranReadPage>
     // If searchQuery is provided, open search mode and perform search
     if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
       searchKiranContent(widget.searchQuery!);
+    } else if (widget.highlightHaribhakt != null &&
+        widget.highlightHaribhakt!.trim().isNotEmpty) {
+      _focusedHaribhakt = widget.highlightHaribhakt!.trim();
+      _futureKiranContent.then((_) {
+        if (mounted) _scrollToHaribhakt(_focusedHaribhakt!);
+      });
     }
 
     // Check if pre-recorded audio is available for this kiran
@@ -184,6 +194,70 @@ class _KiranReadPageState extends State<KiranReadPage>
       _pauseTimer();
       _search.performScrollToMatch();
     });
+  }
+
+  void _focusHaribhaktInKiran(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    if (_search.isActive) _search.close();
+    setState(() => _focusedHaribhakt = trimmed);
+    _scrollToHaribhakt(trimmed, showMissing: true);
+  }
+
+  void _scrollToHaribhakt(String name, {bool showMissing = false}) {
+    void attempt([int tries = 0]) {
+      if (!mounted) return;
+      final offset = HaribhaktTextHighlight.firstOffset(
+        _search.plainText,
+        name,
+      );
+      final waitingForLayout =
+          !_scrollController.hasClients ||
+          _scrollController.position.maxScrollExtent <= 0;
+      if ((offset == null || waitingForLayout) && tries < 12) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => attempt(tries + 1));
+        return;
+      }
+      if (offset == null) {
+        if (showMissing) {
+          final l10n = AppLocalizations.of(context);
+          if (l10n != null) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l10n.no_match_found)));
+          }
+        }
+        return;
+      }
+      HapticFeedback.selectionClick();
+      _search.scrollToPlainOffset(offset);
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => attempt());
+  }
+
+  String _htmlForDisplay(
+    Map<String, dynamic> contentData, {
+    required bool useMark,
+  }) {
+    final raw = getKiranContent(contentData);
+    if (_search.isActive && _search.textController.text.isNotEmpty) {
+      return useMark
+          ? _search.getHighlightedContentForTextSpan(raw)
+          : _search.getHighlightedContent(raw);
+    }
+    return HaribhaktTextHighlight.wrap(
+      html: raw,
+      names: widget.kiranInfo.haribhakts.map((person) => person.name).toList(),
+      focusedName: _focusedHaribhakt,
+      currentColor: _cssHex(Theme.of(context).colorScheme.tertiary),
+      otherColor: _cssHex(Theme.of(context).colorScheme.secondary),
+    );
+  }
+
+  static String _cssHex(Color color) {
+    final rgb = color.toARGB32() & 0xFFFFFF;
+    return '#${rgb.toRadixString(16).padLeft(6, '0')}';
   }
 
   // ── Audio availability check ─────────────────────────────────────────────
@@ -383,6 +457,10 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   void _setInitialScrollPosition() {
+    if (widget.highlightHaribhakt != null &&
+        widget.highlightHaribhakt!.trim().isNotEmpty) {
+      return;
+    }
     if (mounted &&
         _scrollController.hasClients &&
         widget.kiranUserInfo.progress > 0) {
@@ -1448,7 +1526,9 @@ class _KiranReadPageState extends State<KiranReadPage>
       contentData,
       showAiCaption: showAiCaption,
       haribhakts: widget.kiranInfo.haribhakts,
-      onHaribhaktTap: (name) => openHaribhaktDetail(context, name),
+      selectedHaribhakt: _focusedHaribhakt,
+      onHaribhaktTap: _focusHaribhaktInKiran,
+      onHaribhaktLongPress: (name) => openHaribhaktDetail(context, name),
       onAddNote: (selectedText) async {
         _pauseTimer();
         await _openNoteEditor(selectedText: selectedText);
@@ -1521,6 +1601,13 @@ class _KiranReadPageState extends State<KiranReadPage>
       context: context,
       content: Future.value(contentData),
       kiranInfo: widget.kiranInfo,
+      selectedHaribhakt: _focusedHaribhakt,
+      onHaribhaktTap: (name) {
+        _focusHaribhaktInKiran(name);
+      },
+      onHaribhaktLongPress: (name) {
+        openHaribhaktDetail(context, name);
+      },
       onAddNote: (selectedText) async {
         _pauseTimer();
         await _openNoteEditor(selectedText: selectedText);
@@ -1564,11 +1651,7 @@ class _KiranReadPageState extends State<KiranReadPage>
               ],
               if (!RemoteConfigService().useCustomHtmlWidget)
                 ...HtmlToTextSpan.convertToWidgets(
-                  _search.isActive && _search.textController.text.isNotEmpty
-                      ? _search.getHighlightedContentForTextSpan(
-                        getKiranContent(contentData),
-                      )
-                      : getKiranContent(contentData),
+                  _htmlForDisplay(contentData, useMark: true),
                   Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: appSettingsNotifier.value.fontSize,
@@ -1601,12 +1684,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                 ),
               if (RemoteConfigService().useCustomHtmlWidget)
                 CustomHtmlWidget(
-                  htmlContent:
-                      _search.isActive && _search.textController.text.isNotEmpty
-                          ? _search.getHighlightedContent(
-                            getKiranContent(contentData),
-                          )
-                          : getKiranContent(contentData),
+                  htmlContent: _htmlForDisplay(contentData, useMark: false),
 
                   onAddNote: (selectedText) async {
                     _pauseTimer();

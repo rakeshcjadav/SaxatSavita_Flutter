@@ -63,6 +63,12 @@ class _CustomHtmlWidgetState extends State<CustomHtmlWidget> {
               textAlign: TextAlign.justify,
               lineHeight: LineHeight(appSettingsNotifier.value.lineHeight),
             ),
+            "span": Style(display: Display.inline),
+            "b": Style(display: Display.inline, fontWeight: FontWeight.bold),
+            "strong": Style(
+              display: Display.inline,
+              fontWeight: FontWeight.bold,
+            ),
           },
         );
       },

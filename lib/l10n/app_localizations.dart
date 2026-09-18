@@ -746,6 +746,18 @@ abstract class AppLocalizations {
   /// **'Try a different name'**
   String get haribhakt_try_different_name;
 
+  /// No description provided for @haribhakt_open_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open profile'**
+  String get haribhakt_open_profile;
+
+  /// No description provided for @haribhakt_chip_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to find in kiran. Long-press to open profile.'**
+  String get haribhakt_chip_hint;
+
   /// Link to the full kiran list for one haribhakt
   ///
   /// In en, this message translates to:
