@@ -1216,7 +1216,12 @@
             "places": [
                 "રાજકોટ"
             ],
-            "haribhakts": []
+            "haribhakts": [
+                {
+                    "name": "રામજીભાઈ",
+                    "role": "host"
+                }
+            ]
         },
         {
             "date": "23-5-1980",

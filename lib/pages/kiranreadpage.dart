@@ -7,6 +7,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/helpers/haribhakt_text_highlight.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
+import 'package:saxatsavita_flutter/services/haribhakt_service.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
@@ -210,6 +211,7 @@ class _KiranReadPageState extends State<KiranReadPage>
       final offset = HaribhaktTextHighlight.firstOffset(
         _search.plainText,
         name,
+        also: HaribhaktService().formsFor(name),
       );
       final waitingForLayout =
           !_scrollController.hasClients ||
@@ -246,12 +248,16 @@ class _KiranReadPageState extends State<KiranReadPage>
           ? _search.getHighlightedContentForTextSpan(raw)
           : _search.getHighlightedContent(raw);
     }
+    final names =
+        widget.kiranInfo.haribhakts.map((person) => person.name).toList();
+    final haribhakts = HaribhaktService();
     return HaribhaktTextHighlight.wrap(
       html: raw,
-      names: widget.kiranInfo.haribhakts.map((person) => person.name).toList(),
+      names: names,
       focusedName: _focusedHaribhakt,
       currentColor: _cssHex(Theme.of(context).colorScheme.tertiary),
       otherColor: _cssHex(Theme.of(context).colorScheme.secondary),
+      formsByName: {for (final name in names) name: haribhakts.formsFor(name)},
     );
   }
 

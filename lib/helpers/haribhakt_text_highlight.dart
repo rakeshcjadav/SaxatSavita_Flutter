@@ -11,12 +11,22 @@ class HaribhaktTextHighlight {
     String? focusedName,
     String currentColor = defaultCurrentColor,
     String otherColor = defaultOtherColor,
+    Map<String, List<String>>? formsByName,
   }) {
     final unique = _uniqueNames(names);
     if (html.isEmpty || unique.isEmpty) return html;
 
+    final owner = <String, String>{};
+    final search = <String>[];
+    for (final name in unique) {
+      for (final form in _uniqueNames([name, ...?formsByName?[name]])) {
+        owner.putIfAbsent(form, () => name);
+        search.add(form);
+      }
+    }
+
     final plain = stripTags(html);
-    final matches = findMatches(plain, unique);
+    final matches = findMatches(plain, search, owner: owner);
     if (matches.isEmpty) return html;
 
     return _wrapRanges(
@@ -28,14 +38,28 @@ class HaribhaktTextHighlight {
     );
   }
 
-  static int? firstOffset(String plainText, String name) {
-    final trimmed = name.trim();
-    if (plainText.isEmpty || trimmed.isEmpty) return null;
-    final match = patternForName(trimmed).firstMatch(plainText);
-    return match?.start;
+  static int? firstOffset(
+    String plainText,
+    String name, {
+    Iterable<String> also = const [],
+  }) {
+    if (plainText.isEmpty) return null;
+    int? earliest;
+    for (final term in _uniqueNames([name, ...also])) {
+      final match = patternForName(term).firstMatch(plainText);
+      if (match == null) continue;
+      if (earliest == null || match.start < earliest) {
+        earliest = match.start;
+      }
+    }
+    return earliest;
   }
 
-  static List<HaribhaktNameHit> findMatches(String plainText, List<String> names) {
+  static List<HaribhaktNameHit> findMatches(
+    String plainText,
+    List<String> names, {
+    Map<String, String>? owner,
+  }) {
     final unique = _uniqueNames(names);
     if (plainText.isEmpty || unique.isEmpty) return const [];
 
@@ -50,7 +74,7 @@ class HaribhaktTextHighlight {
         final hit = HaribhaktNameHit(
           start: match.start,
           end: match.end,
-          name: name,
+          name: owner?[name] ?? name,
         );
         if (hits.any((existing) => existing.overlaps(hit))) continue;
         hits.add(hit);

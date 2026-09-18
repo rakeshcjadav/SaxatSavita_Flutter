@@ -59,11 +59,24 @@ class HaribhaktItem {
 
 class HaribhaktIndex {
   final List<HaribhaktItem> list;
+  final Map<String, String> aliases;
 
-  const HaribhaktIndex({required this.list});
+  const HaribhaktIndex({required this.list, this.aliases = const {}});
 
   factory HaribhaktIndex.fromMap(Map<String, dynamic> map) {
+    final aliases = <String, String>{};
+    final rawAliases = map['aliases'];
+    if (rawAliases is Map) {
+      for (final entry in rawAliases.entries) {
+        final key = entry.key.toString().trim();
+        final value = entry.value.toString().trim();
+        if (key.isNotEmpty && value.isNotEmpty) {
+          aliases[key] = value;
+        }
+      }
+    }
     return HaribhaktIndex(
+      aliases: aliases,
       list:
           (map['list'] as List<dynamic>? ?? [])
               .whereType<Map>()

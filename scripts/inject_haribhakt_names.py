@@ -46,6 +46,7 @@ HOST_SUFFIXES = (
     "નાં ઘરે",
     "ના ઘરે",
     "ને ઘરે",
+    "ની ઘરે",
     "ને ઘેર",
     "ને ત્યાં",
     "ના ત્યાં",
@@ -724,8 +725,15 @@ def main() -> None:
         kiran_list = [{"index": i, "role": by_idx[i]} for i in sorted(by_idx)]
         items.append({"name": name, "count": len(kiran_list), "kirans": kiran_list})
 
+    listed = {item["name"] for item in items}
+    alias_out = {
+        key: normalize_honorific_spelling(value)
+        for key, value in aliases.items()
+        if normalize_honorific_spelling(value) in listed
+    }
+
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    payload = {"total": len(items), "list": items}
+    payload = {"total": len(items), "aliases": alias_out, "list": items}
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=4) + "\n", encoding="utf-8")
 
     print(f"\nKirans scanned     : {total}")

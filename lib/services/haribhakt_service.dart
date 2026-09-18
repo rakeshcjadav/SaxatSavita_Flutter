@@ -31,6 +31,8 @@ class HaribhaktService {
 
   List<HaribhaktItem> _list = const [];
   Map<String, HaribhaktItem> _byName = const {};
+  Map<String, String> _aliasToCanonical = const {};
+  Map<String, List<String>> _forms = const {};
   Map<int, int>? _indexToPart;
 
   List<HaribhaktItem> get list => _list;
@@ -45,17 +47,41 @@ class HaribhaktService {
       _list = List<HaribhaktItem>.from(index.list)
         ..sort((a, b) => a.name.compareTo(b.name));
       _byName = {for (final item in _list) item.name: item};
+      _aliasToCanonical = Map<String, String>.from(index.aliases);
+      final forms = <String, List<String>>{};
+      for (final entry in _aliasToCanonical.entries) {
+        (forms[entry.value] ??= []).add(entry.key);
+      }
+      _forms = forms;
     } catch (e) {
       debugPrint('Error loading haribhakts: $e');
       _list = const [];
       _byName = const {};
+      _aliasToCanonical = const {};
+      _forms = const {};
     }
   }
 
   HaribhaktItem? findByName(String name) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return null;
-    return _byName[trimmed];
+    return _byName[trimmed] ?? _byName[_aliasToCanonical[trimmed]];
+  }
+
+  /// Canonical name plus body spellings that map to [name].
+  List<String> formsFor(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return const [];
+    final canonical = _aliasToCanonical[trimmed] ?? trimmed;
+    final extras = _forms[canonical] ?? const [];
+    final out = <String>[canonical];
+    for (final form in extras) {
+      if (form != canonical) out.add(form);
+    }
+    if (canonical != trimmed && !out.contains(trimmed)) {
+      out.add(trimmed);
+    }
+    return out;
   }
 
   List<HaribhaktItem> searchNames(String query) {
@@ -66,20 +92,26 @@ class HaribhaktService {
     final contains = <HaribhaktItem>[];
     final skipContains = q.length < 2 || _honorificTokens.contains(q);
     for (final item in _list) {
-      if (item.name == q) {
+      if (item.name == q || (_forms[item.name]?.contains(q) ?? false)) {
         exact.add(item);
         continue;
       }
-      final tokens = item.name.split(' ');
-      if (item.name.startsWith(q) ||
-          tokens.any((token) => token.startsWith(q))) {
+      final names = [item.name, ...?_forms[item.name]];
+      if (names.any(
+        (name) =>
+            name.startsWith(q) ||
+            name.split(' ').any((token) => token.startsWith(q)),
+      )) {
         starts.add(item);
       } else if (!skipContains &&
-          (item.name.contains(q) ||
-              tokens.any(
-                (token) =>
-                    !_honorificTokens.contains(token) && token.contains(q),
-              ))) {
+          names.any(
+            (name) =>
+                name.contains(q) ||
+                name.split(' ').any(
+                  (token) =>
+                      !_honorificTokens.contains(token) && token.contains(q),
+                ),
+          )) {
         contains.add(item);
       }
     }
