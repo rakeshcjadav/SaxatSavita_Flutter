@@ -47,17 +47,28 @@ String _toGujaratiNumeral(int n) {
 }
 
 class _KiranQuizPageState extends State<KiranQuizPage> {
+  static const _scoredQuestionCount = 3;
+
   final KiranQuizService _quizService = KiranQuizService();
   final Random _random = Random();
   KiranQuiz? _quiz;
+  List<KiranQuizQuestion> _questions = const [];
   KiranQuizResult? _existing;
   bool _loading = true;
+  bool _showingResult = false;
+  bool _continued = false;
   int _index = 0;
   int? _selectedDisplay;
   bool _locked = false;
   final List<int> _answers = [];
   List<int> _optionOrder = [];
   KiranQuizResult? _result;
+
+  int get _scoredCount => min(_scoredQuestionCount, _questions.length);
+
+  int get _roundLength => _continued ? _questions.length : _scoredCount;
+
+  int get _remainingCount => max(0, _questions.length - _scoredCount);
 
   @override
   void initState() {
@@ -78,18 +89,21 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
       widget.kiranIndex,
     );
     if (!mounted) return;
+    final questions = List<KiranQuizQuestion>.from(quiz?.questions ?? const []);
+    questions.shuffle(_random);
     setState(() {
       _quiz = quiz;
+      _questions = questions;
       _existing = existing;
       _loading = false;
-      if (quiz != null && quiz.questions.isNotEmpty) {
-        _optionOrder = _shuffledOrder(quiz.questions.first);
+      if (questions.isNotEmpty) {
+        _optionOrder = _shuffledOrder(questions.first);
       }
     });
   }
 
   void _select(int displayIndex) {
-    if (_locked || _quiz == null) return;
+    if (_locked || _questions.isEmpty) return;
     setState(() {
       _selectedDisplay = displayIndex;
       _locked = true;
@@ -100,28 +114,56 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
   }
 
   Future<void> _advance() async {
-    final quiz = _quiz;
-    if (quiz == null) return;
-    if (_index < quiz.questions.length - 1) {
+    if (_questions.isEmpty) return;
+    if (_index < _roundLength - 1) {
       setState(() {
         _index += 1;
         _selectedDisplay = null;
         _locked = false;
-        _optionOrder = _shuffledOrder(quiz.questions[_index]);
+        _optionOrder = _shuffledOrder(_questions[_index]);
       });
       return;
     }
+    await _finishRound();
+  }
 
-    var correct = 0;
-    for (var i = 0; i < quiz.questions.length; i++) {
-      if (i < _answers.length &&
-          _answers[i] == quiz.questions[i].correctIndex) {
-        correct += 1;
+  Future<void> _finishRound() async {
+    final quiz = _quiz;
+    if (quiz == null) return;
+    if (_result == null) {
+      var correct = 0;
+      for (var i = 0; i < _scoredCount; i++) {
+        if (i < _answers.length &&
+            _answers[i] == _questions[i].correctIndex) {
+          correct += 1;
+        }
       }
+      final scoredQuiz = KiranQuiz(
+        part: quiz.part,
+        kiranIndex: quiz.kiranIndex,
+        version: quiz.version,
+        locale: quiz.locale,
+        questions: _questions.take(_scoredCount).toList(),
+      );
+      _result = await _quizService.submitAttempt(
+        quiz: scoredQuiz,
+        score: correct,
+      );
     }
-    final result = await _quizService.submitAttempt(quiz: quiz, score: correct);
     if (!mounted) return;
-    setState(() => _result = result);
+    setState(() => _showingResult = true);
+  }
+
+  void _continueMore() {
+    if (_remainingCount <= 0 || _index >= _questions.length - 1) return;
+    setState(() {
+      _continued = true;
+      _showingResult = false;
+      _index = _scoredCount;
+      _selectedDisplay = null;
+      _locked = false;
+      _optionOrder = _shuffledOrder(_questions[_index]);
+    });
   }
 
   @override
@@ -154,21 +196,23 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
       return const Center(child: CircularProgressIndicator());
     }
     final quiz = _quiz;
-    if (quiz == null || quiz.questions.isEmpty) {
+    if (quiz == null || _questions.isEmpty) {
       return Center(child: Text(l10n.quiz_no_questions));
     }
-    if (_result != null) {
+    if (_showingResult && _result != null) {
       return _ResultView(
         result: _result!,
         alreadyScored: _existing != null,
         earnedFirstBadge: _result!.rewardIds.contains(
           KiranQuizService.firstQuizBadge,
         ),
+        remainingCount: _continued ? 0 : _remainingCount,
+        onContinue: _continueMore,
       );
     }
 
-    final question = quiz.questions[_index];
-    final progress = (_index + 1) / quiz.questions.length;
+    final question = _questions[_index];
+    final progress = (_index + 1) / _roundLength;
     final colors = Theme.of(context).colorScheme;
     final useGujarati = Localizations.localeOf(context).languageCode == 'gu';
     final kiranHeading = [
@@ -251,7 +295,7 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
               child: FilledButton(
                 onPressed: _advance,
                 child: Text(
-                  _index == quiz.questions.length - 1
+                  _index == _roundLength - 1
                       ? l10n.quiz_see_result
                       : l10n.quiz_next,
                 ),
@@ -431,11 +475,15 @@ class _ResultView extends StatelessWidget {
     required this.result,
     required this.alreadyScored,
     required this.earnedFirstBadge,
+    this.remainingCount = 0,
+    this.onContinue,
   });
 
   final KiranQuizResult result;
   final bool alreadyScored;
   final bool earnedFirstBadge;
+  final int remainingCount;
+  final VoidCallback? onContinue;
 
   @override
   Widget build(BuildContext context) {
@@ -492,6 +540,17 @@ class _ResultView extends StatelessWidget {
             ],
           ),
           const Spacer(),
+          if (remainingCount > 0 && onContinue != null) ...[
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: OutlinedButton(
+                onPressed: onContinue,
+                child: Text(l10n.quiz_more_questions(remainingCount)),
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
           SizedBox(
             width: double.infinity,
             height: 52,

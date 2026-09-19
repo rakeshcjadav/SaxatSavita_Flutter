@@ -843,5 +843,6 @@
     "quiz_incorrect": "ખોટું",
     "quiz_explanation": "સમજૂતી",
     "quizzes_completed": "પ્રશ્નોત્તર",
-    "quiz_question_of": "પ્રશ્ન {current} / {total}"
+    "quiz_question_of": "પ્રશ્ન {current} / {total}",
+    "quiz_more_questions": "વધુ {count} પ્રશ્નો"
 }

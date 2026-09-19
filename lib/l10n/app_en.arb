@@ -904,5 +904,11 @@
             "current": { "type": "int" },
             "total": { "type": "int" }
         }
+    },
+    "quiz_more_questions": "{count} more questions",
+    "@quiz_more_questions": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
     }
 }

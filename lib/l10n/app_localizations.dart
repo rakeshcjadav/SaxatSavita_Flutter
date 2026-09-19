@@ -3433,6 +3433,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Question {current} of {total}'**
   String quiz_question_of(int current, int total);
+
+  /// No description provided for @quiz_more_questions.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more questions'**
+  String quiz_more_questions(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -1847,4 +1847,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String quiz_question_of(int current, int total) {
     return 'પ્રશ્ન $current / $total';
   }
+
+  @override
+  String quiz_more_questions(int count) {
+    return 'વધુ $count પ્રશ્નો';
+  }
 }
