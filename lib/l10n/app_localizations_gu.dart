@@ -1795,13 +1795,13 @@ class AppLocalizationsGu extends AppLocalizations {
   String get migration_complete => 'સ્થાનાંતરણ પૂર્ણ!';
 
   @override
-  String get quiz => 'ક્વિઝ';
+  String get quiz => 'પ્રશ્નોત્તર';
 
   @override
-  String get take_quiz => 'ક્વિઝ લો';
+  String get take_quiz => 'પ્રશ્નોત્તર લો';
 
   @override
-  String get quiz_points => 'ક્વિઝ ગુણ';
+  String get quiz_points => 'પ્રશ્નોત્તર ગુણ';
 
   @override
   String quiz_points_count(int count) {
@@ -1823,7 +1823,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get quiz_no_questions => 'આ કિરણમાં હજુ પ્રશ્ન નથી';
 
   @override
-  String get quiz_first_badge => 'પહેલો ક્વિઝ';
+  String get quiz_first_badge => 'પહેલો પ્રશ્નોત્તર';
 
   @override
   String get quiz_next => 'આગળ';
@@ -1841,7 +1841,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get quiz_explanation => 'સમજૂતી';
 
   @override
-  String get quizzes_completed => 'ક્વિઝ';
+  String get quizzes_completed => 'પ્રશ્નોત્તર';
 
   @override
   String quiz_question_of(int current, int total) {
