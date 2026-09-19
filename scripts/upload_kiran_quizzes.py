@@ -28,6 +28,7 @@ from firebase_deploy_account import (  # noqa: E402
     assert_account,
     http_json,
 )
+from kiran_quiz_bank import expected_bank  # noqa: E402
 
 ROOT = SCRIPTS.parent
 SEED = ROOT / "assets/book/saxatsavita/quizzes/kiran_quizzes.json"
@@ -64,6 +65,11 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--verify", action="store_true", help="List and check kiranQuizzes")
     parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Verify every kiran against the 3-35 target table",
+    )
+    parser.add_argument(
         "--account",
         default=REQUIRED_ACCOUNT,
         help=f"Must be {REQUIRED_ACCOUNT}",
@@ -78,7 +84,9 @@ def main() -> int:
 
     upload_dir = args.dir if args.dir.exists() else None
     if args.verify:
-        expected = load_quizzes(args.seed, upload_dir if args.seed else None)
+        if args.all:
+            return verify_all(args.project, account)
+        expected = load_quizzes(args.seed, upload_dir)
         return verify_quizzes(args.project, account, expected or None)
 
     quizzes = load_quizzes(args.seed, upload_dir)
@@ -140,6 +148,33 @@ def _from_value(value):
     return value
 
 
+def _list_documents(project: str, token: str) -> list[dict]:
+    documents: list[dict] = []
+    page_token = ""
+    while True:
+        url = _collection_url(project) + "?pageSize=300"
+        if page_token:
+            url += f"&pageToken={page_token}"
+        payload = _firestore_request(url, token)
+        documents.extend(payload.get("documents") or [])
+        page_token = payload.get("nextPageToken") or ""
+        if not page_token:
+            break
+    return documents
+
+
+def _remote_bank(project: str, token: str) -> dict[str, dict]:
+    remote: dict[str, dict] = {}
+    for document in _list_documents(project, token):
+        name = document.get("name") or ""
+        doc_id = name.rsplit("/", 1)[-1]
+        remote[doc_id] = {
+            key: _from_value(value)
+            for key, value in (document.get("fields") or {}).items()
+        }
+    return remote
+
+
 def _firestore_request(url: str, token: str, method: str = "GET", body: bytes | None = None):
     return http_json(
         url,
@@ -188,21 +223,12 @@ def verify_quizzes(project: str, account: str, expected: list[dict] | None) -> i
     print(f"checking kiranQuizzes as {account} on {project}")
     print(console)
     try:
-        payload = _firestore_request(_collection_url(project), token)
+        remote = _remote_bank(project, token)
     except RuntimeError as error:
         print(f"list failed: {error}", file=sys.stderr)
         return 1
 
-    documents = payload.get("documents") or []
-    remote: dict[str, dict] = {}
-    for document in documents:
-        name = document.get("name") or ""
-        doc_id = name.rsplit("/", 1)[-1]
-        fields = {
-            key: _from_value(value)
-            for key, value in (document.get("fields") or {}).items()
-        }
-        remote[doc_id] = fields
+    for doc_id, fields in sorted(remote.items()):
         questions = fields.get("questions") or []
         print(
             f"  {doc_id}  part={fields.get('part')}  "
@@ -210,10 +236,10 @@ def verify_quizzes(project: str, account: str, expected: list[dict] | None) -> i
             f"questions={len(questions)}  version={fields.get('version')}"
         )
 
-    if not documents:
+    if not remote:
         print("  (no documents — quizzes are not uploaded yet)")
 
-    print(f"{len(documents)} document(s) in kiranQuizzes")
+    print(f"{len(remote)} document(s) in kiranQuizzes")
     if not expected:
         return 0
 
@@ -233,7 +259,48 @@ def verify_quizzes(project: str, account: str, expected: list[dict] | None) -> i
     if missing:
         print(f"missing: {', '.join(missing)}", file=sys.stderr)
         return 1
-    print(f"seed bank present ({len(expected)} quiz(zes))")
+    print(f"expected bank present ({len(expected)} quiz(zes))")
+    return 0
+
+
+def verify_all(project: str, account: str) -> int:
+    token = access_token(account)
+    print(f"checking full kiranQuizzes bank as {account} on {project}")
+    try:
+        remote = _remote_bank(project, token)
+    except RuntimeError as error:
+        print(f"list failed: {error}", file=sys.stderr)
+        return 1
+
+    expected = expected_bank()
+    missing = []
+    mismatches = []
+    for item in expected:
+        doc_id = f"{item['part']}_{item['kiranIndex']}"
+        fields = remote.get(doc_id)
+        if not fields:
+            missing.append(doc_id)
+            continue
+        got = len(fields.get("questions") or [])
+        want = item["targetCount"]
+        if got != want:
+            mismatches.append(f"{doc_id} expected {want} found {got}")
+
+    print(
+        f"{len(remote)} remote / {len(expected)} expected, "
+        f"{len(missing)} missing, {len(mismatches)} count mismatches"
+    )
+    if missing:
+        print(f"missing: {', '.join(missing[:20])}", file=sys.stderr)
+        if len(missing) > 20:
+            print(f"... and {len(missing) - 20} more", file=sys.stderr)
+    if mismatches:
+        print(mismatches[0], file=sys.stderr)
+        if len(mismatches) > 1:
+            print(f"... and {len(mismatches) - 1} more", file=sys.stderr)
+    if missing or mismatches:
+        return 1
+    print(f"full bank present ({len(expected)} quizzes)")
     return 0
 
 

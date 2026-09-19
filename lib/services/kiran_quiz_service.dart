@@ -13,7 +13,7 @@ class KiranQuizService {
   factory KiranQuizService() => _instance;
   KiranQuizService._internal();
 
-  static const firstQuizBadge = 'badge_first_quiz';
+  static const firstQuizBadge = KiranQuizRewards.firstQuizBadge;
   static const _bankPref = 'kiran_quiz_bank_remote';
   static const _legacyBankPref = 'kiran_quiz_bank';
   static const _resultsPref = 'quiz_results';
@@ -126,8 +126,29 @@ class KiranQuizService {
     results.add(result);
     _results = results;
     await _persistResults();
-    await FirebaseSyncService().syncQuizResult(result);
+    await _syncRewardsToFirebase();
     return result;
+  }
+
+  Future<KiranQuizRewards> rewardsSummary() async {
+    await _ensureResults();
+    return KiranQuizRewards.fromResults(_results ?? const []);
+  }
+
+  Future<void> syncLocalRewardsToFirebase() async {
+    await _syncRewardsToFirebase();
+  }
+
+  Future<void> _syncRewardsToFirebase() async {
+    if (FirebaseAuth.instance.currentUser == null) return;
+    final sync = FirebaseSyncService();
+    await _ensureResults();
+    for (final result in _results ?? const <KiranQuizResult>[]) {
+      await sync.syncQuizResult(result);
+    }
+    await sync.syncQuizRewards(
+      KiranQuizRewards.fromResults(_results ?? const []),
+    );
   }
 
   Future<void> mergeRemoteResults(List<KiranQuizResult> remote) async {

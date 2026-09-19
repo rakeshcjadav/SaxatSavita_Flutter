@@ -591,6 +591,7 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
         'kiranUserInfo',
         'readingHistory',
         'quizResults',
+        'quizRewards',
       ];
 
       for (final collectionName in collections) {
@@ -831,6 +832,52 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
     } catch (e) {
       debugPrint('Error loading quiz results: $e');
       return [];
+    }
+  }
+
+  @override
+  Future<void> syncQuizRewards(KiranQuizRewards rewards) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot sync quiz rewards');
+      return;
+    }
+
+    try {
+      final payload = {
+        ...rewards.toJson(),
+        'lastUpdated': FieldValue.serverTimestamp(),
+      };
+      await userDoc!
+          .collection('quizRewards')
+          .doc('summary')
+          .set(payload, SetOptions(merge: true));
+      await userDoc!.set({
+        'quizRewards': payload,
+      }, SetOptions(merge: true));
+      debugPrint(
+        'Quiz rewards synced: ${rewards.totalPoints} pts, '
+        '${rewards.quizzesCompleted} quizzes',
+      );
+    } catch (e) {
+      debugPrint('Error syncing quiz rewards: $e');
+    }
+  }
+
+  @override
+  Future<KiranQuizRewards?> loadQuizRewards() async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot load quiz rewards');
+      return null;
+    }
+
+    try {
+      final doc =
+          await userDoc!.collection('quizRewards').doc('summary').get();
+      if (!doc.exists || doc.data() == null) return null;
+      return KiranQuizRewards.fromJson(doc.data()!);
+    } catch (e) {
+      debugPrint('Error loading quiz rewards: $e');
+      return null;
     }
   }
 }

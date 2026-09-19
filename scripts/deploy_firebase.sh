@@ -61,9 +61,9 @@ Always deploys as ${REQUIRED_ACCOUNT} to ${PROJECT}.
 Other Firebase / gcloud accounts are refused.
 
   rules     Deploy firestore.rules
-  quizzes   Upload quiz JSON (pass --seed for the bundled bank)
+  quizzes   Upload quiz JSON from scripts/quiz_output (add --seed for the bundled bank)
   all       rules + quizzes
-  verify    List kiranQuizzes docs and check the seed bank
+  verify    Check every kiran against the 3-35 target table
 EOF
 }
 
@@ -90,16 +90,16 @@ case "$cmd" in
     ;;
   quizzes)
     require_gcloud_account
-    python3 "$ROOT/scripts/upload_kiran_quizzes.py" --project "$PROJECT" --seed "$@"
+    python3 "$ROOT/scripts/upload_kiran_quizzes.py" --project "$PROJECT" --dir "$ROOT/scripts/quiz_output" "$@"
     ;;
   all)
     require_gcloud_account
     firebase_cmd deploy --only firestore:rules
-    python3 "$ROOT/scripts/upload_kiran_quizzes.py" --project "$PROJECT" --seed "$@"
-    python3 "$ROOT/scripts/upload_kiran_quizzes.py" --project "$PROJECT" --verify --seed
+    python3 "$ROOT/scripts/upload_kiran_quizzes.py" --project "$PROJECT" --dir "$ROOT/scripts/quiz_output" "$@"
+    python3 "$ROOT/scripts/upload_kiran_quizzes.py" --project "$PROJECT" --verify --all
     ;;
   verify)
     require_gcloud_account
-    python3 "$ROOT/scripts/upload_kiran_quizzes.py" --project "$PROJECT" --verify --seed
+    python3 "$ROOT/scripts/upload_kiran_quizzes.py" --project "$PROJECT" --verify --all
     ;;
 esac

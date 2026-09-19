@@ -211,6 +211,17 @@ class FirebaseSyncServiceWeb implements FirebaseSyncServiceBase {
     debugPrint('[Web] loadQuizResults: No-op, returning empty list');
     return [];
   }
+
+  @override
+  Future<void> syncQuizRewards(KiranQuizRewards rewards) async {
+    debugPrint('[Web] syncQuizRewards: No-op');
+  }
+
+  @override
+  Future<KiranQuizRewards?> loadQuizRewards() async {
+    debugPrint('[Web] loadQuizRewards: No-op');
+    return null;
+  }
 }
 
 FirebaseSyncServiceBase getFirebaseSyncService() => FirebaseSyncServiceWeb();

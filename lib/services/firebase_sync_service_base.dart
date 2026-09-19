@@ -69,4 +69,6 @@ abstract class FirebaseSyncServiceBase {
 
   Future<void> syncQuizResult(KiranQuizResult result);
   Future<List<KiranQuizResult>> loadQuizResults();
+  Future<void> syncQuizRewards(KiranQuizRewards rewards);
+  Future<KiranQuizRewards?> loadQuizRewards();
 }

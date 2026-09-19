@@ -183,6 +183,7 @@ class FirebaseIntegrationHelper {
 
       await KiranQuizService().refreshBankFromFirestore();
       await loadQuizResultsFromFirebase();
+      await KiranQuizService().syncLocalRewardsToFirebase();
 
       debugPrint('Data loading from Firebase completed');
     } catch (e) {
@@ -243,7 +244,7 @@ class FirebaseIntegrationHelper {
 
   Future<void> onQuizResultSaved(KiranQuizResult result) async {
     debugPrint('Quiz result saved, syncing to Firebase...${result.docId}');
-    await _firebaseSync.syncQuizResult(result);
+    await KiranQuizService().syncLocalRewardsToFirebase();
   }
 
   Future<void> loadQuizResultsFromFirebase() async {

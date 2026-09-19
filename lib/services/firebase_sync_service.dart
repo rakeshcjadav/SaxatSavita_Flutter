@@ -150,4 +150,11 @@ class FirebaseSyncService implements FirebaseSyncServiceBase {
 
   @override
   Future<List<KiranQuizResult>> loadQuizResults() => _impl.loadQuizResults();
+
+  @override
+  Future<void> syncQuizRewards(KiranQuizRewards rewards) =>
+      _impl.syncQuizRewards(rewards);
+
+  @override
+  Future<KiranQuizRewards?> loadQuizRewards() => _impl.loadQuizRewards();
 }

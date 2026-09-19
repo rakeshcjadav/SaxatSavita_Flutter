@@ -149,6 +149,70 @@ class KiranQuizResult {
   };
 }
 
+class KiranQuizRewards {
+  static const firstQuizBadge = 'badge_first_quiz';
+
+  final int totalPoints;
+  final int quizzesCompleted;
+  final List<String> badges;
+  final String lastQuizDocId;
+  final DateTime? lastAwardedAt;
+
+  const KiranQuizRewards({
+    this.totalPoints = 0,
+    this.quizzesCompleted = 0,
+    this.badges = const [],
+    this.lastQuizDocId = '',
+    this.lastAwardedAt,
+  });
+
+  bool get hasFirstQuizBadge => badges.contains(firstQuizBadge);
+
+  factory KiranQuizRewards.fromResults(List<KiranQuizResult> results) {
+    if (results.isEmpty) {
+      return const KiranQuizRewards();
+    }
+    final sorted = List<KiranQuizResult>.from(results)
+      ..sort((a, b) => a.completedAt.compareTo(b.completedAt));
+    final last = sorted.last;
+    return KiranQuizRewards(
+      totalPoints: results.fold<int>(0, (sum, item) => sum + item.pointsAwarded),
+      quizzesCompleted: results.length,
+      badges:
+          results
+              .expand((item) => item.rewardIds)
+              .toSet()
+              .where((item) => item.isNotEmpty)
+              .toList(),
+      lastQuizDocId: last.docId,
+      lastAwardedAt: last.completedAt,
+    );
+  }
+
+  factory KiranQuizRewards.fromJson(Map<String, dynamic> json) {
+    return KiranQuizRewards(
+      totalPoints: _readInt(json['totalPoints']),
+      quizzesCompleted: _readInt(json['quizzesCompleted']),
+      badges:
+          (json['badges'] as List<dynamic>? ?? [])
+              .map((item) => item.toString())
+              .where((item) => item.isNotEmpty)
+              .toList(),
+      lastQuizDocId: (json['lastQuizDocId'] as String? ?? '').trim(),
+      lastAwardedAt: DateTime.tryParse(json['lastAwardedAt']?.toString() ?? ''),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'totalPoints': totalPoints,
+    'quizzesCompleted': quizzesCompleted,
+    'badges': badges,
+    'lastQuizDocId': lastQuizDocId,
+    if (lastAwardedAt != null)
+      'lastAwardedAt': lastAwardedAt!.toIso8601String(),
+  };
+}
+
 int _readInt(dynamic value, [int fallback = 0]) {
   if (value is int) return value;
   if (value is num) return value.toInt();

@@ -199,4 +199,4 @@ Rules to decide before build:
 | Remote Config | `lib/services/remote_config_service.dart` |
 | Dev Gemini TTS | `scripts/gemini_tts_from_kiran_txt.py` |
 | Haribhakt extraction | `scripts/inject_haribhakt_names.py` |
-| Quiz seed / generate / upload | `assets/book/saxatsavita/quizzes/kiran_quizzes.json`, `scripts/generate_kiran_quizzes.py`, `scripts/upload_kiran_quizzes.py`, `scripts/deploy_firebase.sh` (always `farenidham.dev@gmail.com`) |
+| Quiz seed / generate / upload | `assets/book/saxatsavita/quizzes/kiran_quizzes.json`, `scripts/kiran_quiz_bank.py`, `scripts/generate_kiran_quizzes.py`, `scripts/upload_kiran_quizzes.py`, `scripts/deploy_firebase.sh` (always `farenidham.dev@gmail.com`) |

@@ -1,185 +1,128 @@
 #!/usr/bin/env python3
-"""Generate Gujarati kiran MCQs with Gemini. Not used at app runtime.
+"""Generate grounded Gujarati kiran MCQs from the book JSON.
 
-Requirements:
-  pip install google-genai
-  export GEMINI_API_KEY=your_api_key
+No Gemini or other external model. Questions are built from place, date,
+title, haribhakts, summary, moral, and sentences in each kiran.
 
 Examples:
   python3 scripts/generate_kiran_quizzes.py --part 1 --index 1
-  python3 scripts/generate_kiran_quizzes.py --part 1 --limit 5
-  python3 scripts/generate_kiran_quizzes.py --part 1 --dry-run
+  python3 scripts/generate_kiran_quizzes.py --dry-run
+  python3 scripts/generate_kiran_quizzes.py
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import os
-import re
 import sys
-import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-KIRAN_ROOT = ROOT / "assets/book/saxatsavita"
-OUT_DIR = ROOT / "scripts/quiz_output"
+SCRIPTS = Path(__file__).resolve().parent
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
 
-try:
-    from google import genai
-except ImportError:
-    genai = None
-
-
-PROMPT = """You write Gujarati multiple-choice questions for a Swaminarayan kiran.
-Use ONLY the source below. Do not invent doctrine, people, places, or quotes.
-Return JSON only, no markdown.
-
-Schema:
-{{
-  "part": {part},
-  "kiranIndex": {index},
-  "version": 1,
-  "locale": "gu",
-  "questions": [
-    {{
-      "id": "p{part}-{index}-q1",
-      "prompt": "Gujarati question",
-      "options": ["A", "B", "C", "D"],
-      "correctIndex": 0,
-      "explanation": "Short Gujarati reason from the kiran",
-      "sourceHint": "place or teaching"
-    }}
-  ]
-}}
-
-Write 2 or 3 questions:
-1. One fact (place, host, reader, or date if present).
-2. One teaching from the moral/summary.
-3. Optional: a recorded haribhakt question if the source lists one.
-
-Each question needs exactly 4 Gujarati options and one correctIndex.
-
-SOURCE:
-{source}
-"""
+from kiran_quiz_bank import (  # noqa: E402
+    OUT_DIR,
+    expected_bank,
+    grounding_corpus,
+    iter_kirans,
+    kiran_meta,
+    load_existing_quiz,
+    load_haribhakt_index,
+    normalize_quiz,
+    output_path,
+    target_question_count,
+    validate_quiz,
+)
+from local_kiran_quiz import build_questions, load_catalog  # noqa: E402
 
 
-def strip_html(text: str) -> str:
-    text = re.sub(r"<[^>]+>", " ", text)
-    return re.sub(r"\s+", " ", text).strip()
-
-
-def iter_kirans(part: int | None, index: int | None, limit: int | None):
-    parts = [part] if part else range(1, 6)
-    count = 0
-    for part_no in parts:
-        folder = KIRAN_ROOT / f"part{part_no}"
-        files = sorted(
-            folder.glob("kiran_*.json"),
-            key=lambda path: int(path.stem.split("_")[1]),
-        )
-        for path in files:
-            kiran_index = int(path.stem.split("_")[1])
-            if index is not None and kiran_index != index:
-                continue
-            yield part_no, kiran_index, path
-            count += 1
-            if limit is not None and count >= limit:
-                return
-
-
-def source_blob(part: int, index: int, data: dict) -> str:
-    main = data.get("main") or {}
-    meta = data.get("meta") or {}
-    haribhakts = data.get("haribhakts") or main.get("haribhakts") or []
-    return json.dumps(
-        {
-            "part": part,
-            "kiranIndex": index,
-            "title": main.get("title"),
-            "place": main.get("place"),
-            "date": meta.get("date"),
-            "moral": meta.get("moral"),
-            "summary": meta.get("summary"),
-            "haribhakts": haribhakts,
-            "text": strip_html(main.get("content") or ""),
-        },
-        ensure_ascii=False,
-        indent=2,
-    )
-
-
-def parse_quiz(raw: str, part: int, index: int) -> dict:
-    text = raw.strip()
-    if text.startswith("```"):
-        text = re.sub(r"^```(?:json)?", "", text)
-        text = re.sub(r"```$", "", text).strip()
-    quiz = json.loads(text)
-    quiz["part"] = part
-    quiz["kiranIndex"] = index
-    quiz.setdefault("version", 1)
-    quiz.setdefault("locale", "gu")
-    questions = quiz.get("questions") or []
-    if not 2 <= len(questions) <= 3:
-        raise ValueError(f"expected 2-3 questions, got {len(questions)}")
-    for i, question in enumerate(questions, start=1):
-        question.setdefault("id", f"p{part}-{index}-q{i}")
-        options = question.get("options") or []
-        if len(options) != 4:
-            raise ValueError(f"{question.get('id')} needs 4 options")
-        correct = question.get("correctIndex", -1)
-        if not isinstance(correct, int) or not 0 <= correct < 4:
-            raise ValueError(f"{question.get('id')} has bad correctIndex")
-    return quiz
+def quiz_is_complete(quiz: dict | None, part: int, index: int, target: int, corpus: str) -> bool:
+    if not quiz:
+        return False
+    normalize_quiz(quiz, part, index)
+    return not validate_quiz(quiz, part, index, target, corpus)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate kiran MCQs with Gemini")
+    parser = argparse.ArgumentParser(description="Generate kiran MCQs from book JSON")
     parser.add_argument("--part", type=int, choices=range(1, 6))
     parser.add_argument("--index", type=int)
     parser.add_argument("--limit", type=int)
-    parser.add_argument("--model", default="gemini-2.5-flash")
     parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
+    haribhakts = load_haribhakt_index()
     items = list(iter_kirans(args.part, args.index, args.limit))
     if not items:
         print("No kirans matched", file=sys.stderr)
         return 1
 
+    planned = []
+    for part, index, path in items:
+        meta = kiran_meta(path)
+        recorded = len((haribhakts.get(index) or {}).get("questions") or [])
+        target = target_question_count(meta["word_count"], recorded)
+        planned.append((part, index, path, meta, recorded, target))
+
     if args.dry_run:
-        for part, index, path in items:
-            print(f"would generate part={part} index={index} {path}")
+        total = sum(item[5] for item in planned)
+        for part, index, path, meta, recorded, target in planned:
+            print(
+                f"part={part} index={index} words={meta['word_count']} "
+                f"recorded={recorded} target={target} {path.name}"
+            )
+        print(f"{len(planned)} kirans, {total} questions")
         return 0
 
-    if genai is None:
-        print("Install google-genai and set GEMINI_API_KEY", file=sys.stderr)
-        return 1
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("Set GEMINI_API_KEY", file=sys.stderr)
-        return 1
-
-    client = genai.Client(api_key=api_key)
+    sources, pools = load_catalog()
+    by_id = {(item["part"], item["kiranIndex"]): item for item in sources}
     args.out_dir.mkdir(parents=True, exist_ok=True)
+    failed = 0
+    written = 0
+    skipped = 0
 
-    for part, index, path in items:
-        data = json.loads(path.read_text(encoding="utf-8"))
-        prompt = PROMPT.format(
-            part=part, index=index, source=source_blob(part, index, data)
+    for part, index, path, meta, recorded, target in planned:
+        source = by_id[(part, index)]
+        corpus = grounding_corpus(meta["data"], haribhakts.get(index))
+        out = output_path(args.out_dir, part, index)
+        existing = None if args.force else load_existing_quiz(out)
+        if quiz_is_complete(existing, part, index, target, corpus):
+            skipped += 1
+            continue
+        questions = build_questions(source, pools, target)
+        quiz = normalize_quiz(
+            {
+                "part": part,
+                "kiranIndex": index,
+                "version": 1,
+                "locale": "gu",
+                "questions": questions,
+            },
+            part,
+            index,
         )
-        print(f"generating part={part} index={index}")
-        response = client.models.generate_content(model=args.model, contents=prompt)
-        text = getattr(response, "text", None) or ""
-        if not text and getattr(response, "candidates", None):
-            text = response.candidates[0].content.parts[0].text
-        quiz = parse_quiz(text, part, index)
-        out = args.out_dir / f"{part}_{index}.json"
+        errors = validate_quiz(quiz, part, index, target, corpus)
+        if errors:
+            failed += 1
+            print(
+                f"invalid part={part} index={index} "
+                f"got={len(questions)} target={target}: {'; '.join(errors[:4])}",
+                file=sys.stderr,
+            )
+            continue
         out.write_text(json.dumps(quiz, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        print(f"  wrote {out}")
-        time.sleep(0.4)
+        written += 1
+        print(f"wrote {out.name} ({len(questions)} questions)")
+
+    print(f"wrote={written} skipped={skipped} failed={failed} of {len(planned)}")
+    if failed:
+        return 1
+    if not planned:
+        return 1
+    print(f"expected bank {len(expected_bank(haribhakts))} kirans")
     return 0
 
 
