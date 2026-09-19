@@ -85,9 +85,13 @@ Today the app is offline-first, Gujarati-only for kiran text, and has no live LL
 
 ---
 
-## 7. Kiran MCQ + rewards (preferred first quiz feature)
+## 7. Kiran MCQ + rewards (v1 in progress)
 
 **Problem.** Reading can stay passive. A short check after a kiran helps memory and gives a reason to finish the sitting.
+
+**v1 shipped on `feature/kiran-mcq`:** finish-dialog + meta-panel CTA, `KiranQuizPage`, points + first-quiz badge on dashboard/profile, seed bank for part 1 kirans 1–3, Firestore fetch/cache, `enable_quiz` Remote Config, generate/upload scripts.
+
+**Still to do:** generate and review the remaining ~697 kirans, deploy `firestore.rules` for `kiranQuizzes`, jump-to-passage, sticker/streak rewards.
 
 **Idea.** After the user has read a kiran (or from the meta panel), show **2–3 multiple-choice questions** about *that* kiran. Correct answers grant a small reward (points, badge, sticker, or streak bonus). Questions are **not** generated on the device at read time.
 
@@ -141,7 +145,7 @@ users/{uid}/quizResults/{part}_{kiranIndex}
 }
 ```
 
-Remote Config can gate the feature (`quiz_enabled`) and tune reward amounts.
+Remote Config gates the feature (`enable_quiz`) and tunes `quiz_points_per_correct` / `quiz_perfect_bonus`.
 
 ### Rewards (first version can stay small)
 
@@ -195,3 +199,4 @@ Rules to decide before build:
 | Remote Config | `lib/services/remote_config_service.dart` |
 | Dev Gemini TTS | `scripts/gemini_tts_from_kiran_txt.py` |
 | Haribhakt extraction | `scripts/inject_haribhakt_names.py` |
+| Quiz seed / generate / upload | `assets/book/saxatsavita/quizzes/kiran_quizzes.json`, `scripts/generate_kiran_quizzes.py`, `scripts/upload_kiran_quizzes.py` |

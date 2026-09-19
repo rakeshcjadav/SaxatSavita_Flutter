@@ -7,6 +7,7 @@ import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
 import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:saxatsavita_flutter/models/user_profile_model.dart';
+import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
 
 class ProfilePage extends StatefulWidget {
   final bool continueAfterProfile;
@@ -31,6 +32,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final UserProfileService _profileService = UserProfileService();
   bool _isLoading = true;
   bool _isSaving = false;
+  int _quizPoints = 0;
+  bool _hasFirstQuizBadge = false;
 
   @override
   void initState() {
@@ -49,10 +52,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _loadUserProfile() async {
     try {
       final profile = await _profileService.getUserProfile();
+      final quizPoints = await KiranQuizService().totalPoints();
+      final hasBadge = await KiranQuizService().hasFirstQuizBadge();
       setState(() {
         _firstNameController.text = profile.firstName;
         _lastNameController.text = profile.lastName;
         _cityController.text = profile.city;
+        _quizPoints = quizPoints;
+        _hasFirstQuizBadge = hasBadge;
         _isLoading = false;
       });
     } catch (e) {
@@ -196,6 +203,34 @@ class _ProfilePageState extends State<ProfilePage> {
                             Text(
                               FirebaseAuth.instance.currentUser?.email ?? '',
                               style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 12),
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                Chip(
+                                  avatar: const Icon(Icons.quiz, size: 18),
+                                  label: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.quiz_points_count(_quizPoints),
+                                  ),
+                                ),
+                                if (_hasFirstQuizBadge)
+                                  Chip(
+                                    avatar: const Icon(
+                                      Icons.military_tech,
+                                      size: 18,
+                                    ),
+                                    label: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.quiz_first_badge,
+                                    ),
+                                  ),
+                              ],
                             ),
                           ],
                         ),

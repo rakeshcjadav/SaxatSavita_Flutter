@@ -5,6 +5,8 @@ import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
+import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
+import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
@@ -179,6 +181,8 @@ class FirebaseIntegrationHelper {
         debugPrint('Reading plans loaded from Firebase');
       }
 
+      await loadQuizResultsFromFirebase();
+
       debugPrint('Data loading from Firebase completed');
     } catch (e) {
       debugPrint('Error loading data from Firebase: $e');
@@ -233,6 +237,28 @@ class FirebaseIntegrationHelper {
       debugPrint('Reading events synced from Firebase');
     } catch (e) {
       debugPrint('Error syncing reading events from Firebase: $e');
+    }
+  }
+
+  Future<void> onQuizResultSaved(KiranQuizResult result) async {
+    debugPrint('Quiz result saved, syncing to Firebase...${result.docId}');
+    await _firebaseSync.syncQuizResult(result);
+  }
+
+  Future<void> loadQuizResultsFromFirebase() async {
+    if (!_firebaseSync.isAuthenticated) {
+      debugPrint('User not logged in, skipping quiz results load');
+      return;
+    }
+
+    try {
+      final results = await _firebaseSync.loadQuizResults();
+      if (results.isNotEmpty) {
+        await KiranQuizService().mergeRemoteResults(results);
+        debugPrint('Quiz results loaded from Firebase: ${results.length}');
+      }
+    } catch (e) {
+      debugPrint('Error loading quiz results from Firebase: $e');
     }
   }
 

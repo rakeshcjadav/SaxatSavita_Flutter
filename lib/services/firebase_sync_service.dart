@@ -4,6 +4,7 @@ import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
+import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
 import 'firebase_sync_service_base.dart';
 
 // Conditional imports based on platform - imports the right getFirebaseSyncService function
@@ -142,4 +143,11 @@ class FirebaseSyncService implements FirebaseSyncServiceBase {
 
   @override
   Future<void> loadReadingEvents() => _impl.loadReadingEvents();
+
+  @override
+  Future<void> syncQuizResult(KiranQuizResult result) =>
+      _impl.syncQuizResult(result);
+
+  @override
+  Future<List<KiranQuizResult>> loadQuizResults() => _impl.loadQuizResults();
 }

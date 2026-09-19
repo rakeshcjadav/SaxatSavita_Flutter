@@ -6,6 +6,7 @@ import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
+import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
 
 /// Service to manage all local cache clearing operations
 class CacheService {
@@ -71,6 +72,9 @@ class CacheService {
 
       UserProfileService().clearCache();
       debugPrint('✅ User profile cache cleared');
+
+      KiranQuizService().clearMemoryCache();
+      debugPrint('✅ Quiz cache cleared');
 
       appSettingsNotifier.value = appSettingsDefault;
       // Note: AppSettings are stored in Firebase and cleared by _clearFirebaseCache()

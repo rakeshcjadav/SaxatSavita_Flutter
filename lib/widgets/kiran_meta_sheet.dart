@@ -44,6 +44,7 @@ Future<void> showKiranMetaSheet({
   void Function(String name)? onHaribhaktLongPress,
   Future<void> Function(String selectedText)? onAddNote,
   Future<void> Function(String selectedText)? onCreateQuoteImage,
+  VoidCallback? onTakeQuiz,
 }) {
   return showModalBottomSheet(
     context: context,
@@ -139,6 +140,7 @@ Future<void> showKiranMetaSheet({
                             onHaribhaktLongPress: onHaribhaktLongPress,
                             onAddNote: onAddNote,
                             onCreateQuoteImage: onCreateQuoteImage,
+                            onTakeQuiz: onTakeQuiz,
                           ),
                         ),
                       );
@@ -164,6 +166,7 @@ class _SelectableKiranMeta extends StatefulWidget {
     this.onHaribhaktLongPress,
     this.onAddNote,
     this.onCreateQuoteImage,
+    this.onTakeQuiz,
   });
 
   final BuildContext pageContext;
@@ -174,6 +177,7 @@ class _SelectableKiranMeta extends StatefulWidget {
   final void Function(String name)? onHaribhaktLongPress;
   final Future<void> Function(String selectedText)? onAddNote;
   final Future<void> Function(String selectedText)? onCreateQuoteImage;
+  final VoidCallback? onTakeQuiz;
 
   @override
   State<_SelectableKiranMeta> createState() => _SelectableKiranMetaState();
@@ -208,6 +212,7 @@ class _SelectableKiranMetaState extends State<_SelectableKiranMeta> {
       },
       onAddNote: widget.onAddNote,
       onCreateQuoteImage: widget.onCreateQuoteImage,
+      onTakeQuiz: widget.onTakeQuiz,
     );
 
     if (!RemoteConfigService().useCustomHtmlWidget) return panel;

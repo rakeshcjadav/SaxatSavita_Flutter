@@ -869,5 +869,40 @@
     "migration_wait_message": "Please wait while we update your reading progress",
     "migrating_reading_history": "Migrating reading history...",
     "migrating_kiran_progress": "Migrating kiran progress...",
-    "migration_complete": "Migration complete"
+    "migration_complete": "Migration complete",
+    "quiz": "Quiz",
+    "take_quiz": "Take quiz",
+    "quiz_points": "Quiz points",
+    "quiz_points_count": "{count} points",
+    "@quiz_points_count": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quiz_score": "{score} / {total}",
+    "@quiz_score": {
+        "placeholders": {
+            "score": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    },
+    "quiz_perfect": "Perfect score!",
+    "quiz_already_scored": "Practice — points already earned for this kiran",
+    "quiz_no_questions": "No quiz for this kiran yet",
+    "quiz_first_badge": "First quiz",
+    "quiz_next": "Next",
+    "quiz_see_result": "See result",
+    "quiz_correct": "Correct",
+    "quiz_incorrect": "Not quite",
+    "quiz_explanation": "Explanation",
+    "quizzes_completed": "Quizzes",
+    "quiz_question_of": "Question {current} of {total}",
+    "@quiz_question_of": {
+        "placeholders": {
+            "current": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    }
 }

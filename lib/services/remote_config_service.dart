@@ -53,6 +53,9 @@ class RemoteConfigService {
         'enable_favorites': true,
         'enable_social_sharing': true,
         'enable_new_kiran_content_rendering': false,
+        'enable_quiz': true,
+        'quiz_points_per_correct': 5,
+        'quiz_perfect_bonus': 5,
 
         // UI customization
         'show_welcome_screen': true,
@@ -166,6 +169,10 @@ class RemoteConfigService {
       _remoteConfig?.getBool('enable_favorites') ?? true;
   bool get enableSocialSharing =>
       _remoteConfig?.getBool('enable_social_sharing') ?? true;
+  bool get enableQuiz => _remoteConfig?.getBool('enable_quiz') ?? true;
+  int get quizPointsPerCorrect =>
+      _remoteConfig?.getInt('quiz_points_per_correct') ?? 5;
+  int get quizPerfectBonus => _remoteConfig?.getInt('quiz_perfect_bonus') ?? 5;
 
   // UI customization
   bool get showWelcomeScreen =>

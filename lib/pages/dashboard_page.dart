@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
+import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
 
 class DashboardPage extends StatefulWidget {
   final bool showScaffold;
@@ -26,6 +27,8 @@ class _DashboardPageState extends State<DashboardPage> {
   bool _isLoading = true;
   DashboardStatistics? _statistics;
   UserProfile? _userProfile;
+  int _quizPoints = 0;
+  int _quizzesCompleted = 0;
 
   @override
   void initState() {
@@ -40,11 +43,15 @@ class _DashboardPageState extends State<DashboardPage> {
     try {
       final stats = await _dashboardService.getDashboardStatistics();
       final profile = await _dashboardService.getUserProfile();
+      final quizPoints = await KiranQuizService().totalPoints();
+      final quizzesCompleted = await KiranQuizService().completedQuizCount();
 
       if (mounted) {
         setState(() {
           _statistics = stats;
           _userProfile = profile;
+          _quizPoints = quizPoints;
+          _quizzesCompleted = quizzesCompleted;
           _isLoading = false;
         });
       }
@@ -407,6 +414,26 @@ class _DashboardPageState extends State<DashboardPage> {
                 label: AppLocalizations.of(context)!.kirans,
                 value: '${_statistics?.uniqueKiransRead ?? 0}',
                 color: Colors.orange,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                icon: Icons.quiz,
+                label: AppLocalizations.of(context)!.quiz_points,
+                value: '$_quizPoints',
+                color: Colors.teal,
+              ),
+            ),
+            Expanded(
+              child: _buildStatCard(
+                icon: Icons.military_tech,
+                label: AppLocalizations.of(context)!.quizzes_completed,
+                value: '$_quizzesCompleted',
+                color: Colors.indigo,
               ),
             ),
           ],

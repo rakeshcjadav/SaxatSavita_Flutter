@@ -5,6 +5,7 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/services/remote_config_service.dart';
+import 'package:saxatsavita_flutter/widgets/take_quiz_button.dart';
 
 List<String> parseKiranLocations(Map<String, dynamic> contentData) {
   final String place = (contentData['main']?['place'] as String? ?? '').trim();
@@ -40,6 +41,7 @@ class KiranMetaPanel extends StatelessWidget {
     this.showAiCaption = false,
     this.onAddNote,
     this.onCreateQuoteImage,
+    this.onTakeQuiz,
   });
 
   factory KiranMetaPanel.fromContent(
@@ -52,6 +54,7 @@ class KiranMetaPanel extends StatelessWidget {
     bool showAiCaption = false,
     Future<void> Function(String selectedText)? onAddNote,
     Future<void> Function(String selectedText)? onCreateQuoteImage,
+    VoidCallback? onTakeQuiz,
   }) {
     return KiranMetaPanel(
       key: key,
@@ -71,6 +74,7 @@ class KiranMetaPanel extends StatelessWidget {
       showAiCaption: showAiCaption,
       onAddNote: onAddNote,
       onCreateQuoteImage: onCreateQuoteImage,
+      onTakeQuiz: onTakeQuiz,
     );
   }
 
@@ -86,6 +90,7 @@ class KiranMetaPanel extends StatelessWidget {
   final bool showAiCaption;
   final Future<void> Function(String selectedText)? onAddNote;
   final Future<void> Function(String selectedText)? onCreateQuoteImage;
+  final VoidCallback? onTakeQuiz;
 
   bool get _isEmpty =>
       locations.isEmpty &&
@@ -220,6 +225,10 @@ class KiranMetaPanel extends StatelessWidget {
               ...summary.indexed.map(
                 ((int, String) entry) => numberedItem(entry.$1 + 1, entry.$2),
               ),
+            ],
+            if (onTakeQuiz != null) ...[
+              const SizedBox(height: 20),
+              TakeQuizButton(onPressed: onTakeQuiz!),
             ],
           ],
         );

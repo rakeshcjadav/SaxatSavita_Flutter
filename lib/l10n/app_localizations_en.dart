@@ -1786,4 +1786,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get migration_complete => 'Migration complete';
+
+  @override
+  String get quiz => 'Quiz';
+
+  @override
+  String get take_quiz => 'Take quiz';
+
+  @override
+  String get quiz_points => 'Quiz points';
+
+  @override
+  String quiz_points_count(int count) {
+    return '$count points';
+  }
+
+  @override
+  String quiz_score(int score, int total) {
+    return '$score / $total';
+  }
+
+  @override
+  String get quiz_perfect => 'Perfect score!';
+
+  @override
+  String get quiz_already_scored =>
+      'Practice — points already earned for this kiran';
+
+  @override
+  String get quiz_no_questions => 'No quiz for this kiran yet';
+
+  @override
+  String get quiz_first_badge => 'First quiz';
+
+  @override
+  String get quiz_next => 'Next';
+
+  @override
+  String get quiz_see_result => 'See result';
+
+  @override
+  String get quiz_correct => 'Correct';
+
+  @override
+  String get quiz_incorrect => 'Not quite';
+
+  @override
+  String get quiz_explanation => 'Explanation';
+
+  @override
+  String get quizzes_completed => 'Quizzes';
+
+  @override
+  String quiz_question_of(int current, int total) {
+    return 'Question $current of $total';
+  }
 }

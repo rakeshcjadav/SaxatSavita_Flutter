@@ -3337,6 +3337,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Migration complete'**
   String get migration_complete;
+
+  /// No description provided for @quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz'**
+  String get quiz;
+
+  /// No description provided for @take_quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Take quiz'**
+  String get take_quiz;
+
+  /// No description provided for @quiz_points.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz points'**
+  String get quiz_points;
+
+  /// No description provided for @quiz_points_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} points'**
+  String quiz_points_count(int count);
+
+  /// No description provided for @quiz_score.
+  ///
+  /// In en, this message translates to:
+  /// **'{score} / {total}'**
+  String quiz_score(int score, int total);
+
+  /// No description provided for @quiz_perfect.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect score!'**
+  String get quiz_perfect;
+
+  /// No description provided for @quiz_already_scored.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice — points already earned for this kiran'**
+  String get quiz_already_scored;
+
+  /// No description provided for @quiz_no_questions.
+  ///
+  /// In en, this message translates to:
+  /// **'No quiz for this kiran yet'**
+  String get quiz_no_questions;
+
+  /// No description provided for @quiz_first_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'First quiz'**
+  String get quiz_first_badge;
+
+  /// No description provided for @quiz_next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get quiz_next;
+
+  /// No description provided for @quiz_see_result.
+  ///
+  /// In en, this message translates to:
+  /// **'See result'**
+  String get quiz_see_result;
+
+  /// No description provided for @quiz_correct.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get quiz_correct;
+
+  /// No description provided for @quiz_incorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite'**
+  String get quiz_incorrect;
+
+  /// No description provided for @quiz_explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation'**
+  String get quiz_explanation;
+
+  /// No description provided for @quizzes_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Quizzes'**
+  String get quizzes_completed;
+
+  /// No description provided for @quiz_question_of.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {current} of {total}'**
+  String quiz_question_of(int current, int total);
 }
 
 class _AppLocalizationsDelegate

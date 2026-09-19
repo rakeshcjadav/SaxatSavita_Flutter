@@ -9,6 +9,7 @@ import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
+import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_sync_service_base.dart';
@@ -589,6 +590,7 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
         'bookUserInfo',
         'kiranUserInfo',
         'readingHistory',
+        'quizResults',
       ];
 
       for (final collectionName in collections) {
@@ -793,6 +795,42 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
       );
     } catch (e) {
       debugPrint('❌ Error loading reading events from Firebase: $e');
+    }
+  }
+
+  @override
+  Future<void> syncQuizResult(KiranQuizResult result) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot sync quiz result');
+      return;
+    }
+
+    try {
+      await userDoc!.collection('quizResults').doc(result.docId).set({
+        ...result.toJson(),
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      debugPrint('Quiz result synced: ${result.docId}');
+    } catch (e) {
+      debugPrint('Error syncing quiz result: $e');
+    }
+  }
+
+  @override
+  Future<List<KiranQuizResult>> loadQuizResults() async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot load quiz results');
+      return [];
+    }
+
+    try {
+      final snapshot = await userDoc!.collection('quizResults').get();
+      return snapshot.docs
+          .map((doc) => KiranQuizResult.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      debugPrint('Error loading quiz results: $e');
+      return [];
     }
   }
 }

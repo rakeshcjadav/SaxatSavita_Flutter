@@ -1793,4 +1793,58 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get migration_complete => 'સ્થાનાંતરણ પૂર્ણ!';
+
+  @override
+  String get quiz => 'ક્વિઝ';
+
+  @override
+  String get take_quiz => 'ક્વિઝ લો';
+
+  @override
+  String get quiz_points => 'ક્વિઝ ગુણ';
+
+  @override
+  String quiz_points_count(int count) {
+    return '$count ગુણ';
+  }
+
+  @override
+  String quiz_score(int score, int total) {
+    return '$score / $total';
+  }
+
+  @override
+  String get quiz_perfect => 'સંપૂર્ણ સાચા!';
+
+  @override
+  String get quiz_already_scored => 'અભ્યાસ — આ કિરણના ગુણ મળી લેવાય છે';
+
+  @override
+  String get quiz_no_questions => 'આ કિરણમાં હજુ પ્રશ્ન નથી';
+
+  @override
+  String get quiz_first_badge => 'પહેલો ક્વિઝ';
+
+  @override
+  String get quiz_next => 'આગળ';
+
+  @override
+  String get quiz_see_result => 'પરિણામ જુઓ';
+
+  @override
+  String get quiz_correct => 'સાચું';
+
+  @override
+  String get quiz_incorrect => 'ખોટું';
+
+  @override
+  String get quiz_explanation => 'સમજૂતી';
+
+  @override
+  String get quizzes_completed => 'ક્વિઝ';
+
+  @override
+  String quiz_question_of(int current, int total) {
+    return 'પ્રશ્ન $current / $total';
+  }
 }

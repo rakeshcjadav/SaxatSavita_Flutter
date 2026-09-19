@@ -32,8 +32,11 @@ import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 import 'package:saxatsavita_flutter/services/kiran_tts_controller.dart';
 import 'package:saxatsavita_flutter/services/kiran_search_controller.dart';
+import 'package:saxatsavita_flutter/pages/kiran_quiz_page.dart';
+import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
 import 'package:saxatsavita_flutter/widgets/kiran_meta_panel.dart';
 import 'package:saxatsavita_flutter/widgets/kiran_meta_sheet.dart';
+import 'package:saxatsavita_flutter/widgets/take_quiz_button.dart';
 
 class KiranReadPage extends StatefulWidget {
   const KiranReadPage({
@@ -114,6 +117,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   late final KiranSearchController _search;
   String _metaSelectedText = '';
   String? _focusedHaribhakt;
+  bool _hasQuiz = false;
 
   @override
   void initState() {
@@ -163,6 +167,8 @@ class _KiranReadPageState extends State<KiranReadPage>
       chapterName: widget.kiranInfo.title,
       partName: 'Part ${widget.partNumber}',
     );
+
+    _loadQuizAvailability();
 
     // If searchQuery is provided, open search mode and perform search
     if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
@@ -1513,6 +1519,7 @@ class _KiranReadPageState extends State<KiranReadPage>
         await _openQuoteEditor(selectedText: selectedText);
         _resumeTimer();
       },
+      onTakeQuiz: _canShowQuizCta ? _openKiranQuiz : null,
     );
 
     if (!RemoteConfigService().useCustomHtmlWidget) return panel;
@@ -1566,6 +1573,37 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
   }
 
+  int get _partNumberInt =>
+      int.tryParse(widget.partNumber.replaceAll('part', '')) ??
+      widget.kiranUserInfo.partNumber;
+
+  Future<void> _loadQuizAvailability() async {
+    final hasQuiz = await KiranQuizService().hasQuiz(
+      _partNumberInt,
+      widget.kiranInfo.index,
+    );
+    if (mounted) {
+      setState(() => _hasQuiz = hasQuiz);
+    }
+  }
+
+  bool get _canShowQuizCta => _hasQuiz && widget.kiranUserInfo.readCount > 0;
+
+  Future<void> _openKiranQuiz() async {
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (_) => KiranQuizPage(
+              part: _partNumberInt,
+              kiranIndex: widget.kiranInfo.index,
+              kiranNumber: widget.kiranInfo.number,
+              title: widget.kiranInfo.title,
+            ),
+      ),
+    );
+  }
+
   /// Shows the kiran meta info (place, date, moral, summary) in a modal bottom sheet.
   void _showKiranInfoSheet(
     BuildContext context,
@@ -1592,6 +1630,13 @@ class _KiranReadPageState extends State<KiranReadPage>
         await _openQuoteEditor(selectedText: selectedText);
         _resumeTimer();
       },
+      onTakeQuiz:
+          _canShowQuizCta
+              ? () {
+                Navigator.of(context).pop();
+                _openKiranQuiz();
+              }
+              : null,
     );
   }
 
@@ -1703,6 +1748,10 @@ class _KiranReadPageState extends State<KiranReadPage>
                     ),
                   ),
                 ),
+              if (_canShowQuizCta) ...[
+                const SizedBox(height: 12.0),
+                TakeQuizButton(onPressed: _openKiranQuiz),
+              ],
               const SizedBox(height: 16.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -2192,7 +2241,7 @@ class _KiranReadPageState extends State<KiranReadPage>
 
       // Show Dialog and await its dismissal, then close the read page.
       if (mounted) {
-        await showDialog(
+        final takeQuiz = await showDialog<bool>(
           context: context,
           builder: (context) {
             return AlertDialog(
@@ -2203,17 +2252,20 @@ class _KiranReadPageState extends State<KiranReadPage>
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
-
                 children: [
                   Text(localizations.word_count(widget.kiranInfo.wordCount)),
                   Text('${localizations.reading_time} : $timeString'),
-                  const SizedBox(height: 8.0),
+                  if (_hasQuiz) ...[
+                    const SizedBox(height: 16.0),
+                    TakeQuizButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                    ),
+                  ],
+                  const SizedBox(height: 12.0),
                   Row(
                     children: [
-                      // Previous Kiran button
                       if (_hasPreviousKiran()) _buildPreviousKiranButton(),
                       const Spacer(),
-                      // Next Kiran button
                       if (_hasNextKiran()) _buildNextKiranButton(),
                     ],
                   ),
@@ -2221,15 +2273,17 @@ class _KiranReadPageState extends State<KiranReadPage>
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: () => Navigator.of(context).pop(false),
                   child: Text(localizations.ok),
                 ),
               ],
             );
           },
         );
+
+        if (takeQuiz == true && mounted) {
+          await _openKiranQuiz();
+        }
 
         scaffoldMessenger.showSnackBar(
           SnackBar(
