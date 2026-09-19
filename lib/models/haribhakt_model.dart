@@ -1,13 +1,23 @@
 class HaribhaktKiranRef {
   final int index;
   final String role;
+  final List<String> questions;
 
-  const HaribhaktKiranRef({required this.index, required this.role});
+  const HaribhaktKiranRef({
+    required this.index,
+    required this.role,
+    this.questions = const [],
+  });
 
   factory HaribhaktKiranRef.fromMap(Map<String, dynamic> map) {
     return HaribhaktKiranRef(
       index: (map['index'] as num?)?.toInt() ?? 0,
       role: (map['role'] as String? ?? 'reader').trim(),
+      questions:
+          (map['questions'] as List<dynamic>? ?? [])
+              .map((item) => item.toString().trim())
+              .where((item) => item.isNotEmpty)
+              .toList(),
     );
   }
 }
@@ -27,6 +37,9 @@ class HaribhaktItem {
 
   int get readerCount => kirans.where((ref) => ref.role == 'reader').length;
 
+  int get questionCount =>
+      kirans.where((ref) => ref.role == 'question').length;
+
   int get mentionedCount =>
       kirans.where((ref) => ref.role == 'mentioned').length;
 
@@ -34,10 +47,22 @@ class HaribhaktItem {
 
   bool get hasReader => readerCount > 0;
 
+  bool get hasQuestion => questionCount > 0;
+
   bool get hasMentioned => mentionedCount > 0;
 
+  List<String> get questions => [
+    for (final ref in kirans)
+      ...ref.questions,
+  ];
+
   int get roleTypeCount =>
-      [hasHost, hasReader, hasMentioned].where((flag) => flag).length;
+      [
+        hasHost,
+        hasReader,
+        hasQuestion,
+        hasMentioned,
+      ].where((flag) => flag).length;
 
   factory HaribhaktItem.fromMap(Map<String, dynamic> map) {
     final kirans =

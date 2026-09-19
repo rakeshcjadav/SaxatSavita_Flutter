@@ -194,6 +194,7 @@ class KiranMetaPanel extends StatelessWidget {
                 peopleLabel: l10n.haribhakts,
                 hostLabel: l10n.haribhakt_role_host,
                 readerLabel: l10n.haribhakt_role_reader,
+                questionLabel: l10n.haribhakt_role_question,
                 mentionedLabel: l10n.haribhakt_role_mentioned,
                 chipHintLabel: l10n.haribhakt_chip_hint,
                 colorScheme: colorScheme,
@@ -238,6 +239,7 @@ class _ContextCard extends StatelessWidget {
     required this.peopleLabel,
     required this.hostLabel,
     required this.readerLabel,
+    required this.questionLabel,
     required this.mentionedLabel,
     required this.chipHintLabel,
     required this.colorScheme,
@@ -254,6 +256,7 @@ class _ContextCard extends StatelessWidget {
   final String peopleLabel;
   final String hostLabel;
   final String readerLabel;
+  final String questionLabel;
   final String mentionedLabel;
   final String chipHintLabel;
   final ColorScheme colorScheme;
@@ -330,6 +333,7 @@ class _ContextCard extends StatelessWidget {
                             person: person,
                             hostLabel: hostLabel,
                             readerLabel: readerLabel,
+                            questionLabel: questionLabel,
                             mentionedLabel: mentionedLabel,
                             chipHintLabel: chipHintLabel,
                             colorScheme: colorScheme,
@@ -362,6 +366,7 @@ class _HaribhaktNameChip extends StatelessWidget {
     required this.person,
     required this.hostLabel,
     required this.readerLabel,
+    required this.questionLabel,
     required this.mentionedLabel,
     required this.chipHintLabel,
     required this.colorScheme,
@@ -374,6 +379,7 @@ class _HaribhaktNameChip extends StatelessWidget {
   final KiranHaribhakt person;
   final String hostLabel;
   final String readerLabel;
+  final String questionLabel;
   final String mentionedLabel;
   final String chipHintLabel;
   final ColorScheme colorScheme;
@@ -390,6 +396,16 @@ class _HaribhaktNameChip extends StatelessWidget {
         colorScheme.onPrimaryContainer,
         hostLabel,
         Icons.home_outlined,
+      ),
+      'question' => (
+        colorScheme.brightness == Brightness.dark
+            ? const Color(0xFF004D40)
+            : const Color(0xFFB2DFDB),
+        colorScheme.brightness == Brightness.dark
+            ? const Color(0xFFB2DFDB)
+            : const Color(0xFF004D40),
+        questionLabel,
+        Icons.help_outline,
       ),
       'mentioned' => (
         colorScheme.tertiaryContainer,
@@ -413,7 +429,10 @@ class _HaribhaktNameChip extends StatelessWidget {
         onTap: onTap,
         onLongPress: onLongPress,
         child: Tooltip(
-          message: chipHintLabel,
+          message:
+              person.questions.isEmpty
+                  ? chipHintLabel
+                  : person.questions.join('\n'),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             decoration: BoxDecoration(

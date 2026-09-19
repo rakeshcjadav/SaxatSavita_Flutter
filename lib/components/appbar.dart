@@ -14,6 +14,7 @@ enum ActionOptions {
 PreferredSizeWidget buildAppBar(
   BuildContext context, {
   String title = '',
+  IconData? titleIcon,
   List<ActionOptions>? actionItems,
   List<Widget>? extraActions,
   PreferredSizeWidget? bottom,
@@ -21,6 +22,7 @@ PreferredSizeWidget buildAppBar(
 }) {
   return _AdaptiveAppBar(
     title: title,
+    titleIcon: titleIcon,
     actionItems: actionItems,
     extraActions: extraActions,
     bottom: bottom,
@@ -31,6 +33,7 @@ PreferredSizeWidget buildAppBar(
 class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
   const _AdaptiveAppBar({
     required this.title,
+    this.titleIcon,
     this.actionItems,
     this.extraActions,
     this.bottom,
@@ -38,6 +41,7 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   final String title;
+  final IconData? titleIcon;
   final List<ActionOptions>? actionItems;
   final List<Widget>? extraActions;
   final PreferredSizeWidget? bottom;
@@ -45,6 +49,8 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   static const _iconW = kMinInteractiveDimension;
   static const _titlePad = 8.0;
+  static const _titleIconSize = 22.0;
+  static const _titleIconGap = 8.0;
 
   @override
   Size get preferredSize => Size.fromHeight(
@@ -59,10 +65,24 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
       fontSize: 18,
       color: Theme.of(context).colorScheme.onPrimary,
     );
+    final showBack = ModalRoute.of(context)?.impliesAppBarDismissal ?? false;
+    final useIconAsLeading = titleIcon != null && !showBack;
+    final showTitleIcon = titleIcon != null && !useIconAsLeading;
     return AppBar(
       centerTitle: false,
       titleSpacing: 0,
       elevation: 5,
+      automaticallyImplyLeading: !useIconAsLeading,
+      leading:
+          useIconAsLeading
+              ? IgnorePointer(
+                child: IconButton(
+                  icon: Icon(titleIcon, color: titleStyle.color),
+                  tooltip: resolvedTitle,
+                  onPressed: () {},
+                ),
+              )
+              : null,
       title: LayoutBuilder(
         builder: (context, constraints) {
           final entries = _collectActions(context);
@@ -71,6 +91,8 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
             constraints.maxWidth,
           );
           final titleWanted = _measureTitle(context, resolvedTitle, titleStyle);
+          final titleIconW =
+              showTitleIcon ? _titleIconSize + _titleIconGap : 0.0;
           var visible = List<_BarAction>.from(entries);
           var overflow = <_BarAction>[];
 
@@ -78,7 +100,7 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
               (visible.length + (overflow.isEmpty ? 0 : 1)) * _iconW;
 
           bool titleFits() =>
-              titleWanted + 8 + actionsWidth() <= contentW + 0.5;
+              titleWanted + titleIconW + 8 + actionsWidth() <= contentW + 0.5;
 
           void hideLastOverflowable() {
             final index = visible.lastIndexWhere((action) => action.overflowable);
@@ -96,12 +118,30 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
               const SizedBox(width: _titlePad),
               ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: titleMax),
-                child: Text(
-                  resolvedTitle,
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: titleStyle,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (showTitleIcon) ...[
+                      Icon(
+                        titleIcon,
+                        size: _titleIconSize,
+                        color: titleStyle.color,
+                      ),
+                      const SizedBox(width: _titleIconGap),
+                    ],
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: (titleMax - titleIconW).clamp(0.0, titleMax),
+                      ),
+                      child: Text(
+                        resolvedTitle,
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.ellipsis,
+                        style: titleStyle,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const Spacer(),

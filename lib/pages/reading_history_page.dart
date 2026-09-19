@@ -260,6 +260,7 @@ class _ReadingHistoryPageState extends State<ReadingHistoryPage>
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.reading_history,
+        titleIcon: Icons.history,
         actionItems: [ActionOptions.settings],
         extraActions: [
           if (_filteredHistory.isNotEmpty && _tabController.index == 0)

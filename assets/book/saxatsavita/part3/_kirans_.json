@@ -104,10 +104,6 @@
                     "role": "reader"
                 },
                 {
-                    "name": "ભગવાનજીભાઈ લીંબુડાવાળા",
-                    "role": "reader"
-                },
-                {
                     "name": "ચંદુભાઈ કલોલા",
                     "role": "reader"
                 },
@@ -272,7 +268,10 @@
                 },
                 {
                     "name": "થોભણભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "કાયમ કેમ અંતરે સુખ રહે ?"
+                    ]
                 }
             ]
         },
@@ -807,7 +806,10 @@
             "haribhakts": [
                 {
                     "name": "લક્ષ્મીદાસભગત",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "માયિક સુખ જીવમાંથી આળસી કેમ જાય ?"
+                    ]
                 }
             ]
         },
@@ -1152,7 +1154,11 @@
             "haribhakts": [
                 {
                     "name": "રામજીભાઈ",
-                    "role": "reader"
+                    "role": "reader",
+                    "questions": [
+                        "પચાસ વરસ પછી જ્ઞાન થાય ઇ ક્યું જ્ઞાન ?",
+                        "જીવનું વિશેષ સ્થાન ક્યું છે ?"
+                    ]
                 },
                 {
                     "name": "પોપટભાઈ",
@@ -1317,16 +1323,19 @@
             ],
             "haribhakts": [
                 {
-                    "name": "લક્ષ્મીદાસભગત",
-                    "role": "reader"
-                },
-                {
                     "name": "ધીરૂભાઈ",
                     "role": "reader"
                 },
                 {
                     "name": "ઘનશ્યામભાઈ",
                     "role": "reader"
+                },
+                {
+                    "name": "લક્ષ્મીદાસભગત",
+                    "role": "question",
+                    "questions": [
+                        "સ્વરૂપનિષ્ઠા ટકી કેમ રહે ?"
+                    ]
                 }
             ]
         },
@@ -1405,7 +1414,10 @@
             "haribhakts": [
                 {
                     "name": "જેઠાબાપા",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "આ લોકમાં એકાંતિકનું સુખ શું ?"
+                    ]
                 }
             ]
         },
@@ -1488,7 +1500,10 @@
             "haribhakts": [
                 {
                     "name": "રામજીભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "એક એક સાધુ પાછળ લાખ માણસ ફરશે એટલે શું ?"
+                    ]
                 }
             ]
         },

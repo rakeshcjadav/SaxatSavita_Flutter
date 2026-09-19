@@ -25,6 +25,8 @@ String haribhaktRoleLabel(AppLocalizations l10n, String role) {
   switch (role) {
     case 'host':
       return l10n.haribhakt_role_host;
+    case 'question':
+      return l10n.haribhakt_role_question;
     case 'mentioned':
       return l10n.haribhakt_role_mentioned;
     default:
@@ -36,6 +38,8 @@ IconData haribhaktRoleIcon(String role) {
   switch (role) {
     case 'host':
       return Icons.home_outlined;
+    case 'question':
+      return Icons.help_outline;
     case 'mentioned':
       return Icons.chat_bubble_outline;
     default:
@@ -50,7 +54,7 @@ String formatHaribhaktCount(BuildContext context, int count) {
       : digits;
 }
 
-enum _RoleFilter { all, host, reader, mentioned }
+enum _RoleFilter { all, host, reader, question, mentioned }
 
 enum _SortMode { count, name }
 
@@ -79,6 +83,18 @@ class _RoleStyle {
                 color: Color(0xFFEF6C00),
                 container: Color(0xFFFFE0B2),
                 onContainer: Color(0xFFBF360C),
+              );
+      case 'question':
+        return dark
+            ? const _RoleStyle(
+                color: Color(0xFF80CBC4),
+                container: Color(0xFF004D40),
+                onContainer: Color(0xFFB2DFDB),
+              )
+            : const _RoleStyle(
+                color: Color(0xFF00796B),
+                container: Color(0xFFB2DFDB),
+                onContainer: Color(0xFF004D40),
               );
       case 'mentioned':
         return dark
@@ -148,6 +164,8 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
         items = items.where((item) => item.hasHost).toList();
       case _RoleFilter.reader:
         items = items.where((item) => item.hasReader).toList();
+      case _RoleFilter.question:
+        items = items.where((item) => item.hasQuestion).toList();
       case _RoleFilter.mentioned:
         items = items.where((item) => item.hasMentioned).toList();
       case _RoleFilter.all:
@@ -246,6 +264,18 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
                                   onSelected:
                                       () => setState(
                                         () => _roleFilter = _RoleFilter.reader,
+                                      ),
+                                ),
+                                const SizedBox(width: 8),
+                                _RoleFilterChip(
+                                  label: l10n.haribhakt_role_question,
+                                  icon: Icons.help_outline,
+                                  role: 'question',
+                                  selected: _roleFilter == _RoleFilter.question,
+                                  onSelected:
+                                      () => setState(
+                                        () =>
+                                            _roleFilter = _RoleFilter.question,
                                       ),
                                 ),
                                 const SizedBox(width: 8),
@@ -406,7 +436,7 @@ class _HaribhaktListTile extends StatelessWidget {
                             count: item.hostCount,
                             tooltip: l10n.haribhakt_host_count(item.hostCount),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 10),
                           _RoleCount(
                             role: 'reader',
                             count: item.readerCount,
@@ -414,7 +444,15 @@ class _HaribhaktListTile extends StatelessWidget {
                               item.readerCount,
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 10),
+                          _RoleCount(
+                            role: 'question',
+                            count: item.questionCount,
+                            tooltip: l10n.haribhakt_question_count(
+                              item.questionCount,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
                           _RoleCount(
                             role: 'mentioned',
                             count: item.mentionedCount,
@@ -559,6 +597,10 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
         return _appearances.where((row) => row.ref.role == 'host').toList();
       case _RoleFilter.reader:
         return _appearances.where((row) => row.ref.role == 'reader').toList();
+      case _RoleFilter.question:
+        return _appearances
+            .where((row) => row.ref.role == 'question')
+            .toList();
       case _RoleFilter.mentioned:
         return _appearances
             .where((row) => row.ref.role == 'mentioned')
@@ -566,6 +608,18 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
       case _RoleFilter.all:
         return _appearances;
     }
+  }
+
+  List<({_HaribhaktAppearance row, String question})> get _questionRows {
+    if (_roleFilter != _RoleFilter.all &&
+        _roleFilter != _RoleFilter.question) {
+      return const [];
+    }
+    return [
+      for (final row in _appearances)
+        for (final question in row.ref.questions)
+          (row: row, question: question),
+    ];
   }
 
   Future<void> _openKiran(int partNumber, KiranInfo kiranInfo) async {
@@ -655,6 +709,15 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                   ),
                   Expanded(
                     child: _StatCell(
+                      value: formatHaribhaktCount(context, item.questionCount),
+                      label: l10n.haribhakt_role_question,
+                      icon: Icons.help_outline,
+                      accent: _RoleStyle.of(context, 'question').color,
+                      muted: !item.hasQuestion,
+                    ),
+                  ),
+                  Expanded(
+                    child: _StatCell(
                       value: formatHaribhaktCount(context, item.mentionedCount),
                       label: l10n.haribhakt_role_mentioned,
                       icon: Icons.chat_bubble_outline,
@@ -697,6 +760,15 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                         () => setState(() => _roleFilter = _RoleFilter.reader),
                   ),
                   _RoleFilterChip(
+                    label: l10n.haribhakt_role_question,
+                    icon: Icons.help_outline,
+                    role: 'question',
+                    selected: _roleFilter == _RoleFilter.question,
+                    onSelected:
+                        () =>
+                            setState(() => _roleFilter = _RoleFilter.question),
+                  ),
+                  _RoleFilterChip(
                     label: l10n.haribhakt_role_mentioned,
                     icon: Icons.chat_bubble_outline,
                     role: 'mentioned',
@@ -709,6 +781,79 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
               ),
             ),
           ),
+        if (_questionRows.isNotEmpty)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+              child: Text(
+                l10n.haribhakt_questions,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        if (_questionRows.isNotEmpty)
+          SliverList.separated(
+            itemCount: _questionRows.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 8),
+            itemBuilder: (context, index) {
+              final entry = _questionRows[index];
+              final row = entry.row;
+              final accent = Utils.getPartAccentColor(row.partNumber, context);
+              final style = _RoleStyle.of(context, 'question');
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Material(
+                  color: style.container.withValues(alpha: 0.55),
+                  borderRadius: BorderRadius.circular(12),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => _openKiran(row.partNumber, row.kiranInfo),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.help_outline,
+                            size: 18,
+                            color: style.color,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  entry.question,
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(height: 1.35),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  [
+                                    row.kiranInfo.number.replaceAll('.', ''),
+                                    row.kiranInfo.title,
+                                  ].join(' · '),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.labelSmall
+                                      ?.copyWith(color: accent),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        if (_questionRows.isNotEmpty)
+          const SliverToBoxAdapter(child: SizedBox(height: 12)),
         SliverList.separated(
           itemCount: visible.length,
           separatorBuilder: (_, _) => const Divider(height: 1),
@@ -770,6 +915,21 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                     ],
                   ),
                   KiranPlaceLine(kiranInfo: row.kiranInfo),
+                  if (row.ref.questions.isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    for (final question in row.ref.questions)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Text(
+                          question,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: _RoleStyle.of(context, 'question').color,
+                                height: 1.35,
+                              ),
+                        ),
+                      ),
+                  ],
                 ],
               ),
               trailing: Icon(

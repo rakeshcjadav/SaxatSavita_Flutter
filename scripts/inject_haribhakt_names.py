@@ -66,12 +66,13 @@ PLACE_SHIFT_RE = re.compile(r"(?:ને\s+)?ત્યાંથી\s+")
 
 HTML_RE = re.compile(r"<[^>]+>")
 WS_RE = re.compile(r"[\s\u00a0]+")
-PREFIX_RE = re.compile(r"^(?:પ\.ભ\.|પભ\.|પ\.પૂ\.|પૂ\.|શ્રી|સંત)\s*")
+PREFIX_RE = re.compile(r"^(?:પ\.ભ\.|પભ\.|પ\.પૂ\.|પૂ\.|પ્રી\.|પ્રિ\.|શ્રી|સંત)\s*")
 GUJ_WORD_RE = re.compile(r"[\u0A80-\u0AFF.]+")
 HONORIFIC_RE = re.compile(r"(ભાઈ|ભાઇ|બાપા|ભગત|બાઈ|બાઇ)")
 TITLE_TOKENS = {"મહારાજ"}
 
-READER_MARKERS = ("વાંચ્ય", "વાચ્ય", "બોલ્ય", "પ્રશ્ન પૂછ્ય", "વાંચતા")
+READER_MARKERS = ("વાંચ્ય", "વાચ્ય", "બોલ્ય", "વાંચતા")
+QUESTION_MARKERS = ("પ્રશ્ન પૂછ્ય", "પ્રશ્ન પુછ્ય", "પ્રશ્નો પૂછ્ય")
 
 STOP_NAMES = {
     "ભગવાન",
@@ -171,7 +172,7 @@ AFTER_NAME_STOP = (
     "સતિ",
 )
 
-ROLE_RANK = {"host": 0, "reader": 1, "mentioned": 2}
+ROLE_RANK = {"host": 0, "reader": 1, "question": 2, "mentioned": 3}
 
 
 def load_overrides() -> tuple[dict[str, str], set[str], set[str]]:
@@ -269,6 +270,7 @@ AGENTIVE_RE = re.compile(r"(ભાઈ|ભાઇ|બાપા|ભગત|બાઈ
 def strip_agentive(token: str) -> str:
     token = AGENTIVE_RE.sub(r"\1", token)
     token = re.sub(r"(?:એણે|એ)$", "", token)
+    token = re.sub(r"(દાસ|ઠક્કર)ે$", r"\1", token)
     return token
 
 
@@ -550,6 +552,53 @@ def _after_ok(token: str) -> bool:
     return not any(token.startswith(p) or p in token for p in AFTER_NAME_STOP)
 
 
+def _stem_case(token: str) -> str:
+    t = strip_agentive(token)
+    if t.endswith("ને"):
+        return t[:-2]
+    if t.endswith("ે"):
+        return t[:-1]
+    return t
+
+
+def _is_dative_token(token: str) -> bool:
+    return token.endswith("ને")
+
+
+def _is_agentive_token(token: str) -> bool:
+    if _is_dative_token(token):
+        return False
+    if token.endswith("એણે") or token.endswith("એ"):
+        return True
+    stem = _stem_case(token)
+    if token.endswith("ે") and (
+        HONORIFIC_RE.search(token) or _given_name_token(stem)
+    ):
+        return True
+    return False
+
+
+def _name_cluster_at(tokens: list[str], idx: int) -> str | None:
+    begin = idx
+    if idx > 0 and _given_name_token(_stem_case(tokens[idx - 1])):
+        begin = idx - 1
+    end = idx + 1
+    nxt = tokens[idx + 1] if idx + 1 < len(tokens) else ""
+    if (
+        nxt
+        and _after_ok(nxt)
+        and nxt not in FILLER_TOKENS
+        and _given_name_token(_stem_case(nxt))
+    ):
+        end = idx + 2
+    name = clean_name(" ".join(tokens[begin:end]))
+    if looks_like_person(name, require_honorific=True):
+        return name
+    if looks_like_person(name) and _has_person_marker(name):
+        return name
+    return None
+
+
 def readers_from_text(text: str) -> list[str]:
     out: list[str] = []
     seen: set[str] = set()
@@ -586,16 +635,100 @@ def readers_from_text(text: str) -> list[str]:
     return out
 
 
-def collapse_shorter_names(people: list[dict[str, str]]) -> list[dict[str, str]]:
+QUESTION_LEAD_RE = re.compile(r"^(?:ો|ું|ા)*\s*(?:જે|કે)\s*[;:,]?\s*")
+QUESTION_STOP_RE = re.compile(r"\s+(?:પછી|તેનો ઉત્તર|તેનો જવાબ)")
+
+
+def _question_text_after(text: str, after: int) -> str:
+    rest = QUESTION_LEAD_RE.sub("", text[after:], count=1)
+    rest = WS_RE.sub(" ", rest).strip()
+    if not rest:
+        return ""
+    qmark = rest.find("?")
+    if 0 <= qmark <= 360:
+        question = rest[: qmark + 1].strip()
+    else:
+        stop = QUESTION_STOP_RE.search(rest)
+        end = stop.start() if stop and stop.start() >= 12 else min(len(rest), 220)
+        question = rest[:end].strip(" ,;।.")
+    question = question.strip(" \"“”'‘’")
+    return question if len(question) >= 8 else ""
+
+
+def questions_from_text(text: str) -> list[tuple[str, str]]:
+    """(asker, question) for Xએ પ્રશ્ન પૂછ્યો, not Xને."""
+    out: list[tuple[str, str]] = []
+    for marker in QUESTION_MARKERS:
+        start = 0
+        while True:
+            idx = text.find(marker, start)
+            if idx < 0:
+                break
+            window = _last_clause(text[max(0, idx - 80) : idx])
+            tokens = [
+                t
+                for t in GUJ_WORD_RE.findall(window)
+                if t not in FILLER_TOKENS
+            ]
+            honor_idx = None
+            for i, tok in enumerate(tokens):
+                stem = _stem_case(tok)
+                if not _is_agentive_token(tok):
+                    continue
+                if HONORIFIC_RE.search(tok) or _given_name_token(stem):
+                    honor_idx = i
+            if honor_idx is not None:
+                name = _name_cluster_at(tokens, honor_idx)
+                question = _question_text_after(text, idx + len(marker))
+                if name and question:
+                    out.append((name, question))
+            start = idx + len(marker)
+    return out
+
+
+def askers_from_text(text: str) -> list[str]:
+    """People who asked a question (Xએ પ્રશ્ન પૂછ્યો), not those asked (Xને)."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for name, _question in questions_from_text(text):
+        if name not in seen:
+            seen.add(name)
+            out.append(name)
+    return out
+
+
+def _extend_questions(person: dict, extras: list[str]) -> None:
+    if not extras:
+        return
+    questions = list(person.get("questions") or [])
+    for question in extras:
+        if question and question not in questions:
+            questions.append(question)
+    if questions:
+        person["questions"] = questions
+
+
+def collapse_shorter_names(people: list[dict]) -> list[dict]:
     names = [p["name"] for p in people]
-    keep: list[dict[str, str]] = []
+    keep: list[dict] = []
+    moved: dict[str, list[str]] = defaultdict(list)
     for person in people:
         name = person["name"]
-        if any(other != name and other.startswith(name + " ") for other in names):
-            continue
-        if any(other != name and other.endswith(" " + name) for other in names):
+        longer = next(
+            (
+                other
+                for other in names
+                if other != name
+                and (other.startswith(name + " ") or other.endswith(" " + name))
+            ),
+            None,
+        )
+        if longer:
+            moved[longer].extend(person.get("questions") or [])
             continue
         keep.append(person)
+    for person in keep:
+        _extend_questions(person, moved.get(person["name"], []))
     return keep
 
 
@@ -605,6 +738,7 @@ def merge_people(
     aliases: dict[str, str],
     drop: set[str],
     mentions: list[str] | None = None,
+    askers: list[str] | None = None,
     never_host: set[str] | None = None,
 ) -> list[dict[str, str]]:
     skip_host = never_host or set()
@@ -613,6 +747,7 @@ def merge_people(
     for role, names in (
         ("host", hosts),
         ("reader", readers),
+        ("question", askers or []),
         ("mentioned", mentions or []),
     ):
         for raw in names:
@@ -634,22 +769,40 @@ def extract_kiran(
     aliases: dict[str, str],
     drop: set[str],
     never_host: set[str] | None = None,
-) -> list[dict[str, str]]:
+) -> list[dict]:
     meta = kdata.get("meta") or {}
     main = kdata.get("main") or {}
     content = strip_html(str(main.get("content") or ""))
     hosts = hosts_from_locations(meta.get("locations") or [])
     hosts.extend(hosts_from_text(content))
     readers = readers_from_text(content)
+    asked = questions_from_text(content)
+    askers = [name for name, _question in asked]
     mentions = mentions_from_text(content)
-    return merge_people(
+    people = merge_people(
         hosts,
         readers,
         aliases,
         drop,
         mentions=mentions,
+        askers=askers,
         never_host=never_host,
     )
+    questions_by_name: dict[str, list[str]] = defaultdict(list)
+    for raw, question in asked:
+        name = normalize_honorific_spelling(apply_alias(clean_name(raw), aliases))
+        name = apply_alias(name, aliases)
+        if name and question and question not in questions_by_name[name]:
+            questions_by_name[name].append(question)
+    for person in people:
+        extras = list(questions_by_name.get(person["name"], []))
+        if not extras:
+            for key, values in questions_by_name.items():
+                if person["name"].startswith(key) or key.startswith(person["name"]):
+                    extras = values
+                    break
+        _extend_questions(person, extras)
+    return people
 
 
 def main() -> None:
@@ -688,9 +841,10 @@ def main() -> None:
             if people:
                 kirans_with += 1
                 for person in people:
-                    global_map[person["name"]].append(
-                        {"index": entry["index"], "role": person["role"]}
-                    )
+                    hit = {"index": entry["index"], "role": person["role"]}
+                    if person.get("questions"):
+                        hit["questions"] = list(person["questions"])
+                    global_map[person["name"]].append(hit)
 
         with index_path.open("w", encoding="utf-8") as f:
             json.dump(index, f, ensure_ascii=False, indent=4)
@@ -706,23 +860,42 @@ def main() -> None:
             for e in index["list"]
             if any(p.get("role") == "mentioned" for p in (e.get("haribhakts") or []))
         )
+        with_question = sum(
+            1
+            for e in index["list"]
+            if any(p.get("role") == "question" for p in (e.get("haribhakts") or []))
+        )
         print(
             f"part{part_num}: {changed:3d} updated | "
             f"{sum(1 for e in index['list'] if e.get('haribhakts'))}/{len(index['list'])} "
-            f"have names | {with_host} with host | {with_mentioned} with mention"
+            f"have names | {with_host} with host | {with_question} with question | "
+            f"{with_mentioned} with mention"
         )
 
     items = []
     for name in sorted(global_map.keys()):
         kirans = global_map[name]
-        # unique by index, keep best role
-        by_idx: dict[int, str] = {}
+        # unique by index, keep best role and any asked questions
+        by_idx: dict[int, dict] = {}
         for hit in kirans:
             idx = hit["index"]
             role = hit["role"]
-            if idx not in by_idx or ROLE_RANK[role] < ROLE_RANK[by_idx[idx]]:
-                by_idx[idx] = role
-        kiran_list = [{"index": i, "role": by_idx[i]} for i in sorted(by_idx)]
+            questions = list(hit.get("questions") or [])
+            current = by_idx.get(idx)
+            if current is None:
+                by_idx[idx] = {"role": role, "questions": questions}
+                continue
+            if ROLE_RANK[role] < ROLE_RANK[current["role"]]:
+                current["role"] = role
+            for question in questions:
+                if question not in current["questions"]:
+                    current["questions"].append(question)
+        kiran_list = []
+        for idx in sorted(by_idx):
+            item = {"index": idx, "role": by_idx[idx]["role"]}
+            if by_idx[idx]["questions"]:
+                item["questions"] = by_idx[idx]["questions"]
+            kiran_list.append(item)
         items.append({"name": name, "count": len(kiran_list), "kirans": kiran_list})
 
     listed = {item["name"] for item in items}

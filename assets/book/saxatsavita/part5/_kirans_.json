@@ -758,12 +758,7 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": [
-                {
-                    "name": "બચુભાઈ",
-                    "role": "reader"
-                }
-            ]
+            "haribhakts": []
         },
         {
             "date": "4-6-1979",
@@ -790,7 +785,10 @@
             "haribhakts": [
                 {
                     "name": "જેઠાબાપા",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "સંકલ્પ બંધ થતા નથી એનું કારણ શું ?"
+                    ]
                 }
             ]
         },
@@ -888,12 +886,7 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": [
-                {
-                    "name": "પુરુષોત્તમભાઈ",
-                    "role": "reader"
-                }
-            ]
+            "haribhakts": []
         },
         {
             "date": "5-7-1979",

@@ -1,12 +1,19 @@
 class KiranHaribhakt {
   final String name;
-  final String role; // host | reader | mentioned
+  final String role; // host | reader | question | mentioned
+  final List<String> questions;
 
-  const KiranHaribhakt({required this.name, required this.role});
+  const KiranHaribhakt({
+    required this.name,
+    required this.role,
+    this.questions = const [],
+  });
 
   bool get isHost => role == 'host';
 
   bool get isReader => role == 'reader';
+
+  bool get isQuestion => role == 'question';
 
   bool get isMentioned => role == 'mentioned';
 
@@ -14,10 +21,19 @@ class KiranHaribhakt {
     return KiranHaribhakt(
       name: (map['name'] as String? ?? '').trim(),
       role: (map['role'] as String? ?? 'reader').trim(),
+      questions:
+          (map['questions'] as List<dynamic>? ?? [])
+              .map((item) => item.toString().trim())
+              .where((item) => item.isNotEmpty)
+              .toList(),
     );
   }
 
-  Map<String, dynamic> toMap() => {'name': name, 'role': role};
+  Map<String, dynamic> toMap() => {
+    'name': name,
+    'role': role,
+    if (questions.isNotEmpty) 'questions': questions,
+  };
 }
 
 class KiranInfo {

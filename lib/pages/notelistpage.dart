@@ -356,6 +356,7 @@ class _NoteListPageState extends State<NoteListPage> {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.notes,
+        titleIcon: Icons.note,
         actionItems: [ActionOptions.settings],
         extraActions: [
           IconButton(

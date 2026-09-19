@@ -91,7 +91,10 @@
             "haribhakts": [
                 {
                     "name": "નાગજીભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "બ્રહ્મનાં દર્શન કેમ થાય?"
+                    ]
                 }
             ]
         },
@@ -379,7 +382,10 @@
             "haribhakts": [
                 {
                     "name": "ભગવાનજીભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "સાક્ષીનું જાણપણું કેટલું છે ?"
+                    ]
                 },
                 {
                     "name": "કુંતાજી",
@@ -412,7 +418,10 @@
             "haribhakts": [
                 {
                     "name": "ભગવાનજીભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "લાખો સાધન કલ્યાણના છે. પણ એકમાં બધાંય સાધન આવી જાય એવું ક્યું સાધન છે ?"
+                    ]
                 },
                 {
                     "name": "જાગાભગત",
@@ -487,7 +496,10 @@
                 },
                 {
                     "name": "રામજીભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "ભગવાનનું સુખ કેટલું ગણાય ?"
+                    ]
                 },
                 {
                     "name": "લાલાબાપા",
@@ -508,11 +520,17 @@
             "haribhakts": [
                 {
                     "name": "ચંદુભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "આપણું આત્યંતિક કલ્યાણ કેમ થાય ?"
+                    ]
                 },
                 {
                     "name": "નાનજીભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "એવા સ્વભાવ કેમ ટળે ?"
+                    ]
                 }
             ]
         },
@@ -921,7 +939,10 @@
                 },
                 {
                     "name": "જેઠાભાઈ",
-                    "role": "reader"
+                    "role": "question",
+                    "questions": [
+                        "ભગવાનને ગોતવા કેવી રીતે ?"
+                    ]
                 }
             ]
         },
@@ -2138,10 +2159,6 @@
                 },
                 {
                     "name": "રામજીભાઈ",
-                    "role": "reader"
-                },
-                {
-                    "name": "ચંદુભાઈ ત્રિવેદી",
                     "role": "reader"
                 }
             ]

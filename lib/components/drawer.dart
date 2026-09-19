@@ -213,9 +213,9 @@ class _DrawerState extends State<MyDrawer> {
               ),
             ),
           ],
-          ...?widget._drawerItems?.map((item) {
-            return _buildDrawerItem(item);
-          }),
+          ...?widget._drawerItems
+              ?.where(_shouldShowDrawerItem)
+              .map(_buildDrawerItem),
           const Divider(),
           FutureBuilder<PackageInfo>(
             future: PackageInfo.fromPlatform(),
@@ -235,6 +235,15 @@ class _DrawerState extends State<MyDrawer> {
         ],
       ),
     );
+  }
+
+  bool _shouldShowDrawerItem(DrawerItem item) {
+    final loggedIn = FirebaseAuth.instance.currentUser != null;
+    if (!loggedIn &&
+        (item == DrawerItem.haribhakts || item == DrawerItem.profile)) {
+      return false;
+    }
+    return true;
   }
 
   Widget _buildDrawerItem(DrawerItem item) {

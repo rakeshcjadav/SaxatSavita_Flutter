@@ -367,6 +367,7 @@ class _ProfilePageState extends State<ProfilePage> {
         appBar: buildAppBar(
           context,
           title: AppLocalizations.of(context)!.profile,
+          titleIcon: Icons.person,
         ),
         body: body,
       ),

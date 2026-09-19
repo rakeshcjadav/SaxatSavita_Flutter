@@ -156,7 +156,9 @@
     "haribhakt_no_matches": "આ શોધ સાથે કોઈ હરિભક્ત મેળ ખાતા નથી",
     "haribhakt_role_host": "યજમાન",
     "haribhakt_role_reader": "વાંચનાર",
+    "haribhakt_role_question": "પૂછનાર",
     "haribhakt_role_mentioned": "વાતમાં",
+    "haribhakt_questions": "પ્રશ્નો",
     "haribhakt_kiran_count": "{count} કિરણો",
     "@haribhakt_kiran_count": {
         "description": "Number of kirans a haribhakt appears in",
@@ -187,6 +189,15 @@
     "haribhakt_reader_count": "{count} વાર વાંચનાર",
     "@haribhakt_reader_count": {
         "description": "How many kirans this person read",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "haribhakt_question_count": "{count} વાર પૂછનાર",
+    "@haribhakt_question_count": {
+        "description": "How many kirans this person asked a question in",
         "placeholders": {
             "count": {
                 "type": "int"
