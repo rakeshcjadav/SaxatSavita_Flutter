@@ -181,6 +181,7 @@ class FirebaseIntegrationHelper {
         debugPrint('Reading plans loaded from Firebase');
       }
 
+      await KiranQuizService().refreshBankFromFirestore();
       await loadQuizResultsFromFirebase();
 
       debugPrint('Data loading from Firebase completed');

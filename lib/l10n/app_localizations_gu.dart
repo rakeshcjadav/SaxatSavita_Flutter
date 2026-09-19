@@ -1817,7 +1817,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get quiz_perfect => 'સંપૂર્ણ સાચા!';
 
   @override
-  String get quiz_already_scored => 'અભ્યાસ — આ કિરણના ગુણ મળી લેવાય છે';
+  String get quiz_already_scored => 'અભ્યાસ — આ કિરણના ગુણ તમને મળી ગયા છે';
 
   @override
   String get quiz_no_questions => 'આ કિરણમાં હજુ પ્રશ્ન નથી';

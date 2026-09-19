@@ -24,7 +24,7 @@ class KiranQuizQuestion {
               .map((item) => item.toString().trim())
               .where((item) => item.isNotEmpty)
               .toList(),
-      correctIndex: map['correctIndex'] as int? ?? 0,
+      correctIndex: _readInt(map['correctIndex']),
       explanation: (map['explanation'] as String? ?? '').trim(),
       sourceHint: (map['sourceHint'] as String? ?? '').trim(),
     );
@@ -66,9 +66,9 @@ class KiranQuiz {
 
   factory KiranQuiz.fromMap(Map<String, dynamic> map) {
     return KiranQuiz(
-      part: map['part'] as int? ?? 0,
-      kiranIndex: map['kiranIndex'] as int? ?? 0,
-      version: map['version'] as int? ?? 1,
+      part: _readInt(map['part']),
+      kiranIndex: _readInt(map['kiranIndex']),
+      version: _readInt(map['version'], 1),
       locale: (map['locale'] as String? ?? 'gu').trim(),
       questions:
           (map['questions'] as List<dynamic>? ?? [])
@@ -120,20 +120,20 @@ class KiranQuizResult {
 
   factory KiranQuizResult.fromJson(Map<String, dynamic> json) {
     return KiranQuizResult(
-      part: json['part'] as int? ?? 0,
-      kiranIndex: json['kiranIndex'] as int? ?? 0,
-      score: json['score'] as int? ?? 0,
-      total: json['total'] as int? ?? 0,
+      part: _readInt(json['part']),
+      kiranIndex: _readInt(json['kiranIndex']),
+      score: _readInt(json['score']),
+      total: _readInt(json['total']),
       completedAt:
           DateTime.tryParse(json['completedAt']?.toString() ?? '') ??
           DateTime.now(),
-      quizVersion: json['quizVersion'] as int? ?? 1,
+      quizVersion: _readInt(json['quizVersion'], 1),
       rewardIds:
           (json['rewardIds'] as List<dynamic>? ?? [])
               .map((item) => item.toString())
               .where((item) => item.isNotEmpty)
               .toList(),
-      pointsAwarded: json['pointsAwarded'] as int? ?? 0,
+      pointsAwarded: _readInt(json['pointsAwarded']),
     );
   }
 
@@ -147,4 +147,10 @@ class KiranQuizResult {
     'rewardIds': rewardIds,
     'pointsAwarded': pointsAwarded,
   };
+}
+
+int _readInt(dynamic value, [int fallback = 0]) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value?.toString() ?? '') ?? fallback;
 }

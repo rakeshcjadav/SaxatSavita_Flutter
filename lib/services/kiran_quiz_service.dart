@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/remote_config_service.dart';
@@ -16,15 +14,16 @@ class KiranQuizService {
   KiranQuizService._internal();
 
   static const firstQuizBadge = 'badge_first_quiz';
-  static const _bankAsset =
-      'assets/book/saxatsavita/quizzes/kiran_quizzes.json';
-  static const _bankPref = 'kiran_quiz_bank';
+  static const _bankPref = 'kiran_quiz_bank_remote';
+  static const _legacyBankPref = 'kiran_quiz_bank';
   static const _resultsPref = 'quiz_results';
+  static const _fetchTimeout = Duration(seconds: 8);
 
   Map<String, KiranQuiz>? _bank;
   List<KiranQuizResult>? _results;
   Future<void>? _bankLoad;
   Future<void>? _resultsLoad;
+  final Map<String, Future<KiranQuiz?>> _remoteFetches = {};
 
   static String docId(int part, int kiranIndex) => '${part}_$kiranIndex';
 
@@ -33,6 +32,7 @@ class KiranQuizService {
     _results = null;
     _bankLoad = null;
     _resultsLoad = null;
+    _remoteFetches.clear();
   }
 
   Future<bool> isEnabled() async {
@@ -42,9 +42,11 @@ class KiranQuizService {
   Future<KiranQuiz?> quizFor(int part, int kiranIndex) async {
     if (!RemoteConfigService().enableQuiz) return null;
     await _ensureBank();
-    final quiz = _bank?[docId(part, kiranIndex)];
-    if (quiz == null || quiz.questions.isEmpty) return null;
-    return quiz;
+    final remote = await _fetchQuizFromFirestore(part, kiranIndex);
+    if (remote != null) return remote;
+    final cached = _bank?[docId(part, kiranIndex)];
+    if (cached == null || cached.questions.isEmpty) return null;
+    return cached;
   }
 
   Future<bool> hasQuiz(int part, int kiranIndex) async {
@@ -145,22 +147,20 @@ class KiranQuizService {
   }
 
   Future<void> refreshBankFromFirestore() async {
-    await _ensureBank();
     if (FirebaseAuth.instance.currentUser == null) return;
     try {
-      final snapshot =
-          await FirebaseFirestore.instance.collection('kiranQuizzes').get();
-      if (snapshot.docs.isEmpty) return;
-      final bank = Map<String, KiranQuiz>.from(_bank ?? {});
+      final snapshot = await FirebaseFirestore.instance
+          .collection('kiranQuizzes')
+          .get()
+          .timeout(_fetchTimeout);
+      final bank = <String, KiranQuiz>{};
       for (final doc in snapshot.docs) {
         final quiz = KiranQuiz.fromMap(doc.data());
         if (quiz.questions.isEmpty) continue;
-        final current = bank[quiz.docId];
-        if (current == null || quiz.version >= current.version) {
-          bank[quiz.docId] = quiz;
-        }
+        bank[quiz.docId] = quiz;
       }
       _bank = bank;
+      _remoteFetches.clear();
       await _persistBank();
     } catch (e) {
       debugPrint('KiranQuizService: Firestore bank fetch failed: $e');
@@ -175,17 +175,39 @@ class KiranQuizService {
     return _resultsLoad ??= _loadResults();
   }
 
+  Future<KiranQuiz?> _fetchQuizFromFirestore(int part, int kiranIndex) {
+    final id = docId(part, kiranIndex);
+    return _remoteFetches.putIfAbsent(id, () => _downloadQuiz(id));
+  }
+
+  Future<KiranQuiz?> _downloadQuiz(String id) async {
+    if (FirebaseAuth.instance.currentUser == null) return null;
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('kiranQuizzes')
+          .doc(id)
+          .get()
+          .timeout(_fetchTimeout);
+      if (!snapshot.exists || snapshot.data() == null) return null;
+      final quiz = KiranQuiz.fromMap(snapshot.data()!);
+      if (quiz.questions.isEmpty) return null;
+      final bank = Map<String, KiranQuiz>.from(_bank ?? {});
+      bank[quiz.docId] = quiz;
+      _bank = bank;
+      await _persistBank();
+      return quiz;
+    } catch (e) {
+      debugPrint('KiranQuizService: Firestore quiz $id failed: $e');
+      _remoteFetches.remove(id);
+      return null;
+    }
+  }
+
   Future<void> _loadBank() async {
     final bank = <String, KiranQuiz>{};
     try {
-      final raw = await rootBundle.loadString(_bankAsset);
-      _mergeBankJson(bank, raw);
-    } catch (e) {
-      debugPrint('KiranQuizService: seed bank missing: $e');
-    }
-
-    try {
       final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_legacyBankPref);
       final cached = prefs.getString(_bankPref);
       if (cached != null && cached.isNotEmpty) {
         _mergeBankJson(bank, cached);
@@ -193,9 +215,7 @@ class KiranQuizService {
     } catch (e) {
       debugPrint('KiranQuizService: cache bank failed: $e');
     }
-
     _bank = bank;
-    unawaited(refreshBankFromFirestore());
   }
 
   void _mergeBankJson(Map<String, KiranQuiz> bank, String raw) {
@@ -208,10 +228,7 @@ class KiranQuizService {
       if (item is! Map) continue;
       final quiz = KiranQuiz.fromMap(Map<String, dynamic>.from(item));
       if (quiz.questions.isEmpty) continue;
-      final current = bank[quiz.docId];
-      if (current == null || quiz.version >= current.version) {
-        bank[quiz.docId] = quiz;
-      }
+      bank[quiz.docId] = quiz;
     }
   }
 

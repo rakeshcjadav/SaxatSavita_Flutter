@@ -108,7 +108,7 @@ Today the app is offline-first, Gujarati-only for kiran text, and has no live LL
 2. Ask for 2–3 Gujarati MCQs: one fact (place / host / reader), one teaching, one optional “what was asked” if the kiran has recorded questions.
 3. Each item: question, 4 options, `correctIndex`, short explanation tied to the passage, optional `sourceHint` (paragraph / heading).
 4. Human review before publish (doctrine and Gujarati).
-5. Upload to Firestore. Bump `version` when a kiran’s set changes.
+5. Upload to Firestore as `farenidham.dev@gmail.com` only (`scripts/deploy_firebase.sh`). Bump `version` when a kiran’s set changes. Verify with `scripts/deploy_firebase.sh verify` or the Firestore console `kiranQuizzes` collection.
 
 Suggested bank document (content, **not** under `users/{uid}`):
 
@@ -199,4 +199,4 @@ Rules to decide before build:
 | Remote Config | `lib/services/remote_config_service.dart` |
 | Dev Gemini TTS | `scripts/gemini_tts_from_kiran_txt.py` |
 | Haribhakt extraction | `scripts/inject_haribhakt_names.py` |
-| Quiz seed / generate / upload | `assets/book/saxatsavita/quizzes/kiran_quizzes.json`, `scripts/generate_kiran_quizzes.py`, `scripts/upload_kiran_quizzes.py` |
+| Quiz seed / generate / upload | `assets/book/saxatsavita/quizzes/kiran_quizzes.json`, `scripts/generate_kiran_quizzes.py`, `scripts/upload_kiran_quizzes.py`, `scripts/deploy_firebase.sh` (always `farenidham.dev@gmail.com`) |
