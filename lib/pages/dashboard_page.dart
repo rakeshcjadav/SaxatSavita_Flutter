@@ -109,8 +109,13 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildWelcomeCard(),
-                    if (_dailyQuizEnabled) _buildDailyQuizCard(),
-                    if (_dailyQuizEnabled) _buildDailyQuizLeaderboardCard(),
+                    if (_dailyQuizEnabled) ...[
+                      const SizedBox(height: 8),
+                      _buildDailyQuizCard(),
+                      const SizedBox(height: 8),
+                      _buildDailyQuizLeaderboardCard(),
+                      const SizedBox(height: 8),
+                    ],
                     _buildStreakCard(),
                     const SizedBox(height: 16),
                     _buildQuickActionsGrid(),
@@ -165,6 +170,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildWelcomeCard() {
+    final colors = Theme.of(context).colorScheme;
     final greetingType = _dashboardService.getTimeBasedGreeting();
     final greeting = switch (greetingType) {
       GreetingType.morning => AppLocalizations.of(context)!.goodMorning,
@@ -176,67 +182,63 @@ class _DashboardPageState extends State<DashboardPage> {
             .trim();
     final user = FirebaseAuth.instance.currentUser;
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 32,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              backgroundImage:
-                  user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
-              child:
-                  user?.photoURL == null
-                      ? Text(
-                        userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      )
-                      : null,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    greeting,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    userName,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (_userProfile?.city != null &&
-                      _userProfile!.city.isNotEmpty) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      _userProfile!.city,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
-                        fontSize: 16,
+    return DashboardOutlinedCard(
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 32,
+            backgroundColor: colors.primary,
+            backgroundImage:
+                user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+            child:
+                user?.photoURL == null
+                    ? Text(
+                      userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: colors.onPrimary,
                       ),
+                    )
+                    : null,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  greeting,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colors.onSurfaceVariant,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  userName,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    color: colors.primary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (_userProfile?.city != null &&
+                    _userProfile!.city.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    _userProfile!.city,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                      fontSize: 16,
                     ),
-                  ],
+                  ),
                 ],
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -267,136 +269,150 @@ class _DashboardPageState extends State<DashboardPage> {
     final total = _dailyQuizResult?.total ?? 5;
     final locale = Localizations.localeOf(context).toString();
     final dateLabel = DateFormat.MMMd(locale).format(DateTime.now());
+    final statusLabel =
+        completed
+            ? l10n.daily_quiz_completed
+            : l10n.daily_quiz_questions_count(5);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Card(
-        elevation: 4,
-        color: colors.primaryContainer,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: _openDailyQuiz,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+    return DashboardOutlinedCard(
+      onTap: _openDailyQuiz,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: colors.primary,
+                child: Icon(
+                  completed ? Icons.check : Icons.auto_awesome,
+                  color: colors.onPrimary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundColor: colors.primary,
+                    Text(
+                      l10n.daily_quiz_intro_title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: colors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '$dateLabel · $statusLabel',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...List.generate(5, (index) {
+                    final filled = completed && index < score;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 6),
                       child: Icon(
-                        completed ? Icons.check : Icons.auto_awesome,
-                        color: colors.onPrimary,
+                        filled ? Icons.circle : Icons.circle_outlined,
+                        size: 14,
+                        color:
+                            filled
+                                ? colors.primary
+                                : colors.onSurfaceVariant.withValues(
+                                  alpha: 0.45,
+                                ),
                       ),
+                    );
+                  }),
+                  if (completed)
+                    Text(
+                      l10n.quiz_score(score, total),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelLarge?.copyWith(color: colors.primary),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.daily_quiz_intro_title,
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            '$dateLabel · ${completed ? l10n.daily_quiz_completed : l10n.daily_quiz_questions_count(5)}',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    FilledButton(
-                      onPressed: _openDailyQuiz,
-                      child: Text(
-                        completed
-                            ? l10n.daily_quiz_review
-                            : l10n.daily_quiz_start,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
+                ],
+              ),
+              if (_dailyQuizStreak > 0)
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    ...List.generate(5, (index) {
-                      final filled = completed && index < score;
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: Icon(
-                          filled ? Icons.circle : Icons.circle_outlined,
-                          size: 14,
-                          color:
-                              filled
-                                  ? colors.primary
-                                  : colors.onPrimaryContainer.withValues(
-                                    alpha: 0.45,
-                                  ),
-                        ),
-                      );
-                    }),
-                    if (completed)
-                      Text(
-                        l10n.quiz_score(score, total),
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
-                    const Spacer(),
-                    if (_dailyQuizStreak > 0)
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.local_fire_department,
-                            size: 18,
-                            color: Colors.orange.shade700,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(l10n.daily_quiz_streak_count(_dailyQuizStreak)),
-                        ],
-                      ),
+                    Icon(
+                      Icons.local_fire_department,
+                      size: 18,
+                      color: Colors.orange.shade700,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.daily_quiz_streak_count(_dailyQuizStreak),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: colors.primary),
+                    ),
                   ],
                 ),
-              ],
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: _openDailyQuiz,
+              child: Text(
+                completed ? l10n.daily_quiz_review : l10n.daily_quiz_start,
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildStreakCard() {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: Theme.of(context).colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildStreakItem(
-              icon: Icons.local_fire_department,
-              label: AppLocalizations.of(context)!.currentStreak,
-              value: '${_statistics?.currentStreak ?? 0}',
-              color: Colors.orange,
-            ),
-            const SizedBox(height: 16),
-            Container(
-              height: 1,
-              width: double.infinity,
-              color: Colors.grey[300],
-            ),
-            const SizedBox(height: 16),
-            _buildStreakItem(
-              icon: Icons.emoji_events,
-              label: AppLocalizations.of(context)!.longestStreak,
-              value: '${_statistics?.longestStreak ?? 0}',
-              color: Colors.amber,
-            ),
-          ],
-        ),
+    final colors = Theme.of(context).colorScheme;
+    return DashboardOutlinedCard(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildStreakItem(
+            icon: Icons.local_fire_department,
+            label: AppLocalizations.of(context)!.currentStreak,
+            value: '${_statistics?.currentStreak ?? 0}',
+            color: Colors.orange,
+          ),
+          const SizedBox(height: 16),
+          Container(
+            height: 1,
+            width: double.infinity,
+            color: colors.outline.withValues(alpha: 0.28),
+          ),
+          const SizedBox(height: 16),
+          _buildStreakItem(
+            icon: Icons.emoji_events,
+            label: AppLocalizations.of(context)!.longestStreak,
+            value: '${_statistics?.longestStreak ?? 0}',
+            color: Colors.amber,
+          ),
+        ],
       ),
     );
   }
@@ -407,6 +423,7 @@ class _DashboardPageState extends State<DashboardPage> {
     required String value,
     required Color color,
   }) {
+    final colors = Theme.of(context).colorScheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -416,15 +433,15 @@ class _DashboardPageState extends State<DashboardPage> {
           value,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: colors.primary,
           ),
         ),
         const SizedBox(width: 8),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
           textAlign: TextAlign.center,
         ),
       ],
@@ -613,171 +630,162 @@ class _DashboardPageState extends State<DashboardPage> {
     required String value,
     required Color color,
   }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+    final colors = Theme.of(context).colorScheme;
+    return DashboardOutlinedCard(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 28),
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colors.primary,
             ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildActivePlanCard() {
     final plan = _statistics?.activePlan;
+    final colors = Theme.of(context).colorScheme;
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: InkWell(
-        onTap: () => Navigator.pushNamed(context, '/readingplan'),
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child:
-              plan == null
-                  ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    return DashboardOutlinedCard(
+      onTap: () => Navigator.pushNamed(context, '/readingplan'),
+      child:
+          plan == null
+              ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.assignment_outlined,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 28,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.noActivePlan,
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
+                      Icon(
+                        Icons.assignment_outlined,
+                        color: colors.primary,
+                        size: 28,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        AppLocalizations.of(context)!.noActivePlanMessage,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed:
-                              () =>
-                                  Navigator.pushNamed(context, '/readingplan'),
-                          icon: const Icon(Icons.add),
-                          label: Text(AppLocalizations.of(context)!.createPlan),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context)!.noActivePlan,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colors.primary,
                           ),
                         ),
-                      ),
-                    ],
-                  )
-                  : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.assignment,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.activePlan,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: Colors.grey[400],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        plan.title,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        plan.description,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[600],
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.progress,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                const SizedBox(height: 4),
-                                LinearProgressIndicator(
-                                  value: (_statistics?.planProgress ?? 0) / 100,
-                                  backgroundColor: Colors.grey[200],
-                                  minHeight: 8,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            '${_statistics?.planProgress.toStringAsFixed(0) ?? 0}%',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
-        ),
-      ),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.of(context)!.noActivePlanMessage,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed:
+                          () => Navigator.pushNamed(context, '/readingplan'),
+                      icon: const Icon(Icons.add),
+                      label: Text(AppLocalizations.of(context)!.createPlan),
+                    ),
+                  ),
+                ],
+              )
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.assignment, color: colors.primary),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context)!.activePlan,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colors.primary,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    plan.title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    plan.description,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.progress,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: colors.onSurfaceVariant),
+                            ),
+                            const SizedBox(height: 4),
+                            LinearProgressIndicator(
+                              value: (_statistics?.planProgress ?? 0) / 100,
+                              backgroundColor: colors.surfaceContainerHighest,
+                              minHeight: 8,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        '${_statistics?.planProgress.toStringAsFixed(0) ?? 0}%',
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
     );
   }
 
@@ -787,234 +795,223 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildDailyReadingChart() {
     final dailyData = _getDailyReadingData();
+    final colors = Theme.of(context).colorScheme;
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.dailyReadingMinutes,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+    return DashboardOutlinedCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppLocalizations.of(context)!.dailyReadingMinutes,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colors.primary,
             ),
-            const SizedBox(height: 8),
-            Column(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.dailyChartDescription,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+          ),
+          const SizedBox(height: 8),
+          Column(
+            children: [
+              Text(
+                AppLocalizations.of(context)!.dailyChartDescription,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.timeline,
-                        size: 12,
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.timeline,
+                      size: 12,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      AppLocalizations.of(context)!.dailyChartLatestRange,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.primary,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        AppLocalizations.of(context)!.dailyChartLatestRange,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Scrollbar(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                height: 200,
+                width: dailyData.length < 7 ? 300 : dailyData.length * 50.0,
+                child: LineChart(
+                  LineChartData(
+                    minX: 0,
+                    maxX: (dailyData.length - 1).toDouble(),
+                    minY: 0,
+                    maxY:
+                        dailyData.isEmpty
+                            ? 1
+                            : dailyData
+                                    .map((e) => e.minutes)
+                                    .reduce((a, b) => a > b ? a : b) *
+                                1.1,
+                    clipData: FlClipData.all(),
+                    gridData: const FlGridData(show: true),
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 40,
+                          interval: null,
+                          getTitlesWidget: (value, meta) {
+                            return Text(
+                              '${value.toInt()}${AppLocalizations.of(context)!.chartMinutesLabel.substring(0, 2)}',
+                              style: const TextStyle(fontSize: 10),
+                            );
+                          },
                         ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 40,
+                          interval: 1,
+                          getTitlesWidget: (value, meta) {
+                            final index = value.toInt();
+                            if (index >= 0 && index < dailyData.length) {
+                              final date = dailyData[index].date;
+                              final hasData = dailyData[index].minutes > 0;
+
+                              final isMostRecentWithData = _isMostRecentDate(
+                                date,
+                                dailyData,
+                              );
+                              if (isMostRecentWithData ||
+                                  _isToday(date) ||
+                                  _isYesterday(date)) {
+                                final label =
+                                    isMostRecentWithData && !_isToday(date)
+                                        ? _getMostRecentDateLabel(date, hasData)
+                                        : _getIntuitiveDateLabel(date);
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    label,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              final shouldShow =
+                                  dailyData.length > 20
+                                      ? index % 7 == 0
+                                      : dailyData.length > 10
+                                      ? index % 3 == 0
+                                      : true;
+
+                              if (shouldShow ||
+                                  index == 0 ||
+                                  index == dailyData.length - 1) {
+                                final label = _getIntuitiveDateLabel(date);
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    label,
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.7),
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                            return const Text('');
+                          },
+                        ),
+                      ),
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                    ),
+                    borderData: FlBorderData(
+                      show: true,
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots:
+                            dailyData.asMap().entries.map((entry) {
+                              return FlSpot(
+                                entry.key.toDouble(),
+                                entry.value.minutes,
+                              );
+                            }).toList(),
+                        isCurved: true,
+                        curveSmoothness: 0.3,
+                        color: Theme.of(context).colorScheme.primary,
+                        barWidth: 3,
+                        dotData: FlDotData(
+                          show: true,
+                          getDotPainter: (spot, percent, barData, index) {
+                            final isToday = index == 0;
+                            return FlDotCirclePainter(
+                              radius: isToday ? 6 : 4,
+                              color:
+                                  isToday
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context).colorScheme.primary
+                                          .withValues(alpha: 0.8),
+                              strokeWidth: isToday ? 3 : 2,
+                              strokeColor:
+                                  Theme.of(context).colorScheme.surface,
+                            );
+                          },
+                        ),
+                        belowBarData: BarAreaData(
+                          show: true,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.1),
+                        ),
+                        preventCurveOverShooting: true,
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Scrollbar(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  height: 200,
-                  width: dailyData.length < 7 ? 300 : dailyData.length * 50.0,
-                  child: LineChart(
-                    LineChartData(
-                      minX: 0,
-                      maxX: (dailyData.length - 1).toDouble(),
-                      minY: 0,
-                      maxY:
-                          dailyData.isEmpty
-                              ? 1
-                              : dailyData
-                                      .map((e) => e.minutes)
-                                      .reduce((a, b) => a > b ? a : b) *
-                                  1.1,
-                      clipData: FlClipData.all(),
-                      gridData: const FlGridData(show: true),
-                      titlesData: FlTitlesData(
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 40,
-                            interval: null,
-                            getTitlesWidget: (value, meta) {
-                              return Text(
-                                '${value.toInt()}${AppLocalizations.of(context)!.chartMinutesLabel.substring(0, 2)}',
-                                style: const TextStyle(fontSize: 10),
-                              );
-                            },
-                          ),
-                        ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 40,
-                            interval: 1,
-                            getTitlesWidget: (value, meta) {
-                              final index = value.toInt();
-                              if (index >= 0 && index < dailyData.length) {
-                                final date = dailyData[index].date;
-                                final hasData = dailyData[index].minutes > 0;
-
-                                final isMostRecentWithData = _isMostRecentDate(
-                                  date,
-                                  dailyData,
-                                );
-                                if (isMostRecentWithData ||
-                                    _isToday(date) ||
-                                    _isYesterday(date)) {
-                                  final label =
-                                      isMostRecentWithData && !_isToday(date)
-                                          ? _getMostRecentDateLabel(
-                                            date,
-                                            hasData,
-                                          )
-                                          : _getIntuitiveDateLabel(date);
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      label,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                final shouldShow =
-                                    dailyData.length > 20
-                                        ? index % 7 == 0
-                                        : dailyData.length > 10
-                                        ? index % 3 == 0
-                                        : true;
-
-                                if (shouldShow ||
-                                    index == 0 ||
-                                    index == dailyData.length - 1) {
-                                  final label = _getIntuitiveDateLabel(date);
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      label,
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.7),
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
-                              return const Text('');
-                            },
-                          ),
-                        ),
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                      ),
-                      borderData: FlBorderData(
-                        show: true,
-                        border: Border.all(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.outline.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
-                      ),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots:
-                              dailyData.asMap().entries.map((entry) {
-                                return FlSpot(
-                                  entry.key.toDouble(),
-                                  entry.value.minutes,
-                                );
-                              }).toList(),
-                          isCurved: true,
-                          curveSmoothness: 0.3,
-                          color: Theme.of(context).colorScheme.primary,
-                          barWidth: 3,
-                          dotData: FlDotData(
-                            show: true,
-                            getDotPainter: (spot, percent, barData, index) {
-                              final isToday = index == 0;
-                              return FlDotCirclePainter(
-                                radius: isToday ? 6 : 4,
-                                color:
-                                    isToday
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context).colorScheme.primary
-                                            .withValues(alpha: 0.8),
-                                strokeWidth: isToday ? 3 : 2,
-                                strokeColor:
-                                    Theme.of(context).colorScheme.surface,
-                              );
-                            },
-                          ),
-                          belowBarData: BarAreaData(
-                            show: true,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.1),
-                          ),
-                          preventCurveOverShooting: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1079,90 +1076,110 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildRecentActivityCard() {
+    final colors = Theme.of(context).colorScheme;
     final recentHistory =
         (_statistics?.recentHistory ?? [])
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.recentActivity,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+    return DashboardOutlinedCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppLocalizations.of(context)!.recentActivity,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colors.primary,
             ),
-            const SizedBox(height: 12),
-            if (recentHistory.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Center(
-                  child: Column(
+          ),
+          const SizedBox(height: 12),
+          if (recentHistory.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.history,
+                      size: 48,
+                      color: colors.onSurfaceVariant,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalizations.of(context)!.noActivityYet,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: recentHistory.length.clamp(0, 5),
+              separatorBuilder:
+                  (_, _) =>
+                      Divider(color: colors.outline.withValues(alpha: 0.18)),
+              itemBuilder: (context, index) {
+                final history = recentHistory[index];
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  tileColor: Colors.transparent,
+                  title: Text(
+                    _getKiranTitle(history),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(color: colors.primary),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.history, size: 48, color: Colors.grey[400]),
-                      const SizedBox(height: 8),
                       Text(
-                        AppLocalizations.of(context)!.noActivityYet,
-                        style: TextStyle(color: Colors.grey[600]),
+                        history.category,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _dashboardService.formatReadingTime(
+                              history.durationSeconds,
+                            ),
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: colors.primary,
+                            ),
+                          ),
+                          Text(
+                            _formatDate(history.createdAt),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: colors.onSurfaceVariant),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ),
-              )
-            else
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: recentHistory.length.clamp(0, 5),
-                separatorBuilder: (_, _) => const Divider(),
-                itemBuilder: (context, index) {
-                  final history = recentHistory[index];
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(_getKiranTitle(history)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          history.category,
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              _dashboardService.formatReadingTime(
-                                history.durationSeconds,
-                              ),
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              _formatDate(history.createdAt),
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            const SizedBox(height: 12),
-            if (recentHistory.length > 5)
-              ElevatedButton(
+                );
+              },
+            ),
+          const SizedBox(height: 12),
+          if (recentHistory.length > 5)
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
                 onPressed:
                     () => Navigator.pushNamed(context, '/readinghistory'),
                 child: Text(AppLocalizations.of(context)!.viewAll),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }

@@ -58,6 +58,9 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final barColor = colorScheme.surfaceContainer;
+
     return Scaffold(
       drawer:
           _selectedIndex == 1
@@ -97,37 +100,55 @@ class _MainNavigationState extends State<MainNavigation> {
           _ProfilePageContent(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        elevation: 8,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.dashboard),
-            label: AppLocalizations.of(context)!.dashboard,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: AppLocalizations.of(context)!.sakshatSavita,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.edit_note),
-            label: AppLocalizations.of(context)!.notes,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.history),
-            label: AppLocalizations.of(context)!.reading_history,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
-            label: AppLocalizations.of(context)!.profile,
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
+      bottomNavigationBar: DecoratedBox(
+        decoration: BoxDecoration(
+          color: barColor,
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.shadow.withValues(
+                alpha:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? 0.55
+                        : 0.16,
+              ),
+              blurRadius: 10,
+              offset: const Offset(0, -3),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          elevation: 0,
+          backgroundColor: barColor,
+          items: [
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.dashboard),
+              label: AppLocalizations.of(context)!.dashboard,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.home),
+              label: AppLocalizations.of(context)!.sakshatSavita,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.edit_note),
+              label: AppLocalizations.of(context)!.notes,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.history),
+              label: AppLocalizations.of(context)!.reading_history,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.person),
+              label: AppLocalizations.of(context)!.profile,
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: colorScheme.primary,
+          unselectedItemColor: colorScheme.onSurfaceVariant,
+          onTap: _onItemTapped,
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
+        ),
       ),
     );
   }
