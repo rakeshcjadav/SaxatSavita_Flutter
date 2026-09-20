@@ -47,4 +47,3 @@ app.*.map.json
 releases/
 buildscripts/build/
 android/key.properties
-scripts/quiz_output/

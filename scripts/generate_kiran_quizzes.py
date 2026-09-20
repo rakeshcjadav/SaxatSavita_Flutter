@@ -97,7 +97,7 @@ def main() -> int:
             {
                 "part": part,
                 "kiranIndex": index,
-                "version": 1,
+                "version": 2,
                 "locale": "gu",
                 "questions": questions,
             },

@@ -38,8 +38,8 @@ def strip_html(text: str) -> str:
 
 
 def normalize_gu(text: str) -> str:
-    text = strip_html(text).replace("\u00a0", " ")
-    text = re.sub(r"[\s,.;:!?\"'“”‘’()\[\]{}।૦-૯0-9\-–—]+", "", text)
+    text = strip_html(text).replace("\u00a0", " ").replace("\u200c", "").replace("\u200d", "")
+    text = re.sub(r"[\s,.;:!?\"'“”‘’()\[\]{}।૦-૯0-9\-–—·\u2013\u2014]+", "", text)
     return text
 
 

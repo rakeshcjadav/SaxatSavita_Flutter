@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
 import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
 
@@ -30,6 +31,7 @@ const _softGreenFg = Color(0xFF1B5E20);
 const _softRed = Color(0xFFFFEBEE);
 const _softRedBorder = Color(0xFFE57373);
 const _softRedFg = Color(0xFFB71C1C);
+const _guOptionLetters = ['ક', 'ખ', 'ગ', 'ઘ'];
 
 String _toGujaratiNumeral(int n) {
   return n
@@ -187,7 +189,10 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
             ),
         ],
       ),
-      body: _buildBody(l10n),
+      body: ValueListenableBuilder<AppSettings>(
+        valueListenable: appSettingsNotifier,
+        builder: (context, _, _) => _buildBody(l10n),
+      ),
     );
   }
 
@@ -214,6 +219,7 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
     final question = _questions[_index];
     final progress = (_index + 1) / _roundLength;
     final colors = Theme.of(context).colorScheme;
+    final settings = appSettingsNotifier.value;
     final useGujarati = Localizations.localeOf(context).languageCode == 'gu';
     final kiranHeading = [
       widget.kiranNumber.trim(),
@@ -222,6 +228,8 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
     final questionNo = useGujarati
         ? _toGujaratiNumeral(_index + 1)
         : '${_index + 1}';
+    final questionSize = settings.appFontSize.clamp(16.0, 24.0);
+    final optionSize = (settings.appFontSize - 1).clamp(15.0, 22.0);
 
     return Column(
       children: [
@@ -239,9 +247,11 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
                   kiranHeading,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: colors.onSurfaceVariant,
+                    fontSize: questionSize - 2,
+                    height: 1.35,
                   ),
                 ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               Card(
                 elevation: 0,
                 color: colors.surfaceContainerHighest.withValues(alpha: 0.55),
@@ -249,27 +259,56 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    '$questionNo. ${question.prompt}',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      height: 1.35,
-                    ),
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colors.primary.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          '${l10n.quiz} $questionNo',
+                          style: TextStyle(
+                            color: colors.primary,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        question.prompt,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: questionSize,
+                          height: 1.45,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
               ...List.generate(_optionOrder.length, (displayIndex) {
                 final originalIndex = _optionOrder[displayIndex];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 12),
                   child: _OptionTile(
-                    letter: String.fromCharCode(65 + displayIndex),
+                    letter:
+                        useGujarati
+                            ? _guOptionLetters[displayIndex]
+                            : String.fromCharCode(65 + displayIndex),
                     label: question.options[originalIndex],
                     selected: _selectedDisplay == displayIndex,
                     locked: _locked,
                     isCorrect: originalIndex == question.correctIndex,
+                    fontSize: optionSize,
                     onTap: () => _select(displayIndex),
                   ),
                 );
@@ -281,6 +320,7 @@ class _KiranQuizPageState extends State<KiranQuizPage> {
                       _optionOrder[_selectedDisplay!] == question.correctIndex,
                   explanation: question.explanation,
                   sourceHint: question.sourceHint,
+                  fontSize: optionSize,
                 ),
               ],
             ],
@@ -314,6 +354,7 @@ class _OptionTile extends StatelessWidget {
     required this.selected,
     required this.locked,
     required this.isCorrect,
+    required this.fontSize,
     required this.onTap,
   });
 
@@ -322,6 +363,7 @@ class _OptionTile extends StatelessWidget {
   final bool selected;
   final bool locked;
   final bool isCorrect;
+  final double fontSize;
   final VoidCallback onTap;
 
   @override
@@ -364,33 +406,37 @@ class _OptionTile extends StatelessWidget {
         onTap: locked ? null : onTap,
         borderRadius: BorderRadius.circular(14),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 16,
+                radius: 17,
                 backgroundColor: badgeBg,
                 child: Text(
                   letter,
-                  style: TextStyle(color: badgeFg, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    color: badgeFg,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      height: 1.35,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                    ),
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontSize: fontSize,
+                    height: 1.45,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                   ),
                 ),
               ),
-              if (trailing != null)
+              if (trailing != null) ...[
+                const SizedBox(width: 8),
                 Icon(trailing, color: trailingColor),
+              ],
             ],
           ),
         ),
@@ -404,11 +450,13 @@ class _Feedback extends StatelessWidget {
     required this.correct,
     required this.explanation,
     required this.sourceHint,
+    required this.fontSize,
   });
 
   final bool correct;
   final String explanation;
   final String sourceHint;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -449,18 +497,21 @@ class _Feedback extends StatelessWidget {
             Text(
               explanation,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontSize: fontSize,
                 height: 1.45,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
-          if (sourceHint.isNotEmpty) ...[
-            const SizedBox(height: 8),
+          if (sourceHint.isNotEmpty &&
+              !explanation.contains(sourceHint)) ...[
+            const SizedBox(height: 10),
             Text(
-              '${l10n.quiz_explanation}: $sourceHint',
+              sourceHint,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: accent,
                 fontWeight: FontWeight.w600,
+                fontSize: fontSize - 1,
               ),
             ),
           ],
