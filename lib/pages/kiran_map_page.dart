@@ -70,12 +70,17 @@ class _KiranMapPageState extends State<KiranMapPage> {
 
   @override
   void dispose() {
+    _mapReady = false;
     _mapController.dispose();
     super.dispose();
   }
 
   Future<void> _load() async {
-    await _service.load();
+    try {
+      await _service.load();
+    } catch (_) {
+      // Snapshot falls back to empty; the page still renders.
+    }
     if (!mounted) return;
 
     if (widget.kiranIndex != null) {
@@ -179,6 +184,7 @@ class _KiranMapPageState extends State<KiranMapPage> {
   }
 
   void _keepNorthUp(MapCamera camera) {
+    if (!mounted || !_mapReady) return;
     if (camera.rotation.abs() > 0.01) {
       _mapController.rotate(0);
     }
@@ -410,12 +416,14 @@ class _KiranMapPageState extends State<KiranMapPage> {
             initialRotation: 0,
             interactionOptions: _northUpInteraction,
             onMapReady: () {
+              if (!mounted) return;
               _mapReady = true;
               _keepNorthUp(_mapController.camera);
               _syncPinLabels(_mapController.camera.zoom);
               _fitVisible(preferVillage: true);
             },
             onPositionChanged: (camera, _) {
+              if (!mounted) return;
               _keepNorthUp(camera);
               _syncPinLabels(camera.zoom);
             },
@@ -568,6 +576,7 @@ class _KiranMapPageState extends State<KiranMapPage> {
   }
 
   void _syncPinLabels(double zoom) {
+    if (!mounted) return;
     final show = zoom >= _labelMinZoom;
     if (show == _showPinLabels) return;
     setState(() => _showPinLabels = show);

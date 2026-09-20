@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
@@ -335,7 +336,15 @@ class KiranMapSnapshot {
         a = path[i - 1];
         b = path[i + 1];
       }
-      out.add(_distance.offset(path[i], meters, _leftBearing(a, b)));
+      if (a.latitude == b.latitude && a.longitude == b.longitude) {
+        out.add(path[i]);
+        continue;
+      }
+      try {
+        out.add(_distance.offset(path[i], meters, _leftBearing(a, b)));
+      } catch (_) {
+        out.add(path[i]);
+      }
     }
     return out;
   }
@@ -345,9 +354,11 @@ class KiranMapSnapshot {
     while (bearing > 180) {
       bearing -= 360;
     }
-    while (bearing <= -180) {
+    while (bearing < -180) {
       bearing += 360;
     }
+    if (bearing > 180) return 180;
+    if (bearing < -180) return -180;
     return bearing;
   }
 
@@ -516,78 +527,87 @@ class KiranMapService {
   KiranMapService._internal();
 
   KiranMapSnapshot? _snapshot;
+  Future<void>? _loading;
 
   bool get isLoaded => _snapshot != null;
 
   KiranMapSnapshot get snapshot => _snapshot ?? KiranMapSnapshot.empty;
 
-  Future<void> load() async {
-    if (_snapshot != null) return;
+  Future<void> load() {
+    if (_snapshot != null) return Future.value();
+    return _loading ??= _loadUncached();
+  }
 
-    final kiransRaw = await rootBundle.loadString(
-      'assets/book/saxatsavita/_all_kirans_.json',
-    );
-    final placesRaw = await rootBundle.loadString(
-      'assets/book/saxatsavita/places.json',
-    );
-
-    final kiransJson = jsonDecode(kiransRaw) as Map<String, dynamic>;
-    final placesJson = jsonDecode(placesRaw) as Map<String, dynamic>;
-    final roads = await _loadRoads();
-
-    final byName = <String, PlaceGeo>{};
-    final byId = <String, PlaceGeo>{};
-    for (final item in placesJson['places'] as List<dynamic>? ?? const []) {
-      if (item is! Map) continue;
-      final place = PlaceGeo.fromMap(Map<String, dynamic>.from(item));
-      if (place.id.isEmpty) continue;
-      byId[place.id] = place;
-      for (final name in place.names) {
-        byName[name] = place;
-      }
-    }
-
-    final kirans = <KiranMapKiran>[];
-    final unmapped = <String>{};
-    final yearSet = <int>{};
-
-    for (final item in kiransJson['list'] as List<dynamic>? ?? const []) {
-      if (item is! Map) continue;
-      final map = Map<String, dynamic>.from(item);
-      final info = KiranInfo.fromMap(map);
-      final date = Utils.parseKiranDate(info.date);
-      if (date == null) continue;
-
-      yearSet.add(date.year);
-      kirans.add(
-        KiranMapKiran(
-          partNumber: (map['part'] as num?)?.toInt() ?? 0,
-          kiranInfo: info,
-          date: date,
-        ),
+  Future<void> _loadUncached() async {
+    try {
+      final kiransRaw = await rootBundle.loadString(
+        'assets/book/saxatsavita/_all_kirans_.json',
       );
-      for (final name in KiranMapSnapshot._villageNames(info)) {
-        if (!byName.containsKey(name)) unmapped.add(name);
+      final placesRaw = await rootBundle.loadString(
+        'assets/book/saxatsavita/places.json',
+      );
+
+      final kiransJson = jsonDecode(kiransRaw) as Map<String, dynamic>;
+      final placesJson = jsonDecode(placesRaw) as Map<String, dynamic>;
+      final roads = await _loadRoads();
+
+      final byName = <String, PlaceGeo>{};
+      final byId = <String, PlaceGeo>{};
+      for (final item in placesJson['places'] as List<dynamic>? ?? const []) {
+        if (item is! Map) continue;
+        final place = PlaceGeo.fromMap(Map<String, dynamic>.from(item));
+        if (place.id.isEmpty) continue;
+        byId[place.id] = place;
+        for (final name in place.names) {
+          byName[name] = place;
+        }
       }
+
+      final kirans = <KiranMapKiran>[];
+      final unmapped = <String>{};
+      final yearSet = <int>{};
+
+      for (final item in kiransJson['list'] as List<dynamic>? ?? const []) {
+        if (item is! Map) continue;
+        final map = Map<String, dynamic>.from(item);
+        final info = KiranInfo.fromMap(map);
+        final date = Utils.parseKiranDate(info.date);
+        if (date == null) continue;
+
+        yearSet.add(date.year);
+        kirans.add(
+          KiranMapKiran(
+            partNumber: (map['part'] as num?)?.toInt() ?? 0,
+            kiranInfo: info,
+            date: date,
+          ),
+        );
+        for (final name in KiranMapSnapshot._villageNames(info)) {
+          if (!byName.containsKey(name)) unmapped.add(name);
+        }
+      }
+
+      kirans.sort(KiranMapSnapshot._compareKirans);
+      final years = yearSet.toList()..sort();
+      final unmappedNames = unmapped.toList()..sort();
+      final trips = KiranMapSnapshot.buildTrips(
+        kirans,
+        (name) => byName[name.trim()],
+      );
+
+      _snapshot = KiranMapSnapshot(
+        kirans: kirans,
+        byName: byName,
+        byId: byId,
+        roads: roads,
+        trips: trips,
+        years: years,
+        unmappedNames: unmappedNames,
+      );
+    } catch (error, stack) {
+      debugPrint('KiranMapService.load failed: $error\n$stack');
+      _snapshot = KiranMapSnapshot.empty;
     }
-
-    kirans.sort(KiranMapSnapshot._compareKirans);
-    final years = yearSet.toList()..sort();
-    final unmappedNames = unmapped.toList()..sort();
-    final trips = KiranMapSnapshot.buildTrips(
-      kirans,
-      (name) => byName[name.trim()],
-    );
-
-    _snapshot = KiranMapSnapshot(
-      kirans: kirans,
-      byName: byName,
-      byId: byId,
-      roads: roads,
-      trips: trips,
-      years: years,
-      unmappedNames: unmappedNames,
-    );
   }
 
   Future<Map<String, List<LatLng>>> _loadRoads() async {

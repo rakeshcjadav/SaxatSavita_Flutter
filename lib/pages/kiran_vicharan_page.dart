@@ -61,12 +61,15 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
 
   @override
   void dispose() {
+    _mapReady = false;
     _mapController.dispose();
     super.dispose();
   }
 
   Future<void> _load() async {
-    await _service.load();
+    try {
+      await _service.load();
+    } catch (_) {}
     if (!mounted) return;
     setState(() {
       _trip = _service.snapshot.tripForNumber(widget.tripNumber);
@@ -76,6 +79,7 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
   }
 
   void _keepNorthUp(MapCamera camera) {
+    if (!mounted || !_mapReady) return;
     if (camera.rotation.abs() > 0.01) {
       _mapController.rotate(0);
     }
@@ -99,6 +103,7 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
   }
 
   Future<void> _openKiran(KiranMapKiran kiran) async {
+    if (!mounted) return;
     await openKiran(
       context,
       kiranIndex: kiran.kiranInfo.index,
@@ -174,7 +179,13 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
               ? Center(child: Text(l10n.kiran_map_vicharan_missing))
               : Column(
                 children: [
-                  SizedBox(height: 220, child: _buildMap(context, l10n, trip)),
+                  SizedBox(
+                    height: 220,
+                    child:
+                        trip.stops.isEmpty
+                            ? const SizedBox.shrink()
+                            : _buildMap(context, l10n, trip),
+                  ),
                   Expanded(child: _buildDetails(context, l10n, trip)),
                 ],
               ),
@@ -198,11 +209,15 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
         initialRotation: 0,
         interactionOptions: _northUpInteraction,
         onMapReady: () {
+          if (!mounted) return;
           _mapReady = true;
           _keepNorthUp(_mapController.camera);
           _fitTrip();
         },
-        onPositionChanged: (camera, _) => _keepNorthUp(camera),
+        onPositionChanged: (camera, _) {
+          if (!mounted) return;
+          _keepNorthUp(camera);
+        },
       ),
       children: [
         TileLayer(
