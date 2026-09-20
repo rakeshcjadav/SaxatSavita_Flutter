@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -231,51 +230,61 @@ class DailyQuizService {
   }
 
   Future<void> _loadBank() async {
-    DailyQuizBank bank = const DailyQuizBank();
-    try {
-      final raw = await rootBundle.loadString(assetPath);
-      bank = DailyQuizBank.fromMap(
-        Map<String, dynamic>.from(jsonDecode(raw) as Map),
-      );
-    } catch (e) {
-      debugPrint('DailyQuizService: asset bank failed: $e');
+    DailyQuizBank? bank;
+    if (FirebaseAuth.instance.currentUser != null) {
+      bank = await _fetchBankFromFirestore();
     }
-
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final cached = prefs.getString(_bankPref);
-      if (cached != null && cached.isNotEmpty) {
-        final remote = DailyQuizBank.fromMap(
-          Map<String, dynamic>.from(jsonDecode(cached) as Map),
-        );
-        if (remote.packs.isNotEmpty) {
-          bank = remote;
-        }
-      }
-    } catch (e) {
-      debugPrint('DailyQuizService: cached bank failed: $e');
-    }
-
-    _bank = bank;
-    unawaited(_refreshBankFromFirestore());
+    bank ??= await _cachedBank();
+    bank ??= await _assetBank();
+    _bank = bank ?? const DailyQuizBank();
   }
 
-  Future<void> _refreshBankFromFirestore() async {
-    if (FirebaseAuth.instance.currentUser == null) return;
+  /// Live source when signed in. Dated `dailyQuizzes/{date}` still overlays this.
+  Future<DailyQuizBank?> _fetchBankFromFirestore() async {
     try {
       final snapshot = await FirebaseFirestore.instance
           .collection('dailyQuizBank')
           .doc('current')
           .get()
           .timeout(_fetchTimeout);
-      if (!snapshot.exists || snapshot.data() == null) return;
+      if (!snapshot.exists || snapshot.data() == null) return null;
       final remote = DailyQuizBank.fromMap(snapshot.data()!);
-      if (remote.packs.isEmpty) return;
-      _bank = remote;
+      if (remote.packs.isEmpty) return null;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_bankPref, jsonEncode(remote.toMap()));
+      return remote;
     } catch (e) {
       debugPrint('DailyQuizService: Firestore bank fetch failed: $e');
+      return null;
+    }
+  }
+
+  Future<DailyQuizBank?> _cachedBank() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cached = prefs.getString(_bankPref);
+      if (cached == null || cached.isEmpty) return null;
+      final remote = DailyQuizBank.fromMap(
+        Map<String, dynamic>.from(jsonDecode(cached) as Map),
+      );
+      return remote.packs.isNotEmpty ? remote : null;
+    } catch (e) {
+      debugPrint('DailyQuizService: cached bank failed: $e');
+      return null;
+    }
+  }
+
+  /// Offline / unsigned-in fallback. Not used when Firestore returns packs.
+  Future<DailyQuizBank?> _assetBank() async {
+    try {
+      final raw = await rootBundle.loadString(assetPath);
+      final bank = DailyQuizBank.fromMap(
+        Map<String, dynamic>.from(jsonDecode(raw) as Map),
+      );
+      return bank.packs.isNotEmpty ? bank : null;
+    } catch (e) {
+      debugPrint('DailyQuizService: asset bank failed: $e');
+      return null;
     }
   }
 
