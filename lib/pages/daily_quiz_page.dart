@@ -550,6 +550,18 @@ class _ResultView extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           height: 52,
+          child: OutlinedButton.icon(
+            onPressed:
+                () =>
+                    Navigator.of(context).pushNamed('/daily-quiz-leaderboard'),
+            icon: const Icon(Icons.emoji_events_outlined),
+            label: Text(l10n.daily_quiz_leaderboard),
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          height: 52,
           child: OutlinedButton(
             onPressed: onReview,
             child: Text(l10n.daily_quiz_review),

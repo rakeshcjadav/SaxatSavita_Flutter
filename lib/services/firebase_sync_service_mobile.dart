@@ -11,6 +11,8 @@ import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
 import 'package:saxatsavita_flutter/models/daily_quiz_model.dart';
+import 'package:saxatsavita_flutter/models/daily_quiz_leaderboard_model.dart';
+import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_sync_service_base.dart';
@@ -894,7 +896,48 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
       debugPrint('Daily quiz result synced: ${result.docId}');
     } catch (e) {
       debugPrint('Error syncing daily quiz result: $e');
+      return;
     }
+
+    await _syncDailyQuizLeaderboardEntry(result);
+  }
+
+  Future<void> _syncDailyQuizLeaderboardEntry(DailyQuizResult result) async {
+    final uid = currentUserId;
+    if (uid == null || result.dateKey.isEmpty) return;
+
+    try {
+      await _firestore
+          .collection('dailyQuizLeaderboard')
+          .doc(result.dateKey)
+          .collection('entries')
+          .doc(uid)
+          .set({
+            'uid': uid,
+            'displayName': await _publicLeaderboardDisplayName(),
+            'score': result.score,
+            'total': result.total,
+            'pointsAwarded': result.pointsAwarded,
+            'completedAt': result.completedAt.toIso8601String(),
+            'lastUpdated': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint('Error syncing daily quiz leaderboard: $e');
+    }
+  }
+
+  Future<String> _publicLeaderboardDisplayName() async {
+    var name = '';
+    try {
+      name = (await UserProfileService().getLocalUserProfile()).fullName;
+    } catch (e) {
+      debugPrint('Leaderboard profile name failed: $e');
+    }
+    name = DailyQuizLeaderboardEntry.sanitizeDisplayName(name);
+    if (name.isNotEmpty) return name;
+    return DailyQuizLeaderboardEntry.sanitizeDisplayName(
+      _auth.currentUser?.displayName,
+    );
   }
 
   @override
@@ -911,6 +954,33 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
           .toList();
     } catch (e) {
       debugPrint('Error loading daily quiz results: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<List<DailyQuizLeaderboardEntry>> loadDailyQuizLeaderboard(
+    String dateKey,
+  ) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot load daily quiz leaderboard');
+      return [];
+    }
+    if (dateKey.isEmpty) return [];
+
+    try {
+      final snapshot = await _firestore
+          .collection('dailyQuizLeaderboard')
+          .doc(dateKey)
+          .collection('entries')
+          .get()
+          .timeout(const Duration(seconds: 8));
+      return snapshot.docs
+          .map((doc) => DailyQuizLeaderboardEntry.fromMap(doc.id, doc.data()))
+          .where((entry) => entry.uid.isNotEmpty)
+          .toList();
+    } catch (e) {
+      debugPrint('Error loading daily quiz leaderboard: $e');
       return [];
     }
   }

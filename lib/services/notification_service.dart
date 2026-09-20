@@ -192,7 +192,7 @@ class NotificationService {
         AndroidNotificationChannel(
           _dailyQuizChannelId,
           'Daily Quiz',
-          description: 'Daily reflection quiz reminder',
+          description: 'Daily quiz reminder',
           importance: Importance.high,
           enableVibration: true,
           playSound: true,
@@ -547,7 +547,7 @@ class NotificationService {
       scheduledDate = tz.TZDateTime.from(scheduledLocal, tz.local);
     }
 
-    String title = 'Today\'s reflection is ready';
+    String title = 'Today\'s teaching is ready';
     String body = 'Five teachings from Sakshat Savita — take today\'s quiz.';
     final context = NavigationService.navigatorKey.currentContext;
     if (context != null && context.mounted) {
@@ -567,7 +567,7 @@ class NotificationService {
         android: AndroidNotificationDetails(
           _dailyQuizChannelId,
           'Daily Quiz',
-          channelDescription: 'Daily reflection quiz reminder',
+          channelDescription: 'Daily quiz reminder',
           importance: Importance.high,
           priority: Priority.high,
           icon: 'notifications_24dp_fill',

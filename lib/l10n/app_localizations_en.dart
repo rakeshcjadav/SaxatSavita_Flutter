@@ -1851,7 +1851,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get daily_quiz => 'Daily quiz';
 
   @override
-  String get daily_quiz_intro_title => 'Today\'s reflection';
+  String get daily_quiz_intro_title => 'Today\'s teaching';
 
   @override
   String get daily_quiz_intro_subtitle =>
@@ -1891,13 +1891,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get daily_quiz_reminder_subtitle =>
-      'Get a local reminder when today\'s reflection is ready';
+      'Get a local reminder when today\'s teaching is ready';
 
   @override
   String get daily_quiz_reminder_time => 'Reminder time';
 
   @override
-  String get daily_quiz_notification_title => 'Today\'s reflection is ready';
+  String get daily_quiz_notification_title => 'Today\'s teaching is ready';
 
   @override
   String get daily_quiz_notification_body =>
@@ -1911,4 +1911,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get daily_quiz_completed => 'Completed today';
+
+  @override
+  String get daily_quiz_leaderboard => 'Leaderboard';
+
+  @override
+  String get daily_quiz_leaderboard_daily => 'Daily';
+
+  @override
+  String get daily_quiz_leaderboard_weekly => 'Weekly';
+
+  @override
+  String get daily_quiz_leaderboard_see_all => 'See all';
+
+  @override
+  String get daily_quiz_leaderboard_empty =>
+      'No scores yet today. Complete the quiz to appear here.';
+
+  @override
+  String get daily_quiz_leaderboard_empty_week => 'No scores this week yet.';
+
+  @override
+  String get daily_quiz_leaderboard_sign_in => 'Sign in to see the leaderboard';
+
+  @override
+  String get daily_quiz_leaderboard_you => 'You';
+
+  @override
+  String get daily_quiz_leaderboard_anonymous => 'Reader';
+
+  @override
+  String daily_quiz_leaderboard_participants(int count) {
+    return '$count participants';
+  }
 }

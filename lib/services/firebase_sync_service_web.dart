@@ -7,6 +7,7 @@ import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
 import 'package:saxatsavita_flutter/models/daily_quiz_model.dart';
+import 'package:saxatsavita_flutter/models/daily_quiz_leaderboard_model.dart';
 import 'firebase_sync_service_base.dart';
 
 /// Dummy FirebaseSyncService implementation for web platform
@@ -232,6 +233,14 @@ class FirebaseSyncServiceWeb implements FirebaseSyncServiceBase {
   @override
   Future<List<DailyQuizResult>> loadDailyQuizResults() async {
     debugPrint('[Web] loadDailyQuizResults: No-op, returning empty list');
+    return [];
+  }
+
+  @override
+  Future<List<DailyQuizLeaderboardEntry>> loadDailyQuizLeaderboard(
+    String dateKey,
+  ) async {
+    debugPrint('[Web] loadDailyQuizLeaderboard: No-op, returning empty list');
     return [];
   }
 }

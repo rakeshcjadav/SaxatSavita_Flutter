@@ -3449,7 +3449,7 @@ abstract class AppLocalizations {
   /// No description provided for @daily_quiz_intro_title.
   ///
   /// In en, this message translates to:
-  /// **'Today\'s reflection'**
+  /// **'Today\'s teaching'**
   String get daily_quiz_intro_title;
 
   /// No description provided for @daily_quiz_intro_subtitle.
@@ -3515,7 +3515,7 @@ abstract class AppLocalizations {
   /// No description provided for @daily_quiz_reminder_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Get a local reminder when today\'s reflection is ready'**
+  /// **'Get a local reminder when today\'s teaching is ready'**
   String get daily_quiz_reminder_subtitle;
 
   /// No description provided for @daily_quiz_reminder_time.
@@ -3527,7 +3527,7 @@ abstract class AppLocalizations {
   /// No description provided for @daily_quiz_notification_title.
   ///
   /// In en, this message translates to:
-  /// **'Today\'s reflection is ready'**
+  /// **'Today\'s teaching is ready'**
   String get daily_quiz_notification_title;
 
   /// No description provided for @daily_quiz_notification_body.
@@ -3553,6 +3553,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Completed today'**
   String get daily_quiz_completed;
+
+  /// No description provided for @daily_quiz_leaderboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaderboard'**
+  String get daily_quiz_leaderboard;
+
+  /// No description provided for @daily_quiz_leaderboard_daily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get daily_quiz_leaderboard_daily;
+
+  /// No description provided for @daily_quiz_leaderboard_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get daily_quiz_leaderboard_weekly;
+
+  /// No description provided for @daily_quiz_leaderboard_see_all.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get daily_quiz_leaderboard_see_all;
+
+  /// No description provided for @daily_quiz_leaderboard_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No scores yet today. Complete the quiz to appear here.'**
+  String get daily_quiz_leaderboard_empty;
+
+  /// No description provided for @daily_quiz_leaderboard_empty_week.
+  ///
+  /// In en, this message translates to:
+  /// **'No scores this week yet.'**
+  String get daily_quiz_leaderboard_empty_week;
+
+  /// No description provided for @daily_quiz_leaderboard_sign_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to see the leaderboard'**
+  String get daily_quiz_leaderboard_sign_in;
+
+  /// No description provided for @daily_quiz_leaderboard_you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get daily_quiz_leaderboard_you;
+
+  /// No description provided for @daily_quiz_leaderboard_anonymous.
+  ///
+  /// In en, this message translates to:
+  /// **'Reader'**
+  String get daily_quiz_leaderboard_anonymous;
+
+  /// No description provided for @daily_quiz_leaderboard_participants.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} participants'**
+  String daily_quiz_leaderboard_participants(int count);
 }
 
 class _AppLocalizationsDelegate

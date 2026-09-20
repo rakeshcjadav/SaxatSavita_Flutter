@@ -14,6 +14,9 @@ import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
 import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
 import 'package:saxatsavita_flutter/models/daily_quiz_model.dart';
+import 'package:saxatsavita_flutter/models/daily_quiz_leaderboard_model.dart';
+import 'package:saxatsavita_flutter/services/daily_quiz_leaderboard_service.dart';
+import 'package:saxatsavita_flutter/widgets/daily_quiz_leaderboard_tile.dart';
 
 class DashboardPage extends StatefulWidget {
   final bool showScaffold;
@@ -34,6 +37,8 @@ class _DashboardPageState extends State<DashboardPage> {
   bool _dailyQuizEnabled = false;
   DailyQuizResult? _dailyQuizResult;
   int _dailyQuizStreak = 0;
+  DailyQuizLeaderboardSnapshot _dailyLeaderboard =
+      DailyQuizLeaderboardSnapshot.unsignedIn;
 
   @override
   void initState() {
@@ -55,6 +60,19 @@ class _DashboardPageState extends State<DashboardPage> {
           dailyEnabled ? await DailyQuizService().resultForToday() : null;
       final dailyStreak =
           dailyEnabled ? await DailyQuizService().currentStreak() : 0;
+      DailyQuizLeaderboardSnapshot dailyLeaderboard =
+          DailyQuizLeaderboardSnapshot.unsignedIn;
+      if (dailyEnabled) {
+        try {
+          dailyLeaderboard = await DailyQuizLeaderboardService().loadDaily();
+        } catch (e) {
+          debugPrint('Error loading daily quiz leaderboard: $e');
+          dailyLeaderboard =
+              FirebaseAuth.instance.currentUser == null
+                  ? DailyQuizLeaderboardSnapshot.unsignedIn
+                  : const DailyQuizLeaderboardSnapshot();
+        }
+      }
 
       if (mounted) {
         setState(() {
@@ -65,6 +83,7 @@ class _DashboardPageState extends State<DashboardPage> {
           _dailyQuizEnabled = dailyEnabled;
           _dailyQuizResult = dailyResult;
           _dailyQuizStreak = dailyStreak;
+          _dailyLeaderboard = dailyLeaderboard;
           _isLoading = false;
         });
       }
@@ -91,6 +110,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   children: [
                     _buildWelcomeCard(),
                     if (_dailyQuizEnabled) _buildDailyQuizCard(),
+                    if (_dailyQuizEnabled) _buildDailyQuizLeaderboardCard(),
                     _buildStreakCard(),
                     const SizedBox(height: 16),
                     _buildQuickActionsGrid(),
@@ -224,6 +244,19 @@ class _DashboardPageState extends State<DashboardPage> {
   Future<void> _openDailyQuiz() async {
     await Navigator.of(context).pushNamed('/daily-quiz');
     if (mounted) _loadDashboardData();
+  }
+
+  Future<void> _openDailyQuizLeaderboard() async {
+    await Navigator.of(context).pushNamed('/daily-quiz-leaderboard');
+    if (mounted) _loadDashboardData();
+  }
+
+  Widget _buildDailyQuizLeaderboardCard() {
+    return DailyQuizLeaderboardPreviewCard(
+      snapshot: _dailyLeaderboard,
+      onSeeAll: _openDailyQuizLeaderboard,
+      onSignIn: () => Navigator.of(context).pushNamed('/login'),
+    );
   }
 
   Widget _buildDailyQuizCard() {
@@ -1006,6 +1039,8 @@ class _DashboardPageState extends State<DashboardPage> {
                     if (_dailyQuizEnabled) ...[
                       const SizedBox(height: 12),
                       _buildDailyQuizCard(),
+                      const SizedBox(height: 12),
+                      _buildDailyQuizLeaderboardCard(),
                     ],
                     const SizedBox(height: 12),
                     _buildQuickActionsGrid(),

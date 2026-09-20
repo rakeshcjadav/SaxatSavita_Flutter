@@ -1857,7 +1857,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get daily_quiz => 'દૈનિક પ્રશ્નોત્તર';
 
   @override
-  String get daily_quiz_intro_title => 'આજની વિચારણા';
+  String get daily_quiz_intro_title => 'આજનો ઉપદેશ';
 
   @override
   String get daily_quiz_intro_subtitle =>
@@ -1896,13 +1896,13 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get daily_quiz_reminder_subtitle =>
-      'આજની વિચારણા તૈયાર હોય ત્યારે સ્થાનિક યાદ અપાવો';
+      'આજનો ઉપદેશ તૈયાર હોય ત્યારે સ્થાનિક યાદ અપાવો';
 
   @override
   String get daily_quiz_reminder_time => 'યાદ અપાવવાનો સમય';
 
   @override
-  String get daily_quiz_notification_title => 'આજની વિચારણા તૈયાર છે';
+  String get daily_quiz_notification_title => 'આજનો ઉપદેશ તૈયાર છે';
 
   @override
   String get daily_quiz_notification_body =>
@@ -1916,4 +1916,38 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get daily_quiz_completed => 'આજે પૂર્ણ';
+
+  @override
+  String get daily_quiz_leaderboard => 'અગ્રણી યાદી';
+
+  @override
+  String get daily_quiz_leaderboard_daily => 'દૈનિક';
+
+  @override
+  String get daily_quiz_leaderboard_weekly => 'સાપ્તાહિક';
+
+  @override
+  String get daily_quiz_leaderboard_see_all => 'બધા જુઓ';
+
+  @override
+  String get daily_quiz_leaderboard_empty =>
+      'આજે હજુ કોઈ સ્કોર નથી. પ્રશ્નોત્તર પૂર્ણ કરો તો તમે અહીં દેખાશો.';
+
+  @override
+  String get daily_quiz_leaderboard_empty_week =>
+      'આ અઠવાડિયે હજુ કોઈ સ્કોર નથી.';
+
+  @override
+  String get daily_quiz_leaderboard_sign_in => 'અગ્રણી યાદી જોવા સાઇન ઇન કરો';
+
+  @override
+  String get daily_quiz_leaderboard_you => 'તમે';
+
+  @override
+  String get daily_quiz_leaderboard_anonymous => 'વાચક';
+
+  @override
+  String daily_quiz_leaderboard_participants(int count) {
+    return '$count સહભાગીઓ';
+  }
 }

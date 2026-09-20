@@ -912,7 +912,7 @@
         }
     },
     "daily_quiz": "Daily quiz",
-    "daily_quiz_intro_title": "Today's reflection",
+    "daily_quiz_intro_title": "Today's teaching",
     "daily_quiz_intro_subtitle": "Five teachings from the whole granth — not from one kiran. Think first; the source kiran is revealed after you answer.",
     "daily_quiz_start": "Begin",
     "daily_quiz_review": "Review",
@@ -933,11 +933,26 @@
         }
     },
     "daily_quiz_reminder": "Daily quiz reminder",
-    "daily_quiz_reminder_subtitle": "Get a local reminder when today's reflection is ready",
+    "daily_quiz_reminder_subtitle": "Get a local reminder when today's teaching is ready",
     "daily_quiz_reminder_time": "Reminder time",
-    "daily_quiz_notification_title": "Today's reflection is ready",
+    "daily_quiz_notification_title": "Today's teaching is ready",
     "daily_quiz_notification_body": "Five teachings from Sakshat Savita — take today's quiz.",
     "daily_quiz_unavailable": "Today's quiz is not available yet",
     "daily_quiz_source_heading": "From the granth",
-    "daily_quiz_completed": "Completed today"
+    "daily_quiz_completed": "Completed today",
+    "daily_quiz_leaderboard": "Leaderboard",
+    "daily_quiz_leaderboard_daily": "Daily",
+    "daily_quiz_leaderboard_weekly": "Weekly",
+    "daily_quiz_leaderboard_see_all": "See all",
+    "daily_quiz_leaderboard_empty": "No scores yet today. Complete the quiz to appear here.",
+    "daily_quiz_leaderboard_empty_week": "No scores this week yet.",
+    "daily_quiz_leaderboard_sign_in": "Sign in to see the leaderboard",
+    "daily_quiz_leaderboard_you": "You",
+    "daily_quiz_leaderboard_anonymous": "Reader",
+    "daily_quiz_leaderboard_participants": "{count} participants",
+    "@daily_quiz_leaderboard_participants": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    }
 }

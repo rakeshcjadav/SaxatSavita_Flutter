@@ -49,6 +49,34 @@ class DailyQuizService {
     return DateTime(local.year, local.month, local.day);
   }
 
+  /// Monday of the local calendar week that contains [date].
+  static DateTime startOfWeek([DateTime? date]) {
+    final local = dateOnly(date);
+    return DateTime(
+      local.year,
+      local.month,
+      local.day - (local.weekday - DateTime.monday),
+    );
+  }
+
+  static DateTime? parseDateKey(String key) {
+    final parts = key.split('-');
+    if (parts.length != 3) return null;
+    final year = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final day = int.tryParse(parts[2]);
+    if (year == null || month == null || day == null) return null;
+    return DateTime(year, month, day);
+  }
+
+  /// Local Monday–Sunday date keys for the week containing [date].
+  static List<String> dateKeysForWeek([DateTime? date]) {
+    final start = startOfWeek(date);
+    return List.generate(7, (i) {
+      return dateKey(DateTime(start.year, start.month, start.day + i));
+    });
+  }
+
   void clearMemoryCache() {
     _bank = null;
     _results = null;

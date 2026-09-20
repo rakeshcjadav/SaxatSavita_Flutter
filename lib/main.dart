@@ -23,6 +23,7 @@ import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import 'package:saxatsavita_flutter/pages/profile_page.dart';
 import 'package:saxatsavita_flutter/pages/dashboard_page.dart';
 import 'package:saxatsavita_flutter/pages/daily_quiz_page.dart';
+import 'package:saxatsavita_flutter/pages/daily_quiz_leaderboard_page.dart';
 import 'package:saxatsavita_flutter/pages/main_navigation.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
@@ -345,6 +346,8 @@ class SakshatSavitaApp extends StatelessWidget {
             '/reading_plans': (context) => const ReadingPlanPage(),
             '/readingplan': (context) => const ReadingPlanPage(),
             '/daily-quiz': (context) => const DailyQuizPage(),
+            '/daily-quiz-leaderboard':
+                (context) => const DailyQuizLeaderboardPage(),
             '/quotes_generator':
                 (context) => const QuotesImageGeneratorPage(quote: null),
             '/quotes': (context) => const QuotesImageGeneratorPage(quote: null),
