@@ -954,5 +954,45 @@
         "placeholders": {
             "count": { "type": "int" }
         }
-    }
+    },
+    "kiran_map": "Vicharan map",
+    "kiran_map_all_years": "All years",
+    "kiran_map_vicharan": "Vicharan",
+    "kiran_map_osm_attribution": "© OpenStreetMap contributors",
+    "kiran_map_empty": "No villages to show",
+    "kiran_map_unmapped": "Location not on the map",
+    "kiran_map_kirans_at": "Kirans at {village}",
+    "@kiran_map_kirans_at": {
+        "placeholders": {
+            "village": { "type": "String" }
+        }
+    },
+    "kiran_map_kiran_count": "{count} kirans",
+    "@kiran_map_kiran_count": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "kiran_map_home": "Home · Piplana",
+    "kiran_map_outbound": "Going out",
+    "kiran_map_inbound": "Coming back",
+    "kiran_map_vicharans": "Vicharans",
+    "kiran_map_vicharan_n": "Vicharan {n}",
+    "@kiran_map_vicharan_n": {
+        "placeholders": {
+            "n": { "type": "int" }
+        }
+    },
+    "kiran_map_all_vicharans": "All vicharans",
+    "kiran_map_open_ended": "Did not return to Piplana",
+    "kiran_map_returned_home": "Returned to Piplana",
+    "kiran_map_locations": "Locations",
+    "kiran_map_kirans": "Kirans",
+    "kiran_map_place_count": "{count} places",
+    "@kiran_map_place_count": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "kiran_map_vicharan_missing": "This vicharan could not be found"
 }

@@ -1,0 +1,489 @@
+{
+  "places": [
+    {
+      "id": "nadiad",
+      "names": [
+        "નડિયાદ"
+      ],
+      "en": "Nadiad",
+      "district": "Kheda",
+      "region": "central_gujarat",
+      "lat": 22.6916,
+      "lng": 72.8615
+    },
+    {
+      "id": "vadtal",
+      "names": [
+        "વરતાલ"
+      ],
+      "en": "Vadtal",
+      "district": "Kheda",
+      "region": "central_gujarat",
+      "lat": 22.5875,
+      "lng": 72.7528
+    },
+    {
+      "id": "dadar",
+      "names": [
+        "દાદર"
+      ],
+      "en": "Dadar",
+      "district": "Mumbai",
+      "region": "mumbai",
+      "lat": 19.018,
+      "lng": 72.844
+    },
+    {
+      "id": "ghatkopar",
+      "names": [
+        "ઘાટકોપર"
+      ],
+      "en": "Ghatkopar",
+      "district": "Mumbai",
+      "region": "mumbai",
+      "lat": 19.086,
+      "lng": 72.908
+    },
+    {
+      "id": "karad",
+      "names": [
+        "કરાડ"
+      ],
+      "en": "Karad",
+      "district": "Satara",
+      "region": "mumbai",
+      "lat": 17.2895,
+      "lng": 74.1818
+    },
+    {
+      "id": "kolhapur",
+      "names": [
+        "કોલ્હાપુર"
+      ],
+      "en": "Kolhapur",
+      "district": "Kolhapur",
+      "region": "mumbai",
+      "lat": 16.705,
+      "lng": 74.2433
+    },
+    {
+      "id": "malad",
+      "names": [
+        "મલાડ"
+      ],
+      "en": "Malad",
+      "district": "Mumbai",
+      "region": "mumbai",
+      "lat": 19.1864,
+      "lng": 72.8484
+    },
+    {
+      "id": "matunga",
+      "names": [
+        "માટુંગા"
+      ],
+      "en": "Matunga",
+      "district": "Mumbai",
+      "region": "mumbai",
+      "lat": 19.027,
+      "lng": 72.8553
+    },
+    {
+      "id": "mumbai",
+      "names": [
+        "મુંબઈ"
+      ],
+      "en": "Mumbai",
+      "district": "Mumbai",
+      "region": "mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    {
+      "id": "sangli",
+      "names": [
+        "સાંગલી"
+      ],
+      "en": "Sangli",
+      "district": "Sangli",
+      "region": "mumbai",
+      "lat": 16.8524,
+      "lng": 74.5815
+    },
+    {
+      "id": "agatray",
+      "names": [
+        "અગતરાય"
+      ],
+      "en": "Agatray",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.364403,
+      "lng": 70.254137
+    },
+    {
+      "id": "ajab",
+      "names": [
+        "અજાબ"
+      ],
+      "en": "Ajab",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.26401,
+      "lng": 70.355199
+    },
+    {
+      "id": "araniyala",
+      "names": [
+        "અરણીયાળા"
+      ],
+      "en": "Araniyala",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.354933,
+      "lng": 70.365543
+    },
+    {
+      "id": "bhader",
+      "names": [
+        "ભાડેર"
+      ],
+      "en": "Bhader",
+      "district": "Rajkot",
+      "region": "saurashtra",
+      "lat": 21.607296,
+      "lng": 70.326866
+    },
+    {
+      "id": "bholgamde",
+      "names": [
+        "ભોલગામડે"
+      ],
+      "en": "Bholgamde",
+      "district": "Rajkot",
+      "region": "saurashtra",
+      "lat": 21.723813,
+      "lng": 70.342105
+    },
+    {
+      "id": "bodka",
+      "names": [
+        "બોડકા"
+      ],
+      "en": "Bodka",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.478393,
+      "lng": 70.235583
+    },
+    {
+      "id": "chudva",
+      "names": [
+        "ચુડવા"
+      ],
+      "en": "Chudva",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.592217,
+      "lng": 70.228987
+    },
+    {
+      "id": "dhoraji",
+      "names": [
+        "ધોરાજી"
+      ],
+      "en": "Dhoraji",
+      "district": "Rajkot",
+      "region": "saurashtra",
+      "lat": 21.734548,
+      "lng": 70.447876
+    },
+    {
+      "id": "gorviyali",
+      "names": [
+        "ગોરવીયાળી"
+      ],
+      "en": "Gorviyali",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.524276,
+      "lng": 70.830894
+    },
+    {
+      "id": "haliyad",
+      "names": [
+        "હળિયાદ"
+      ],
+      "en": "Haliyad",
+      "district": "Amreli",
+      "region": "saurashtra",
+      "lat": 21.505161,
+      "lng": 70.871231
+    },
+    {
+      "id": "ivanagar",
+      "names": [
+        "ઇવનગર",
+        "ઈવનગર"
+      ],
+      "en": "Ivanagar",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.477083,
+      "lng": 70.433137
+    },
+    {
+      "id": "junagadh",
+      "names": [
+        "જૂનાગઢ"
+      ],
+      "en": "Junagadh",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.5222,
+      "lng": 70.4579
+    },
+    {
+      "id": "kalana",
+      "names": [
+        "કલાણા"
+      ],
+      "en": "Kalana",
+      "district": "Rajkot",
+      "region": "saurashtra",
+      "lat": 21.592826,
+      "lng": 70.28291
+    },
+    {
+      "id": "keshod",
+      "names": [
+        "કેશોદ"
+      ],
+      "en": "Keshod",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.299677,
+      "lng": 70.250957
+    },
+    {
+      "id": "khambhle",
+      "names": [
+        "ખાંભલે"
+      ],
+      "en": "Khambhla",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.494411,
+      "lng": 70.105118
+    },
+    {
+      "id": "kutiyana",
+      "names": [
+        "કુતિયાણા"
+      ],
+      "en": "Kutiyana",
+      "district": "Porbandar",
+      "region": "saurashtra",
+      "lat": 21.6241,
+      "lng": 69.98494
+    },
+    {
+      "id": "limbuda",
+      "names": [
+        "લીંબુડા"
+      ],
+      "en": "Limbuda",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.572049,
+      "lng": 70.088536
+    },
+    {
+      "id": "mahobatpara",
+      "names": [
+        "મહોબતપરા"
+      ],
+      "en": "Mahobatpara",
+      "district": "Porbandar",
+      "region": "saurashtra",
+      "lat": 21.66695,
+      "lng": 70.02338
+    },
+    {
+      "id": "manavadar",
+      "names": [
+        "માણાવદર"
+      ],
+      "en": "Manavadar",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.491671,
+      "lng": 70.137952
+    },
+    {
+      "id": "mendarda",
+      "names": [
+        "મેંદરડા"
+      ],
+      "en": "Mendarda",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.322066,
+      "lng": 70.442498
+    },
+    {
+      "id": "mesvan",
+      "names": [
+        "મેસવાણ"
+      ],
+      "en": "Mesvan",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.260017,
+      "lng": 70.281537
+    },
+    {
+      "id": "munjiyasar",
+      "names": [
+        "મુંજીયાસર"
+      ],
+      "en": "Munjiyasar",
+      "district": "Amreli",
+      "region": "saurashtra",
+      "lat": 21.489167,
+      "lng": 70.900556
+    },
+    {
+      "id": "paneli_moti",
+      "names": [
+        "પાનેલી"
+      ],
+      "en": "Paneli Moti",
+      "district": "Rajkot",
+      "region": "saurashtra",
+      "lat": 21.872609,
+      "lng": 70.154605
+    },
+    {
+      "id": "patanvav",
+      "names": [
+        "પાટણવાવ"
+      ],
+      "en": "Patanvav",
+      "district": "Rajkot",
+      "region": "saurashtra",
+      "lat": 21.641098,
+      "lng": 70.261734
+    },
+    {
+      "id": "piplana",
+      "names": [
+        "પીપલાણા"
+      ],
+      "en": "Piplana",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.439511,
+      "lng": 70.242075
+    },
+    {
+      "id": "rajkot",
+      "names": [
+        "રાજકોટ"
+      ],
+      "en": "Rajkot",
+      "district": "Rajkot",
+      "region": "saurashtra",
+      "lat": 22.3039,
+      "lng": 70.8022
+    },
+    {
+      "id": "sanosara",
+      "names": [
+        "સણોસરા"
+      ],
+      "en": "Sanosara",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.524063,
+      "lng": 70.195632
+    },
+    {
+      "id": "sardargadh",
+      "names": [
+        "સરદારગઢ"
+      ],
+      "en": "Sardargadh",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.572618,
+      "lng": 70.199984
+    },
+    {
+      "id": "shapur",
+      "names": [
+        "શાપુર"
+      ],
+      "en": "Shapur",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.46724,
+      "lng": 70.374848
+    },
+    {
+      "id": "sukhpur",
+      "names": [
+        "સુખપુર"
+      ],
+      "en": "Sukhpur",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.425052,
+      "lng": 70.44325
+    },
+    {
+      "id": "thana_pipali",
+      "names": [
+        "થાણાપીપળી"
+      ],
+      "en": "Thana Pipali",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.40777,
+      "lng": 70.362196
+    },
+    {
+      "id": "thaniyana",
+      "names": [
+        "થાનિયાણા"
+      ],
+      "en": "Thaniyana",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.615076,
+      "lng": 70.216778
+    },
+    {
+      "id": "upleta",
+      "names": [
+        "ઉપલેટા"
+      ],
+      "en": "Upleta",
+      "district": "Rajkot",
+      "region": "saurashtra",
+      "lat": 21.740876,
+      "lng": 70.277134
+    },
+    {
+      "id": "vanthali",
+      "names": [
+        "વંથલી"
+      ],
+      "en": "Vanthali",
+      "district": "Junagadh",
+      "region": "saurashtra",
+      "lat": 21.47751,
+      "lng": 70.332301
+    }
+  ]
+}

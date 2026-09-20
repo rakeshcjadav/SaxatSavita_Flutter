@@ -7,6 +7,7 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/bookpart_model.dart';
 import 'package:saxatsavita_flutter/models/bookuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
+import 'package:saxatsavita_flutter/helpers/open_kiran_map.dart';
 import 'package:saxatsavita_flutter/pages/bookmarks_page.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
@@ -82,6 +83,7 @@ class _BookmainpageState extends State<BookMainpage> {
                     onPressed:
                         () => Navigator.pushNamed(context, '/kiran-calendar'),
                   ),
+                  ...kiranMapAppBarActions(context),
                 ],
               )
               : buildAppBar(
@@ -101,6 +103,7 @@ class _BookmainpageState extends State<BookMainpage> {
                     onPressed:
                         () => Navigator.pushNamed(context, '/kiran-calendar'),
                   ),
+                  ...kiranMapAppBarActions(context),
                 ],
               ),
       body: OrientationBuilder(

@@ -1944,4 +1944,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String daily_quiz_leaderboard_participants(int count) {
     return '$count participants';
   }
+
+  @override
+  String get kiran_map => 'Vicharan map';
+
+  @override
+  String get kiran_map_all_years => 'All years';
+
+  @override
+  String get kiran_map_vicharan => 'Vicharan';
+
+  @override
+  String get kiran_map_osm_attribution => '© OpenStreetMap contributors';
+
+  @override
+  String get kiran_map_empty => 'No villages to show';
+
+  @override
+  String get kiran_map_unmapped => 'Location not on the map';
+
+  @override
+  String kiran_map_kirans_at(String village) {
+    return 'Kirans at $village';
+  }
+
+  @override
+  String kiran_map_kiran_count(int count) {
+    return '$count kirans';
+  }
+
+  @override
+  String get kiran_map_home => 'Home · Piplana';
+
+  @override
+  String get kiran_map_outbound => 'Going out';
+
+  @override
+  String get kiran_map_inbound => 'Coming back';
+
+  @override
+  String get kiran_map_vicharans => 'Vicharans';
+
+  @override
+  String kiran_map_vicharan_n(int n) {
+    return 'Vicharan $n';
+  }
+
+  @override
+  String get kiran_map_all_vicharans => 'All vicharans';
+
+  @override
+  String get kiran_map_open_ended => 'Did not return to Piplana';
+
+  @override
+  String get kiran_map_returned_home => 'Returned to Piplana';
+
+  @override
+  String get kiran_map_locations => 'Locations';
+
+  @override
+  String get kiran_map_kirans => 'Kirans';
+
+  @override
+  String kiran_map_place_count(int count) {
+    return '$count places';
+  }
+
+  @override
+  String get kiran_map_vicharan_missing => 'This vicharan could not be found';
 }

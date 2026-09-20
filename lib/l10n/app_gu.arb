@@ -873,5 +873,30 @@
     "daily_quiz_leaderboard_sign_in": "અગ્રણી યાદી જોવા સાઇન ઇન કરો",
     "daily_quiz_leaderboard_you": "તમે",
     "daily_quiz_leaderboard_anonymous": "વાચક",
-    "daily_quiz_leaderboard_participants": "{count} સહભાગીઓ"
+    "daily_quiz_leaderboard_participants": "{count} સહભાગીઓ",
+    "kiran_map": "વિચરણ નકશો",
+    "kiran_map_all_years": "બધાં વર્ષ",
+    "kiran_map_vicharan": "વિચરણ",
+    "kiran_map_osm_attribution": "© OpenStreetMap યોગદાનકર્તાઓ",
+    "kiran_map_empty": "દેખાડવા માટે ગામ નથી",
+    "kiran_map_unmapped": "નકશા પર સ્થળ નથી",
+    "kiran_map_kirans_at": "{village}ના કિરણ",
+    "kiran_map_kiran_count": "{count} કિરણ",
+    "kiran_map_home": "ઘર · પીપલાણા",
+    "kiran_map_outbound": "જતા",
+    "kiran_map_inbound": "આવતા",
+    "kiran_map_vicharans": "વિચરણો",
+    "kiran_map_vicharan_n": "વિચરણ {n}",
+    "@kiran_map_vicharan_n": {
+        "placeholders": {
+            "n": { "type": "int" }
+        }
+    },
+    "kiran_map_all_vicharans": "બધાં વિચરણ",
+    "kiran_map_open_ended": "પીપલાણા પાછા ન આવ્યા",
+    "kiran_map_returned_home": "પીપલાણા પાછા આવ્યા",
+    "kiran_map_locations": "સ્થળો",
+    "kiran_map_kirans": "કિરણ",
+    "kiran_map_place_count": "{count} સ્થળો",
+    "kiran_map_vicharan_missing": "આ વિચરણ મળ્યું નથી"
 }

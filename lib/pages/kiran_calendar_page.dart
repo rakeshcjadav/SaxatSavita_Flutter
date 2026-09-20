@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/helpers/open_kiran_map.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
@@ -171,6 +172,7 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
             onPressed:
                 () => Navigator.pushNamed(context, '/kiran-chronological'),
           ),
+          ...kiranMapAppBarActions(context, village: _villageFilter),
         ],
       ),
       body:

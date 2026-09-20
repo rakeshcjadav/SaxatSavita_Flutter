@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/helpers/open_kiran_map.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
+import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 
 /// One-line sitting path with even padding around each village name.
 class KiranPlaceLine extends StatelessWidget {
-  const KiranPlaceLine({super.key, required this.kiranInfo, this.color});
+  const KiranPlaceLine({
+    super.key,
+    required this.kiranInfo,
+    this.color,
+    this.enableMapTap = true,
+  });
 
   final KiranInfo kiranInfo;
   final Color? color;
+  final bool enableMapTap;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +32,7 @@ class KiranPlaceLine extends StatelessWidget {
       context,
     ).textTheme.labelSmall?.copyWith(color: textColor);
 
-    return Padding(
+    Widget line = Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 2),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -51,5 +59,14 @@ class KiranPlaceLine extends StatelessWidget {
         ),
       ),
     );
+
+    if (enableMapTap && RemoteConfigService().enableKiranMap) {
+      line = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => openKiranMap(context, kiranIndex: kiranInfo.index),
+        child: line,
+      );
+    }
+    return line;
   }
 }

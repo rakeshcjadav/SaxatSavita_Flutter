@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/helpers/open_kiran_map.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
@@ -229,6 +230,7 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
             tooltip: l10n.filter_by_village,
             onPressed: _villages.isEmpty ? null : _pickVillage,
           ),
+          ...kiranMapAppBarActions(context, village: _villageFilter),
         ],
       ),
       body:

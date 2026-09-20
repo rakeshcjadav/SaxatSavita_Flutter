@@ -3613,6 +3613,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} participants'**
   String daily_quiz_leaderboard_participants(int count);
+
+  /// No description provided for @kiran_map.
+  ///
+  /// In en, this message translates to:
+  /// **'Vicharan map'**
+  String get kiran_map;
+
+  /// No description provided for @kiran_map_all_years.
+  ///
+  /// In en, this message translates to:
+  /// **'All years'**
+  String get kiran_map_all_years;
+
+  /// No description provided for @kiran_map_vicharan.
+  ///
+  /// In en, this message translates to:
+  /// **'Vicharan'**
+  String get kiran_map_vicharan;
+
+  /// No description provided for @kiran_map_osm_attribution.
+  ///
+  /// In en, this message translates to:
+  /// **'© OpenStreetMap contributors'**
+  String get kiran_map_osm_attribution;
+
+  /// No description provided for @kiran_map_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No villages to show'**
+  String get kiran_map_empty;
+
+  /// No description provided for @kiran_map_unmapped.
+  ///
+  /// In en, this message translates to:
+  /// **'Location not on the map'**
+  String get kiran_map_unmapped;
+
+  /// No description provided for @kiran_map_kirans_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Kirans at {village}'**
+  String kiran_map_kirans_at(String village);
+
+  /// No description provided for @kiran_map_kiran_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} kirans'**
+  String kiran_map_kiran_count(int count);
+
+  /// No description provided for @kiran_map_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home · Piplana'**
+  String get kiran_map_home;
+
+  /// No description provided for @kiran_map_outbound.
+  ///
+  /// In en, this message translates to:
+  /// **'Going out'**
+  String get kiran_map_outbound;
+
+  /// No description provided for @kiran_map_inbound.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming back'**
+  String get kiran_map_inbound;
+
+  /// No description provided for @kiran_map_vicharans.
+  ///
+  /// In en, this message translates to:
+  /// **'Vicharans'**
+  String get kiran_map_vicharans;
+
+  /// No description provided for @kiran_map_vicharan_n.
+  ///
+  /// In en, this message translates to:
+  /// **'Vicharan {n}'**
+  String kiran_map_vicharan_n(int n);
+
+  /// No description provided for @kiran_map_all_vicharans.
+  ///
+  /// In en, this message translates to:
+  /// **'All vicharans'**
+  String get kiran_map_all_vicharans;
+
+  /// No description provided for @kiran_map_open_ended.
+  ///
+  /// In en, this message translates to:
+  /// **'Did not return to Piplana'**
+  String get kiran_map_open_ended;
+
+  /// No description provided for @kiran_map_returned_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned to Piplana'**
+  String get kiran_map_returned_home;
+
+  /// No description provided for @kiran_map_locations.
+  ///
+  /// In en, this message translates to:
+  /// **'Locations'**
+  String get kiran_map_locations;
+
+  /// No description provided for @kiran_map_kirans.
+  ///
+  /// In en, this message translates to:
+  /// **'Kirans'**
+  String get kiran_map_kirans;
+
+  /// No description provided for @kiran_map_place_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} places'**
+  String kiran_map_place_count(int count);
+
+  /// No description provided for @kiran_map_vicharan_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'This vicharan could not be found'**
+  String get kiran_map_vicharan_missing;
 }
 
 class _AppLocalizationsDelegate

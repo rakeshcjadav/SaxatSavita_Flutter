@@ -55,6 +55,7 @@ class RemoteConfigService {
         'enable_new_kiran_content_rendering': false,
         'enable_quiz': true,
         'enable_daily_quiz': true,
+        'enable_kiran_map': true,
         'quiz_points_per_correct': 5,
         'quiz_perfect_bonus': 5,
 
@@ -173,6 +174,7 @@ class RemoteConfigService {
   bool get enableQuiz => _remoteConfig?.getBool('enable_quiz') ?? true;
   bool get enableDailyQuiz =>
       _remoteConfig?.getBool('enable_daily_quiz') ?? true;
+  bool get enableKiranMap => _remoteConfig?.getBool('enable_kiran_map') ?? true;
   int get quizPointsPerCorrect =>
       _remoteConfig?.getInt('quiz_points_per_correct') ?? 5;
   int get quizPerfectBonus => _remoteConfig?.getInt('quiz_perfect_bonus') ?? 5;
