@@ -10,6 +10,7 @@ import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
+import 'package:saxatsavita_flutter/models/daily_quiz_model.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_sync_service_base.dart';
@@ -851,9 +852,7 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
           .collection('quizRewards')
           .doc('summary')
           .set(payload, SetOptions(merge: true));
-      await userDoc!.set({
-        'quizRewards': payload,
-      }, SetOptions(merge: true));
+      await userDoc!.set({'quizRewards': payload}, SetOptions(merge: true));
       debugPrint(
         'Quiz rewards synced: ${rewards.totalPoints} pts, '
         '${rewards.quizzesCompleted} quizzes',
@@ -871,13 +870,48 @@ class FirebaseSyncServiceMobile implements FirebaseSyncServiceBase {
     }
 
     try {
-      final doc =
-          await userDoc!.collection('quizRewards').doc('summary').get();
+      final doc = await userDoc!.collection('quizRewards').doc('summary').get();
       if (!doc.exists || doc.data() == null) return null;
       return KiranQuizRewards.fromJson(doc.data()!);
     } catch (e) {
       debugPrint('Error loading quiz rewards: $e');
       return null;
+    }
+  }
+
+  @override
+  Future<void> syncDailyQuizResult(DailyQuizResult result) async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot sync daily quiz result');
+      return;
+    }
+
+    try {
+      await userDoc!.collection('dailyQuizResults').doc(result.docId).set({
+        ...result.toJson(),
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      debugPrint('Daily quiz result synced: ${result.docId}');
+    } catch (e) {
+      debugPrint('Error syncing daily quiz result: $e');
+    }
+  }
+
+  @override
+  Future<List<DailyQuizResult>> loadDailyQuizResults() async {
+    if (!isAuthenticated) {
+      debugPrint('User not authenticated, cannot load daily quiz results');
+      return [];
+    }
+
+    try {
+      final snapshot = await userDoc!.collection('dailyQuizResults').get();
+      return snapshot.docs
+          .map((doc) => DailyQuizResult.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      debugPrint('Error loading daily quiz results: $e');
+      return [];
     }
   }
 }

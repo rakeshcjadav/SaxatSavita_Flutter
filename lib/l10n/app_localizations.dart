@@ -3439,6 +3439,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} more questions'**
   String quiz_more_questions(int count);
+
+  /// No description provided for @daily_quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily quiz'**
+  String get daily_quiz;
+
+  /// No description provided for @daily_quiz_intro_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s reflection'**
+  String get daily_quiz_intro_title;
+
+  /// No description provided for @daily_quiz_intro_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Five teachings from the whole granth — not from one kiran. Think first; the source kiran is revealed after you answer.'**
+  String get daily_quiz_intro_subtitle;
+
+  /// No description provided for @daily_quiz_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Begin'**
+  String get daily_quiz_start;
+
+  /// No description provided for @daily_quiz_review.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get daily_quiz_review;
+
+  /// No description provided for @daily_quiz_read_kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Read this kiran'**
+  String get daily_quiz_read_kiran;
+
+  /// No description provided for @daily_quiz_already_scored.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice — points already earned for today'**
+  String get daily_quiz_already_scored;
+
+  /// No description provided for @daily_quiz_streak.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily quiz streak'**
+  String get daily_quiz_streak;
+
+  /// No description provided for @daily_quiz_streak_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} day streak'**
+  String daily_quiz_streak_count(int count);
+
+  /// No description provided for @daily_quiz_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get daily_quiz_today;
+
+  /// No description provided for @daily_quiz_questions_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} questions'**
+  String daily_quiz_questions_count(int count);
+
+  /// No description provided for @daily_quiz_reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily quiz reminder'**
+  String get daily_quiz_reminder;
+
+  /// No description provided for @daily_quiz_reminder_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a local reminder when today\'s reflection is ready'**
+  String get daily_quiz_reminder_subtitle;
+
+  /// No description provided for @daily_quiz_reminder_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder time'**
+  String get daily_quiz_reminder_time;
+
+  /// No description provided for @daily_quiz_notification_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s reflection is ready'**
+  String get daily_quiz_notification_title;
+
+  /// No description provided for @daily_quiz_notification_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Five teachings from Sakshat Savita — take today\'s quiz.'**
+  String get daily_quiz_notification_body;
+
+  /// No description provided for @daily_quiz_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s quiz is not available yet'**
+  String get daily_quiz_unavailable;
+
+  /// No description provided for @daily_quiz_source_heading.
+  ///
+  /// In en, this message translates to:
+  /// **'From the granth'**
+  String get daily_quiz_source_heading;
+
+  /// No description provided for @daily_quiz_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed today'**
+  String get daily_quiz_completed;
 }
 
 class _AppLocalizationsDelegate

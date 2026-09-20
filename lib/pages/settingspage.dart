@@ -13,6 +13,8 @@ import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
+import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
+import 'package:saxatsavita_flutter/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -57,11 +59,27 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // Track saving state
   bool _isSaving = false;
+  bool _dailyReminderEnabled = true;
+  TimeOfDay _dailyReminderTime = const TimeOfDay(
+    hour: DailyQuizService.defaultReminderHour,
+    minute: DailyQuizService.defaultReminderMinute,
+  );
 
   @override
   void initState() {
     super.initState();
     _loadOriginalSettings();
+    _loadDailyQuizReminder();
+  }
+
+  Future<void> _loadDailyQuizReminder() async {
+    final enabled = await DailyQuizService().reminderEnabled();
+    final time = await DailyQuizService().reminderTime();
+    if (!mounted) return;
+    setState(() {
+      _dailyReminderEnabled = enabled;
+      _dailyReminderTime = TimeOfDay(hour: time.hour, minute: time.minute);
+    });
   }
 
   @override
@@ -1285,6 +1303,53 @@ class _SettingsPageState extends State<SettingsPage> {
     ];
   }
 
+  List<Widget> _buildDailyQuizSettingsSection() {
+    if (kIsWeb || !DailyQuizService().isEnabled) return [];
+    final l10n = AppLocalizations.of(context)!;
+    final timeLabel = MaterialLocalizations.of(
+      context,
+    ).formatTimeOfDay(_dailyReminderTime);
+    return <Widget>[
+      const SizedBox(height: 24),
+      _buildSectionHeader(context, l10n.daily_quiz, Icons.auto_awesome),
+      const SizedBox(height: 8),
+      Card(
+        child: SwitchListTile(
+          secondary: const Icon(Icons.notifications_active_outlined),
+          title: Text(l10n.daily_quiz_reminder),
+          subtitle: Text(l10n.daily_quiz_reminder_subtitle),
+          value: _dailyReminderEnabled,
+          onChanged: (value) async {
+            setState(() => _dailyReminderEnabled = value);
+            await DailyQuizService().setReminderEnabled(value);
+            await NotificationService().ensureDailyQuizReminderScheduled();
+          },
+        ),
+      ),
+      if (_dailyReminderEnabled)
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.schedule),
+            title: Text(l10n.daily_quiz_reminder_time),
+            subtitle: Text(timeLabel),
+            onTap: () async {
+              final picked = await showTimePicker(
+                context: context,
+                initialTime: _dailyReminderTime,
+              );
+              if (picked == null) return;
+              setState(() => _dailyReminderTime = picked);
+              await DailyQuizService().setReminderTime(
+                hour: picked.hour,
+                minute: picked.minute,
+              );
+              await NotificationService().ensureDailyQuizReminderScheduled();
+            },
+          ),
+        ),
+    ];
+  }
+
   List<Widget> _buildAppSettingsSection() {
     return <Widget>[
       // App Settings Section
@@ -1483,6 +1548,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     const SizedBox(height: 24),
                     // Language & Localization Section
                     ..._buildLanguageSettingsSection(),
+                    ..._buildDailyQuizSettingsSection(),
 
                     const SizedBox(height: 24),
                     // App Settings Section

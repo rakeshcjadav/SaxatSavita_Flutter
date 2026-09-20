@@ -12,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
+import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
+import 'package:saxatsavita_flutter/models/daily_quiz_model.dart';
 
 class DashboardPage extends StatefulWidget {
   final bool showScaffold;
@@ -29,6 +31,9 @@ class _DashboardPageState extends State<DashboardPage> {
   UserProfile? _userProfile;
   int _quizPoints = 0;
   int _quizzesCompleted = 0;
+  bool _dailyQuizEnabled = false;
+  DailyQuizResult? _dailyQuizResult;
+  int _dailyQuizStreak = 0;
 
   @override
   void initState() {
@@ -45,6 +50,11 @@ class _DashboardPageState extends State<DashboardPage> {
       final profile = await _dashboardService.getUserProfile();
       final quizPoints = await KiranQuizService().totalPoints();
       final quizzesCompleted = await KiranQuizService().completedQuizCount();
+      final dailyEnabled = DailyQuizService().isEnabled;
+      final dailyResult =
+          dailyEnabled ? await DailyQuizService().resultForToday() : null;
+      final dailyStreak =
+          dailyEnabled ? await DailyQuizService().currentStreak() : 0;
 
       if (mounted) {
         setState(() {
@@ -52,6 +62,9 @@ class _DashboardPageState extends State<DashboardPage> {
           _userProfile = profile;
           _quizPoints = quizPoints;
           _quizzesCompleted = quizzesCompleted;
+          _dailyQuizEnabled = dailyEnabled;
+          _dailyQuizResult = dailyResult;
+          _dailyQuizStreak = dailyStreak;
           _isLoading = false;
         });
       }
@@ -77,6 +90,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildWelcomeCard(),
+                    if (_dailyQuizEnabled) _buildDailyQuizCard(),
                     _buildStreakCard(),
                     const SizedBox(height: 16),
                     _buildQuickActionsGrid(),
@@ -113,6 +127,7 @@ class _DashboardPageState extends State<DashboardPage> {
           DrawerItem.aashirvachan,
           DrawerItem.notes,
           DrawerItem.search,
+          DrawerItem.dailyQuiz,
           DrawerItem.haribhakts,
           DrawerItem.readingPlans,
           DrawerItem.readingHistory,
@@ -201,6 +216,117 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openDailyQuiz() async {
+    await Navigator.of(context).pushNamed('/daily-quiz');
+    if (mounted) _loadDashboardData();
+  }
+
+  Widget _buildDailyQuizCard() {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
+    final completed = _dailyQuizResult != null;
+    final score = _dailyQuizResult?.score ?? 0;
+    final total = _dailyQuizResult?.total ?? 5;
+    final locale = Localizations.localeOf(context).toString();
+    final dateLabel = DateFormat.MMMd(locale).format(DateTime.now());
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Card(
+        elevation: 4,
+        color: colors.primaryContainer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: _openDailyQuiz,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: colors.primary,
+                      child: Icon(
+                        completed ? Icons.check : Icons.auto_awesome,
+                        color: colors.onPrimary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.daily_quiz_intro_title,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            '$dateLabel · ${completed ? l10n.daily_quiz_completed : l10n.daily_quiz_questions_count(5)}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    FilledButton(
+                      onPressed: _openDailyQuiz,
+                      child: Text(
+                        completed
+                            ? l10n.daily_quiz_review
+                            : l10n.daily_quiz_start,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    ...List.generate(5, (index) {
+                      final filled = completed && index < score;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: Icon(
+                          filled ? Icons.circle : Icons.circle_outlined,
+                          size: 14,
+                          color:
+                              filled
+                                  ? colors.primary
+                                  : colors.onPrimaryContainer.withValues(
+                                    alpha: 0.45,
+                                  ),
+                        ),
+                      );
+                    }),
+                    if (completed)
+                      Text(
+                        l10n.quiz_score(score, total),
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                    const Spacer(),
+                    if (_dailyQuizStreak > 0)
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.local_fire_department,
+                            size: 18,
+                            color: Colors.orange.shade700,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(l10n.daily_quiz_streak_count(_dailyQuizStreak)),
+                        ],
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -307,6 +433,12 @@ class _DashboardPageState extends State<DashboardPage> {
                 label: AppLocalizations.of(context)!.search,
                 onTap: () => Navigator.pushNamed(context, '/search'),
               ),
+              if (_dailyQuizEnabled)
+                _buildQuickActionItem(
+                  icon: Icons.auto_awesome,
+                  label: AppLocalizations.of(context)!.daily_quiz,
+                  onTap: _openDailyQuiz,
+                ),
               _buildQuickActionItem(
                 icon: Icons.calendar_today,
                 label: AppLocalizations.of(context)!.reading_plans,
@@ -871,6 +1003,10 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _buildWelcomeCard(),
+                    if (_dailyQuizEnabled) ...[
+                      const SizedBox(height: 12),
+                      _buildDailyQuizCard(),
+                    ],
                     const SizedBox(height: 12),
                     _buildQuickActionsGrid(),
                   ],

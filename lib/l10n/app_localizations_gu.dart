@@ -1852,4 +1852,68 @@ class AppLocalizationsGu extends AppLocalizations {
   String quiz_more_questions(int count) {
     return 'વધુ $count પ્રશ્નો';
   }
+
+  @override
+  String get daily_quiz => 'દૈનિક પ્રશ્નોત્તર';
+
+  @override
+  String get daily_quiz_intro_title => 'આજની વિચારણા';
+
+  @override
+  String get daily_quiz_intro_subtitle =>
+      'આખા ગ્રંથમાંથી પાંચ ઉપદેશ — એક કિરણના નહીં. પહેલાં વિચારો; સ્ત્રોત કિરણ જવાબ પછી જણાશે.';
+
+  @override
+  String get daily_quiz_start => 'શરૂ કરો';
+
+  @override
+  String get daily_quiz_review => 'ફરી જુઓ';
+
+  @override
+  String get daily_quiz_read_kiran => 'આ કિરણ વાંચો';
+
+  @override
+  String get daily_quiz_already_scored => 'અભ્યાસ — આજના ગુણ તમને મળી ગયા છે';
+
+  @override
+  String get daily_quiz_streak => 'દૈનિક પ્રશ્નોત્તર શ્રેણી';
+
+  @override
+  String daily_quiz_streak_count(int count) {
+    return '$count દિવસની શ્રેણી';
+  }
+
+  @override
+  String get daily_quiz_today => 'આજે';
+
+  @override
+  String daily_quiz_questions_count(int count) {
+    return '$count પ્રશ્નો';
+  }
+
+  @override
+  String get daily_quiz_reminder => 'દૈનિક પ્રશ્નોત્તર યાદ અપાવો';
+
+  @override
+  String get daily_quiz_reminder_subtitle =>
+      'આજની વિચારણા તૈયાર હોય ત્યારે સ્થાનિક યાદ અપાવો';
+
+  @override
+  String get daily_quiz_reminder_time => 'યાદ અપાવવાનો સમય';
+
+  @override
+  String get daily_quiz_notification_title => 'આજની વિચારણા તૈયાર છે';
+
+  @override
+  String get daily_quiz_notification_body =>
+      'સાક્ષાત્ સવિતામાંથી પાંચ ઉપદેશ — આજનો પ્રશ્નોત્તર લો.';
+
+  @override
+  String get daily_quiz_unavailable => 'આજનો પ્રશ્નોત્તર હજુ ઉપલબ્ધ નથી';
+
+  @override
+  String get daily_quiz_source_heading => 'ગ્રંથમાંથી';
+
+  @override
+  String get daily_quiz_completed => 'આજે પૂર્ણ';
 }

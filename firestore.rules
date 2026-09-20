@@ -72,6 +72,16 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write: if isAdmin();
     }
+
+    match /dailyQuizBank/{document} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    match /dailyQuizzes/{dateId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
     
     // Deny all other access by default
     match /{document=**} {

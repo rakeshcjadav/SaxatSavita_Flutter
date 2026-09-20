@@ -5,6 +5,7 @@ import 'package:saxatsavita_flutter/models/reading_history_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
+import 'package:saxatsavita_flutter/models/daily_quiz_model.dart';
 
 /// Base interface for FirebaseSyncService
 /// Platform-specific implementations will implement this interface
@@ -71,4 +72,6 @@ abstract class FirebaseSyncServiceBase {
   Future<List<KiranQuizResult>> loadQuizResults();
   Future<void> syncQuizRewards(KiranQuizRewards rewards);
   Future<KiranQuizRewards?> loadQuizRewards();
+  Future<void> syncDailyQuizResult(DailyQuizResult result);
+  Future<List<DailyQuizResult>> loadDailyQuizResults();
 }

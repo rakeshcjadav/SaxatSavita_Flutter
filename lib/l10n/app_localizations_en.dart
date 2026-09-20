@@ -1846,4 +1846,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String quiz_more_questions(int count) {
     return '$count more questions';
   }
+
+  @override
+  String get daily_quiz => 'Daily quiz';
+
+  @override
+  String get daily_quiz_intro_title => 'Today\'s reflection';
+
+  @override
+  String get daily_quiz_intro_subtitle =>
+      'Five teachings from the whole granth — not from one kiran. Think first; the source kiran is revealed after you answer.';
+
+  @override
+  String get daily_quiz_start => 'Begin';
+
+  @override
+  String get daily_quiz_review => 'Review';
+
+  @override
+  String get daily_quiz_read_kiran => 'Read this kiran';
+
+  @override
+  String get daily_quiz_already_scored =>
+      'Practice — points already earned for today';
+
+  @override
+  String get daily_quiz_streak => 'Daily quiz streak';
+
+  @override
+  String daily_quiz_streak_count(int count) {
+    return '$count day streak';
+  }
+
+  @override
+  String get daily_quiz_today => 'Today';
+
+  @override
+  String daily_quiz_questions_count(int count) {
+    return '$count questions';
+  }
+
+  @override
+  String get daily_quiz_reminder => 'Daily quiz reminder';
+
+  @override
+  String get daily_quiz_reminder_subtitle =>
+      'Get a local reminder when today\'s reflection is ready';
+
+  @override
+  String get daily_quiz_reminder_time => 'Reminder time';
+
+  @override
+  String get daily_quiz_notification_title => 'Today\'s reflection is ready';
+
+  @override
+  String get daily_quiz_notification_body =>
+      'Five teachings from Sakshat Savita — take today\'s quiz.';
+
+  @override
+  String get daily_quiz_unavailable => 'Today\'s quiz is not available yet';
+
+  @override
+  String get daily_quiz_source_heading => 'From the granth';
+
+  @override
+  String get daily_quiz_completed => 'Completed today';
 }

@@ -9,12 +9,14 @@ import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/services/cache_service.dart';
 import 'package:saxatsavita_flutter/services/user_profile_service.dart';
 import 'package:saxatsavita_flutter/models/user_profile_model.dart';
+import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 
 enum DrawerItem {
   aashirvachan,
   information,
   notes,
   search,
+  dailyQuiz,
   haribhakts,
   readingPlans,
   readingHistory,
@@ -243,6 +245,10 @@ class _DrawerState extends State<MyDrawer> {
         (item == DrawerItem.haribhakts || item == DrawerItem.profile)) {
       return false;
     }
+    if (item == DrawerItem.dailyQuiz &&
+        !RemoteConfigService().enableDailyQuiz) {
+      return false;
+    }
     return true;
   }
 
@@ -285,6 +291,14 @@ class _DrawerState extends State<MyDrawer> {
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/search');
+        },
+      ),
+      DrawerItem.dailyQuiz => ListTile(
+        leading: const Icon(Icons.auto_awesome),
+        title: Text(AppLocalizations.of(context)!.daily_quiz, style: textStyle),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/daily-quiz');
         },
       ),
       DrawerItem.haribhakts => ListTile(

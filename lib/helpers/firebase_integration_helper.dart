@@ -7,6 +7,7 @@ import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/models/kiran_quiz_model.dart';
 import 'package:saxatsavita_flutter/services/kiran_quiz_service.dart';
+import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/reading_history_service.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
@@ -184,6 +185,8 @@ class FirebaseIntegrationHelper {
       await KiranQuizService().refreshBankFromFirestore();
       await loadQuizResultsFromFirebase();
       await KiranQuizService().syncLocalRewardsToFirebase();
+      await loadDailyQuizResultsFromFirebase();
+      await DailyQuizService().syncLocalResultsToFirebase();
 
       debugPrint('Data loading from Firebase completed');
     } catch (e) {
@@ -261,6 +264,25 @@ class FirebaseIntegrationHelper {
       }
     } catch (e) {
       debugPrint('Error loading quiz results from Firebase: $e');
+    }
+  }
+
+  Future<void> loadDailyQuizResultsFromFirebase() async {
+    if (!_firebaseSync.isAuthenticated) {
+      debugPrint('User not logged in, skipping daily quiz results load');
+      return;
+    }
+
+    try {
+      final results = await _firebaseSync.loadDailyQuizResults();
+      if (results.isNotEmpty) {
+        await DailyQuizService().mergeRemoteResults(results);
+        debugPrint(
+          'Daily quiz results loaded from Firebase: ${results.length}',
+        );
+      }
+    } catch (e) {
+      debugPrint('Error loading daily quiz results from Firebase: $e');
     }
   }
 

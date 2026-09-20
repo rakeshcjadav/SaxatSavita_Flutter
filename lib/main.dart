@@ -22,6 +22,7 @@ import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
 import 'package:saxatsavita_flutter/pages/profile_page.dart';
 import 'package:saxatsavita_flutter/pages/dashboard_page.dart';
+import 'package:saxatsavita_flutter/pages/daily_quiz_page.dart';
 import 'package:saxatsavita_flutter/pages/main_navigation.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
@@ -29,6 +30,7 @@ import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/in_app_review_service.dart';
 import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 import 'package:saxatsavita_flutter/services/remote_config_service.dart';
+import 'package:saxatsavita_flutter/services/notification_service.dart';
 import 'pages/splashpage.dart';
 import 'firebase_options.dart';
 import 'package:saxatsavita_flutter/services/appdataservice.dart';
@@ -107,6 +109,13 @@ Future<void> _initializeDeferredServices() async {
     print('Firebase Remote Config initialized successfully');
   } catch (e) {
     print('Remote Config initialization error: $e');
+  }
+
+  try {
+    await NotificationService().ensureDailyQuizReminderScheduled();
+    print('Daily quiz reminder scheduled');
+  } catch (e) {
+    print('Daily quiz reminder initialization error: $e');
   }
 
   try {
@@ -335,6 +344,7 @@ class SakshatSavitaApp extends StatelessWidget {
             '/readinghistory': (context) => const ReadingHistoryPage(),
             '/reading_plans': (context) => const ReadingPlanPage(),
             '/readingplan': (context) => const ReadingPlanPage(),
+            '/daily-quiz': (context) => const DailyQuizPage(),
             '/quotes_generator':
                 (context) => const QuotesImageGeneratorPage(quote: null),
             '/quotes': (context) => const QuotesImageGeneratorPage(quote: null),

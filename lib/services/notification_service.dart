@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
+import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -28,11 +30,24 @@ class NotificationService {
   static const String _readingReminderChannelId = 'reading_reminder';
   static const String _goalAchievedChannelId = 'goal_achieved';
   static const String _motivationChannelId = 'motivation';
+  static const String _dailyQuizChannelId = 'daily_quiz';
+  static const int dailyQuizNotificationId = 7001;
+  static const String dailyQuizPayload = 'daily_quiz';
 
   bool _isInitialized = false;
+  String? _pendingNamedRoute;
+  DateTime? _lastNamedRouteNav;
+  bool _capturedLaunchPayload = false;
+  bool _readyForNamedRoutes = false;
+  Future<void>? _initFuture;
 
   /// Initialize the notification service
   Future<void> initialize() async {
+    if (kIsWeb) return;
+    return _initFuture ??= _doInitialize();
+  }
+
+  Future<void> _doInitialize() async {
     if (_isInitialized) return;
 
     try {
@@ -79,11 +94,44 @@ class NotificationService {
       debugPrint('📍 Notifications enabled: $enabled');
 
       _isInitialized = true;
+      await _captureLaunchPayload();
       debugPrint('✅ Notification service initialized successfully');
     } catch (e, stackTrace) {
+      _initFuture = null;
       debugPrint('❌ Failed to initialize notifications: $e');
       debugPrint('❌ Stack trace: $stackTrace');
     }
+  }
+
+  Future<void> _captureLaunchPayload() async {
+    if (_capturedLaunchPayload) return;
+    _capturedLaunchPayload = true;
+    try {
+      final details =
+          await _flutterLocalNotificationsPlugin
+              .getNotificationAppLaunchDetails();
+      if (details?.didNotificationLaunchApp == true) {
+        _queuePayload(details?.notificationResponse?.payload);
+      }
+    } catch (e) {
+      debugPrint('❌ Failed to read notification launch details: $e');
+    }
+  }
+
+  void _queuePayload(String? payload) {
+    if (payload == dailyQuizPayload ||
+        (payload != null && payload.startsWith('daily_quiz'))) {
+      _pendingNamedRoute = '/daily-quiz';
+    }
+  }
+
+  /// Open `/daily-quiz` if a reminder tap launched the app (after splash).
+  Future<void> consumePendingLaunchRoute() async {
+    if (kIsWeb) return;
+    _readyForNamedRoutes = true;
+    final route = _pendingNamedRoute;
+    if (route == null) return;
+    _handleNamedRouteTap(route);
   }
 
   /// Create notification channels for Android
@@ -137,6 +185,20 @@ class NotificationService {
           showBadge: false,
           enableLights: true,
           ledColor: Colors.orange,
+        ),
+      );
+
+      await androidPlugin.createNotificationChannel(
+        AndroidNotificationChannel(
+          _dailyQuizChannelId,
+          'Daily Quiz',
+          description: 'Daily reflection quiz reminder',
+          importance: Importance.high,
+          enableVibration: true,
+          playSound: true,
+          showBadge: true,
+          enableLights: true,
+          ledColor: Colors.deepOrange,
         ),
       );
     }
@@ -468,12 +530,89 @@ class NotificationService {
     }
   }
 
-  /// Cancel all reading plan reminders
+  /// Schedule the daily quiz local reminder at the user's chosen time.
+  Future<void> scheduleDailyQuizReminder({
+    required int hour,
+    required int minute,
+  }) async {
+    if (kIsWeb) return;
+    if (!_isInitialized) await initialize();
+    await cancelDailyQuizReminder();
+
+    final now = DateTime.now();
+    var scheduledLocal = DateTime(now.year, now.month, now.day, hour, minute);
+    var scheduledDate = tz.TZDateTime.from(scheduledLocal, tz.local);
+    if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
+      scheduledLocal = scheduledLocal.add(const Duration(days: 1));
+      scheduledDate = tz.TZDateTime.from(scheduledLocal, tz.local);
+    }
+
+    String title = 'Today\'s reflection is ready';
+    String body = 'Five teachings from Sakshat Savita — take today\'s quiz.';
+    final context = NavigationService.navigatorKey.currentContext;
+    if (context != null && context.mounted) {
+      final l10n = AppLocalizations.of(context);
+      if (l10n != null) {
+        title = l10n.daily_quiz_notification_title;
+        body = l10n.daily_quiz_notification_body;
+      }
+    }
+
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+      id: dailyQuizNotificationId,
+      title: title,
+      body: body,
+      scheduledDate: scheduledDate,
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          _dailyQuizChannelId,
+          'Daily Quiz',
+          channelDescription: 'Daily reflection quiz reminder',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: 'notifications_24dp_fill',
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+          ledColor: Colors.deepOrange,
+          ledOnMs: 500,
+          ledOffMs: 500,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+      payload: dailyQuizPayload,
+    );
+  }
+
+  Future<void> cancelDailyQuizReminder() async {
+    await _flutterLocalNotificationsPlugin.cancel(id: dailyQuizNotificationId);
+  }
+
+  Future<void> ensureDailyQuizReminderScheduled() async {
+    if (kIsWeb) return;
+    await initialize();
+    final quiz = DailyQuizService();
+    final enabled = await quiz.reminderEnabled();
+    if (!enabled || !quiz.isEnabled) {
+      await cancelDailyQuizReminder();
+      return;
+    }
+    final time = await quiz.reminderTime();
+    await scheduleDailyQuizReminder(hour: time.hour, minute: time.minute);
+  }
+
   Future<void> cancelReadingPlanReminders() async {
     try {
       // Cancel all scheduled notifications
       await _flutterLocalNotificationsPlugin.cancelAll();
       debugPrint('🚫 Cancelled all reading plan reminders');
+      await ensureDailyQuizReminderScheduled();
     } catch (e) {
       debugPrint('❌ Error cancelling reminders: $e');
     }
@@ -564,6 +703,11 @@ class NotificationService {
     try {
       // Add small delay to ensure app context is ready
       Future.delayed(const Duration(milliseconds: 100), () {
+        final payload = response.payload ?? '';
+        if (payload == dailyQuizPayload || payload.startsWith('daily_quiz')) {
+          _handleNamedRouteTap('/daily-quiz');
+          return;
+        }
         switch (response.actionId) {
           case 'read_now':
             debugPrint('📚 Processing READ NOW action...');
@@ -582,6 +726,47 @@ class NotificationService {
     } catch (e) {
       debugPrint('❌ Error handling notification response: $e');
       debugPrint('❌ Stack trace: ${StackTrace.current}');
+    }
+  }
+
+  static void _handleNamedRouteTap(String routeName) {
+    try {
+      final service = NotificationService();
+      service._pendingNamedRoute = routeName;
+      if (!service._readyForNamedRoutes) {
+        return;
+      }
+
+      final now = DateTime.now();
+      if (service._lastNamedRouteNav != null &&
+          now.difference(service._lastNamedRouteNav!) <
+              const Duration(seconds: 2)) {
+        return;
+      }
+
+      final navigator = NavigationService.navigator;
+      if (navigator != null) {
+        service._pendingNamedRoute = null;
+        service._lastNamedRouteNav = now;
+        navigator.pushNamed(routeName);
+        return;
+      }
+      final context = NavigationService.navigatorKey.currentContext;
+      if (context != null) {
+        service._pendingNamedRoute = null;
+        service._lastNamedRouteNav = now;
+        Navigator.of(context).pushNamed(routeName);
+        return;
+      }
+      if (NavigationService.navigatorKey.currentState != null) {
+        service._pendingNamedRoute = null;
+        service._lastNamedRouteNav = now;
+        NavigationService.navigatorKey.currentState!.pushNamed(routeName);
+        return;
+      }
+    } catch (e) {
+      debugPrint('❌ Error navigating to $routeName: $e');
+      NotificationService()._pendingNamedRoute = routeName;
     }
   }
 

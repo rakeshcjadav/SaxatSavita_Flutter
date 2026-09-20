@@ -910,5 +910,34 @@
         "placeholders": {
             "count": { "type": "int" }
         }
-    }
+    },
+    "daily_quiz": "Daily quiz",
+    "daily_quiz_intro_title": "Today's reflection",
+    "daily_quiz_intro_subtitle": "Five teachings from the whole granth — not from one kiran. Think first; the source kiran is revealed after you answer.",
+    "daily_quiz_start": "Begin",
+    "daily_quiz_review": "Review",
+    "daily_quiz_read_kiran": "Read this kiran",
+    "daily_quiz_already_scored": "Practice — points already earned for today",
+    "daily_quiz_streak": "Daily quiz streak",
+    "daily_quiz_streak_count": "{count} day streak",
+    "@daily_quiz_streak_count": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "daily_quiz_today": "Today",
+    "daily_quiz_questions_count": "{count} questions",
+    "@daily_quiz_questions_count": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "daily_quiz_reminder": "Daily quiz reminder",
+    "daily_quiz_reminder_subtitle": "Get a local reminder when today's reflection is ready",
+    "daily_quiz_reminder_time": "Reminder time",
+    "daily_quiz_notification_title": "Today's reflection is ready",
+    "daily_quiz_notification_body": "Five teachings from Sakshat Savita — take today's quiz.",
+    "daily_quiz_unavailable": "Today's quiz is not available yet",
+    "daily_quiz_source_heading": "From the granth",
+    "daily_quiz_completed": "Completed today"
 }

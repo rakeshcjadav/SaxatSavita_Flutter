@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
 import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
+import 'package:saxatsavita_flutter/services/notification_service.dart';
 
 // Import full pages (they will be rendered without their scaffold)
 import 'package:saxatsavita_flutter/pages/dashboard_page.dart';
@@ -26,6 +30,17 @@ class _MainNavigationState extends State<MainNavigation> {
     super.initState();
     _pageController = PageController(initialPage: _selectedIndex);
     InAppUpdateService().scheduleStartupCheck(context);
+    if (!kIsWeb) {
+      unawaited(_initDailyQuizNotifications());
+    }
+  }
+
+  Future<void> _initDailyQuizNotifications() async {
+    await NotificationService().ensureDailyQuizReminderScheduled();
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(NotificationService().consumePendingLaunchRoute());
+    });
   }
 
   @override
@@ -51,6 +66,7 @@ class _MainNavigationState extends State<MainNavigation> {
                   DrawerItem.aashirvachan,
                   DrawerItem.notes,
                   DrawerItem.search,
+                  DrawerItem.dailyQuiz,
                   DrawerItem.haribhakts,
                   DrawerItem.readingPlans,
                   DrawerItem.readingHistory,
