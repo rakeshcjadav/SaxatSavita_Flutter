@@ -113,8 +113,6 @@ class _DashboardPageState extends State<DashboardPage> {
                       const SizedBox(height: 8),
                       _buildDailyQuizCard(),
                       const SizedBox(height: 8),
-                      _buildDailyQuizLeaderboardCard(),
-                      const SizedBox(height: 8),
                     ],
                     _buildStreakCard(),
                     const SizedBox(height: 16),
@@ -253,14 +251,6 @@ class _DashboardPageState extends State<DashboardPage> {
     if (mounted) _loadDashboardData();
   }
 
-  Widget _buildDailyQuizLeaderboardCard() {
-    return DailyQuizLeaderboardPreviewCard(
-      snapshot: _dailyLeaderboard,
-      onSeeAll: _openDailyQuizLeaderboard,
-      onSignIn: () => Navigator.of(context).pushNamed('/login'),
-    );
-  }
-
   Widget _buildDailyQuizCard() {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
@@ -275,16 +265,17 @@ class _DashboardPageState extends State<DashboardPage> {
             : l10n.daily_quiz_questions_count(5);
 
     return DashboardOutlinedCard(
-      onTap: _openDailyQuiz,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               CircleAvatar(
+                radius: 24,
                 backgroundColor: colors.primary,
                 child: Icon(
                   completed ? Icons.check : Icons.auto_awesome,
+                  size: 28,
                   color: colors.onPrimary,
                 ),
               ),
@@ -379,6 +370,15 @@ class _DashboardPageState extends State<DashboardPage> {
                 completed ? l10n.daily_quiz_review : l10n.daily_quiz_start,
               ),
             ),
+          ),
+          const SizedBox(height: 16),
+          Divider(height: 1, color: colors.outline.withValues(alpha: 0.22)),
+          const SizedBox(height: 12),
+          DailyQuizLeaderboardPreviewCard(
+            snapshot: _dailyLeaderboard,
+            onSeeAll: _openDailyQuizLeaderboard,
+            onSignIn: () => Navigator.of(context).pushNamed('/login'),
+            embedded: true,
           ),
         ],
       ),
@@ -1036,8 +1036,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     if (_dailyQuizEnabled) ...[
                       const SizedBox(height: 12),
                       _buildDailyQuizCard(),
-                      const SizedBox(height: 12),
-                      _buildDailyQuizLeaderboardCard(),
                     ],
                     const SizedBox(height: 12),
                     _buildQuickActionsGrid(),

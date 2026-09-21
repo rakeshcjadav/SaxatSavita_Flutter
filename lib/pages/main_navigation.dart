@@ -120,34 +120,78 @@ class _MainNavigationState extends State<MainNavigation> {
           type: BottomNavigationBarType.fixed,
           elevation: 0,
           backgroundColor: barColor,
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedItemColor: colorScheme.primary,
+          unselectedItemColor: colorScheme.onSurfaceVariant,
+          selectedFontSize: 11,
+          unselectedFontSize: 11,
+          selectedLabelStyle: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            height: 1.15,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            height: 1.15,
+          ),
+          landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
           items: [
             BottomNavigationBarItem(
-              icon: const Icon(Icons.dashboard),
+              icon: _NavIcon(Icons.dashboard_outlined),
+              activeIcon: _NavIcon(Icons.dashboard, highlighted: true),
               label: AppLocalizations.of(context)!.dashboard,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.home),
+              icon: _NavIcon(Icons.home_outlined),
+              activeIcon: _NavIcon(Icons.home, highlighted: true),
               label: AppLocalizations.of(context)!.sakshatSavita,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.edit_note),
+              icon: _NavIcon(Icons.edit_note_outlined),
+              activeIcon: _NavIcon(Icons.edit_note, highlighted: true),
               label: AppLocalizations.of(context)!.notes,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.history),
+              icon: _NavIcon(Icons.history_outlined),
+              activeIcon: _NavIcon(Icons.history, highlighted: true),
               label: AppLocalizations.of(context)!.reading_history,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.person),
+              icon: _NavIcon(Icons.person_outline),
+              activeIcon: _NavIcon(Icons.person, highlighted: true),
               label: AppLocalizations.of(context)!.profile,
             ),
           ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: colorScheme.primary,
-          unselectedItemColor: colorScheme.onSurfaceVariant,
-          onTap: _onItemTapped,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
+        ),
+      ),
+    );
+  }
+}
+
+class _NavIcon extends StatelessWidget {
+  const _NavIcon(this.icon, {this.highlighted = false});
+
+  final IconData icon;
+  final bool highlighted;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color:
+              highlighted
+                  ? colors.primary.withValues(alpha: 0.16)
+                  : Colors.transparent,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+          child: Icon(icon, size: 24),
         ),
       ),
     );

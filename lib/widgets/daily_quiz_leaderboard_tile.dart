@@ -55,53 +55,42 @@ class DailyQuizLeaderboardTile extends StatelessWidget {
       context,
       l10n.quiz_points_count(entry.pointsAwarded),
     );
-    final rankLabel = localizeLeaderboardDigits(context, '$rank');
 
     final row = Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: compact ? 4 : 12,
+        horizontal: compact ? 10 : 12,
         vertical: compact ? 8 : 10,
       ),
       child: Row(
         children: [
-          SizedBox(
-            width: compact ? 28 : 32,
+          _RankTrophy(rank: rank, compact: compact),
+          const SizedBox(width: 8),
+          CircleAvatar(
+            radius: compact ? 16 : 16,
+            backgroundColor:
+                isCurrentUser ? colors.primary : colors.surfaceContainerHighest,
             child: Text(
-              rankLabel,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              localizeLeaderboardDigits(context, '$rank'),
+              style: TextStyle(
+                fontSize: rank >= 100 ? 10 : (rank >= 10 ? 12 : 13),
                 fontWeight: FontWeight.w800,
-                color: leaderboardRankColor(rank, colors),
+                color:
+                    isCurrentUser
+                        ? colors.onPrimary
+                        : (leaderboardRankColor(rank, colors) ??
+                            colors.primary),
               ),
             ),
           ),
-          if (!compact) ...[
-            const SizedBox(width: 8),
-            CircleAvatar(
-              radius: 16,
-              backgroundColor:
-                  isCurrentUser
-                      ? colors.primary
-                      : colors.surfaceContainerHighest,
-              child: Text(
-                name.isNotEmpty ? name.substring(0, 1).toUpperCase() : '?',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: isCurrentUser ? colors.onPrimary : colors.primary,
-                ),
-              ),
-            ),
-          ],
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: isCurrentUser ? FontWeight.w700 : FontWeight.w500,
-                color: colors.primary,
+                color: isCurrentUser ? colors.primary : colors.onSurface,
               ),
             ),
           ),
@@ -119,14 +108,43 @@ class DailyQuizLeaderboardTile extends StatelessWidget {
       ),
     );
 
-    if (!compact || !isCurrentUser) return row;
-
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.primaryContainer.withValues(alpha: 0.65),
-        borderRadius: BorderRadius.circular(12),
+        color:
+            isCurrentUser
+                ? colors.primary.withValues(alpha: 0.08)
+                : colors.surfaceContainerHighest.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color:
+              isCurrentUser
+                  ? colors.primary.withValues(alpha: 0.22)
+                  : colors.outline.withValues(alpha: 0.12),
+        ),
       ),
       child: row,
+    );
+  }
+}
+
+class _RankTrophy extends StatelessWidget {
+  const _RankTrophy({required this.rank, required this.compact});
+
+  final int rank;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final trophyColor = leaderboardRankColor(rank, colors);
+    final size = compact ? 24.0 : 28.0;
+
+    return SizedBox(
+      width: compact ? 28 : 32,
+      child:
+          rank <= 3
+              ? Icon(Icons.emoji_events, size: size, color: trophyColor)
+              : null,
     );
   }
 }
@@ -137,11 +155,13 @@ class DailyQuizLeaderboardPreviewCard extends StatelessWidget {
     required this.snapshot,
     required this.onSeeAll,
     required this.onSignIn,
+    this.embedded = false,
   });
 
   final DailyQuizLeaderboardSnapshot snapshot;
   final VoidCallback onSeeAll;
   final VoidCallback onSignIn;
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
@@ -149,117 +169,147 @@ class DailyQuizLeaderboardPreviewCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final data = snapshot;
     final signedIn = data.isAuthenticated;
+    final hasEntries = signedIn && data.entries.isNotEmpty;
 
     final participantLabel =
-        signedIn && data.entries.isNotEmpty
+        hasEntries
             ? localizeLeaderboardDigits(
               context,
               l10n.daily_quiz_leaderboard_participants(data.entries.length),
             )
             : null;
 
-    return DashboardOutlinedCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: colors.surfaceContainerHighest,
-                child: Icon(Icons.emoji_events_outlined, color: colors.primary),
+    final header = Row(
+      children: [
+        if (!embedded)
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: colors.primary,
+              child: Icon(
+                Icons.emoji_events,
+                size: 28,
+                color: colors.onPrimary,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.daily_quiz_leaderboard,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: colors.primary,
-                      ),
-                    ),
-                    if (participantLabel != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        participantLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colors.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ],
+            ),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Icon(Icons.emoji_events, size: 22, color: colors.primary),
+          ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.daily_quiz_leaderboard,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colors.primary,
+                  fontSize: embedded ? 16 : null,
                 ),
               ),
+              if (participantLabel != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  participantLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ],
           ),
-          const SizedBox(height: 12),
-          if (!signedIn)
-            Text(
-              l10n.daily_quiz_leaderboard_sign_in,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
-            )
-          else if (data.isEmpty)
-            Text(
-              l10n.daily_quiz_leaderboard_empty,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
-            )
-          else ...[
-            ...data.top5.asMap().entries.expand((item) {
-              final rank = item.key + 1;
-              final entry = item.value;
-              final isLast = rank == data.top5.length;
-              return [
-                DailyQuizLeaderboardTile(
-                  rank: rank,
-                  entry: entry,
-                  isCurrentUser: entry.uid == data.currentUser?.uid,
-                  compact: true,
-                ),
-                if (!isLast)
-                  Divider(
-                    height: 1,
-                    color: colors.outline.withValues(alpha: 0.18),
-                  ),
-              ];
-            }),
-            if (data.currentUser != null &&
-                !data.currentUserInTop5 &&
-                data.currentUserRank != null) ...[
-              Divider(
-                height: 16,
-                color: colors.outline.withValues(alpha: 0.28),
-              ),
-              DailyQuizLeaderboardTile(
-                rank: data.currentUserRank!,
-                entry: data.currentUser!,
-                isCurrentUser: true,
-                compact: true,
-              ),
-            ],
-          ],
+        ),
+        if (embedded && hasEntries)
+          TextButton(
+            onPressed: onSeeAll,
+            style: TextButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+            ),
+            child: Text(l10n.daily_quiz_leaderboard_see_all),
+          ),
+      ],
+    );
+
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        header,
+        const SizedBox(height: 12),
+        if (!signedIn) ...[
+          Text(
+            l10n.daily_quiz_leaderboard_sign_in,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+          ),
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton(
-              onPressed: signedIn ? onSeeAll : onSignIn,
-              child: Text(
-                signedIn ? l10n.daily_quiz_leaderboard_see_all : l10n.login,
+            child: OutlinedButton(onPressed: onSignIn, child: Text(l10n.login)),
+          ),
+        ] else if (data.isEmpty)
+          Text(
+            l10n.daily_quiz_leaderboard_empty,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+          )
+        else ...[
+          ...data.top5.asMap().entries.map((item) {
+            final rank = item.key + 1;
+            final entry = item.value;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: DailyQuizLeaderboardTile(
+                rank: rank,
+                entry: entry,
+                isCurrentUser: entry.uid == data.currentUser?.uid,
+                compact: true,
+              ),
+            );
+          }),
+          if (data.currentUser != null &&
+              !data.currentUserInTop5 &&
+              data.currentUserRank != null) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Divider(
+                height: 1,
+                color: colors.outline.withValues(alpha: 0.22),
               ),
             ),
-          ),
+            DailyQuizLeaderboardTile(
+              rank: data.currentUserRank!,
+              entry: data.currentUser!,
+              isCurrentUser: true,
+              compact: true,
+            ),
+          ],
+          if (!embedded) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: onSeeAll,
+                child: Text(l10n.daily_quiz_leaderboard_see_all),
+              ),
+            ),
+          ],
         ],
-      ),
+      ],
     );
+
+    if (embedded) return body;
+    return DashboardOutlinedCard(child: body);
   }
 }
 

@@ -89,7 +89,7 @@ class _DailyQuizLeaderboardPageState extends State<DailyQuizLeaderboardPage> {
       appBar: buildAppBar(
         context,
         title: l10n.daily_quiz_leaderboard,
-        titleIcon: Icons.emoji_events_outlined,
+        titleIcon: Icons.emoji_events,
       ),
       body: Column(
         children: [
@@ -186,23 +186,11 @@ class _DailyQuizLeaderboardPageState extends State<DailyQuizLeaderboardPage> {
           final entry = snapshot.entries[index - 1];
           final rank = index;
           return Padding(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: Card(
-              elevation: 0,
-              color:
-                  entry.uid == snapshot.currentUser?.uid
-                      ? Theme.of(
-                        context,
-                      ).colorScheme.primaryContainer.withValues(alpha: 0.55)
-                      : Theme.of(context).colorScheme.surface,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: DailyQuizLeaderboardTile(
-                rank: rank,
-                entry: entry,
-                isCurrentUser: entry.uid == snapshot.currentUser?.uid,
-              ),
+            padding: const EdgeInsets.only(bottom: 8),
+            child: DailyQuizLeaderboardTile(
+              rank: rank,
+              entry: entry,
+              isCurrentUser: entry.uid == snapshot.currentUser?.uid,
             ),
           );
         },
@@ -231,7 +219,7 @@ class _MessageView extends StatelessWidget {
         children: [
           Text(text, textAlign: TextAlign.center),
           const SizedBox(height: 16),
-          FilledButton(onPressed: onAction, child: Text(actionLabel)),
+          OutlinedButton(onPressed: onAction, child: Text(actionLabel)),
         ],
       ),
     );
