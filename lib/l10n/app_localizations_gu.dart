@@ -1980,7 +1980,7 @@ class AppLocalizationsGu extends AppLocalizations {
   }
 
   @override
-  String get kiran_map_home => 'ઘર · પીપલાણા';
+  String get kiran_map_home => 'દીક્ષાધામ · પીપલાણા';
 
   @override
   String get kiran_map_outbound => 'જતા';
@@ -2000,10 +2000,10 @@ class AppLocalizationsGu extends AppLocalizations {
   String get kiran_map_all_vicharans => 'બધાં વિચરણ';
 
   @override
-  String get kiran_map_open_ended => 'પીપલાણા પાછા ન આવ્યા';
+  String get kiran_map_open_ended => 'દીક્ષાધામ પાછા ન આવ્યા';
 
   @override
-  String get kiran_map_returned_home => 'પીપલાણા પાછા આવ્યા';
+  String get kiran_map_returned_home => 'દીક્ષાધામ પાછા આવ્યા';
 
   @override
   String get kiran_map_locations => 'સ્થળો';

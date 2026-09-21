@@ -3665,7 +3665,7 @@ abstract class AppLocalizations {
   /// No description provided for @kiran_map_home.
   ///
   /// In en, this message translates to:
-  /// **'Home · Piplana'**
+  /// **'Dikshadham · Piplana'**
   String get kiran_map_home;
 
   /// No description provided for @kiran_map_outbound.
@@ -3701,13 +3701,13 @@ abstract class AppLocalizations {
   /// No description provided for @kiran_map_open_ended.
   ///
   /// In en, this message translates to:
-  /// **'Did not return to Piplana'**
+  /// **'Did not return to Dikshadham'**
   String get kiran_map_open_ended;
 
   /// No description provided for @kiran_map_returned_home.
   ///
   /// In en, this message translates to:
-  /// **'Returned to Piplana'**
+  /// **'Returned to Dikshadham'**
   String get kiran_map_returned_home;
 
   /// No description provided for @kiran_map_locations.

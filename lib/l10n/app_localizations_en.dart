@@ -1974,7 +1974,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get kiran_map_home => 'Home · Piplana';
+  String get kiran_map_home => 'Dikshadham · Piplana';
 
   @override
   String get kiran_map_outbound => 'Going out';
@@ -1994,10 +1994,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kiran_map_all_vicharans => 'All vicharans';
 
   @override
-  String get kiran_map_open_ended => 'Did not return to Piplana';
+  String get kiran_map_open_ended => 'Did not return to Dikshadham';
 
   @override
-  String get kiran_map_returned_home => 'Returned to Piplana';
+  String get kiran_map_returned_home => 'Returned to Dikshadham';
 
   @override
   String get kiran_map_locations => 'Locations';

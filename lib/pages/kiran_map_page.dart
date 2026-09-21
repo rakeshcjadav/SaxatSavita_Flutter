@@ -499,8 +499,9 @@ class _KiranMapPageState extends State<KiranMapPage> {
               markers: [
                 for (final pin in otherPins)
                   if (_showName(pin) || pin.kiranCount > 0)
-                    _pinCaptionMarker(pin, colorScheme),
-                for (final pin in homePins) _pinCaptionMarker(pin, colorScheme),
+                    _pinCaptionMarker(pin, colorScheme, l10n),
+                for (final pin in homePins)
+                  _pinCaptionMarker(pin, colorScheme, l10n),
               ],
             ),
             RichAttributionWidget(
@@ -593,7 +594,11 @@ class _KiranMapPageState extends State<KiranMapPage> {
   double _pinIconSize(KiranMapPin pin) =>
       _isHome(pin) || _isFocused(pin) ? 34 : 32;
 
-  Widget? _pinCaption(KiranMapPin pin, ColorScheme colorScheme) {
+  Widget? _pinCaption(
+    KiranMapPin pin,
+    ColorScheme colorScheme,
+    AppLocalizations l10n,
+  ) {
     final focused = _isFocused(pin);
     final color = _pinColor(pin, colorScheme);
     if (_showName(pin)) {
@@ -606,7 +611,7 @@ class _KiranMapPageState extends State<KiranMapPage> {
           border: Border.all(color: color.withValues(alpha: 0.35)),
         ),
         child: Text(
-          pin.place.displayName,
+          _isHome(pin) ? l10n.kiran_map_home : pin.place.displayName,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -653,7 +658,7 @@ class _KiranMapPageState extends State<KiranMapPage> {
       child: GestureDetector(
         onTap: () => _openPinSheet(pin),
         child: Icon(
-          _isHome(pin) ? Icons.home : Icons.location_on,
+          _isHome(pin) ? Icons.temple_hindu : Icons.location_on,
           color: color,
           size: size,
         ),
@@ -661,13 +666,17 @@ class _KiranMapPageState extends State<KiranMapPage> {
     );
   }
 
-  Marker _pinCaptionMarker(KiranMapPin pin, ColorScheme colorScheme) {
-    final caption = _pinCaption(pin, colorScheme);
+  Marker _pinCaptionMarker(
+    KiranMapPin pin,
+    ColorScheme colorScheme,
+    AppLocalizations l10n,
+  ) {
+    final caption = _pinCaption(pin, colorScheme, l10n);
     final iconSize = _pinIconSize(pin);
     final showName = _showName(pin);
     return Marker(
       point: LatLng(pin.place.lat, pin.place.lng),
-      width: showName ? 128 : 44,
+      width: showName ? (_isHome(pin) ? 168 : 128) : 44,
       height: showName ? iconSize + 24 : iconSize + 18,
       alignment: Alignment.bottomCenter,
       rotate: false,
@@ -708,7 +717,7 @@ class _MapLegend extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _LegendRow(
-              icon: Icons.home,
+              icon: Icons.temple_hindu,
               color: homeColor,
               label: l10n.kiran_map_home,
             ),

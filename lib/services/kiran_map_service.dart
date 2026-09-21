@@ -158,8 +158,8 @@ class KiranMapSnapshot {
     return null;
   }
 
-  /// All mapped villages, or those visited in [year]. Home (Piplana) is always
-  /// included.
+  /// All mapped villages, or those visited in [year]. Dikshadham (Piplana) is
+  /// always included.
   List<KiranMapPin> pinsFor({int? year}) {
     final Map<String, List<KiranMapKiran>> byPlace = {};
     for (final kiran in _kirans) {

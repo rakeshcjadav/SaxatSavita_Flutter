@@ -284,7 +284,7 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
                 child: GestureDetector(
                   onTap: () => _openStopKirans(stop),
                   child: Icon(
-                    _isHome(stop) ? Icons.home : Icons.location_on,
+                    _isHome(stop) ? Icons.temple_hindu : Icons.location_on,
                     color: _stopColor(stop, colorScheme),
                     size: 32,
                   ),
@@ -298,7 +298,7 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
             for (final stop in trip.stops)
               Marker(
                 point: LatLng(stop.lat, stop.lng),
-                width: 128,
+                width: _isHome(stop) ? 168 : 128,
                 height: 56,
                 alignment: Alignment.bottomCenter,
                 rotate: false,
@@ -324,7 +324,9 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
                           ),
                         ),
                         child: Text(
-                          stop.displayName,
+                          _isHome(stop)
+                              ? l10n.kiran_map_home
+                              : stop.displayName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -396,7 +398,7 @@ class _KiranVicharanPageState extends State<KiranVicharanPage> {
                     visualDensity: VisualDensity.compact,
                     avatar: Icon(
                       trip.returnsHome
-                          ? Icons.home_outlined
+                          ? Icons.temple_hindu_outlined
                           : Icons.flag_outlined,
                       size: 16,
                     ),
@@ -571,7 +573,7 @@ class _StopTile extends StatelessWidget {
                       children: [
                         if (isHome) ...[
                           Icon(
-                            Icons.home,
+                            Icons.temple_hindu,
                             size: 16,
                             color: colorScheme.primary,
                           ),
