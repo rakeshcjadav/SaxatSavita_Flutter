@@ -1030,12 +1030,11 @@ packages:
     source: hosted
     version: "11.2.0"
   quill_native_bridge_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: quill_native_bridge_android
-      sha256: "763f2066d252a10c04cc66add7b7fa967bae8d25aefcd180d5ac808f5af4d143"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/quill_native_bridge_android"
+      relative: true
+    source: path
     version: "0.0.2"
   quill_native_bridge_ios:
     dependency: transitive

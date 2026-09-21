@@ -1,0 +1,30 @@
+name: quill_native_bridge_android
+description: "Android quill_native_bridge with BitmapFactory downsampling."
+version: 0.0.2
+publish_to: none
+
+environment:
+  sdk: ^3.7.2
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  quill_native_bridge_platform_interface: ^0.0.1+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  pigeon: ^22.6.2
+  mockito: ^5.4.4
+  build_runner: ^2.4.13
+
+flutter:
+  plugin:
+    implements: quill_native_bridge
+    platforms:
+      android:
+        package: dev.flutterquill.quill_native_bridge
+        pluginClass: QuillNativeBridgePlugin
+        dartPluginClass: QuillNativeBridgeAndroid

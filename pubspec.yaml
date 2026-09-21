@@ -87,6 +87,9 @@ dev_dependencies:
 dependency_overrides:
   quill_native_bridge_windows:
     path: packages/quill_native_bridge_windows_stub
+  # BitmapFactory.Options/inSampleSize for Play Console memory insight.
+  quill_native_bridge_android:
+    path: packages/quill_native_bridge_android
   # flutter_html 3.0.0 still calls html's internal qs.matches(), removed in 0.15.7.
   html: 0.15.6
 
