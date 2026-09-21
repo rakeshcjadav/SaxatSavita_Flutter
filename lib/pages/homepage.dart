@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
@@ -5,6 +6,7 @@ import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
+import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
 import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -21,14 +23,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   bool _isOffline = false;
+  bool _showDailyQuiz = true;
   late final Connectivity _connectivity;
   late final Stream<dynamic> _connectivityStream;
   late final StreamSubscription<dynamic> _connectivitySubscription;
+  late final DailyQuizService _dailyQuizService;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _dailyQuizService = DailyQuizService();
+    _dailyQuizService.resultsRevision.addListener(_onQuizResultsChanged);
+    unawaited(_refreshDailyQuizCta());
 
     // Track screen view
     AnalyticsService().logScreenView(screenName: 'home_page');
@@ -86,15 +93,46 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _refreshDailyQuizCta() async {
+    final show =
+        _dailyQuizService.isEnabled &&
+        (kDebugMode || await _dailyQuizService.resultForToday() == null);
+    if (!mounted || show == _showDailyQuiz) return;
+    setState(() {
+      _showDailyQuiz = show;
+    });
+  }
+
+  void _onQuizResultsChanged() {
+    unawaited(_refreshDailyQuizCta());
+  }
+
+  Future<void> _openBook() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const BookMainpage()),
+    );
+  }
+
+  Future<void> _openDailyQuiz() async {
+    await Navigator.pushNamed(context, '/daily-quiz');
+    if (mounted) await _refreshDailyQuizCta();
+  }
+
   @override
   void dispose() {
+    _dailyQuizService.resultsRevision.removeListener(_onQuizResultsChanged);
     WidgetsBinding.instance.removeObserver(this);
     _connectivitySubscription.cancel();
     super.dispose();
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {}
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_refreshDailyQuizCta());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,36 +248,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 ),
               ),
               const Spacer(),
-              Container(
-                padding: EdgeInsets.only(bottom: 10),
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BookMainpage(),
-                      ),
-                    );
-                  },
-                  iconAlignment: IconAlignment.start,
-                  icon: Icon(
-                    Icons.menu_book,
-                    size: appSettingsNotifier.value.appFontSize,
-                  ),
-                  style: ButtonStyle(
-                    padding: const WidgetStatePropertyAll(
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    ),
-                    textStyle: WidgetStatePropertyAll(
-                      Theme.of(context).textTheme.titleMedium,
-                    ),
-                    elevation: WidgetStatePropertyAll(10),
-                  ),
-                  label: Text(
-                    "  ${AppLocalizations.of(context)!.sakshatSavita}",
-                  ),
-                ),
-              ),
+              _buildHomeCtas(context),
               Container(
                 padding: EdgeInsets.only(bottom: 10),
                 child: Text(
@@ -332,36 +341,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const BookMainpage(),
-                          ),
-                        );
-                      },
-                      iconAlignment: IconAlignment.start,
-                      icon: Icon(
-                        Icons.menu_book,
-                        size: appSettingsNotifier.value.appFontSize,
-                      ),
-                      style: ButtonStyle(
-                        padding: const WidgetStatePropertyAll(
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        ),
-                        textStyle: WidgetStatePropertyAll(
-                          Theme.of(context).textTheme.titleMedium,
-                        ),
-                        elevation: WidgetStatePropertyAll(10),
-                      ),
-                      label: Text(
-                        "  ${AppLocalizations.of(context)!.sakshatSavita}",
-                      ),
-                    ),
-                  ),
+                  _buildHomeCtas(context),
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
                     child: Text(
@@ -378,6 +358,70 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildHomeCtas(BuildContext context) {
+    final bookButton = _buildBookCtaButton(context);
+
+    if (!_showDailyQuiz) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: bookButton,
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          bookButton,
+          const SizedBox(width: 8),
+          _buildDailyQuizIconButton(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBookCtaButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: _openBook,
+      iconAlignment: IconAlignment.start,
+      icon: Icon(Icons.menu_book, size: appSettingsNotifier.value.appFontSize),
+      style: ButtonStyle(
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        textStyle: WidgetStatePropertyAll(
+          Theme.of(context).textTheme.titleMedium,
+        ),
+        elevation: const WidgetStatePropertyAll(10),
+      ),
+      label: Text(
+        AppLocalizations.of(context)!.sakshatSavita,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  Widget _buildDailyQuizIconButton(BuildContext context) {
+    return Tooltip(
+      message: AppLocalizations.of(context)!.daily_quiz_intro_title,
+      child: ElevatedButton(
+        onPressed: _openDailyQuiz,
+        style: ButtonStyle(
+          padding: const WidgetStatePropertyAll(EdgeInsets.all(10)),
+          minimumSize: const WidgetStatePropertyAll(Size(48, 48)),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          elevation: const WidgetStatePropertyAll(10),
+        ),
+        child: Icon(
+          Icons.auto_awesome,
+          size: appSettingsNotifier.value.appFontSize,
+        ),
+      ),
     );
   }
 }

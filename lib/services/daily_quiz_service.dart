@@ -33,6 +33,9 @@ class DailyQuizService {
   Future<void>? _bankLoad;
   Future<void>? _resultsLoad;
 
+  /// Bumped when local/remote daily-quiz results change so UI can hide today's CTA.
+  final ValueNotifier<int> resultsRevision = ValueNotifier(0);
+
   bool get isEnabled => RemoteConfigService().enableDailyQuiz;
 
   static String dateKey([DateTime? date]) {
@@ -168,6 +171,7 @@ class DailyQuizService {
     _results = results;
     await _persistResults();
     await _syncResult(result);
+    _notifyResultsChanged();
     return result;
   }
 
@@ -186,6 +190,7 @@ class DailyQuizService {
     }
     _results = merged.values.toList();
     await _persistResults();
+    _notifyResultsChanged();
   }
 
   Future<void> syncLocalResultsToFirebase() async {
@@ -336,6 +341,10 @@ class DailyQuizService {
       debugPrint('DailyQuizService: load results failed: $e');
       _results = [];
     }
+  }
+
+  void _notifyResultsChanged() {
+    resultsRevision.value++;
   }
 
   Future<void> _persistResults() async {
