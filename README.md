@@ -1,76 +1,97 @@
 # 📱 Sakshat Savita (સાક્ષાત્ સવિતા)
 
-> A comprehensive digital spiritual reading companion for the complete Sakshaat Savita collection
+> A digital reading companion for the complete Sakshat Savita collection
+
+**Language:** **English** | [ગુજરાતી](README_gu.md)
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.0.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.49.0-green.svg)]()
 
 ## 🌟 Overview
 
-Sakshaat Savita is a modern Flutter application that provides a complete digital reading experience for the spiritual text collection. The app combines traditional spiritual content with cutting-edge technology to offer personalized reading, progress tracking, and community features.
+Sakshat Savita is a Flutter app for reading the granth offline, with English and Gujarati UI. Kiran text stays in Gujarati. Beside reading, it covers progress, notes, search, people in the sittings, maps of vicharan, daily teaching quizzes, and kiran quizzes after you finish a sitting.
 
 ## ✨ Key Features
 
-### 📚 **Core Reading Experience**
-- **Complete Digital Library**: Access all 5 parts of Sakshaat Savita with full content
-- **Advanced Search**: Multi-word intelligent search with relevance scoring
-- **Reading Progress**: Automatic progress tracking with timers and completion percentages
-- **Personalized Notes**: Rich text editor with Quill integration for detailed annotations
-- **Favorites & Bookmarks**: Mark favorite Kirans and bookmark reading positions
-- **Offline Reading**: Full content available without internet connection
+### 📚 **Reading**
+- **Complete library**: All 5 parts and 697 kirans, available offline
+- **Kiran info**: Gujarati date, village and venue, teaching (moral), summary, and history from a sheet on the read page and kiran list
+- **Village filter**: Narrow lists and the calendar by place
+- **Calendar and chronology**: Browse kirans by tithi/date and in time order
+- **Search**: Multi-word search across titles and text, with haribhakt name matches
+- **Favorites and bookmarks**: Mark kirans and jump back to a position
+- **Listen**: Text-to-speech (voice and rate in Settings), plus recorded audio when a kiran has it
+- **Reading comfort**: Reading text size, app UI text size, line height, keep-screen-on, optional edge navigation, light/dark themes and color schemes
 
-### 🎨 **Content Creation**
-- **Quote Generator**: Create beautiful shareable images from book content
-- **Custom Templates**: Multiple design templates with geometric and floral patterns
-- **Font Customization**: Personalize appearance with various fonts and gradients
-- **Social Sharing**: Direct sharing to social media or save to gallery
+### 🧭 **Places and people**
+- **Haribhakts**: Browse hosts, readers, people who asked questions, and those mentioned; search by name; sort by kiran count
+- **In the kiran**: Names are highlighted; tap a chip to find that person in the text, long-press to open their profile and questions
+- **Vicharan map**: OpenStreetMap of trips, with Piplana Dikshadham as home, inbound routes, and sitting details
+- **Place map**: See villages and open a kiran from the map
 
-### 📊 **Analytics & Insights**
-- **Reading Statistics**: Track total reading time, sessions, and progress
-- **Daily Streaks**: Monitor consistent reading habits
-- **Historical Analysis**: Long-term reading pattern insights
-- **Goal Tracking**: Reading plan milestones and achievements
+### 🧠 **Quizzes (પ્રશ્નોત્તર)**
+- **Today's teaching (આજનો ઉપદેશ)**: Five questions drawn from the whole granth (not one kiran). Options are shuffled; the source kiran is shown after you answer
+- **Home and dashboard**: Shortcut on Home until today's quiz is done; dashboard card with score and an embedded leaderboard
+- **Daily and weekly leaderboards**: Rank number on each row; gold, silver, and bronze trophies for the top three
+- **Streak and reminder**: Daily quiz streak, plus an optional local reminder at a time you choose
+- **Kiran quiz**: After you have read a kiran, three random scored questions, then optional extra practice. One scored attempt per kiran; points sync when you are signed in
+- **Offline-friendly**: Banks load from Firebase when reachable, with a local/bundled fallback
 
-### ☁️ **Cloud Features**
-- **Firebase Integration**: Real-time data synchronization
-- **Google Sign-In**: Secure authentication
-- **Cross-Device Sync**: Access your data on any device
-- **Automatic Backup**: Never lose your reading progress
+### 🏠 **Home, dashboard, and navigation**
+- **Dashboard**: Time-based greeting, reading streaks, statistics, active plan, recent activity, daily quiz, and quick actions
+- **Bottom bar**: Dashboard, book (Home), Notes, Reading history, Profile — selected tab is highlighted
+- **Welcome tour**: First-run walkthrough of the main surfaces
+- **Home screen widgets** (Android and iOS): Daily reading time, kirans read, streak, and a progress bar
 
-### 🔧 **Advanced Tools**
-- **Legacy Migration**: Seamless data transfer from older versions
-- **Reading Plans**: Create personalized daily reading goals with reminders
-- **Multi-language Support**: Full English and Gujarati interface
-- **Customizable Themes**: Light/dark mode with multiple color schemes
+### 📝 **Notes, plans, and quotes**
+- **Notes**: Rich text (Quill) tied to kirans
+- **Reading plans**: Daily goals (time or kirans), reminders, and milestone tracking
+- **Reading history**: Sessions, timers, and completion
+- **Quote images**: Templates, fonts, gradients, stickers, save to gallery, and share
+
+### 🙏 **Aashirvachan and information**
+- **Aashirvachan**: Blessings collection
+- **Information**: Preface and other book front matter
+
+### ☁️ **Accounts and sync**
+- **Sign in**: Google and Sign in with Apple, or continue as a guest (some items stay in the signed-in drawer only)
+- **Profile**: Name and place, used on the dashboard greeting
+- **Cloud sync**: Notes, progress, plans, quiz results, and rewards across devices when signed in
+- **Play Store updates**: In-app update prompt with store fallback
+- **Remote Config**: Feature flags (for example daily quiz) without a store wait
 
 ## 🏗️ Architecture
 
 ### Tech Stack
 - **Frontend**: Flutter 3.7.2+
-- **Backend**: Firebase (Firestore, Authentication, Cloud Functions)
-- **State Management**: Provider pattern with ValueNotifiers
-- **Local Storage**: SharedPreferences for settings and cache
-- **Authentication**: Firebase Auth with Google Sign-In
-- **Cloud Storage**: Firebase Storage for user data backup
+- **Backend**: Firebase (Auth, Firestore, Remote Config, Analytics)
+- **Local storage**: SharedPreferences for settings, cache, and offline quiz/results
+- **Authentication**: Firebase Auth with Google and Apple
+- **Maps**: OpenStreetMap via flutter_map
+- **Speech**: flutter_tts and just_audio
+- **Widgets**: home_widget (Android + iOS)
+- **Notifications**: flutter_local_notifications (plans and daily quiz reminder)
 
 ### Project Structure
 ```
 lib/
-├── auth/                    # Authentication pages and logic
-├── components/              # Reusable UI components
-├── helpers/                 # Helper classes and utilities
-├── l10n/                   # Localization files (English & Gujarati)
-├── models/                 # Data models and entities
-├── pages/                  # UI screens and pages
-├── services/               # Business logic and data services
-└── main.dart              # Application entry point
+├── auth/                    # Sign-in pages
+├── components/              # Drawer, app bar, shared chrome
+├── helpers/                 # Navigation helpers
+├── l10n/                    # English and Gujarati ARB + generated l10n
+├── models/                  # Book, user, quiz, map, and profile models
+├── pages/                   # Screens
+├── services/                # Book, Firebase, quiz, map, TTS, widgets
+├── widgets/                 # Leaderboard tiles, kiran meta, quiz UI
+└── main.dart
 
 assets/
-├── book/                   # Book content and data
-├── jsons/                  # Configuration and metadata
-└── res/                    # Images and resources
+├── book/                    # Kirans, quizzes, haribhakt and map data
+├── jsons/                   # Extra metadata
+├── res/                     # Images
+└── stickers/                # Quote-generator stickers
 ```
 
 ## 🚀 Getting Started
@@ -95,11 +116,11 @@ assets/
    ```
 
 3. **Firebase Setup**
-   - Create a new Firebase project
-   - Add Android/iOS apps to Firebase
-   - Download `google-services.json` (Android) and `GoogleService-Info.plist` (iOS)
-   - Place configuration files in respective platform directories
-   - Enable Authentication and Firestore in Firebase Console
+   - Create a Firebase project
+   - Add Android/iOS apps
+   - Place `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) in the platform folders
+   - Enable Authentication (Google, Apple), Firestore, Analytics, and Remote Config
+   - Deploy rules from `firestore.rules` (do not use a hand-written subset)
 
 4. **Run the application**
    ```bash
@@ -125,74 +146,52 @@ flutter build ios --release
 
 ## 📱 Features Deep Dive
 
-### Authentication System
-- Secure Google Sign-In integration
-- Anonymous reading mode available
-- User profile management
-- Privacy-focused data handling
+### Reading a kiran
+- Open a part, filter by village or favorites, then read with automatic session timing
+- Kiran info sheet: date, place path, teaching, summary, and related history
+- Haribhakt chips in the sitting; tap to jump in the text
+- After at least one read, take the kiran quiz (પ્રશ્નોત્તર)
 
-### Reading Experience
-- **Smart Search**: Advanced search with multi-word support and relevance scoring
-- **Progress Tracking**: Automatic session tracking with reading analytics
-- **Note System**: Rich text notes with Quill editor integration
-- **Bookmarking**: Quick access to favorite content and reading positions
+### Today's teaching
+- Five scored questions from across the granth
+- After each answer, see the source kiran and open it
+- Complete once per day for the leaderboard; you can still review
+- Optional local reminder from Settings
 
-### Data Migration
-- **Legacy Support**: Seamless migration from older app versions
-- **Firebase Migration**: Comprehensive tools for data structure updates
-- **Progress Preservation**: Ensures no data loss during upgrades
+### Maps
+- Calendar days link into place context
+- Vicharan trips plot the route with Piplana Dikshadham as home
+- Tap a stop to open that kiran
 
-### Customization Options
-- **Theme System**: Material 3 design with light/dark modes
-- **Typography**: Adjustable font sizes and reading preferences
-- **Language Support**: Bilingual interface (English/Gujarati)
-- **Reading Settings**: Customizable reading speed and display options
+### Customization
+- Separate **reading** and **app UI** font sizes
+- Material 3 light/dark, seed color, variant, and contrast
+- English or Gujarati interface (kiran body remains Gujarati)
 
 ## 🔧 Configuration
 
-### Firebase Setup
-1. Create Firebase project at [Firebase Console](https://console.firebase.google.com)
-2. Enable the following services:
-   - Authentication (Google provider)
-   - Firestore Database
-   - Cloud Storage
-3. Configure security rules for Firestore:
-   ```javascript
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /users/{userId}/{document=**} {
-         allow read, write: if request.auth != null && request.auth.uid == userId;
-       }
-     }
-   }
-   ```
+### Firebase
+1. Create a project at [Firebase Console](https://console.firebase.google.com)
+2. Enable Authentication, Firestore, Analytics, and Remote Config
+3. Use the repository `firestore.rules` and deploy them with the project deploy scripts
 
-### Environment Variables
-Create a `.env` file in the project root:
-```env
-FIREBASE_PROJECT_ID=your_project_id
-GOOGLE_SIGN_IN_CLIENT_ID=your_client_id
-```
+### Home widgets
+- **iOS**: App Group `group.com.saxatsavita.flutter.widgets`, URL scheme `saxatsavita://` — see `docs/IOS_WIDGET_SETUP.md`
+- **Android**: `ReadingProgressWidget` in the app module
 
 ## 📖 Usage
 
-### Basic Usage
-1. **First Launch**: Choose to sign in with Google or continue as guest
-2. **Browse Content**: Navigate through the 5 parts of Sakshaat Savita
-3. **Reading**: Tap any Kiran to start reading with automatic progress tracking
-4. **Search**: Use the search feature to find specific content across all parts
-5. **Notes**: Add personal notes while reading for future reference
-
-### Advanced Features
-- **Reading Plans**: Create custom reading schedules with daily goals
-- **Quote Generator**: Create beautiful images from your favorite passages
-- **Data Migration**: Use migration tools if upgrading from older versions
-- **Backup**: Enable cloud sync to protect your reading data
+1. **First launch**: Welcome tour, then sign in (Google or Apple) or continue as guest
+2. **Dashboard**: Greeting, streak, today's teaching, and shortcuts
+3. **Book**: Five parts → kiran list → read, listen, notes, info, quiz
+4. **Search / haribhakts**: Find a teaching or a person
+5. **Map and calendar**: Follow vicharan or “on this day”
+6. **Plans and history**: Set a daily goal and review sessions
+7. **Quotes**: Build a shareable image with templates and stickers
 
 ## 🤝 Contributing
 
-We welcome contributions to improve Sakshaat Savita! Please follow these guidelines:
+We welcome contributions to improve Sakshat Savita. Please follow these guidelines:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -204,7 +203,8 @@ We welcome contributions to improve Sakshaat Savita! Please follow these guideli
 - Follow Flutter best practices and conventions
 - Write meaningful commit messages
 - Add comments for complex logic
-- Test on both Android and iOS platforms
+- Test on both Android and iOS
+- Keep kiran quizzes and summaries grounded in the book; do not invent doctrine
 - Ensure accessibility compliance
 
 ## 📄 License
@@ -213,31 +213,33 @@ This project is private and proprietary. All rights reserved.
 
 ## 🙏 Acknowledgments
 
-- Flutter team for the amazing framework
-- Firebase for robust backend services
+- Flutter team for the framework
+- Firebase for backend services
 - The spiritual community for inspiration and feedback
 - Contributors and testers who helped improve the app
 
 ## 📞 Support
 
-For support, feature requests, or bug reports:
-- Create an issue in this repository
-- Contact: [Your Contact Information]
+For support, feature requests, or bug reports, create an issue in this repository.
 
 ## 🔄 Version History
 
-### Version 2.0.0 (Current)
-- Complete UI redesign with Material 3
-- Enhanced search with multi-word support
-- Comprehensive migration tools
-- Advanced note editor with rich text
-- Improved performance and accessibility
-- Better Firebase integration
+### Version 2.49.0 (Current)
+- **Dashboard and chrome**: Outlined dashboard cards, tighter drawer header, highlighted bottom-nav tab
+- **Today's teaching**: Whole-granth daily quiz, reminder, Home CTA until done, daily/weekly leaderboards with numbered ranks and medals
+- **Kiran quiz**: Firestore-backed bank for all kirans; three scored questions then optional practice; synced points
+- **Haribhakts**: Hosts, readers, questioners, and mentions; name highlighting in kiran text
+- **Kiran meta**: Date, village, teaching, and summary on the read page and lists
+- **Maps**: OpenStreetMap vicharan with Piplana Dikshadham as home
+- **Reading aids**: Separate app vs reading font size, TTS, home-screen reading-progress widgets
+- **Accounts**: Sign in with Apple alongside Google; Play in-app updates
+- Material 3 UI, English/Gujarati interface, offline library
+
+### Version 2.0.0
+- Material 3 redesign, multi-word search, migration tools, rich notes, Firebase sync
 
 ### Version 1.x
-- Initial release with basic reading features
-- Simple note-taking functionality
-- Basic Firebase integration
+- Initial reading, basic notes, early Firebase integration
 
 ---
 
