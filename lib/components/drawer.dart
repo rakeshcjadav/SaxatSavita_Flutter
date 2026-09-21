@@ -90,15 +90,17 @@ class _DrawerState extends State<MyDrawer> {
     }
   }
 
-  Widget getAvatar() {
+  Widget getAvatar({double radius = 32}) {
     if (kIsWeb ||
         FirebaseAuth.instance.currentUser?.photoURL == null ||
         FirebaseAuth.instance.currentUser!.photoURL!.isEmpty) {
       return CircleAvatar(
+        radius: radius,
         backgroundImage: AssetImage('assets/res/z_jogi_swami_avatar.png'),
       );
     } else {
       return CircleAvatar(
+        radius: radius,
         backgroundImage: NetworkImage(
           FirebaseAuth.instance.currentUser?.photoURL ?? '',
         ),
@@ -106,60 +108,83 @@ class _DrawerState extends State<MyDrawer> {
     }
   }
 
+  TextStyle _headerNameStyle() {
+    return Theme.of(context).textTheme.titleSmall!.copyWith(
+      color: Theme.of(context).colorScheme.onPrimary,
+      fontSize: 18,
+      height: 1.2,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  TextStyle _headerEmailStyle() {
+    return Theme.of(context).textTheme.bodySmall!.copyWith(
+      color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.85),
+      fontSize: 13,
+      height: 1.2,
+    );
+  }
+
   Widget getAccountName() {
-    // Prioritize profile data if available and both names are filled
+    final String name;
     if (_userProfile != null &&
         _userProfile!.firstName.isNotEmpty &&
         _userProfile!.lastName.isNotEmpty) {
-      return Text(
-        _userProfile!.fullName,
-        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-          color: Theme.of(context).colorScheme.onPrimary,
-          fontSize: 18,
-        ),
-      );
+      name = _userProfile!.fullName;
     } else {
-      // Fall back to Firebase Auth display name
-      return Text(
-        FirebaseAuth.instance.currentUser?.displayName ?? '',
-        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-          color: Theme.of(context).colorScheme.onPrimary,
-          fontSize: 18,
-        ),
-      );
+      name = FirebaseAuth.instance.currentUser?.displayName ?? '';
     }
+    return Text(
+      name,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      style: _headerNameStyle(),
+    );
   }
 
   Widget getAccountEmail() {
-    // Prioritize profile data if available and both names are filled
+    final String email;
     if (_userProfile != null && _userProfile!.email.isNotEmpty) {
-      if (_userProfile!.email.contains('appleid.com')) {
-        // Handle Apple ID email case
-        return Text(
-          'Apple ID',
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: Theme.of(context).colorScheme.onPrimary,
-            fontSize: 18,
-          ),
-        );
-      }
-      return Text(
-        _userProfile!.email,
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-          color: Theme.of(context).colorScheme.onPrimary,
-          fontSize: 18,
-        ),
-      );
+      email =
+          _userProfile!.email.contains('appleid.com')
+              ? 'Apple ID'
+              : _userProfile!.email;
     } else {
-      // Fall back to Firebase Auth email
-      return Text(
-        FirebaseAuth.instance.currentUser?.email ?? '',
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-          color: Theme.of(context).colorScheme.onPrimary,
-          fontSize: 18,
-        ),
-      );
+      email = FirebaseAuth.instance.currentUser?.email ?? '';
     }
+    return Text(
+      email,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      style: _headerEmailStyle(),
+    );
+  }
+
+  Widget _signedInHeader() {
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
+    return DrawerHeader(
+      margin: EdgeInsets.zero,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(width: 2, color: onPrimary),
+            ),
+            child: getAvatar(),
+          ),
+          const SizedBox(height: 10),
+          getAccountName(),
+          const SizedBox(height: 2),
+          getAccountEmail(),
+        ],
+      ),
+    );
   }
 
   @override
@@ -169,20 +194,7 @@ class _DrawerState extends State<MyDrawer> {
         padding: EdgeInsets.zero,
         children: [
           if (!kIsWeb && FirebaseAuth.instance.currentUser != null) ...[
-            UserAccountsDrawerHeader(
-              currentAccountPicture: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    width: 2,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-                child: getAvatar(),
-              ),
-              accountName: getAccountName(),
-              accountEmail: getAccountEmail(),
-            ),
+            _signedInHeader(),
           ] else ...[
             DrawerHeader(
               decoration: BoxDecoration(
