@@ -3757,6 +3757,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This vicharan could not be found'**
   String get kiran_map_vicharan_missing;
+
+  /// No description provided for @push_test_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Firebase test message'**
+  String get push_test_section;
+
+  /// No description provided for @push_test_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap FCM registration token to copy the full token. In Firebase, paste it, tap +, then Test. Leave this app in the background.'**
+  String get push_test_hint;
+
+  /// No description provided for @fcm_registration_token.
+  ///
+  /// In en, this message translates to:
+  /// **'FCM registration token'**
+  String get fcm_registration_token;
+
+  /// No description provided for @firebase_installation_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Firebase installation ID'**
+  String get firebase_installation_id;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @push_notifications_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off'**
+  String get push_notifications_off;
+
+  /// No description provided for @push_id_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available'**
+  String get push_id_unavailable;
+
+  /// No description provided for @push_token_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} characters. Tap to copy the full token.'**
+  String push_token_ready(int count);
+
+  /// No description provided for @push_token_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied {count} characters. In Firebase, tap + then Test.'**
+  String push_token_copied(int count);
+
+  /// No description provided for @push_installation_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available until you stop the app and run it again. Use the FCM token above.'**
+  String get push_installation_missing;
+
+  /// No description provided for @push_show_test_notification.
+  ///
+  /// In en, this message translates to:
+  /// **'Show test notification'**
+  String get push_show_test_notification;
+
+  /// No description provided for @push_test_notification_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Test notification sent on this phone'**
+  String get push_test_notification_sent;
 }
 
 class _AppLocalizationsDelegate

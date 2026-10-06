@@ -1,13 +1,114 @@
 import 'dart:io';
+import 'package:firebase_app_installations/firebase_app_installations.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:saxatsavita_flutter/firebase_options.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+
+/// Topic every install joins so one Firebase send can reach all users.
+const String fcmTopicAllUsers = 'all_users';
+
+/// Must match `fcm_push_channel_id` in Android resources and
+/// [SaxatSavitaApplication].
+const String fcmPushChannelId = 'fcm_push';
+const String fcmPushChannelName = 'Push notifications';
+const String fcmPushChannelDescription =
+    'Messages sent to Sakshat Savita users';
+const String fcmPushPayload = 'fcm_push';
+const String pushTestTitle = 'Sakshat Savita';
+const String pushTestBody = 'Test notification';
+const int pushTestNotificationId = 81001;
+
+/// Title and body for an incoming FCM message, including data-only payloads.
+class PushNotificationText {
+  const PushNotificationText({required this.title, required this.body});
+
+  final String title;
+  final String body;
+
+  bool get isEmpty => title.isEmpty && body.isEmpty;
+}
+
+PushNotificationText pushNotificationText({
+  String? title,
+  String? body,
+  Map<String, dynamic> data = const {},
+}) {
+  String read(String? value, String key) {
+    final direct = value?.trim();
+    if (direct != null && direct.isNotEmpty) return direct;
+    final fromData = data[key];
+    if (fromData is String && fromData.trim().isNotEmpty) {
+      return fromData.trim();
+    }
+    return '';
+  }
+
+  return PushNotificationText(
+    title: read(title, 'title'),
+    body: read(body, 'body'),
+  );
+}
+
+bool fcmAuthorizationAllowsTopicSubscribe(AuthorizationStatus status) {
+  switch (status) {
+    case AuthorizationStatus.authorized:
+    case AuthorizationStatus.provisional:
+      return true;
+    case AuthorizationStatus.denied:
+    case AuthorizationStatus.notDetermined:
+    case AuthorizationStatus.deniedPermanently:
+      return false;
+  }
+}
+
+bool fcmAuthorizationIsDenied(AuthorizationStatus status) {
+  switch (status) {
+    case AuthorizationStatus.denied:
+    case AuthorizationStatus.deniedPermanently:
+      return true;
+    case AuthorizationStatus.authorized:
+    case AuthorizationStatus.provisional:
+    case AuthorizationStatus.notDetermined:
+      return false;
+  }
+}
+
+int pushNotificationId(String? messageId) {
+  if (messageId == null || messageId.isEmpty) return 82000;
+  return 82000 + (messageId.hashCode.abs() % 10000);
+}
+
+/// Required top-level FCM background handler. Notification payloads are shown
+/// by the OS; data-only messages are posted on the push channel.
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  debugPrint(
+    'FCM background: id=${message.messageId} '
+    'title=${message.notification?.title} data=${message.data}',
+  );
+  if (message.notification != null) return;
+
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+  } catch (e) {
+    debugPrint('FCM background Firebase init error: $e');
+  }
+  await NotificationService().showDataOnlyPush(message);
+}
 
 /// NotificationService handles all notification functionality including sound playback
 ///
@@ -35,6 +136,12 @@ class NotificationService {
   static const String dailyQuizPayload = 'daily_quiz';
 
   bool _isInitialized = false;
+  bool _localPluginReady = false;
+  bool _pushListenersReady = false;
+  bool _tokenRefreshListening = false;
+  bool _pushMessagingReady = false;
+  String? _fcmToken;
+  String? _installationId;
   String? _pendingNamedRoute;
   DateTime? _lastNamedRouteNav;
   bool _capturedLaunchPayload = false;
@@ -77,6 +184,7 @@ class NotificationService {
         settings: initializationSettings,
         onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
       );
+      _localPluginReady = true;
       debugPrint('📍 Flutter notifications initialized: $initialized');
 
       // Create notification channels for Android
@@ -93,8 +201,9 @@ class NotificationService {
       final enabled = await areNotificationsEnabled();
       debugPrint('📍 Notifications enabled: $enabled');
 
-      _isInitialized = true;
       await _captureLaunchPayload();
+      await _initializeFirebaseMessaging();
+      _isInitialized = true;
       debugPrint('✅ Notification service initialized successfully');
     } catch (e, stackTrace) {
       _initFuture = null;
@@ -199,6 +308,20 @@ class NotificationService {
           showBadge: true,
           enableLights: true,
           ledColor: Colors.deepOrange,
+        ),
+      );
+
+      await androidPlugin.createNotificationChannel(
+        AndroidNotificationChannel(
+          fcmPushChannelId,
+          fcmPushChannelName,
+          description: fcmPushChannelDescription,
+          importance: Importance.high,
+          enableVibration: true,
+          playSound: true,
+          showBadge: true,
+          enableLights: true,
+          ledColor: const Color(0xFFB8572A),
         ),
       );
     }
@@ -704,6 +827,10 @@ class NotificationService {
       // Add small delay to ensure app context is ready
       Future.delayed(const Duration(milliseconds: 100), () {
         final payload = response.payload ?? '';
+        if (payload == fcmPushPayload) {
+          debugPrint('FCM notification tapped: id=${response.id}');
+          return;
+        }
         if (payload == dailyQuizPayload || payload.startsWith('daily_quiz')) {
           _handleNamedRouteTap('/daily-quiz');
           return;
@@ -881,4 +1008,339 @@ class NotificationService {
       '⏰ Scheduled remind later notification for ${remindTime.toString()}',
     );
   }
+
+  /// Request FCM permission, subscribe to [fcmTopicAllUsers], and show
+  /// foreground messages with the local notifications plugin.
+  Future<void> _initializeFirebaseMessaging() async {
+    if (kIsWeb) return;
+    try {
+      if (!_pushListenersReady) {
+        FirebaseMessaging.onMessage.listen(_onForegroundMessage);
+        FirebaseMessaging.onMessageOpenedApp.listen(_logPushOpened);
+        _pushListenersReady = true;
+      }
+
+      final initialMessage =
+          await FirebaseMessaging.instance.getInitialMessage();
+      if (initialMessage != null) {
+        _logPushOpened(initialMessage);
+      }
+
+      final settings = await FirebaseMessaging.instance.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      debugPrint('FCM permission: ${settings.authorizationStatus}');
+
+      if (Platform.isIOS) {
+        await FirebaseMessaging.instance
+            .setForegroundNotificationPresentationOptions(
+              alert: false,
+              badge: true,
+              sound: false,
+            );
+      }
+
+      if (fcmAuthorizationAllowsTopicSubscribe(settings.authorizationStatus)) {
+        try {
+          await _subscribeToAllUsers();
+        } catch (e) {
+          debugPrint('❌ FCM topic subscribe error: $e');
+        }
+      } else {
+        debugPrint(
+          'FCM topic subscribe skipped: notification permission denied',
+        );
+      }
+      await _refreshPushIdentifiers();
+
+      if (!_tokenRefreshListening) {
+        _tokenRefreshListening = true;
+        FirebaseMessaging.instance.onTokenRefresh.listen((token) async {
+          try {
+            _fcmToken = token;
+            _logFcmToken(token);
+            final current =
+                await FirebaseMessaging.instance.getNotificationSettings();
+            if (fcmAuthorizationAllowsTopicSubscribe(
+              current.authorizationStatus,
+            )) {
+              await _subscribeToAllUsers();
+            }
+          } catch (e) {
+            debugPrint('❌ FCM token refresh error: $e');
+          }
+        });
+      }
+      _pushMessagingReady = true;
+    } catch (e, stackTrace) {
+      debugPrint('❌ FCM initialization error: $e');
+      debugPrint('❌ Stack trace: $stackTrace');
+    }
+  }
+
+  /// FCM registration token and Firebase installation ID for the console
+  /// "Send test message" field. Unavailable on web and before FCM init.
+  Future<PushDeviceIdentity> loadPushDeviceIdentity() async {
+    if (kIsWeb) {
+      return const PushDeviceIdentity(
+        available: false,
+        notificationsDenied: false,
+      );
+    }
+    await initialize();
+    if (!_pushMessagingReady) {
+      return const PushDeviceIdentity(
+        available: false,
+        notificationsDenied: false,
+      );
+    }
+
+    var notificationsDenied = false;
+    try {
+      final settings =
+          await FirebaseMessaging.instance.getNotificationSettings();
+      notificationsDenied = fcmAuthorizationIsDenied(
+        settings.authorizationStatus,
+      );
+    } catch (e) {
+      debugPrint('❌ FCM settings error: $e');
+    }
+    await _refreshPushIdentifiers();
+    return PushDeviceIdentity(
+      available: true,
+      notificationsDenied: notificationsDenied,
+      fcmToken: _nonEmpty(_fcmToken),
+      installationId: _nonEmpty(_installationId),
+    );
+  }
+
+  Future<void> _refreshPushIdentifiers() async {
+    try {
+      _fcmToken = await FirebaseMessaging.instance.getToken();
+      _logFcmToken(_fcmToken);
+    } catch (e) {
+      debugPrint('❌ FCM getToken error: $e');
+    }
+    try {
+      final id = (await FirebaseInstallations.instance.getId()).trim();
+      if (id.isNotEmpty) _installationId = id;
+    } catch (e) {
+      debugPrint('❌ Firebase installation id error: $e');
+    }
+  }
+
+  String? _nonEmpty(String? value) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) return null;
+    return trimmed;
+  }
+
+  Future<void> _subscribeToAllUsers() async {
+    await FirebaseMessaging.instance.subscribeToTopic(fcmTopicAllUsers);
+    debugPrint('FCM subscribed to topic $fcmTopicAllUsers');
+  }
+
+  void _logFcmToken(String? token) {
+    if (!kDebugMode) return;
+    debugPrint('FCM token: $token');
+  }
+
+  Future<void> _onForegroundMessage(RemoteMessage message) async {
+    debugPrint(
+      'FCM foreground: id=${message.messageId} '
+      'title=${message.notification?.title} data=${message.data}',
+    );
+    try {
+      await _showIncomingPush(message);
+    } catch (e, stackTrace) {
+      debugPrint('❌ FCM foreground display error: $e');
+      debugPrint('❌ Stack trace: $stackTrace');
+    }
+  }
+
+  void _logPushOpened(RemoteMessage message) {
+    debugPrint(
+      'FCM opened app: id=${message.messageId} '
+      'title=${message.notification?.title} data=${message.data}',
+    );
+  }
+
+  /// Posts a data-only FCM message. Called from the background isolate.
+  Future<void> showDataOnlyPush(RemoteMessage message) async {
+    if (kIsWeb) return;
+    try {
+      await _ensurePluginForBackgroundIsolate();
+      await _showIncomingPush(message);
+    } catch (e, stackTrace) {
+      debugPrint('❌ FCM data message display error: $e');
+      debugPrint('❌ Stack trace: $stackTrace');
+    }
+  }
+
+  Future<void> _ensurePluginForBackgroundIsolate() async {
+    if (_localPluginReady) return;
+    tz.initializeTimeZones();
+    const initializationSettings = InitializationSettings(
+      android: AndroidInitializationSettings('ic_launcher_foreground'),
+      iOS: DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      ),
+    );
+    await _flutterLocalNotificationsPlugin.initialize(
+      settings: initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    );
+    if (Platform.isAndroid) {
+      await _createNotificationChannels();
+    }
+    _localPluginReady = true;
+  }
+
+  Future<void> _showIncomingPush(RemoteMessage message) async {
+    final text = pushNotificationText(
+      title: message.notification?.title,
+      body: message.notification?.body,
+      data: message.data,
+    );
+    if (text.isEmpty) {
+      debugPrint('FCM message had no displayable text: ${message.messageId}');
+      return;
+    }
+    await _showPushNotification(
+      id: pushNotificationId(message.messageId),
+      title: text.title,
+      body: text.body,
+    );
+  }
+
+  NotificationDetails _pushNotificationDetails({
+    required String title,
+    required String body,
+  }) {
+    // Bundled launcher portrait. The Firebase console "Notification image"
+    // field only accepts a public URL, so pushes the app displays use this.
+    const image = DrawableResourceAndroidBitmap('ic_launcher_foreground');
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        fcmPushChannelId,
+        fcmPushChannelName,
+        channelDescription: fcmPushChannelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: 'notifications_24dp_fill',
+        largeIcon: image,
+        styleInformation: BigPictureStyleInformation(
+          image,
+          contentTitle: title,
+          summaryText: body,
+          hideExpandedLargeIcon: true,
+        ),
+        playSound: true,
+        enableVibration: true,
+        enableLights: true,
+        ledColor: const Color(0xFFB8572A),
+        ledOnMs: 1000,
+        ledOffMs: 500,
+      ),
+      iOS: const DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
+  }
+
+  Future<void> _showPushNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    await _flutterLocalNotificationsPlugin.show(
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: _pushNotificationDetails(title: title, body: body),
+      payload: fcmPushPayload,
+    );
+  }
+
+  /// Shows the same channel and copy as an incoming test push, and returns
+  /// the device FCM token when notification permission allows it.
+  Future<PushTestResult> presentPushTestNotification() async {
+    if (kIsWeb) {
+      return const PushTestResult(
+        token: null,
+        subscribed: false,
+        notificationShown: false,
+      );
+    }
+    await initialize();
+    var notificationShown = false;
+    try {
+      await _showPushNotification(
+        id: pushTestNotificationId,
+        title: pushTestTitle,
+        body: pushTestBody,
+      );
+      notificationShown = true;
+    } catch (e) {
+      debugPrint('❌ Push test notification error: $e');
+    }
+
+    String? token = _fcmToken;
+    var subscribed = false;
+    try {
+      final settings =
+          await FirebaseMessaging.instance.getNotificationSettings();
+      if (fcmAuthorizationAllowsTopicSubscribe(settings.authorizationStatus)) {
+        await _subscribeToAllUsers();
+        subscribed = true;
+        token = await FirebaseMessaging.instance.getToken();
+        _fcmToken = token;
+        _logFcmToken(token);
+      } else {
+        debugPrint(
+          'FCM test token unavailable: ${settings.authorizationStatus}',
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ FCM test token error: $e');
+    }
+
+    return PushTestResult(
+      token: token,
+      subscribed: subscribed,
+      notificationShown: notificationShown,
+    );
+  }
+}
+
+class PushTestResult {
+  const PushTestResult({
+    required this.token,
+    required this.subscribed,
+    required this.notificationShown,
+  });
+
+  final String? token;
+  final bool subscribed;
+  final bool notificationShown;
+}
+
+class PushDeviceIdentity {
+  const PushDeviceIdentity({
+    required this.available,
+    required this.notificationsDenied,
+    this.fcmToken,
+    this.installationId,
+  });
+
+  final bool available;
+  final bool notificationsDenied;
+  final String? fcmToken;
+  final String? installationId;
 }

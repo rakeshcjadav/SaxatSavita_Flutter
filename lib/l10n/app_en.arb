@@ -998,5 +998,28 @@
             "count": { "type": "int" }
         }
     },
-    "kiran_map_vicharan_missing": "This vicharan could not be found"
+    "kiran_map_vicharan_missing": "This vicharan could not be found",
+    "push_test_section": "Firebase test message",
+    "push_test_hint": "Tap FCM registration token to copy the full token. In Firebase, paste it, tap +, then Test. Leave this app in the background.",
+    "fcm_registration_token": "FCM registration token",
+    "firebase_installation_id": "Firebase installation ID",
+    "copied": "Copied",
+    "copy": "Copy",
+    "push_notifications_off": "Notifications are off",
+    "push_id_unavailable": "Not available",
+    "push_token_ready": "{count} characters. Tap to copy the full token.",
+    "@push_token_ready": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "push_token_copied": "Copied {count} characters. In Firebase, tap + then Test.",
+    "@push_token_copied": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "push_installation_missing": "Not available until you stop the app and run it again. Use the FCM token above.",
+    "push_show_test_notification": "Show test notification",
+    "push_test_notification_sent": "Test notification sent on this phone"
 }

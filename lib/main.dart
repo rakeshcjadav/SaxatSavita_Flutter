@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -86,6 +87,15 @@ void main() async {
     // Initialize Firebase Analytics (only on mobile)
     AnalyticsService().initialize(FirebaseAnalytics.instance);
     print('Firebase Analytics initialized successfully');
+    if (Firebase.apps.isNotEmpty) {
+      try {
+        FirebaseMessaging.onBackgroundMessage(
+          firebaseMessagingBackgroundHandler,
+        );
+      } catch (e) {
+        debugPrint('FCM background handler registration error: $e');
+      }
+    }
   }
 
   // Load JSON data

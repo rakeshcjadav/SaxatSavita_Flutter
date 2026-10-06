@@ -2024,4 +2024,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get kiran_map_vicharan_missing => 'This vicharan could not be found';
+
+  @override
+  String get push_test_section => 'Firebase test message';
+
+  @override
+  String get push_test_hint =>
+      'Tap FCM registration token to copy the full token. In Firebase, paste it, tap +, then Test. Leave this app in the background.';
+
+  @override
+  String get fcm_registration_token => 'FCM registration token';
+
+  @override
+  String get firebase_installation_id => 'Firebase installation ID';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get push_notifications_off => 'Notifications are off';
+
+  @override
+  String get push_id_unavailable => 'Not available';
+
+  @override
+  String push_token_ready(int count) {
+    return '$count characters. Tap to copy the full token.';
+  }
+
+  @override
+  String push_token_copied(int count) {
+    return 'Copied $count characters. In Firebase, tap + then Test.';
+  }
+
+  @override
+  String get push_installation_missing =>
+      'Not available until you stop the app and run it again. Use the FCM token above.';
+
+  @override
+  String get push_show_test_notification => 'Show test notification';
+
+  @override
+  String get push_test_notification_sent =>
+      'Test notification sent on this phone';
 }

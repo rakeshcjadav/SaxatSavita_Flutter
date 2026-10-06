@@ -2,4 +2,7 @@
 <resources>
     <string name="app_name">Sakshat Savita</string>
     <string name="reading_progress_widget_description">Track your daily reading progress and goals</string>
+    <string name="fcm_push_channel_id" translatable="false">fcm_push</string>
+    <string name="fcm_push_channel_name">Push notifications</string>
+    <string name="fcm_push_channel_description">Messages sent to Sakshat Savita users</string>
 </resources>

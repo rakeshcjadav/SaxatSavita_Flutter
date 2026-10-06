@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:saxatsavita_flutter/admin/widgets/user_detail_dialog.dart';
@@ -6,6 +7,7 @@ import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/admin/widgets/data_export_dialog.dart';
 import 'package:saxatsavita_flutter/admin/models/admin_user_data.dart';
 import 'package:saxatsavita_flutter/admin/services/admin_service.dart';
+import 'package:saxatsavita_flutter/services/notification_service.dart';
 
 class AdminPanelPage extends StatefulWidget {
   const AdminPanelPage({super.key});
@@ -150,6 +152,11 @@ class _AdminPanelPageState extends State<AdminPanelPage> {
         context,
         title: 'Saxat Savita - Admin Panel',
         extraActions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_active_outlined),
+            tooltip: 'Test notification',
+            onPressed: _showPushTest,
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             tooltip: 'Refresh',
@@ -444,6 +451,65 @@ class _AdminPanelPageState extends State<AdminPanelPage> {
             userId: user.userId,
             adminService: _adminService,
           ),
+    );
+  }
+
+  Future<void> _showPushTest() async {
+    final result = await NotificationService().presentPushTestNotification();
+    if (!mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        final token = result.token;
+        return AlertDialog(
+          title: const Text('Test notification'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  result.notificationShown
+                      ? 'Showed a notification titled "$pushTestTitle" with body "$pushTestBody" on the push channel.'
+                      : 'Could not show the local test notification.',
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  result.subscribed
+                      ? 'This install is subscribed to topic "$fcmTopicAllUsers".'
+                      : 'Notifications are not allowed, so this install is not subscribed to "$fcmTopicAllUsers".',
+                ),
+                const SizedBox(height: 12),
+                const Text('FCM token'),
+                const SizedBox(height: 4),
+                SelectableText(token ?? 'Unavailable'),
+                const SizedBox(height: 12),
+                const Text(
+                  'To deliver a real push, install this build, allow notifications, then in Firebase console open Messaging, create a campaign, and target topic all_users. Title: Sakshat Savita. Body: Test notification. Or paste the token above into "Send test message".',
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            if (token != null)
+              TextButton(
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: token));
+                  if (!dialogContext.mounted || !mounted) return;
+                  Navigator.of(dialogContext).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('FCM token copied')),
+                  );
+                },
+                child: const Text('Copy token'),
+              ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 

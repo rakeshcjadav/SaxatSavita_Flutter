@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:saxatsavita_flutter/auth/pages/google_sign_in_page.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
@@ -59,6 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // Track saving state
   bool _isSaving = false;
+  PushDeviceIdentity? _pushIdentity;
   bool _dailyReminderEnabled = true;
   TimeOfDay _dailyReminderTime = const TimeOfDay(
     hour: DailyQuizService.defaultReminderHour,
@@ -70,6 +72,13 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     _loadOriginalSettings();
     _loadDailyQuizReminder();
+    _loadPushDeviceIdentity();
+  }
+
+  Future<void> _loadPushDeviceIdentity() async {
+    final identity = await NotificationService().loadPushDeviceIdentity();
+    if (!mounted) return;
+    setState(() => _pushIdentity = identity);
   }
 
   Future<void> _loadDailyQuizReminder() async {
@@ -1350,6 +1359,105 @@ class _SettingsPageState extends State<SettingsPage> {
     ];
   }
 
+  List<Widget> _buildPushTestDeviceSection() {
+    final identity = _pushIdentity;
+    if (identity == null || !identity.available) return const [];
+    final l10n = AppLocalizations.of(context)!;
+    return <Widget>[
+      const SizedBox(height: 24),
+      _buildSectionHeader(
+        context,
+        l10n.push_test_section,
+        Icons.notifications_outlined,
+      ),
+      const SizedBox(height: 8),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        child: Text(
+          l10n.push_test_hint,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ),
+      if (identity.notificationsDenied)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Text(
+            l10n.push_notifications_off,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+        ),
+      _buildPushIdTile(
+        label: l10n.fcm_registration_token,
+        value: identity.fcmToken,
+        icon: Icons.vpn_key_outlined,
+        unavailable: l10n.push_id_unavailable,
+        readyLabel: (length) => l10n.push_token_ready(length),
+      ),
+      _buildPushIdTile(
+        label: l10n.firebase_installation_id,
+        value: identity.installationId,
+        icon: Icons.fingerprint,
+        unavailable: l10n.push_installation_missing,
+      ),
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.notifications_active_outlined),
+          title: Text(l10n.push_show_test_notification),
+          onTap: () async {
+            await NotificationService().presentPushTestNotification();
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(l10n.push_test_notification_sent)),
+            );
+          },
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildPushIdTile({
+    required String label,
+    required String? value,
+    required IconData icon,
+    required String unavailable,
+    String Function(int length)? readyLabel,
+  }) {
+    final id = value?.trim();
+    if (id == null || id.isEmpty) {
+      return Card(
+        child: ListTile(
+          leading: Icon(icon),
+          title: Text(label),
+          subtitle: Text(unavailable),
+        ),
+      );
+    }
+    final l10n = AppLocalizations.of(context)!;
+    return Card(
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(label),
+        subtitle: Text(
+          readyLabel?.call(id.length) ?? id,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: const Icon(Icons.copy_outlined),
+        onTap: () => _copyPushId(id, l10n),
+      ),
+    );
+  }
+
+  Future<void> _copyPushId(String value, AppLocalizations l10n) async {
+    await Clipboard.setData(ClipboardData(text: value));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.push_token_copied(value.length))),
+    );
+  }
+
   List<Widget> _buildAppSettingsSection() {
     return <Widget>[
       // App Settings Section
@@ -1549,6 +1657,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     // Language & Localization Section
                     ..._buildLanguageSettingsSection(),
                     ..._buildDailyQuizSettingsSection(),
+                    ..._buildPushTestDeviceSection(),
 
                     const SizedBox(height: 24),
                     // App Settings Section

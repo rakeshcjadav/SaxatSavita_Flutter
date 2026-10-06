@@ -2030,4 +2030,50 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get kiran_map_vicharan_missing => 'આ વિચરણ મળ્યું નથી';
+
+  @override
+  String get push_test_section => 'Firebase ટેસ્ટ સંદેશ';
+
+  @override
+  String get push_test_hint =>
+      'FCM નોંધણી ટોકન પર ટેપ કરીને આખું ટોકન નકલ કરો. Firebaseમાં ચોંટાડીને + દબાવો, પછી Test. આ ઍપ પાછળ રાખો.';
+
+  @override
+  String get fcm_registration_token => 'FCM નોંધણી ટોકન';
+
+  @override
+  String get firebase_installation_id => 'Firebase ઇન્સ્ટોલેશન આઈડી';
+
+  @override
+  String get copied => 'નકલ થઈ';
+
+  @override
+  String get copy => 'નકલ કરો';
+
+  @override
+  String get push_notifications_off => 'નોટિફિકેશન બંધ છે';
+
+  @override
+  String get push_id_unavailable => 'ઉપલબ્ધ નથી';
+
+  @override
+  String push_token_ready(int count) {
+    return '$count અક્ષર. આખું ટોકન નકલ કરવા ટેપ કરો.';
+  }
+
+  @override
+  String push_token_copied(int count) {
+    return '$count અક્ષર નકલ થયા. Firebaseમાં + દબાવો, પછી Test.';
+  }
+
+  @override
+  String get push_installation_missing =>
+      'ઍપ બંધ કરીને ફરી ચલાવો ત્યાં સુધી ઉપલબ્ધ નથી. ઉપરનું FCM ટોકન વાપરો.';
+
+  @override
+  String get push_show_test_notification => 'ટેસ્ટ નોટિફિકેશન બતાવો';
+
+  @override
+  String get push_test_notification_sent =>
+      'આ ફોન પર ટેસ્ટ નોટિફિકેશન મોકલ્યું';
 }
