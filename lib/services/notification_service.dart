@@ -1060,6 +1060,7 @@ class NotificationService {
             );
       }
 
+      await _ensureIosApnsToken();
       final notificationsEnabled = await areNotificationsEnabled();
       if (fcmShouldSubscribeToTopic(
         status: settings.authorizationStatus,
@@ -1156,8 +1157,20 @@ class NotificationService {
     );
   }
 
+  /// iOS will not return an FCM token until APNs has issued a device token.
+  Future<void> _ensureIosApnsToken() async {
+    if (kIsWeb || !Platform.isIOS) return;
+    for (var attempt = 0; attempt < 12; attempt++) {
+      final token = await FirebaseMessaging.instance.getAPNSToken();
+      if (token != null && token.isNotEmpty) return;
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+    }
+    debugPrint('FCM APNs token not available yet');
+  }
+
   Future<void> _refreshPushIdentifiers() async {
     try {
+      await _ensureIosApnsToken();
       _fcmToken = await FirebaseMessaging.instance.getToken();
       _logFcmToken(_fcmToken);
     } catch (e) {
@@ -1336,7 +1349,12 @@ class NotificationService {
     try {
       final settings =
           await FirebaseMessaging.instance.getNotificationSettings();
-      if (fcmAuthorizationAllowsTopicSubscribe(settings.authorizationStatus)) {
+      final notificationsEnabled = await areNotificationsEnabled();
+      if (fcmShouldSubscribeToTopic(
+        status: settings.authorizationStatus,
+        notificationsEnabled: notificationsEnabled,
+      )) {
+        await _ensureIosApnsToken();
         await _subscribeToAllUsers();
         subscribed = true;
         token = await FirebaseMessaging.instance.getToken();
