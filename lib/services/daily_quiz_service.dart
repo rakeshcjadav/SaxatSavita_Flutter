@@ -79,6 +79,36 @@ class DailyQuizService {
     });
   }
 
+  /// Local date keys for the calendar month containing [date].
+  static List<String> dateKeysForMonth([DateTime? date]) {
+    final local = dateOnly(date);
+    final daysInMonth = DateTime(local.year, local.month + 1, 0).day;
+    return List.generate(daysInMonth, (i) {
+      return dateKey(DateTime(local.year, local.month, i + 1));
+    });
+  }
+
+  /// Local date keys for the calendar year containing [date].
+  static List<String> dateKeysForYear([DateTime? date]) {
+    final local = dateOnly(date);
+    final start = DateTime(local.year, 1, 1);
+    final days = DateTime(local.year + 1, 1, 1).difference(start).inDays;
+    return List.generate(days, (i) => dateKey(start.add(Duration(days: i))));
+  }
+
+  /// Drops keys that fall after [today] (defaults to the local calendar day).
+  static List<String> dateKeysThroughToday(
+    List<String> keys, [
+    DateTime? today,
+  ]) {
+    final cutoff = dateOnly(today);
+    return [
+      for (final key in keys)
+        if (parseDateKey(key) case final parsed?)
+          if (!parsed.isAfter(cutoff)) key,
+    ];
+  }
+
   void clearMemoryCache() {
     _bank = null;
     _results = null;

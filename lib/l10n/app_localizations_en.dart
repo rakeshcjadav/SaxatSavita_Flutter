@@ -1922,6 +1922,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get daily_quiz_leaderboard_weekly => 'Weekly';
 
   @override
+  String get daily_quiz_leaderboard_monthly => 'Monthly';
+
+  @override
+  String get daily_quiz_leaderboard_yearly => 'Yearly';
+
+  @override
   String get daily_quiz_leaderboard_see_all => 'See all';
 
   @override
@@ -1930,6 +1936,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get daily_quiz_leaderboard_empty_week => 'No scores this week yet.';
+
+  @override
+  String get daily_quiz_leaderboard_empty_month => 'No scores this month yet.';
+
+  @override
+  String get daily_quiz_leaderboard_empty_year => 'No scores this year yet.';
 
   @override
   String get daily_quiz_leaderboard_sign_in => 'Sign in to see the leaderboard';

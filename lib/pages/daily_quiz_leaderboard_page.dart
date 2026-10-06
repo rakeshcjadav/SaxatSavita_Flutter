@@ -6,7 +6,7 @@ import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/daily_quiz_leaderboard_service.dart';
 import 'package:saxatsavita_flutter/widgets/daily_quiz_leaderboard_tile.dart';
 
-enum DailyQuizLeaderboardPeriod { daily, weekly }
+enum DailyQuizLeaderboardPeriod { daily, weekly, monthly, yearly }
 
 class DailyQuizLeaderboardPage extends StatefulWidget {
   const DailyQuizLeaderboardPage({super.key});
@@ -19,67 +19,75 @@ class DailyQuizLeaderboardPage extends StatefulWidget {
 class _DailyQuizLeaderboardPageState extends State<DailyQuizLeaderboardPage> {
   final DailyQuizLeaderboardService _service = DailyQuizLeaderboardService();
   DailyQuizLeaderboardPeriod _period = DailyQuizLeaderboardPeriod.daily;
-  DailyQuizLeaderboardSnapshot? _daily;
-  DailyQuizLeaderboardSnapshot? _weekly;
-  bool _loadingDaily = true;
-  bool _loadingWeekly = false;
+  final Map<DailyQuizLeaderboardPeriod, DailyQuizLeaderboardSnapshot?>
+  _snapshots = {};
+  final Map<DailyQuizLeaderboardPeriod, bool> _loading = {
+    DailyQuizLeaderboardPeriod.daily: true,
+    DailyQuizLeaderboardPeriod.weekly: false,
+    DailyQuizLeaderboardPeriod.monthly: false,
+    DailyQuizLeaderboardPeriod.yearly: false,
+  };
+  final Map<DailyQuizLeaderboardPeriod, int> _loadToken = {};
 
-  DailyQuizLeaderboardSnapshot? get _snapshot =>
-      _period == DailyQuizLeaderboardPeriod.daily ? _daily : _weekly;
+  DailyQuizLeaderboardSnapshot? get _snapshot => _snapshots[_period];
 
-  bool get _loading =>
-      _period == DailyQuizLeaderboardPeriod.daily
-          ? _loadingDaily
-          : _loadingWeekly;
+  bool get _loadingCurrent => _loading[_period] ?? false;
 
   @override
   void initState() {
     super.initState();
     AnalyticsService().logScreenView(screenName: 'daily_quiz_leaderboard_page');
-    _loadDaily();
+    _load(_period);
   }
 
-  Future<void> _loadDaily({bool refresh = false}) async {
-    if (!refresh && _daily != null) {
-      if (mounted) setState(() => _loadingDaily = false);
+  Future<DailyQuizLeaderboardSnapshot> _fetch(
+    DailyQuizLeaderboardPeriod period,
+  ) {
+    return switch (period) {
+      DailyQuizLeaderboardPeriod.daily => _service.loadDaily(),
+      DailyQuizLeaderboardPeriod.weekly => _service.loadWeekly(),
+      DailyQuizLeaderboardPeriod.monthly => _service.loadMonthly(),
+      DailyQuizLeaderboardPeriod.yearly => _service.loadYearly(),
+    };
+  }
+
+  Future<void> _load(
+    DailyQuizLeaderboardPeriod period, {
+    bool refresh = false,
+  }) async {
+    if (!refresh && _snapshots[period] != null) {
+      if (mounted) setState(() => _loading[period] = false);
       return;
     }
-    if (mounted) setState(() => _loadingDaily = true);
-    final snapshot = await _service.loadDaily();
-    if (!mounted) return;
+    final token = (_loadToken[period] ?? 0) + 1;
+    _loadToken[period] = token;
+    if (mounted) setState(() => _loading[period] = true);
+    final snapshot = await _fetch(period);
+    if (!mounted || _loadToken[period] != token) return;
     setState(() {
-      _daily = snapshot;
-      _loadingDaily = false;
+      _snapshots[period] = snapshot;
+      _loading[period] = false;
     });
   }
 
-  Future<void> _loadWeekly({bool refresh = false}) async {
-    if (!refresh && _weekly != null) {
-      if (mounted) setState(() => _loadingWeekly = false);
-      return;
-    }
-    if (mounted) setState(() => _loadingWeekly = true);
-    final snapshot = await _service.loadWeekly();
-    if (!mounted) return;
-    setState(() {
-      _weekly = snapshot;
-      _loadingWeekly = false;
-    });
-  }
-
-  Future<void> _refresh() {
-    if (_period == DailyQuizLeaderboardPeriod.daily) {
-      return _loadDaily(refresh: true);
-    }
-    return _loadWeekly(refresh: true);
-  }
+  Future<void> _refresh() => _load(_period, refresh: true);
 
   void _selectPeriod(DailyQuizLeaderboardPeriod period) {
     if (_period == period) return;
     setState(() => _period = period);
-    if (period == DailyQuizLeaderboardPeriod.weekly) {
-      _loadWeekly();
-    }
+    _load(period);
+  }
+
+  String _emptyMessage(AppLocalizations l10n) {
+    return switch (_period) {
+      DailyQuizLeaderboardPeriod.weekly =>
+        l10n.daily_quiz_leaderboard_empty_week,
+      DailyQuizLeaderboardPeriod.monthly =>
+        l10n.daily_quiz_leaderboard_empty_month,
+      DailyQuizLeaderboardPeriod.yearly =>
+        l10n.daily_quiz_leaderboard_empty_year,
+      DailyQuizLeaderboardPeriod.daily => l10n.daily_quiz_leaderboard_empty,
+    };
   }
 
   @override
@@ -95,21 +103,38 @@ class _DailyQuizLeaderboardPageState extends State<DailyQuizLeaderboardPage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: SizedBox(
-              width: double.infinity,
-              child: SegmentedButton<DailyQuizLeaderboardPeriod>(
-                segments: [
-                  ButtonSegment(
-                    value: DailyQuizLeaderboardPeriod.daily,
-                    label: Text(l10n.daily_quiz_leaderboard_daily),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SegmentedButton<DailyQuizLeaderboardPeriod>(
+                  expandedInsets: null,
+                  showSelectedIcon: false,
+                  style: SegmentedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
                   ),
-                  ButtonSegment(
-                    value: DailyQuizLeaderboardPeriod.weekly,
-                    label: Text(l10n.daily_quiz_leaderboard_weekly),
-                  ),
-                ],
-                selected: {_period},
-                onSelectionChanged: (selected) => _selectPeriod(selected.first),
+                  segments: [
+                    ButtonSegment(
+                      value: DailyQuizLeaderboardPeriod.daily,
+                      label: Text(l10n.daily_quiz_leaderboard_daily),
+                    ),
+                    ButtonSegment(
+                      value: DailyQuizLeaderboardPeriod.weekly,
+                      label: Text(l10n.daily_quiz_leaderboard_weekly),
+                    ),
+                    ButtonSegment(
+                      value: DailyQuizLeaderboardPeriod.monthly,
+                      label: Text(l10n.daily_quiz_leaderboard_monthly),
+                    ),
+                    ButtonSegment(
+                      value: DailyQuizLeaderboardPeriod.yearly,
+                      label: Text(l10n.daily_quiz_leaderboard_yearly),
+                    ),
+                  ],
+                  selected: {_period},
+                  onSelectionChanged:
+                      (selected) => _selectPeriod(selected.first),
+                ),
               ),
             ),
           ),
@@ -120,7 +145,7 @@ class _DailyQuizLeaderboardPageState extends State<DailyQuizLeaderboardPage> {
   }
 
   Widget _buildBody(AppLocalizations l10n) {
-    if (_loading && _snapshot == null) {
+    if (_loadingCurrent && _snapshot == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -147,12 +172,7 @@ class _DailyQuizLeaderboardPageState extends State<DailyQuizLeaderboardPage> {
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  _period == DailyQuizLeaderboardPeriod.weekly
-                      ? l10n.daily_quiz_leaderboard_empty_week
-                      : l10n.daily_quiz_leaderboard_empty,
-                  textAlign: TextAlign.center,
-                ),
+                child: Text(_emptyMessage(l10n), textAlign: TextAlign.center),
               ),
             ),
           ],

@@ -1927,6 +1927,12 @@ class AppLocalizationsGu extends AppLocalizations {
   String get daily_quiz_leaderboard_weekly => 'સાપ્તાહિક';
 
   @override
+  String get daily_quiz_leaderboard_monthly => 'માસિક';
+
+  @override
+  String get daily_quiz_leaderboard_yearly => 'વાર્ષિક';
+
+  @override
   String get daily_quiz_leaderboard_see_all => 'બધા જુઓ';
 
   @override
@@ -1936,6 +1942,12 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get daily_quiz_leaderboard_empty_week =>
       'આ અઠવાડિયે હજુ કોઈ સ્કોર નથી.';
+
+  @override
+  String get daily_quiz_leaderboard_empty_month => 'આ મહિને હજુ કોઈ સ્કોર નથી.';
+
+  @override
+  String get daily_quiz_leaderboard_empty_year => 'આ વર્ષે હજુ કોઈ સ્કોર નથી.';
 
   @override
   String get daily_quiz_leaderboard_sign_in => 'અગ્રણી યાદી જોવા સાઇન ઇન કરો';

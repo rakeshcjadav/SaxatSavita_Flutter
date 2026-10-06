@@ -3572,6 +3572,18 @@ abstract class AppLocalizations {
   /// **'Weekly'**
   String get daily_quiz_leaderboard_weekly;
 
+  /// No description provided for @daily_quiz_leaderboard_monthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get daily_quiz_leaderboard_monthly;
+
+  /// No description provided for @daily_quiz_leaderboard_yearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get daily_quiz_leaderboard_yearly;
+
   /// No description provided for @daily_quiz_leaderboard_see_all.
   ///
   /// In en, this message translates to:
@@ -3589,6 +3601,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No scores this week yet.'**
   String get daily_quiz_leaderboard_empty_week;
+
+  /// No description provided for @daily_quiz_leaderboard_empty_month.
+  ///
+  /// In en, this message translates to:
+  /// **'No scores this month yet.'**
+  String get daily_quiz_leaderboard_empty_month;
+
+  /// No description provided for @daily_quiz_leaderboard_empty_year.
+  ///
+  /// In en, this message translates to:
+  /// **'No scores this year yet.'**
+  String get daily_quiz_leaderboard_empty_year;
 
   /// No description provided for @daily_quiz_leaderboard_sign_in.
   ///

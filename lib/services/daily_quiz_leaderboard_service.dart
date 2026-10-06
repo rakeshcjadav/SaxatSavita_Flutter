@@ -17,19 +17,37 @@ class DailyQuizLeaderboardService {
   }
 
   Future<DailyQuizLeaderboardSnapshot> loadWeekly([DateTime? date]) {
-    final today = DailyQuizService.dateOnly();
-    final keys =
-        DailyQuizService.dateKeysForWeek(date).where((key) {
-          final parsed = DailyQuizService.parseDateKey(key);
-          if (parsed == null) return false;
-          return !parsed.isAfter(today);
-        }).toList();
-    return _load(dateKeys: keys, aggregateWeekly: true);
+    return _load(
+      dateKeys: DailyQuizService.dateKeysThroughToday(
+        DailyQuizService.dateKeysForWeek(date),
+      ),
+      aggregate: true,
+    );
   }
+
+  Future<DailyQuizLeaderboardSnapshot> loadMonthly([DateTime? date]) {
+    return _load(
+      dateKeys: DailyQuizService.dateKeysThroughToday(
+        DailyQuizService.dateKeysForMonth(date),
+      ),
+      aggregate: true,
+    );
+  }
+
+  Future<DailyQuizLeaderboardSnapshot> loadYearly([DateTime? date]) {
+    return _load(
+      dateKeys: DailyQuizService.dateKeysThroughToday(
+        DailyQuizService.dateKeysForYear(date),
+      ),
+      aggregate: true,
+    );
+  }
+
+  static const _fetchBatchSize = 12;
 
   Future<DailyQuizLeaderboardSnapshot> _load({
     required List<String> dateKeys,
-    bool aggregateWeekly = false,
+    bool aggregate = false,
   }) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return DailyQuizLeaderboardSnapshot.unsignedIn;
@@ -40,19 +58,38 @@ class DailyQuizLeaderboardService {
       );
     }
 
-    final sync = FirebaseSyncService();
-    var lists = await Future.wait(dateKeys.map(sync.loadDailyQuizLeaderboard));
+    var lists = await _fetchDayLists(dateKeys);
     if (await _publishMissingLocalResults(dateKeys, lists)) {
-      lists = await Future.wait(dateKeys.map(sync.loadDailyQuizLeaderboard));
+      lists = await _fetchDayLists(dateKeys);
     }
     final entries =
-        aggregateWeekly
+        aggregate
             ? DailyQuizLeaderboardSnapshot.aggregateWeekly(lists)
             : [for (final list in lists) ...list];
     return DailyQuizLeaderboardSnapshot.ranked(
       entries: entries,
       currentUid: uid,
     );
+  }
+
+  /// Loads day boards in small batches so a month or year does not open
+  /// hundreds of Firestore reads at once.
+  Future<List<List<DailyQuizLeaderboardEntry>>> _fetchDayLists(
+    List<String> dateKeys,
+  ) async {
+    final sync = FirebaseSyncService();
+    final lists = <List<DailyQuizLeaderboardEntry>>[];
+    var start = 0;
+    while (start < dateKeys.length) {
+      final end = start + _fetchBatchSize;
+      final batch = dateKeys.sublist(
+        start,
+        end > dateKeys.length ? dateKeys.length : end,
+      );
+      lists.addAll(await Future.wait(batch.map(sync.loadDailyQuizLeaderboard)));
+      start = end;
+    }
+    return lists;
   }
 
   /// Publishes already-completed local results that are missing publicly

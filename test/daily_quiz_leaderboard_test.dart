@@ -28,6 +28,46 @@ void main() {
         '2026-09-20',
       ]);
     });
+
+    test('dateKeysForMonth covers the calendar month', () {
+      final september = DailyQuizService.dateKeysForMonth(
+        DateTime(2026, 9, 16),
+      );
+      expect(september, hasLength(30));
+      expect(september.first, '2026-09-01');
+      expect(september.last, '2026-09-30');
+      expect(
+        DailyQuizService.dateKeysForMonth(DateTime(2026, 2, 10)),
+        hasLength(28),
+      );
+      final leapFebruary = DailyQuizService.dateKeysForMonth(
+        DateTime(2024, 2, 10),
+      );
+      expect(leapFebruary, hasLength(29));
+      expect(leapFebruary, contains('2024-02-29'));
+    });
+
+    test('dateKeysForYear covers the calendar year', () {
+      final year2026 = DailyQuizService.dateKeysForYear(DateTime(2026, 10, 6));
+      expect(year2026, hasLength(365));
+      expect(year2026.first, '2026-01-01');
+      expect(year2026.last, '2026-12-31');
+
+      final year2024 = DailyQuizService.dateKeysForYear(DateTime(2024, 6, 1));
+      expect(year2024, hasLength(366));
+      expect(year2024, contains('2024-02-29'));
+    });
+
+    test('dateKeysThroughToday drops days after the cutoff', () {
+      final keys = DailyQuizService.dateKeysForMonth(DateTime(2026, 9, 16));
+      final through = DailyQuizService.dateKeysThroughToday(
+        keys,
+        DateTime(2026, 9, 16, 18),
+      );
+      expect(through, hasLength(16));
+      expect(through.first, '2026-09-01');
+      expect(through.last, '2026-09-16');
+    });
   });
 
   group('DailyQuizLeaderboardEntry', () {
