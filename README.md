@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.49.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.50.0-green.svg)]()
 
 ## 🌟 Overview
 
@@ -72,7 +72,7 @@ Sakshat Savita is a Flutter app for reading the granth offline, with English and
 - **Maps**: OpenStreetMap via flutter_map
 - **Speech**: flutter_tts and just_audio
 - **Widgets**: home_widget (Android + iOS)
-- **Notifications**: flutter_local_notifications (plans and daily quiz reminder)
+- **Notifications**: flutter_local_notifications (plans and daily quiz reminder); Firebase Cloud Messaging for messages to all installs
 
 ### Project Structure
 ```
@@ -224,7 +224,12 @@ For support, feature requests, or bug reports, create an issue in this repositor
 
 ## 🔄 Version History
 
-### Version 2.49.0 (Current)
+### Version 2.50.0 (Current)
+- **Leaderboards**: Monthly and yearly boards beside daily and weekly
+- **Push notifications**: Firebase messages to every install that allows notifications; copy the device token from Settings for a console test
+- **Release**: Topic subscription retries if the first permission check runs before the screen is ready
+
+### Version 2.49.0
 - **Dashboard and chrome**: Outlined dashboard cards, tighter drawer header, highlighted bottom-nav tab
 - **Today's teaching**: Whole-granth daily quiz, reminder, Home CTA until done, daily/weekly leaderboards with numbered ranks and medals
 - **Kiran quiz**: Firestore-backed bank for all kirans; three scored questions then optional practice; synced points

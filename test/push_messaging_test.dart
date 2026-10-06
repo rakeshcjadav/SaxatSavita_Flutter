@@ -73,6 +73,30 @@ void main() {
     );
   });
 
+  test('topic subscribe still runs when notifications are already enabled', () {
+    expect(
+      fcmShouldSubscribeToTopic(
+        status: AuthorizationStatus.notDetermined,
+        notificationsEnabled: true,
+      ),
+      isTrue,
+    );
+    expect(
+      fcmShouldSubscribeToTopic(
+        status: AuthorizationStatus.notDetermined,
+        notificationsEnabled: false,
+      ),
+      isFalse,
+    );
+    expect(
+      fcmShouldSubscribeToTopic(
+        status: AuthorizationStatus.denied,
+        notificationsEnabled: true,
+      ),
+      isFalse,
+    );
+  });
+
   test('incoming push ids stay clear of local reminder ids', () {
     expect(pushNotificationId(null), 82000);
     expect(pushNotificationId(''), 82000);

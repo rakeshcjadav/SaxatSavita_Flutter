@@ -70,6 +70,17 @@ bool fcmAuthorizationAllowsTopicSubscribe(AuthorizationStatus status) {
   }
 }
 
+/// Subscribe when FCM reports access, or when Android already has
+/// notifications enabled but FCM still says [AuthorizationStatus.notDetermined]
+/// because another plugin requested the permission first.
+bool fcmShouldSubscribeToTopic({
+  required AuthorizationStatus status,
+  required bool notificationsEnabled,
+}) {
+  if (fcmAuthorizationAllowsTopicSubscribe(status)) return true;
+  return status == AuthorizationStatus.notDetermined && notificationsEnabled;
+}
+
 bool fcmAuthorizationIsDenied(AuthorizationStatus status) {
   switch (status) {
     case AuthorizationStatus.denied:
@@ -89,15 +100,17 @@ int pushNotificationId(String? messageId) {
 
 /// Required top-level FCM background handler. Notification payloads are shown
 /// by the OS; data-only messages are posted on the push channel.
+///
+/// The binding must be ready before any other Flutter call. In release, the
+/// background isolate crashes if [debugPrint] runs first.
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  WidgetsFlutterBinding.ensureInitialized();
   debugPrint(
     'FCM background: id=${message.messageId} '
     'title=${message.notification?.title} data=${message.data}',
   );
   if (message.notification != null) return;
-
-  WidgetsFlutterBinding.ensureInitialized();
   try {
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
@@ -140,6 +153,8 @@ class NotificationService {
   bool _pushListenersReady = false;
   bool _tokenRefreshListening = false;
   bool _pushMessagingReady = false;
+  bool _pushRetryScheduled = false;
+  int _pushInitAttempts = 0;
   String? _fcmToken;
   String? _installationId;
   String? _pendingNamedRoute;
@@ -151,7 +166,10 @@ class NotificationService {
   /// Initialize the notification service
   Future<void> initialize() async {
     if (kIsWeb) return;
-    return _initFuture ??= _doInitialize();
+    await (_initFuture ??= _doInitialize());
+    if (!_pushMessagingReady) {
+      await _initializeFirebaseMessaging();
+    }
   }
 
   Future<void> _doInitialize() async {
@@ -1042,7 +1060,11 @@ class NotificationService {
             );
       }
 
-      if (fcmAuthorizationAllowsTopicSubscribe(settings.authorizationStatus)) {
+      final notificationsEnabled = await areNotificationsEnabled();
+      if (fcmShouldSubscribeToTopic(
+        status: settings.authorizationStatus,
+        notificationsEnabled: notificationsEnabled,
+      )) {
         try {
           await _subscribeToAllUsers();
         } catch (e) {
@@ -1050,7 +1072,7 @@ class NotificationService {
         }
       } else {
         debugPrint(
-          'FCM topic subscribe skipped: notification permission denied',
+          'FCM topic subscribe skipped: ${settings.authorizationStatus}',
         );
       }
       await _refreshPushIdentifiers();
@@ -1063,8 +1085,10 @@ class NotificationService {
             _logFcmToken(token);
             final current =
                 await FirebaseMessaging.instance.getNotificationSettings();
-            if (fcmAuthorizationAllowsTopicSubscribe(
-              current.authorizationStatus,
+            final enabled = await areNotificationsEnabled();
+            if (fcmShouldSubscribeToTopic(
+              status: current.authorizationStatus,
+              notificationsEnabled: enabled,
             )) {
               await _subscribeToAllUsers();
             }
@@ -1077,7 +1101,23 @@ class NotificationService {
     } catch (e, stackTrace) {
       debugPrint('❌ FCM initialization error: $e');
       debugPrint('❌ Stack trace: $stackTrace');
+      _schedulePushInitRetry();
     }
+  }
+
+  /// Release startup can request notification permission before the activity
+  /// exists. Retry on a later frame instead of leaving the install unsubscribed.
+  void _schedulePushInitRetry() {
+    if (_pushRetryScheduled || _pushMessagingReady || _pushInitAttempts >= 3) {
+      return;
+    }
+    _pushInitAttempts++;
+    _pushRetryScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pushRetryScheduled = false;
+      if (_pushMessagingReady) return;
+      _initializeFirebaseMessaging();
+    });
   }
 
   /// FCM registration token and Firebase installation ID for the console
