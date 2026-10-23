@@ -95,6 +95,12 @@ dependency_overrides:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # google_sign_in_ios 6.3.8 (latest on pub.dev) depends on googlesignin-ios 9.x,
+  # which requires gtm-session-fetcher 3.x. firebase-ios-sdk 13.1.1 requires 4.x,
+  # so Xcode cannot resolve both via Swift Package Manager. CocoaPods pins
+  # Firebase iOS SDK 12.19.0 in ios/Podfile, which resolves with Google Sign-In.
+  config:
+    enable-swift-package-manager: false
   generate: true
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
