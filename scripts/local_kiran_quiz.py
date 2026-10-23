@@ -14,6 +14,7 @@ from kiran_quiz_bank import (
     source_payload,
     strip_html,
 )
+from quiz_option_distinctness import options_too_similar
 
 PLACEHOLDERS = {
     "places": ["\u0aaa\u0ac0\u0aaa\u0ab2\u0abe\u0aa3\u0abe", "\u0aae\u0abe\u0aa3\u0abe\u0ab5\u0aa6\u0ab0", "\u0a9c\u0ac2\u0aa8\u0abe\u0a97\u0aa2", "\u0ab5\u0a82\u0aa5\u0ab2\u0ac0", "\u0a97\u0aa2\u0aa1\u0abe", "\u0ab5\u0aa1\u0aa4\u0abe\u0ab2"],
@@ -114,13 +115,17 @@ def _parse_date(date: str) -> dict[str, str]:
 
 
 def _pick(values: list[str], exclude: set[str], count: int, salt: str) -> list[str]:
+    """Sample [count] choices that are not near-copies of each other or of [exclude]."""
     if not values:
         return []
     start = int(hashlib.sha1(salt.encode("utf-8")).hexdigest()[:8], 16)
+    blocked = [item for item in exclude if item]
     chosen: list[str] = []
     for offset in range(len(values) * 3):
         item = values[(start + offset) * 7 % len(values)]
         if item in exclude or item in chosen:
+            continue
+        if any(options_too_similar(item, prev) for prev in (*blocked, *chosen)):
             continue
         chosen.append(item)
         if len(chosen) >= count:
@@ -129,16 +134,32 @@ def _pick(values: list[str], exclude: set[str], count: int, salt: str) -> list[s
 
 
 def _near_length(values: list[str], target: str, exclude: set[str], count: int, salt: str) -> list[str]:
+    """Prefer a similar length, then any remaining choice that is not a paraphrase."""
     want = len(target)
+    blocked = exclude | {target}
     similar = [item for item in values if abs(len(item) - want) <= 28]
-    pool = similar if len(similar) >= count else values
-    return _pick(pool, exclude | {target}, count, salt)
+    picked = _pick(similar, blocked, count, salt) if len(similar) >= count else []
+    if len(picked) >= count:
+        return picked
+    return _pick(values, blocked, count, salt)
 
 
 def _question(prompt, correct, distractors, explanation, hint, salt):
     prompt = _clip(_clean(prompt), PROMPT_LIMIT)
     correct = _clip(correct)
-    extras = _unique(_clip(item) for item in distractors if _clip(item) != correct)[:3]
+    extras: list[str] = []
+    for item in distractors:
+        clipped = _clip(item)
+        if len(re.sub(r"\s+", "", clipped)) < 3 or clipped == correct:
+            continue
+        if options_too_similar(clipped, correct):
+            continue
+        if any(options_too_similar(clipped, prev) for prev in extras):
+            continue
+        extras.append(clipped)
+        if len(extras) == 3:
+            break
+    # Not enough meaningfully different wrong answers: skip this question.
     if not prompt or not correct or len(extras) < 3:
         return None
     ordered = [correct, *extras]

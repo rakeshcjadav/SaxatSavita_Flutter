@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:saxatsavita_flutter/models/daily_quiz_model.dart';
+import 'package:saxatsavita_flutter/quiz/daily_quiz_question_selection.dart';
 import 'package:saxatsavita_flutter/services/firebase_sync_service.dart';
 import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -134,13 +135,44 @@ class DailyQuizService {
     await _ensureBank();
     final key = dateKey(date);
     final remote = await _fetchDatedPack(key);
-    if (remote != null) return remote;
-
     final packs = _bank?.packs ?? const <DailyQuizPack>[];
-    if (packs.isEmpty) return null;
-    final days = dateOnly(date).difference(DateTime(1970, 1, 1)).inDays;
-    final index = days.abs() % packs.length;
-    return packs[index];
+    final DailyQuizPack? base;
+    if (remote != null) {
+      base = remote;
+    } else if (packs.isEmpty) {
+      return null;
+    } else {
+      final days = dateOnly(date).difference(DateTime(1970, 1, 1)).inDays;
+      base = packs[days.abs() % packs.length];
+    }
+    // Dated packs reuse paraphrases of one teaching as separate choices.
+    // Keep the question when three distinct wrong answers exist; otherwise
+    // skip it and fill from the rotation bank.
+    final selected = DailyQuizQuestionSelection.select(
+      preferred: base.questions,
+      alternates: [
+        for (final pack in packs)
+          if (pack.id != base.id) ...pack.questions,
+      ],
+      count: scoredQuestionCount,
+    );
+    if (selected.isEmpty) return null;
+    if (selected.length == base.questions.length &&
+        _sameQuestionList(selected, base.questions)) {
+      return base;
+    }
+    return DailyQuizPack(id: base.id, questions: selected);
+  }
+
+  static bool _sameQuestionList(
+    List<DailyQuizQuestion> left,
+    List<DailyQuizQuestion> right,
+  ) {
+    if (left.length != right.length) return false;
+    for (var i = 0; i < left.length; i++) {
+      if (!identical(left[i], right[i])) return false;
+    }
+    return true;
   }
 
   Future<DailyQuizResult?> resultForToday() => resultFor(dateKey());
