@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.50.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.51.0-green.svg)]()
 
 ## 🌟 Overview
 
@@ -224,7 +224,11 @@ For support, feature requests, or bug reports, create an issue in this repositor
 
 ## 🔄 Version History
 
-### Version 2.50.0 (Current)
+### Version 2.51.0 (Current)
+- **Daily quiz**: From 24 Oct 2026 onward, questions keep a correct marked answer and options that do not repeat the same claim
+- **Firebase**: Dependency upgrade
+
+### Version 2.50.0
 - **Leaderboards**: Monthly and yearly boards beside daily and weekly
 - **Push notifications**: Firebase messages to every install that allows notifications; copy the device token from Settings for a console test
 - **Release**: Topic subscription retries if the first permission check runs before the screen is ready

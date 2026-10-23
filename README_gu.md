@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.50.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.51.0-green.svg)]()
 
 ## 🌟 પરિચય
 
@@ -224,7 +224,11 @@ flutter build ios --release
 
 ## 🔄 આવૃત્તિ ઇતિહાસ
 
-### આવૃત્તિ ૨.૫૦.૦ (હાલની)
+### આવૃત્તિ ૨.૫૧.૦ (હાલની)
+- **આજનો ઉપદેશ**: ૨૪ ઑક્ટોબર ૨૦૨૬થી પ્રશ્નોમાં સાચો ચિહ્નિત જવાબ રહે, અને વિકલ્પો એક જ વાતને ન દોહરાવે
+- **Firebase**: પૅકેજ અપગ્રેડ
+
+### આવૃત્તિ ૨.૫૦.૦
 - **અગ્રણી યાદી**: દૈનિક અને સાપ્તાહિક સાથે માસિક અને વાર્ષિક
 - **પુશ નોટિફિકેશન**: નોટિફિકેશન મંજૂર કરેલા દરેક ઇન્સ્ટોલને Firebase સંદેશ; કન્સોલ ટેસ્ટ માટે સેટિંગમાંથી ટોકન નકલ
 - **રિલીઝ**: પહેલી પરવાનગી ચકાસણી વહેલી થાય તો વિષયની સભ્યપદ ફરી થાય
