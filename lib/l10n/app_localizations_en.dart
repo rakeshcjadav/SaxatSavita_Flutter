@@ -1040,6 +1040,128 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminders_disabled_subtitle => 'No reminders will be sent';
 
   @override
+  String get start_kiran => 'Starting kiran';
+
+  @override
+  String start_kiran_hint(int last) {
+    return 'Kiran number from 1 to $last';
+  }
+
+  @override
+  String start_kiran_error(int last) {
+    return 'Enter a kiran from 1 to $last';
+  }
+
+  @override
+  String kirans_per_day(int count) {
+    return '$count per day';
+  }
+
+  @override
+  String kirans_per_week(int count) {
+    return '$count per week';
+  }
+
+  @override
+  String plan_starts_at_kiran(int kiran) {
+    return 'Starts at kiran $kiran';
+  }
+
+  @override
+  String get choose_start_kiran => 'Choose a starting kiran';
+
+  @override
+  String get choose_start_kiran_body =>
+      'This plan needs a starting kiran and how many kirans to read each day.';
+
+  @override
+  String get set_start_kiran => 'Set starting kiran';
+
+  @override
+  String backlog_kirans(int count) {
+    return '$count carried over from missed days';
+  }
+
+  @override
+  String extra_kirans_today(String kirans) {
+    return 'Extra today: $kirans';
+  }
+
+  @override
+  String week_progress_count(int read, int target) {
+    return '$read of $target';
+  }
+
+  @override
+  String get week_successful => 'Successful';
+
+  @override
+  String get week_missed => 'Missed';
+
+  @override
+  String get week_in_progress => 'In progress';
+
+  @override
+  String get no_kirans_due_today => 'Today\'s kirans are done';
+
+  @override
+  String tomorrow_starts_at(int kiran) {
+    return 'Tomorrow starts at kiran $kiran';
+  }
+
+  @override
+  String get reading_plan_complete => 'Reading plan complete';
+
+  @override
+  String get reading_plan_notification_title => 'Today\'s kiran';
+
+  @override
+  String reading_plan_read_kiran(int kiran) {
+    return 'Today read kiran $kiran.';
+  }
+
+  @override
+  String reading_plan_read_kirans(String kirans) {
+    return 'Today read kirans $kirans.';
+  }
+
+  @override
+  String get reading_plan_weekly_title => 'Weekly reading review';
+
+  @override
+  String reading_plan_week_successful(int read, int target) {
+    return 'Last week: $read of $target kirans. Week successful.';
+  }
+
+  @override
+  String reading_plan_week_missed(int read, int target) {
+    return 'Last week: $read of $target kirans. Week missed.';
+  }
+
+  @override
+  String reading_plan_start_today(String kirans) {
+    return 'Today start with kiran $kirans.';
+  }
+
+  @override
+  String get reading_plan_weeks => 'Weeks';
+
+  @override
+  String reading_plan_goal_body(int kiran) {
+    return 'Today\'s kirans are done. Tomorrow starts at kiran $kiran.';
+  }
+
+  @override
+  String get reading_plan_complete_body =>
+      'You have finished every kiran in this reading plan.';
+
+  @override
+  String get widget_today_done => 'Done today';
+
+  @override
+  String get widget_plan_complete => 'Plan complete';
+
+  @override
   String get quotes_image_generator => 'Quotes Generator';
 
   @override

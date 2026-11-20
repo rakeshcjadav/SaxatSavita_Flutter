@@ -118,7 +118,10 @@ class DashboardService {
 
   /// Calculate reading plan progress percentage
   double _calculatePlanProgress(ReadingPlan plan) {
-    if (plan.todayProgress == 0 && plan.targetSeconds == 0) {
+    if (plan.hasStartKiran) {
+      return (plan.todayProgressPercentage * 100).clamp(0.0, 100.0);
+    }
+    if (plan.todayProgress == 0 || plan.targetSeconds == 0) {
       return 0.0;
     }
 

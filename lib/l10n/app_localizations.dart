@@ -1982,6 +1982,186 @@ abstract class AppLocalizations {
   /// **'No reminders will be sent'**
   String get reminders_disabled_subtitle;
 
+  /// No description provided for @start_kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting kiran'**
+  String get start_kiran;
+
+  /// No description provided for @start_kiran_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran number from 1 to {last}'**
+  String start_kiran_hint(int last);
+
+  /// No description provided for @start_kiran_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a kiran from 1 to {last}'**
+  String start_kiran_error(int last);
+
+  /// No description provided for @kirans_per_day.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} per day'**
+  String kirans_per_day(int count);
+
+  /// No description provided for @kirans_per_week.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} per week'**
+  String kirans_per_week(int count);
+
+  /// No description provided for @plan_starts_at_kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts at kiran {kiran}'**
+  String plan_starts_at_kiran(int kiran);
+
+  /// No description provided for @choose_start_kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a starting kiran'**
+  String get choose_start_kiran;
+
+  /// No description provided for @choose_start_kiran_body.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan needs a starting kiran and how many kirans to read each day.'**
+  String get choose_start_kiran_body;
+
+  /// No description provided for @set_start_kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Set starting kiran'**
+  String get set_start_kiran;
+
+  /// No description provided for @backlog_kirans.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} carried over from missed days'**
+  String backlog_kirans(int count);
+
+  /// No description provided for @extra_kirans_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra today: {kirans}'**
+  String extra_kirans_today(String kirans);
+
+  /// No description provided for @week_progress_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{read} of {target}'**
+  String week_progress_count(int read, int target);
+
+  /// No description provided for @week_successful.
+  ///
+  /// In en, this message translates to:
+  /// **'Successful'**
+  String get week_successful;
+
+  /// No description provided for @week_missed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get week_missed;
+
+  /// No description provided for @week_in_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get week_in_progress;
+
+  /// No description provided for @no_kirans_due_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s kirans are done'**
+  String get no_kirans_due_today;
+
+  /// No description provided for @tomorrow_starts_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow starts at kiran {kiran}'**
+  String tomorrow_starts_at(int kiran);
+
+  /// No description provided for @reading_plan_complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading plan complete'**
+  String get reading_plan_complete;
+
+  /// No description provided for @reading_plan_notification_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s kiran'**
+  String get reading_plan_notification_title;
+
+  /// No description provided for @reading_plan_read_kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Today read kiran {kiran}.'**
+  String reading_plan_read_kiran(int kiran);
+
+  /// No description provided for @reading_plan_read_kirans.
+  ///
+  /// In en, this message translates to:
+  /// **'Today read kirans {kirans}.'**
+  String reading_plan_read_kirans(String kirans);
+
+  /// No description provided for @reading_plan_weekly_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly reading review'**
+  String get reading_plan_weekly_title;
+
+  /// No description provided for @reading_plan_week_successful.
+  ///
+  /// In en, this message translates to:
+  /// **'Last week: {read} of {target} kirans. Week successful.'**
+  String reading_plan_week_successful(int read, int target);
+
+  /// No description provided for @reading_plan_week_missed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last week: {read} of {target} kirans. Week missed.'**
+  String reading_plan_week_missed(int read, int target);
+
+  /// No description provided for @reading_plan_start_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today start with kiran {kirans}.'**
+  String reading_plan_start_today(String kirans);
+
+  /// No description provided for @reading_plan_weeks.
+  ///
+  /// In en, this message translates to:
+  /// **'Weeks'**
+  String get reading_plan_weeks;
+
+  /// No description provided for @reading_plan_goal_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s kirans are done. Tomorrow starts at kiran {kiran}.'**
+  String reading_plan_goal_body(int kiran);
+
+  /// No description provided for @reading_plan_complete_body.
+  ///
+  /// In en, this message translates to:
+  /// **'You have finished every kiran in this reading plan.'**
+  String get reading_plan_complete_body;
+
+  /// No description provided for @widget_today_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done today'**
+  String get widget_today_done;
+
+  /// No description provided for @widget_plan_complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan complete'**
+  String get widget_plan_complete;
+
   /// No description provided for @quotes_image_generator.
   ///
   /// In en, this message translates to:

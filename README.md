@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.51.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.52.0-green.svg)]()
 
 ## 🌟 Overview
 
@@ -47,7 +47,7 @@ Sakshat Savita is a Flutter app for reading the granth offline, with English and
 
 ### 📝 **Notes, plans, and quotes**
 - **Notes**: Rich text (Quill) tied to kirans
-- **Reading plans**: Daily goals (time or kirans), reminders, and milestone tracking
+- **Reading plans**: Start at a chosen kiran, a daily count that piles up if a day is missed, a Monday–Sunday weekly target, and reminders that name today's kiran
 - **Reading history**: Sessions, timers, and completion
 - **Quote images**: Templates, fonts, gradients, stickers, save to gallery, and share
 
@@ -224,7 +224,10 @@ For support, feature requests, or bug reports, create an issue in this repositor
 
 ## 🔄 Version History
 
-### Version 2.51.0 (Current)
+### Version 2.52.0 (Current)
+- **Reading plans**: Sequential kirans from a chosen start. Missed days pile up, extra reading moves the next day forward, and a Monday–Sunday week succeeds at the daily count times 7. Reminders name today's kiran, with a Monday review
+
+### Version 2.51.0
 - **Daily quiz**: From 24 Oct 2026 onward, questions keep a correct marked answer and options that do not repeat the same claim
 - **Firebase**: Dependency upgrade
 

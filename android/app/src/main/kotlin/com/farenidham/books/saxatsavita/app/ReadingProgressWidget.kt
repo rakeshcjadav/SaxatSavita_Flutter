@@ -32,8 +32,7 @@ class ReadingProgressWidget : AppWidgetProvider() {
             
             // Update widget content with active plan data
             val progressTitle = widgetData.getString("progress_title", "Reading Progress")
-            val dailyTargetMinutes = widgetData.getInt("daily_target_minutes", 30)
-            val completedMinutes = widgetData.getInt("completed_minutes", 0)
+            val todayKirans = widgetData.getString("today_kirans", "")
             val targetKirans = widgetData.getInt("target_kirans", 3)
             val completedKirans = widgetData.getInt("completed_kirans", 0)
             // Get progress percentage safely
@@ -48,11 +47,9 @@ class ReadingProgressWidget : AppWidgetProvider() {
                 0
             }
             val streakDays = widgetData.getString("streak_days", "0 days")
-            val goalAchieved = widgetData.getBoolean("goal_achieved", false)
-            
+
             views.setTextViewText(R.id.progress_title, progressTitle)
-            views.setTextViewText(R.id.daily_target_minutes, dailyTargetMinutes.toString())
-            views.setTextViewText(R.id.completed_minutes, completedMinutes.toString())
+            views.setTextViewText(R.id.today_kirans, todayKirans)
             views.setTextViewText(R.id.target_kirans, targetKirans.toString())
             views.setTextViewText(R.id.completed_kirans, completedKirans.toString())
             views.setProgressBar(R.id.progress_bar, 100, progressPercentage, false)

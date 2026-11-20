@@ -558,6 +558,150 @@
     },
     "reminders_enabled_subtitle": "તમારી વાંચનની આદત જાળવવા માટે નોટિફિકેશન મેળવો",
     "reminders_disabled_subtitle": "કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં",
+    "start_kiran": "શરૂઆતનું કિરણ",
+    "start_kiran_hint": "૧ થી {last} સુધીનો કિરણ નંબર",
+    "@start_kiran_hint": {
+        "placeholders": {
+            "last": {
+                "type": "int"
+            }
+        }
+    },
+    "start_kiran_error": "૧ થી {last} વચ્ચેનો કિરણ નંબર લખો",
+    "@start_kiran_error": {
+        "placeholders": {
+            "last": {
+                "type": "int"
+            }
+        }
+    },
+    "kirans_per_day": "દરરોજ {count}",
+    "@kirans_per_day": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kirans_per_week": "અઠવાડિયે {count}",
+    "@kirans_per_week": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "plan_starts_at_kiran": "કિરણ {kiran} થી શરૂ",
+    "@plan_starts_at_kiran": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
+    "choose_start_kiran": "શરૂઆતનું કિરણ પસંદ કરો",
+    "choose_start_kiran_body": "આ યોજના માટે શરૂઆતનું કિરણ અને દરરોજ કેટલા કિરણ વાંચવા તે જરૂરી છે.",
+    "set_start_kiran": "શરૂઆતનું કિરણ પસંદ કરો",
+    "backlog_kirans": "ચૂકી ગયેલા દિવસના {count} કિરણ બાકી છે",
+    "@backlog_kirans": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "extra_kirans_today": "આજે વધારાના: {kirans}",
+    "@extra_kirans_today": {
+        "placeholders": {
+            "kirans": {
+                "type": "String"
+            }
+        }
+    },
+    "week_progress_count": "{read} / {target}",
+    "@week_progress_count": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "week_successful": "સફળ",
+    "week_missed": "અધૂરું",
+    "week_in_progress": "ચાલુ",
+    "no_kirans_due_today": "આજના કિરણ પૂરા થયા",
+    "tomorrow_starts_at": "આવતીકાલે કિરણ {kiran} થી",
+    "@tomorrow_starts_at": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_complete": "વાંચન યોજના પૂર્ણ",
+    "reading_plan_notification_title": "આજનું કિરણ",
+    "reading_plan_read_kiran": "આજે કિરણ {kiran} વાંચો.",
+    "@reading_plan_read_kiran": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_read_kirans": "આજે કિરણ {kirans} વાંચો.",
+    "@reading_plan_read_kirans": {
+        "placeholders": {
+            "kirans": {
+                "type": "String"
+            }
+        }
+    },
+    "reading_plan_weekly_title": "અઠવાડિયાની સમીક્ષા",
+    "reading_plan_week_successful": "ગયા અઠવાડિયે: {read} માંથી {target} કિરણ. અઠવાડિયું સફળ.",
+    "@reading_plan_week_successful": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_week_missed": "ગયા અઠવાડિયે: {read} માંથી {target} કિરણ. અઠવાડિયું અધૂરું.",
+    "@reading_plan_week_missed": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_start_today": "આજે કિરણ {kirans} થી શરૂ કરો.",
+    "@reading_plan_start_today": {
+        "placeholders": {
+            "kirans": {
+                "type": "String"
+            }
+        }
+    },
+    "reading_plan_weeks": "અઠવાડિયા",
+    "reading_plan_goal_body": "આજના કિરણ પૂરા થયા. આવતીકાલે કિરણ {kiran} થી શરૂ થશે.",
+    "@reading_plan_goal_body": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_complete_body": "આ વાંચન યોજનાના બધા કિરણ પૂરા થયા.",
+    "widget_today_done": "આજનું પૂર્ણ",
+    "widget_plan_complete": "યોજના પૂર્ણ",
     "quotes_image_generator": "સુવિચાર બનાવો",
     "inspirational_quotes": "પ્રેરણાદાયક સુવિચાર",
     "create_share_quotes": "સુંદર સુવિચાર છબીઓ બનાવો અને શેર કરો",

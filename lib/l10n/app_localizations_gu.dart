@@ -1044,6 +1044,127 @@ class AppLocalizationsGu extends AppLocalizations {
   String get reminders_disabled_subtitle => 'કોઈ રિમાઇન્ડર મોકલવામાં આવશે નહીં';
 
   @override
+  String get start_kiran => 'શરૂઆતનું કિરણ';
+
+  @override
+  String start_kiran_hint(int last) {
+    return '૧ થી $last સુધીનો કિરણ નંબર';
+  }
+
+  @override
+  String start_kiran_error(int last) {
+    return '૧ થી $last વચ્ચેનો કિરણ નંબર લખો';
+  }
+
+  @override
+  String kirans_per_day(int count) {
+    return 'દરરોજ $count';
+  }
+
+  @override
+  String kirans_per_week(int count) {
+    return 'અઠવાડિયે $count';
+  }
+
+  @override
+  String plan_starts_at_kiran(int kiran) {
+    return 'કિરણ $kiran થી શરૂ';
+  }
+
+  @override
+  String get choose_start_kiran => 'શરૂઆતનું કિરણ પસંદ કરો';
+
+  @override
+  String get choose_start_kiran_body =>
+      'આ યોજના માટે શરૂઆતનું કિરણ અને દરરોજ કેટલા કિરણ વાંચવા તે જરૂરી છે.';
+
+  @override
+  String get set_start_kiran => 'શરૂઆતનું કિરણ પસંદ કરો';
+
+  @override
+  String backlog_kirans(int count) {
+    return 'ચૂકી ગયેલા દિવસના $count કિરણ બાકી છે';
+  }
+
+  @override
+  String extra_kirans_today(String kirans) {
+    return 'આજે વધારાના: $kirans';
+  }
+
+  @override
+  String week_progress_count(int read, int target) {
+    return '$read / $target';
+  }
+
+  @override
+  String get week_successful => 'સફળ';
+
+  @override
+  String get week_missed => 'અધૂરું';
+
+  @override
+  String get week_in_progress => 'ચાલુ';
+
+  @override
+  String get no_kirans_due_today => 'આજના કિરણ પૂરા થયા';
+
+  @override
+  String tomorrow_starts_at(int kiran) {
+    return 'આવતીકાલે કિરણ $kiran થી';
+  }
+
+  @override
+  String get reading_plan_complete => 'વાંચન યોજના પૂર્ણ';
+
+  @override
+  String get reading_plan_notification_title => 'આજનું કિરણ';
+
+  @override
+  String reading_plan_read_kiran(int kiran) {
+    return 'આજે કિરણ $kiran વાંચો.';
+  }
+
+  @override
+  String reading_plan_read_kirans(String kirans) {
+    return 'આજે કિરણ $kirans વાંચો.';
+  }
+
+  @override
+  String get reading_plan_weekly_title => 'અઠવાડિયાની સમીક્ષા';
+
+  @override
+  String reading_plan_week_successful(int read, int target) {
+    return 'ગયા અઠવાડિયે: $read માંથી $target કિરણ. અઠવાડિયું સફળ.';
+  }
+
+  @override
+  String reading_plan_week_missed(int read, int target) {
+    return 'ગયા અઠવાડિયે: $read માંથી $target કિરણ. અઠવાડિયું અધૂરું.';
+  }
+
+  @override
+  String reading_plan_start_today(String kirans) {
+    return 'આજે કિરણ $kirans થી શરૂ કરો.';
+  }
+
+  @override
+  String get reading_plan_weeks => 'અઠવાડિયા';
+
+  @override
+  String reading_plan_goal_body(int kiran) {
+    return 'આજના કિરણ પૂરા થયા. આવતીકાલે કિરણ $kiran થી શરૂ થશે.';
+  }
+
+  @override
+  String get reading_plan_complete_body => 'આ વાંચન યોજનાના બધા કિરણ પૂરા થયા.';
+
+  @override
+  String get widget_today_done => 'આજનું પૂર્ણ';
+
+  @override
+  String get widget_plan_complete => 'યોજના પૂર્ણ';
+
+  @override
   String get quotes_image_generator => 'સુવિચાર બનાવો';
 
   @override

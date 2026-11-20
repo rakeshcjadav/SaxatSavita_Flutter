@@ -1,10 +1,13 @@
+import 'package:saxatsavita_flutter/helpers/reading_plan_schedule.dart';
+
 class ReadingPlan {
   final String id;
   final String title;
   final String description;
   final ReadingPlanType type;
   final int targetSeconds; // Daily reading goal in seconds
-  final int targetKirans; // Daily kiran reading goal
+  final int targetKirans; // Kirans to read each day
+  final int startKiran; // First kiran in the sequence. 0 means not chosen yet.
   final DateTime startDate;
   final DateTime? endDate;
   final bool isActive;
@@ -22,6 +25,7 @@ class ReadingPlan {
     required this.type,
     required this.targetSeconds,
     required this.targetKirans,
+    this.startKiran = 0,
     required this.startDate,
     this.endDate,
     this.isActive = true,
@@ -46,6 +50,7 @@ class ReadingPlan {
       ),
       targetSeconds: json['targetSeconds'] ?? 15 * 60,
       targetKirans: json['targetKirans'] ?? 1,
+      startKiran: json['startKiran'] ?? 0,
       startDate: DateTime.parse(json['startDate']),
       endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
       isActive: json['isActive'] ?? true,
@@ -82,6 +87,7 @@ class ReadingPlan {
       'type': type.name,
       'targetSeconds': targetSeconds,
       'targetKirans': targetKirans,
+      'startKiran': startKiran,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate?.toIso8601String(),
       'isActive': isActive,
@@ -100,6 +106,7 @@ class ReadingPlan {
     ReadingPlanType? type,
     int? targetSeconds,
     int? targetKirans,
+    int? startKiran,
     DateTime? startDate,
     DateTime? endDate,
     bool? isActive,
@@ -116,6 +123,7 @@ class ReadingPlan {
       type: type ?? this.type,
       targetSeconds: targetSeconds ?? this.targetSeconds,
       targetKirans: targetKirans ?? this.targetKirans,
+      startKiran: startKiran ?? this.startKiran,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       isActive: isActive ?? this.isActive,
@@ -133,10 +141,24 @@ class ReadingPlan {
   int get todayProgress => dailyProgress[todayKey] ?? 0;
   List<int> get todayKirans => dailyKirans[todayKey] ?? [];
 
-  bool get todayGoalAchieved =>
-      todayProgress >= targetSeconds && todayKirans.length >= targetKirans;
+  bool get hasStartKiran => startKiran >= 1;
+
+  ReadingPlanSchedule get readingSchedule => ReadingPlanSchedule(
+    startKiran: startKiran,
+    kiransPerDay: targetKirans,
+    startDate: startDate,
+    dailyKirans: dailyKirans,
+  );
+
+  DayAssignment assignmentOn(DateTime day) => readingSchedule.assignmentOn(day);
+
+  bool get todayGoalAchieved {
+    if (hasStartKiran) return assignmentOn(DateTime.now()).goalMet;
+    return todayProgress >= targetSeconds && todayKirans.length >= targetKirans;
+  }
 
   double get todayProgressPercentage {
+    if (hasStartKiran) return assignmentOn(DateTime.now()).progress;
     final secondsProgress =
         targetSeconds > 0 ? (todayProgress / targetSeconds) : 0.0;
     final kiransProgress =
@@ -145,6 +167,8 @@ class ReadingPlan {
   }
 
   int get streakDays {
+    if (hasStartKiran) return readingSchedule.streakEnding(DateTime.now());
+
     int streak = 0;
     final today = DateTime.now();
 

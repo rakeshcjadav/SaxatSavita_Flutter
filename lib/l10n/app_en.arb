@@ -560,7 +560,151 @@
     },
     "reminders_enabled_subtitle": "Get notified to maintain your reading habit",
     "reminders_disabled_subtitle": "No reminders will be sent",
-    
+    "start_kiran": "Starting kiran",
+    "start_kiran_hint": "Kiran number from 1 to {last}",
+    "@start_kiran_hint": {
+        "placeholders": {
+            "last": {
+                "type": "int"
+            }
+        }
+    },
+    "start_kiran_error": "Enter a kiran from 1 to {last}",
+    "@start_kiran_error": {
+        "placeholders": {
+            "last": {
+                "type": "int"
+            }
+        }
+    },
+    "kirans_per_day": "{count} per day",
+    "@kirans_per_day": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kirans_per_week": "{count} per week",
+    "@kirans_per_week": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "plan_starts_at_kiran": "Starts at kiran {kiran}",
+    "@plan_starts_at_kiran": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
+    "choose_start_kiran": "Choose a starting kiran",
+    "choose_start_kiran_body": "This plan needs a starting kiran and how many kirans to read each day.",
+    "set_start_kiran": "Set starting kiran",
+    "backlog_kirans": "{count} carried over from missed days",
+    "@backlog_kirans": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "extra_kirans_today": "Extra today: {kirans}",
+    "@extra_kirans_today": {
+        "placeholders": {
+            "kirans": {
+                "type": "String"
+            }
+        }
+    },
+    "week_progress_count": "{read} of {target}",
+    "@week_progress_count": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "week_successful": "Successful",
+    "week_missed": "Missed",
+    "week_in_progress": "In progress",
+    "no_kirans_due_today": "Today's kirans are done",
+    "tomorrow_starts_at": "Tomorrow starts at kiran {kiran}",
+    "@tomorrow_starts_at": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_complete": "Reading plan complete",
+    "reading_plan_notification_title": "Today's kiran",
+    "reading_plan_read_kiran": "Today read kiran {kiran}.",
+    "@reading_plan_read_kiran": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_read_kirans": "Today read kirans {kirans}.",
+    "@reading_plan_read_kirans": {
+        "placeholders": {
+            "kirans": {
+                "type": "String"
+            }
+        }
+    },
+    "reading_plan_weekly_title": "Weekly reading review",
+    "reading_plan_week_successful": "Last week: {read} of {target} kirans. Week successful.",
+    "@reading_plan_week_successful": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_week_missed": "Last week: {read} of {target} kirans. Week missed.",
+    "@reading_plan_week_missed": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_start_today": "Today start with kiran {kirans}.",
+    "@reading_plan_start_today": {
+        "placeholders": {
+            "kirans": {
+                "type": "String"
+            }
+        }
+    },
+    "reading_plan_weeks": "Weeks",
+    "reading_plan_goal_body": "Today's kirans are done. Tomorrow starts at kiran {kiran}.",
+    "@reading_plan_goal_body": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
+    "reading_plan_complete_body": "You have finished every kiran in this reading plan.",
+    "widget_today_done": "Done today",
+    "widget_plan_complete": "Plan complete",
+
     "quotes_image_generator": "Quotes Generator",
     "inspirational_quotes": "Inspirational Quotes",
     "create_share_quotes": "Create and share beautiful quote images",

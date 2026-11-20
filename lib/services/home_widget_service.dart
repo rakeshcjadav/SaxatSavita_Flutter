@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
+import 'package:saxatsavita_flutter/services/navigationservice.dart';
 import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
 
 /// Service to manage home screen widgets for Android and iOS
@@ -127,8 +130,13 @@ class HomeWidgetService {
 
       // Add formatted display strings for better widget presentation
       await HomeWidget.saveWidgetData<String>(
+        'today_kirans',
+        progress['todayKirans'] as String? ?? '',
+      );
+      await HomeWidget.saveWidgetData<String>(
         'progress_summary',
-        '${progress['completedMinutes']}/${progress['targetMinutes']} min • ${progress['completedKirans']}/${progress['targetKirans']} kirans',
+        progress['todayKirans'] as String? ??
+            '${progress['completedKirans']}/${progress['targetKirans']} kirans',
       );
       await HomeWidget.saveWidgetData<String>(
         'progress_status',
@@ -171,44 +179,50 @@ class HomeWidgetService {
 
       if (activePlan != null) {
         final statistics = _readingPlanService.getReadingStatistics();
+        final l10n = _widgetLocalizations();
 
-        // Get today's progress with more detailed info
+        if (activePlan.hasStartKiran) {
+          final today = activePlan.assignmentOn(DateTime.now());
+          final done = today.assigned.length - today.remaining.length;
+          final todayKirans =
+              today.planComplete && today.remaining.isEmpty
+                  ? l10n.widget_plan_complete
+                  : today.remaining.isEmpty
+                  ? l10n.widget_today_done
+                  : today.remaining.length == 1
+                  ? l10n.reading_plan_read_kiran(today.remaining.first)
+                  : l10n.reading_plan_read_kirans(today.remaining.join(', '));
+          return {
+            'targetMinutes': 0,
+            'completedMinutes': 0,
+            'targetKirans': today.assigned.length,
+            'completedKirans': done,
+            'progressPercentage': today.progress * 100,
+            'goalAchieved': today.goalMet,
+            'streakDays': statistics['streakDays'] ?? 0,
+            'planTitle': activePlan.title,
+            'todayKirans': todayKirans,
+          };
+        }
+
         final todayKey = DateTime.now().toIso8601String().split('T').first;
         final todaySeconds = activePlan.dailyProgress[todayKey] ?? 0;
         final todayKirans = activePlan.dailyKirans[todayKey] ?? [];
-
-        // Calculate progress percentage more accurately
-        final secondsProgress =
-            activePlan.targetSeconds > 0
-                ? (todaySeconds / activePlan.targetSeconds).clamp(0.0, 1.0)
-                : 0.0;
         final kiransProgress =
             activePlan.targetKirans > 0
                 ? (todayKirans.length / activePlan.targetKirans).clamp(0.0, 1.0)
                 : 0.0;
-        final overallProgress =
-            ((secondsProgress + kiransProgress) / 2 * 100).round();
-
-        debugPrint('📊 Widget Progress Data:');
-        debugPrint('  - Plan: ${activePlan.title}');
-        debugPrint(
-          '  - Today Seconds: $todaySeconds/${activePlan.targetSeconds}',
-        );
-        debugPrint(
-          '  - Today Kirans: ${todayKirans.length}/${activePlan.targetKirans}',
-        );
-        debugPrint('  - Progress: $overallProgress%');
-        debugPrint('  - Goal Achieved: ${activePlan.todayGoalAchieved}');
 
         return {
           'targetMinutes': (activePlan.targetSeconds / 60).round(),
           'completedMinutes': (todaySeconds / 60).round(),
           'targetKirans': activePlan.targetKirans,
           'completedKirans': todayKirans.length,
-          'progressPercentage': overallProgress.toDouble(),
+          'progressPercentage': (kiransProgress * 100),
           'goalAchieved': activePlan.todayGoalAchieved,
           'streakDays': statistics['streakDays'] ?? 0,
           'planTitle': activePlan.title,
+          'todayKirans': todayKirans.join(', '),
         };
       }
 
@@ -220,6 +234,7 @@ class HomeWidgetService {
         'progressPercentage': 0.0,
         'goalAchieved': false,
         'streakDays': 0,
+        'todayKirans': '',
       };
     } catch (e) {
       debugPrint('Error getting reading progress: $e');
@@ -231,8 +246,16 @@ class HomeWidgetService {
         'progressPercentage': 0.0,
         'goalAchieved': false,
         'streakDays': 0,
+        'todayKirans': '',
       };
     }
+  }
+
+  AppLocalizations _widgetLocalizations() {
+    final context = NavigationService.navigatorKey.currentContext;
+    final current = context == null ? null : AppLocalizations.of(context);
+    if (current != null) return current;
+    return lookupAppLocalizations(const Locale('en'));
   }
 
   /// Check if widgets are supported on this platform

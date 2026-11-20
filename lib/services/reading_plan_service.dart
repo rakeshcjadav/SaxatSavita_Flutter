@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:saxatsavita_flutter/helpers/firebase_integration_helper.dart';
+import 'package:saxatsavita_flutter/helpers/reading_plan_schedule.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/notification_service.dart';
 import 'package:saxatsavita_flutter/services/home_widget_service.dart';
@@ -7,7 +8,15 @@ import 'package:saxatsavita_flutter/services/home_widget_service.dart';
 class ReadingPlanService {
   static final ReadingPlanService _instance = ReadingPlanService._internal();
   factory ReadingPlanService() => _instance;
-  ReadingPlanService._internal();
+  ReadingPlanService._internal() {
+    NotificationService().currentDueKiran = () {
+      final plan = activePlan;
+      if (plan == null || !plan.hasStartKiran) return null;
+      final remaining = plan.assignmentOn(DateTime.now()).remaining;
+      if (remaining.isEmpty) return null;
+      return remaining.first;
+    };
+  }
 
   List<ReadingPlan> _readingPlans = [];
   String? _activePlanId;
@@ -56,6 +65,7 @@ class ReadingPlanService {
     required ReadingPlanType type,
     required int targetSeconds,
     required int targetKirans,
+    int startKiran = 0,
     List<ReminderTime> reminderTimes = const [
       ReminderTime(hour: 9, minute: 0),
       ReminderTime(hour: 18, minute: 0),
@@ -71,6 +81,7 @@ class ReadingPlanService {
       type: type,
       targetSeconds: targetSeconds,
       targetKirans: targetKirans,
+      startKiran: startKiran,
       startDate: startDate ?? now,
       endDate: endDate,
       reminderTimes: reminderTimes,
@@ -99,16 +110,9 @@ class ReadingPlanService {
     if (plan != null) {
       _activePlanId = planId;
 
-      // Update plan as active
-      final updatedPlan = plan.copyWith(
-        isActive: true,
-        updatedAt: DateTime.now(),
-      );
-      updateReadingPlan(updatedPlan);
-
-      // Deactivate other plans and cancel their reminders
+      // Deactivate other plans before scheduling the new one, so their
+      // cancellation does not clear the reminders just written.
       for (final otherPlan in _readingPlans.where((p) => p.id != planId)) {
-        // Cancel notifications for the plan being deactivated
         await NotificationService().cancelReadingPlanRemindersForPlan(
           otherPlan,
         );
@@ -117,8 +121,14 @@ class ReadingPlanService {
           isActive: false,
           updatedAt: DateTime.now(),
         );
-        updateReadingPlan(deactivatedPlan);
+        await updateReadingPlan(deactivatedPlan);
       }
+
+      final updatedPlan = plan.copyWith(
+        isActive: true,
+        updatedAt: DateTime.now(),
+      );
+      await updateReadingPlan(updatedPlan);
 
       debugPrint('✅ Set active reading plan: ${plan.title}');
     }
@@ -142,6 +152,9 @@ class ReadingPlanService {
         await NotificationService().cancelReadingPlanRemindersForPlan(
           updatedPlan,
         );
+        if (_activePlanId == null || _activePlanId == updatedPlan.id) {
+          await NotificationService().cancelSequentialReadingPlanReminders();
+        }
       }
     }
   }
@@ -158,12 +171,21 @@ class ReadingPlanService {
 
     if (_activePlanId == planId) {
       _activePlanId = null;
+      await NotificationService().cancelSequentialReadingPlanReminders();
     }
 
     // Auto-sync to Firebase
     await FirebaseIntegrationHelper().onReadingPlanDeleted(planId);
 
     debugPrint('🗑️ Deleted reading plan: $planId');
+  }
+
+  /// Rebuild reminders for the active plan. Called when the app resumes so
+  /// the next 14 days name the kirans still due.
+  Future<void> refreshActivePlanReminders() async {
+    final plan = activePlan;
+    if (plan == null || !plan.isActive) return;
+    await NotificationService().scheduleReadingPlanReminders(plan);
   }
 
   /// Record reading progress
@@ -176,17 +198,35 @@ class ReadingPlanService {
 
     final recordDate = date ?? DateTime.now();
     final dateKey = recordDate.toIso8601String().split('T').first;
+    final wasGoalAchieved = activePlan!.todayGoalAchieved;
 
     // Update daily progress
     final currentSeconds = activePlan!.dailyProgress[dateKey] ?? 0;
     final currentKirans = Set<int>.from(activePlan!.dailyKirans[dateKey] ?? []);
+
+    final alreadyFinished = <int>{};
+    if (activePlan!.hasStartKiran) {
+      for (final finished in activePlan!.dailyKirans.values) {
+        alreadyFinished.addAll(finished);
+      }
+    }
+
+    final counted =
+        kiransRead.where((kiran) {
+          if (!activePlan!.hasStartKiran) return true;
+          if (kiran < activePlan!.startKiran ||
+              kiran > ReadingPlanSchedule.lastKiran) {
+            return false;
+          }
+          return !alreadyFinished.contains(kiran);
+        }).toList();
 
     // Add new progress
     final newProgress = Map<String, int>.from(activePlan!.dailyProgress);
     newProgress[dateKey] = currentSeconds + secondsRead;
 
     final newKirans = Map<String, List<int>>.from(activePlan!.dailyKirans);
-    currentKirans.addAll(kiransRead);
+    currentKirans.addAll(counted);
     newKirans[dateKey] = currentKirans.toList();
 
     // Update the plan
@@ -198,7 +238,7 @@ class ReadingPlanService {
     await updateReadingPlan(updatedPlan);
 
     // Check if goal is achieved and show encouraging notification
-    if (updatedPlan.todayGoalAchieved && !activePlan!.todayGoalAchieved) {
+    if (updatedPlan.todayGoalAchieved && !wasGoalAchieved) {
       await NotificationService().showGoalAchievedNotification(updatedPlan);
     }
 
@@ -233,6 +273,10 @@ class ReadingPlanService {
     int totalSeconds = 0;
     Set<int> totalKirans = {};
     int goalsAchieved = 0;
+    final week =
+        plan.hasStartKiran
+            ? plan.readingSchedule.weekContaining(now, today: now)
+            : null;
 
     for (int i = 0; i < days; i++) {
       final checkDate = now.subtract(Duration(days: i));
@@ -244,10 +288,12 @@ class ReadingPlanService {
       totalSeconds += daySeconds;
       totalKirans.addAll(dayKirans);
 
-      if (daySeconds >= plan.targetSeconds &&
-          dayKirans.length >= plan.targetKirans) {
-        goalsAchieved++;
-      }
+      final goalMet =
+          plan.hasStartKiran
+              ? plan.assignmentOn(checkDate).goalMet
+              : daySeconds >= plan.targetSeconds &&
+                  dayKirans.length >= plan.targetKirans;
+      if (goalMet) goalsAchieved++;
     }
 
     return {
@@ -258,6 +304,9 @@ class ReadingPlanService {
       'goalsAchieved': goalsAchieved,
       'streakDays': plan.streakDays,
       'completionRate': goalsAchieved / days,
+      'weekRead': week?.read ?? 0,
+      'weekTarget': week?.target ?? plan.targetKirans * 7,
+      'weekStatus': week?.status.name ?? '',
     };
   }
 
@@ -340,19 +389,32 @@ class ReadingPlanService {
 
       final seconds = plan.dailyProgress[dateKey] ?? 0;
       final kirans = plan.dailyKirans[dateKey] ?? [];
+      final assignment = plan.hasStartKiran ? plan.assignmentOn(date) : null;
       final goalAchieved =
-          seconds >= plan.targetSeconds && kirans.length >= plan.targetKirans;
+          assignment == null
+              ? seconds >= plan.targetSeconds &&
+                  kirans.length >= plan.targetKirans
+              : assignment.assigned.isNotEmpty && assignment.goalMet;
+      final progress =
+          assignment == null
+              ? (((plan.targetSeconds > 0 ? seconds / plan.targetSeconds : 0) +
+                      (plan.targetKirans > 0
+                          ? kirans.length / plan.targetKirans
+                          : 0)) /
+                  2)
+              : (assignment.assigned.isEmpty ? 0.0 : assignment.progress);
 
       summaries.add({
         'date': date,
         'dateKey': dateKey,
         'seconds': seconds,
-        'kirans': kirans.length,
+        'kirans': assignment?.assigned.length ?? kirans.length,
+        'kiransRead':
+            assignment == null
+                ? kirans.length
+                : assignment.assigned.length - assignment.remaining.length,
         'goalAchieved': goalAchieved,
-        'progressPercentage':
-            ((seconds / plan.targetSeconds) +
-                (kirans.length / plan.targetKirans)) /
-            2,
+        'progressPercentage': progress,
       });
     }
 

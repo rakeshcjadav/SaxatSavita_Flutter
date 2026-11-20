@@ -6,6 +6,7 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
 import 'package:saxatsavita_flutter/services/in_app_update_service.dart';
 import 'package:saxatsavita_flutter/services/notification_service.dart';
+import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
 
 // Import full pages (they will be rendered without their scaffold)
 import 'package:saxatsavita_flutter/pages/dashboard_page.dart';
@@ -21,17 +22,20 @@ class MainNavigation extends StatefulWidget {
   State<MainNavigation> createState() => _MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
+class _MainNavigationState extends State<MainNavigation>
+    with WidgetsBindingObserver {
   int _selectedIndex = 1;
   late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _pageController = PageController(initialPage: _selectedIndex);
     InAppUpdateService().scheduleStartupCheck(context);
     if (!kIsWeb) {
       unawaited(_initDailyQuizNotifications());
+      unawaited(ReadingPlanService().refreshActivePlanReminders());
     }
   }
 
@@ -45,8 +49,16 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(ReadingPlanService().refreshActivePlanReminders());
+    }
   }
 
   void _onItemTapped(int index) {

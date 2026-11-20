@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:saxatsavita_flutter/helpers/reading_plan_schedule.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
@@ -19,8 +21,8 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
 
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+  late TextEditingController _startKiranController;
 
-  int _targetSeconds = 15 * 60;
   int _targetKirans = 1;
   int _reminderHour = 7;
   int _reminderMinutes = 20;
@@ -38,10 +40,15 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
     _descriptionController = TextEditingController(
       text: widget.editingPlan?.description ?? '',
     );
+    _startKiranController = TextEditingController(
+      text:
+          widget.editingPlan != null && widget.editingPlan!.startKiran >= 1
+              ? '${widget.editingPlan!.startKiran}'
+              : '',
+    );
 
     // Initialize form values if editing
     if (widget.editingPlan != null) {
-      _targetSeconds = widget.editingPlan!.targetSeconds;
       _targetKirans = widget.editingPlan!.targetKirans;
       _enableReminders = widget.editingPlan!.reminderTimes.isNotEmpty;
       if (_enableReminders && widget.editingPlan!.reminderTimes.isNotEmpty) {
@@ -56,6 +63,7 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _startKiranController.dispose();
     super.dispose();
   }
 
@@ -155,59 +163,29 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
             ),
             const SizedBox(height: 16),
 
-            // Target Minutes
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context)!.reading_time_goal,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed:
-                          _targetSeconds > 5 * 60
-                              ? () {
-                                setState(() {
-                                  _targetSeconds = (_targetSeconds - 5 * 60)
-                                      .clamp(5 * 60, 120 * 60);
-                                });
-                              }
-                              : null,
-                      icon: const Icon(Icons.remove),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '${_targetSeconds ~/ 60} ${AppLocalizations.of(context)!.create_plan_minutes}',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed:
-                          _targetSeconds < 120 * 60
-                              ? () {
-                                setState(() {
-                                  _targetSeconds = (_targetSeconds + 5 * 60)
-                                      .clamp(5 * 60, 120 * 60);
-                                });
-                              }
-                              : null,
-                      icon: const Icon(Icons.add),
-                    ),
-                  ],
-                ),
-              ],
+            TextFormField(
+              controller: _startKiranController,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.start_kiran,
+                hintText: AppLocalizations.of(
+                  context,
+                )!.start_kiran_hint(ReadingPlanSchedule.lastKiran),
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                final kiran = int.tryParse(value?.trim() ?? '');
+                if (kiran == null ||
+                    kiran < 1 ||
+                    kiran > ReadingPlanSchedule.lastKiran) {
+                  return AppLocalizations.of(
+                    context,
+                  )!.start_kiran_error(ReadingPlanSchedule.lastKiran);
+                }
+                return null;
+              },
+              onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 16),
 
@@ -361,11 +339,12 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildPreviewItem(
-                  icon: Icons.timer,
-                  value: AppLocalizations.of(
-                    context,
-                  )!.minutes_format(_targetSeconds ~/ 60),
-                  label: AppLocalizations.of(context)!.daily_reading,
+                  icon: Icons.menu_book,
+                  value:
+                      _startKiranController.text.trim().isEmpty
+                          ? '—'
+                          : _startKiranController.text.trim(),
+                  label: AppLocalizations.of(context)!.start_kiran,
                 ),
                 _buildPreviewItem(
                   icon: Icons.book,
@@ -373,12 +352,9 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
                   label: AppLocalizations.of(context)!.preview_kirans,
                 ),
                 _buildPreviewItem(
-                  icon: Icons.notifications,
-                  value:
-                      _enableReminders
-                          ? AppLocalizations.of(context)!.reminders_on
-                          : AppLocalizations.of(context)!.reminders_off,
-                  label: AppLocalizations.of(context)!.create_plan_reminders,
+                  icon: Icons.date_range,
+                  value: '${_targetKirans * 7}',
+                  label: AppLocalizations.of(context)!.this_week,
                 ),
               ],
             ),
@@ -498,8 +474,9 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
           title: _titleController.text.trim(),
           description: _descriptionController.text.trim(),
           type: widget.editingPlan!.type,
-          targetSeconds: _targetSeconds,
+          targetSeconds: widget.editingPlan!.targetSeconds,
           targetKirans: _targetKirans,
+          startKiran: int.parse(_startKiranController.text.trim()),
           startDate: widget.editingPlan!.startDate,
           endDate: widget.editingPlan!.endDate,
           isActive: widget.editingPlan!.isActive,
@@ -522,8 +499,9 @@ class _CreateReadingPlanPageState extends State<CreateReadingPlanPage> {
           title: _titleController.text.trim(),
           description: _descriptionController.text.trim(),
           type: ReadingPlanType.custom,
-          targetSeconds: _targetSeconds,
+          targetSeconds: 0,
           targetKirans: _targetKirans,
+          startKiran: int.parse(_startKiranController.text.trim()),
           reminderTimes:
               _enableReminders
                   ? [

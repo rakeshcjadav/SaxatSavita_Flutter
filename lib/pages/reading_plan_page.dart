@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
+import 'package:saxatsavita_flutter/helpers/open_kiran.dart';
+import 'package:saxatsavita_flutter/helpers/reading_plan_schedule.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
@@ -157,6 +158,9 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     if (activePlan == null) {
       return _buildNoPlanState();
     }
+    if (!activePlan.hasStartKiran) {
+      return _buildChooseStartKiran(activePlan);
+    }
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -182,9 +186,52 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     );
   }
 
+  Widget _buildChooseStartKiran(ReadingPlan plan) {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.flag_outlined, size: 72, color: Colors.grey[400]),
+            const SizedBox(height: 24),
+            Text(
+              l10n.choose_start_kiran,
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.choose_start_kiran_body,
+              textAlign: TextAlign.center,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton.icon(
+              onPressed: () => _editPlan(plan),
+              icon: const Icon(Icons.edit),
+              label: Text(l10n.set_start_kiran),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildTodayProgress(ReadingPlan plan) {
-    final progressPercentage = plan.todayProgressPercentage;
-    final isGoalAchieved = plan.todayGoalAchieved;
+    final l10n = AppLocalizations.of(context)!;
+    final today = plan.assignmentOn(DateTime.now());
+    final tomorrow = plan.assignmentOn(
+      DateTime.now().add(const Duration(days: 1)),
+    );
+    final week = plan.readingSchedule.weekContaining(
+      DateTime.now(),
+      today: DateTime.now(),
+    );
+    final isGoalAchieved = today.goalMet;
 
     return Card(
       child: Padding(
@@ -204,57 +251,56 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    isGoalAchieved
-                        ? AppLocalizations.of(context)!.today_goal_achieved
-                        : AppLocalizations.of(context)!.today_progress,
+                    today.planComplete && today.remaining.isEmpty
+                        ? l10n.reading_plan_complete
+                        : isGoalAchieved
+                        ? l10n.today_goal_achieved
+                        : l10n.today_progress,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-
-            // Progress bar
             LinearProgressIndicator(
-              value: progressPercentage,
+              value: today.progress,
               backgroundColor: Colors.grey[300],
               valueColor: AlwaysStoppedAnimation<Color>(
                 isGoalAchieved ? Colors.green : Theme.of(context).primaryColor,
               ),
             ),
             const SizedBox(height: 12),
-
-            // Progress details
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${plan.todayProgress ~/ 60}m:${plan.todayProgress % 60}s/${plan.targetSeconds ~/ 60} ${AppLocalizations.of(context)!.minutes}',
-                      style: Theme.of(context).textTheme.titleSmall,
+            if (today.remaining.isNotEmpty)
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final kiran in today.remaining)
+                    ActionChip(
+                      avatar: const Icon(Icons.menu_book, size: 18),
+                      label: Text('${l10n.preview_kirans} $kiran'),
+                      onPressed: () => _openPlanKiran(kiran),
                     ),
-                    Text(
-                      AppLocalizations.of(context)!.reading_time,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '${plan.todayKirans.length}/${plan.targetKirans} ${AppLocalizations.of(context)!.kirans}',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!.completed,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              )
+            else if (!today.planComplete)
+              Text(l10n.no_kirans_due_today),
+            if (today.backlog > 0) ...[
+              const SizedBox(height: 8),
+              Text(l10n.backlog_kirans(today.backlog)),
+            ],
+            if (today.extraFinished.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(l10n.extra_kirans_today(today.extraFinished.join(', '))),
+            ],
+            if (isGoalAchieved && tomorrow.assigned.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(l10n.tomorrow_starts_at(tomorrow.assigned.first)),
+            ],
+            const SizedBox(height: 12),
+            Text(
+              '${l10n.this_week}: ${l10n.week_progress_count(week.read, week.target)}',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
           ],
         ),
@@ -348,7 +394,12 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
   }
 
   Widget _buildTodayStats(ReadingPlan plan) {
+    if (!plan.hasStartKiran) return const SizedBox.shrink();
     final stats = _readingPlanService.getReadingStatistics();
+    final week = plan.readingSchedule.weekContaining(
+      DateTime.now(),
+      today: DateTime.now(),
+    );
 
     return Card(
       child: Padding(
@@ -380,7 +431,9 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                 ),
                 _buildStatItem(
                   AppLocalizations.of(context)!.this_week,
-                  '${stats['goalsAchieved']} ${AppLocalizations.of(context)!.goals}',
+                  AppLocalizations.of(
+                    context,
+                  )!.week_progress_count(week.read, week.target),
                 ),
                 _buildStatItem(
                   AppLocalizations.of(context)!.total_time,
@@ -502,7 +555,9 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
             Text(plan.description),
             const SizedBox(height: 4),
             Text(
-              '• ${AppLocalizations.of(context)!.min_per_day(plan.targetSeconds ~/ 60)}\n• ${plan.targetKirans} ${AppLocalizations.of(context)!.kirans}\n• ${AppLocalizations.of(context)!.day_streak(plan.streakDays)}',
+              plan.hasStartKiran
+                  ? '• ${AppLocalizations.of(context)!.plan_starts_at_kiran(plan.startKiran)}\n• ${AppLocalizations.of(context)!.kirans_per_day(plan.targetKirans)}\n• ${AppLocalizations.of(context)!.kirans_per_week(plan.targetKirans * 7)}'
+                  : '• ${AppLocalizations.of(context)!.choose_start_kiran}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 4),
@@ -590,7 +645,11 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     if (activePlan == null) {
       return _buildNoPlanState();
     }
+    if (!activePlan.hasStartKiran) {
+      return _buildChooseStartKiran(activePlan);
+    }
 
+    final weeks = activePlan.readingSchedule.recentWeeks(DateTime.now());
     final progressSummary = _readingPlanService.getDailyProgressSummary();
 
     return SingleChildScrollView(
@@ -598,7 +657,7 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildProgressChart(progressSummary),
+          _buildWeekList(weeks),
           const SizedBox(height: 8),
           _buildProgressCalendar(progressSummary),
         ],
@@ -606,18 +665,8 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     );
   }
 
-  Widget _buildProgressChart(List<Map<String, dynamic>> progressSummary) {
-    if (_readingPlanService.activePlan == null || progressSummary.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Center(child: Text('No progress data available')),
-        ),
-      );
-    }
-
-    final activePlan = _readingPlanService.activePlan!;
-
+  Widget _buildWeekList(List<WeekProgress> weeks) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -625,469 +674,61 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppLocalizations.of(context)!.last_30_days_progress,
+              l10n.reading_plan_weeks,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            // Reading Time Chart
-            Container(
-              margin: const EdgeInsets.only(top: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: const BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        AppLocalizations.of(context)!.reading_time,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ],
+            const SizedBox(height: 8),
+            if (weeks.isEmpty)
+              Text(l10n.no_activity)
+            else
+              for (final week in weeks)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    '${week.weekStart.day}/${week.weekStart.month} – ${week.weekEnd.day}/${week.weekEnd.month}',
                   ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 180,
-                    child: Scrollbar(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: SizedBox(
-                          width: progressSummary.length * 30.0,
-                          child: BarChart(
-                            BarChartData(
-                              maxY:
-                                  (activePlan.targetSeconds ~/ 60) *
-                                  1.5, // Target minutes * 1.5
-                              minY: 0.0,
-                              barTouchData: BarTouchData(
-                                touchTooltipData: BarTouchTooltipData(
-                                  tooltipPadding: const EdgeInsets.all(8),
-                                  tooltipMargin: 8,
-                                  getTooltipItem: (
-                                    group,
-                                    groupIndex,
-                                    rod,
-                                    rodIndex,
-                                  ) {
-                                    // Get data from reversed list to match chart
-                                    final reversedList =
-                                        progressSummary.reversed.toList();
-                                    final day = reversedList[group.x.toInt()];
-                                    final date = day['date'] as DateTime;
-                                    final seconds = day['seconds'] as int;
-                                    final minutes = seconds ~/ 60;
-
-                                    return BarTooltipItem(
-                                      '${date.day}/${date.month}\n${AppLocalizations.of(context)!.reading_time}: ${minutes}m\nTarget: ${activePlan.targetSeconds ~/ 60}m',
-                                      TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              titlesData: FlTitlesData(
-                                show: true,
-                                bottomTitles: AxisTitles(
-                                  sideTitles: SideTitles(
-                                    showTitles: true,
-                                    reservedSize: 30,
-                                    interval: 2,
-                                    getTitlesWidget: (value, meta) {
-                                      if (value.toInt() >= 0 &&
-                                          value.toInt() <
-                                              progressSummary.length) {
-                                        // Get date from reversed list to match chart data
-                                        final reversedList =
-                                            progressSummary.reversed.toList();
-                                        final date =
-                                            reversedList[value.toInt()]['date']
-                                                as DateTime;
-                                        return Text(
-                                          // Display 'Today' for current day
-                                          _getIntuitiveDateLabel(date),
-                                          style: const TextStyle(fontSize: 10),
-                                        );
-                                      }
-                                      return const SizedBox.shrink();
-                                    },
-                                  ),
-                                ),
-                                leftTitles: AxisTitles(
-                                  sideTitles: SideTitles(
-                                    showTitles: true,
-                                    reservedSize: 40,
-                                    interval:
-                                        (activePlan.targetSeconds ~/ 60) /
-                                        4, // Show 4-5 intervals
-                                    getTitlesWidget: (value, meta) {
-                                      return Text(
-                                        '${value.toInt()}m',
-                                        style: const TextStyle(fontSize: 10),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                topTitles: const AxisTitles(
-                                  sideTitles: SideTitles(showTitles: false),
-                                ),
-                                rightTitles: const AxisTitles(
-                                  sideTitles: SideTitles(showTitles: false),
-                                ),
-                              ),
-                              borderData: FlBorderData(
-                                show: true,
-                                border: Border.all(
-                                  color: Colors.grey.withValues(alpha: 0.3),
-                                  width: 1,
-                                ),
-                              ),
-                              gridData: FlGridData(
-                                show: true,
-                                drawVerticalLine: true,
-                                drawHorizontalLine: true,
-                                horizontalInterval:
-                                    (activePlan.targetSeconds ~/ 60) / 4,
-                                verticalInterval: 5,
-                                getDrawingHorizontalLine:
-                                    (value) => FlLine(
-                                      color: Colors.grey.withValues(alpha: 0.2),
-                                      strokeWidth: 1,
-                                    ),
-                                getDrawingVerticalLine:
-                                    (value) => FlLine(
-                                      color: Colors.grey.withValues(alpha: 0.2),
-                                      strokeWidth: 1,
-                                    ),
-                              ),
-                              // Reverse data order: most recent (today) on left, oldest on right
-                              barGroups:
-                                  progressSummary.reversed
-                                      .toList()
-                                      .asMap()
-                                      .entries
-                                      .map((entry) {
-                                        final index = entry.key;
-                                        final day = entry.value;
-                                        final minutes =
-                                            (day['seconds'] as int) ~/ 60;
-                                        final seconds = day['seconds'] as int;
-                                        final targetMet =
-                                            seconds >= activePlan.targetSeconds;
-
-                                        return BarChartGroupData(
-                                          x: index,
-                                          barRods: [
-                                            BarChartRodData(
-                                              toY: minutes.toDouble(),
-                                              color:
-                                                  targetMet
-                                                      ? Colors.green
-                                                      : Colors.blue,
-                                              width: 16,
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                    topLeft: Radius.circular(4),
-                                                    topRight: Radius.circular(
-                                                      4,
-                                                    ),
-                                                  ),
-                                            ),
-                                          ],
-                                        );
-                                      })
-                                      .toList(),
-                              groupsSpace: 8,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  subtitle: Text(
+                    l10n.week_progress_count(week.read, week.target),
                   ),
-                ],
-              ),
-            ),
-            // Reading Time Chart Legend
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Blue indicator for below target
-                Container(
-                  width: 16,
-                  height: 12,
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
+                  trailing: Text(
+                    _weekStatusLabel(week.status),
+                    style: TextStyle(
+                      color: _weekStatusColor(week.status),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(width: 4),
-                Text(
-                  AppLocalizations.of(context)!.below_target,
-                  style: const TextStyle(fontSize: 12),
-                ),
-                const SizedBox(width: 16),
-                // Green indicator for target achieved
-                Container(
-                  width: 16,
-                  height: 12,
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(4),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  AppLocalizations.of(context)!.target_achieved,
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Kirans Chart
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: const BoxDecoration(
-                        color: Colors.orange,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      AppLocalizations.of(context)!.kirans,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 180,
-                  child: Scrollbar(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SizedBox(
-                        width: progressSummary.length * 30.0,
-                        child: BarChart(
-                          BarChartData(
-                            maxY:
-                                (activePlan.targetKirans * 3)
-                                    .toDouble(), // Target kirans * 3
-                            minY: 0.0,
-                            barTouchData: BarTouchData(
-                              touchTooltipData: BarTouchTooltipData(
-                                tooltipPadding: const EdgeInsets.all(8),
-                                tooltipMargin: 8,
-                                getTooltipItem: (
-                                  group,
-                                  groupIndex,
-                                  rod,
-                                  rodIndex,
-                                ) {
-                                  // Get data from reversed list to match chart
-                                  final reversedList =
-                                      progressSummary.reversed.toList();
-                                  final day = reversedList[group.x.toInt()];
-                                  final date = day['date'] as DateTime;
-                                  final kirans = day['kirans'] as int;
-
-                                  return BarTooltipItem(
-                                    '${date.day}/${date.month}\n${AppLocalizations.of(context)!.kirans}: $kirans\nTarget: ${activePlan.targetKirans}',
-                                    TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            titlesData: FlTitlesData(
-                              show: true,
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  reservedSize: 30,
-                                  interval: 2,
-                                  getTitlesWidget: (value, meta) {
-                                    if (value.toInt() >= 0 &&
-                                        value.toInt() <
-                                            progressSummary.length) {
-                                      // Get date from reversed list to match chart data
-                                      final reversedList =
-                                          progressSummary.reversed.toList();
-                                      final date =
-                                          reversedList[value.toInt()]['date']
-                                              as DateTime;
-                                      return Text(
-                                        // Display 'Today' for current day
-                                        _getIntuitiveDateLabel(date),
-                                        style: const TextStyle(fontSize: 10),
-                                      );
-                                    }
-                                    return const SizedBox.shrink();
-                                  },
-                                ),
-                              ),
-                              leftTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  reservedSize: 40,
-                                  interval:
-                                      activePlan.targetKirans > 4
-                                          ? (activePlan.targetKirans / 4)
-                                              .ceil()
-                                              .toDouble()
-                                          : 1.0,
-                                  getTitlesWidget: (value, meta) {
-                                    return Text(
-                                      '${value.toInt()}',
-                                      style: const TextStyle(fontSize: 10),
-                                    );
-                                  },
-                                ),
-                              ),
-                              topTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                              rightTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                            ),
-                            borderData: FlBorderData(
-                              show: true,
-                              border: Border.all(
-                                color: Colors.grey.withValues(alpha: 0.3),
-                                width: 1,
-                              ),
-                            ),
-                            gridData: FlGridData(
-                              show: true,
-                              drawVerticalLine: true,
-                              drawHorizontalLine: true,
-                              horizontalInterval:
-                                  activePlan.targetKirans > 4
-                                      ? (activePlan.targetKirans / 4)
-                                          .ceil()
-                                          .toDouble()
-                                      : 1.0,
-                              verticalInterval: 5,
-                              getDrawingHorizontalLine:
-                                  (value) => FlLine(
-                                    color: Colors.grey.withValues(alpha: 0.2),
-                                    strokeWidth: 1,
-                                  ),
-                              getDrawingVerticalLine:
-                                  (value) => FlLine(
-                                    color: Colors.grey.withValues(alpha: 0.2),
-                                    strokeWidth: 1,
-                                  ),
-                            ),
-                            // Reverse data order: most recent (today) on left, oldest on right
-                            barGroups:
-                                progressSummary.reversed
-                                    .toList()
-                                    .asMap()
-                                    .entries
-                                    .map((entry) {
-                                      final index = entry.key;
-                                      final day = entry.value;
-                                      final kirans = day['kirans'] as int;
-                                      final targetMet =
-                                          kirans >= activePlan.targetKirans;
-
-                                      return BarChartGroupData(
-                                        x: index,
-                                        barRods: [
-                                          BarChartRodData(
-                                            toY: kirans.toDouble(),
-                                            color:
-                                                targetMet
-                                                    ? Colors.green
-                                                    : Colors.orange,
-                                            width: 16,
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                  topLeft: Radius.circular(4),
-                                                  topRight: Radius.circular(4),
-                                                ),
-                                          ),
-                                        ],
-                                      );
-                                    })
-                                    .toList(),
-                            groupsSpace: 8,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                // Kirans Chart Legend
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Orange indicator for below target
-                    Container(
-                      width: 16,
-                      height: 12,
-                      decoration: const BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      AppLocalizations.of(context)!.below_target,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    const SizedBox(width: 16),
-                    // Green indicator for target achieved
-                    Container(
-                      width: 16,
-                      height: 12,
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      AppLocalizations.of(context)!.target_achieved,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              ],
-            ),
           ],
         ),
       ),
     );
+  }
+
+  String _weekStatusLabel(WeekStatus status) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (status) {
+      case WeekStatus.successful:
+        return l10n.week_successful;
+      case WeekStatus.missed:
+        return l10n.week_missed;
+      case WeekStatus.inProgress:
+        return l10n.week_in_progress;
+      case WeekStatus.inactive:
+        return l10n.no_activity;
+    }
+  }
+
+  Color _weekStatusColor(WeekStatus status) {
+    switch (status) {
+      case WeekStatus.successful:
+        return Colors.green;
+      case WeekStatus.missed:
+        return Colors.red;
+      case WeekStatus.inProgress:
+        return Theme.of(context).colorScheme.primary;
+      case WeekStatus.inactive:
+        return Colors.grey;
+    }
   }
 
   Widget _buildProgressCalendar(List<Map<String, dynamic>> progressSummary) {
@@ -1312,14 +953,33 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
     );
   }
 
-  void _startReading() {
-    // Navigate to book main page or reading page
-    Navigator.pushNamed(context, '/bookmainpage');
-    // You can add navigation to a specific reading page here
+  Future<void> _openPlanKiran(int kiran) async {
+    await openKiran(context, kiranIndex: kiran);
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _startReading() async {
+    final plan = _readingPlanService.activePlan;
+    if (plan == null || !plan.hasStartKiran) {
+      Navigator.pushNamed(context, '/bookmainpage');
+      return;
+    }
+    final today = plan.assignmentOn(DateTime.now());
+    final kiran =
+        today.remaining.isNotEmpty
+            ? today.remaining.first
+            : plan.readingSchedule.nextUnfinishedOn(DateTime.now());
+    if (kiran == null) return;
+    await _openPlanKiran(kiran);
   }
 
   void _testReminder() async {
-    await _notificationService.showReadingSuggestion();
+    final plan = _readingPlanService.activePlan;
+    if (plan != null && plan.hasStartKiran) {
+      await _notificationService.showTodayReadingPlanNotification(plan);
+    } else {
+      await _notificationService.showReadingSuggestion();
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1414,6 +1074,9 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
                   '${AppLocalizations.of(context)!.totalReadingTime}: ${_getTotalReadingTime(statistics['totalSeconds'])}',
                 ),
                 Text(
+                  '${AppLocalizations.of(context)!.this_week}: ${AppLocalizations.of(context)!.week_progress_count(statistics['weekRead'] as int, statistics['weekTarget'] as int)}',
+                ),
+                Text(
                   '${AppLocalizations.of(context)!.total_kirans}: ${statistics['totalKirans']}',
                 ),
                 Text(
@@ -1454,20 +1117,6 @@ class _ReadingPlanPageState extends State<ReadingPlanPage>
       return '${minutes}m : ${seconds}s';
     } else {
       return '${seconds}s';
-    }
-  }
-
-  String _getIntuitiveDateLabel(DateTime date) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final dateToCheck = DateTime(date.year, date.month, date.day);
-
-    if (dateToCheck == today) {
-      return AppLocalizations.of(context)!.today;
-    } else if (dateToCheck == today.subtract(const Duration(days: 1))) {
-      return AppLocalizations.of(context)!.yesterday;
-    } else {
-      return '${date.day}';
     }
   }
 }

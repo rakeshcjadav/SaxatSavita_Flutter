@@ -18,10 +18,9 @@ struct ReadingProgressProvider: TimelineProvider {
     func placeholder(in context: Context) -> ReadingProgressEntry {
         ReadingProgressEntry(
             date: Date(),
-            targetMinutes: 30,
-            completedMinutes: 15,
-            targetKirans: 3,
-            completedKirans: 2,
+            todayKirans: "Today read kiran 1.",
+            targetKirans: 1,
+            completedKirans: 0,
             progressPercentage: 0.5,
             streakDays: "7 days"
         )
@@ -29,8 +28,7 @@ struct ReadingProgressProvider: TimelineProvider {
 
     func getSnapshot(in context: Context, completion: @escaping (ReadingProgressEntry) -> ()) {
         let userDefaults = UserDefaults(suiteName: "group.com.saxatsavita.flutter.widgets")
-        let targetMinutes = userDefaults?.integer(forKey: "daily_target_minutes") ?? 30
-        let completedMinutes = userDefaults?.integer(forKey: "completed_minutes") ?? 0
+        let todayKirans = userDefaults?.string(forKey: "today_kirans") ?? ""
         let targetKirans = userDefaults?.integer(forKey: "target_kirans") ?? 3
         let completedKirans = userDefaults?.integer(forKey: "completed_kirans") ?? 0
         let progressPercentage = userDefaults?.double(forKey: "progress_percentage") ?? 0.0
@@ -38,8 +36,7 @@ struct ReadingProgressProvider: TimelineProvider {
         
         let entry = ReadingProgressEntry(
             date: Date(),
-            targetMinutes: targetMinutes,
-            completedMinutes: completedMinutes,
+            todayKirans: todayKirans,
             targetKirans: targetKirans,
             completedKirans: completedKirans,
             progressPercentage: progressPercentage,
@@ -54,8 +51,7 @@ struct ReadingProgressProvider: TimelineProvider {
         // Generate a timeline consisting of one entry for the current time.
         let currentDate = Date()
         let userDefaults = UserDefaults(suiteName: "group.com.saxatsavita.flutter.widgets")
-        let targetMinutes = userDefaults?.integer(forKey: "daily_target_minutes") ?? 30
-        let completedMinutes = userDefaults?.integer(forKey: "completed_minutes") ?? 0
+        let todayKirans = userDefaults?.string(forKey: "today_kirans") ?? ""
         let targetKirans = userDefaults?.integer(forKey: "target_kirans") ?? 3
         let completedKirans = userDefaults?.integer(forKey: "completed_kirans") ?? 0
         let progressPercentage = userDefaults?.double(forKey: "progress_percentage") ?? 0.0
@@ -63,8 +59,7 @@ struct ReadingProgressProvider: TimelineProvider {
         
         let entry = ReadingProgressEntry(
             date: currentDate,
-            targetMinutes: targetMinutes,
-            completedMinutes: completedMinutes,
+            todayKirans: todayKirans,
             targetKirans: targetKirans,
             completedKirans: completedKirans,
             progressPercentage: progressPercentage,
@@ -81,8 +76,7 @@ struct ReadingProgressProvider: TimelineProvider {
 
 struct ReadingProgressEntry: TimelineEntry {
     let date: Date
-    let targetMinutes: Int
-    let completedMinutes: Int
+    let todayKirans: String
     let targetKirans: Int
     let completedKirans: Int
     let progressPercentage: Double
@@ -115,17 +109,11 @@ struct ReadingProgressWidgetEntryView : View {
                         .frame(maxWidth: .infinity)
                         .padding(.top)
                     
-                    // Reading time progress
-                    HStack {
-                        Text("Today's Reading")
-                            .font(.caption2)
-                            .foregroundColor(Color.white.opacity(0.8))
-                        Spacer()
-                        Text("\(entry.completedMinutes)/\(entry.targetMinutes) min")
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                    }
+                    Text(entry.todayKirans)
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .lineLimit(2)
                     
                     // Progress bar - convert percentage from 0-100 to 0-1
                     ProgressView(value: min(entry.progressPercentage / 100.0, 1.0))

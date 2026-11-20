@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:saxatsavita_flutter/firebase_options.dart';
+import 'package:saxatsavita_flutter/helpers/open_kiran.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
@@ -147,6 +148,14 @@ class NotificationService {
   static const String _dailyQuizChannelId = 'daily_quiz';
   static const int dailyQuizNotificationId = 7001;
   static const String dailyQuizPayload = 'daily_quiz';
+  static const int readingPlanReminderIdBase = 72100;
+  static const int readingPlanHorizonDays = 14;
+  static const int readingPlanMaxReminders = 6;
+  static const int readingPlanWeeklyReviewId = 73001;
+  static const String readingPlanPayload = 'reading_plan';
+
+  /// First kiran still due today. Registered by [ReadingPlanService].
+  int? Function()? currentDueKiran;
 
   bool _isInitialized = false;
   bool _localPluginReady = false;
@@ -390,151 +399,216 @@ class NotificationService {
     return true;
   }
 
-  /// Schedule reading plan reminder notifications
+  int _readingPlanReminderId(int dayOffset, int reminderIndex) =>
+      readingPlanReminderIdBase +
+      dayOffset * readingPlanMaxReminders +
+      reminderIndex;
+
+  /// Schedule the next 14 daily reminders, each naming that day's kirans,
+  /// plus the Monday review of the week that just ended.
   Future<void> scheduleReadingPlanReminders(ReadingPlan plan) async {
     if (!_isInitialized) await initialize();
+    await cancelSequentialReadingPlanReminders();
+    await cancelReadingPlanRemindersForPlan(plan);
 
-    // Cancel existing reminders first
-    await cancelReadingPlanReminders();
-
-    if (!plan.isActive || plan.reminderTimes.isEmpty) return;
+    if (!plan.isActive || !plan.hasStartKiran) return;
 
     try {
-      for (final reminderTime in plan.reminderTimes) {
-        await _scheduleDailyReminderAtTime(plan, reminderTime);
+      final l10n = _readingPlanLocalizations();
+      final now = tz.TZDateTime.now(tz.local);
+      final today = DateTime(now.year, now.month, now.day);
+      final schedule = plan.readingSchedule;
+
+      if (plan.reminderTimes.isNotEmpty) {
+        for (var offset = 0; offset < readingPlanHorizonDays; offset++) {
+          final day = today.add(Duration(days: offset));
+          final assignment = schedule.assignmentOn(day);
+          if (assignment.remaining.isEmpty) continue;
+
+          for (var index = 0; index < plan.reminderTimes.length; index++) {
+            if (index >= readingPlanMaxReminders) break;
+            final reminderTime = plan.reminderTimes[index];
+            final scheduledDate = tz.TZDateTime(
+              tz.local,
+              day.year,
+              day.month,
+              day.day,
+              reminderTime.hour,
+              reminderTime.minute,
+            );
+            if (!scheduledDate.isAfter(now)) continue;
+
+            await _flutterLocalNotificationsPlugin.zonedSchedule(
+              id: _readingPlanReminderId(offset, index),
+              title: l10n.reading_plan_notification_title,
+              body: _dailyReminderBody(l10n, assignment.remaining),
+              scheduledDate: scheduledDate,
+              notificationDetails: _readingPlanNotificationDetails(l10n),
+              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+              payload: readingPlanPayload,
+            );
+          }
+        }
       }
 
-      debugPrint('✅ Scheduled reminders for plan: ${plan.title}');
+      await _scheduleWeeklyReview(plan, l10n, now);
+      debugPrint('✅ Scheduled kiran reminders for plan: ${plan.title}');
     } catch (e) {
       debugPrint('❌ Error scheduling reminders: $e');
     }
   }
 
-  /// Schedule a daily reminder at specific time
-  Future<void> _scheduleDailyReminderAtTime(
+  Future<void> _scheduleWeeklyReview(
     ReadingPlan plan,
-    ReminderTime reminderTime,
+    AppLocalizations l10n,
+    tz.TZDateTime now,
   ) async {
-    final now = DateTime.now();
-    var scheduledDateLocal = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      reminderTime.hour,
-      reminderTime.minute,
+    final reviewAt = _nextWeeklyReview(plan, now);
+    if (reviewAt == null) return;
+
+    final previousSunday = DateTime(
+      reviewAt.year,
+      reviewAt.month,
+      reviewAt.day,
+    ).subtract(const Duration(days: 1));
+    final week = plan.readingSchedule.weekContaining(
+      previousSunday,
+      today: DateTime(reviewAt.year, reviewAt.month, reviewAt.day),
     );
+    if (week.target == 0) return;
 
-    final tz.Location localLocation = tz.local;
-
-    tz.TZDateTime scheduledDate = tz.TZDateTime.from(
-      scheduledDateLocal,
-      localLocation,
+    final monday = plan.readingSchedule.assignmentOn(
+      DateTime(reviewAt.year, reviewAt.month, reviewAt.day),
     );
-
-    debugPrint('Now (Local): $now');
-    debugPrint('scheduledDateLocal (local): $scheduledDateLocal');
-    debugPrint('Now (TZ): ${tz.TZDateTime.from(now, localLocation)}');
-    debugPrint('scheduledDateLocal (TZ): $scheduledDate');
-
-    debugPrint(
-      '🕐 Scheduling reminder for plan "${plan.title}" at: $scheduledDate',
-    );
-
-    // If the time has already passed today, schedule for tomorrow
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    final summary =
+        week.succeeded
+            ? l10n.reading_plan_week_successful(week.read, week.target)
+            : l10n.reading_plan_week_missed(week.read, week.target);
+    final String followUp;
+    if (monday.planComplete && monday.remaining.isEmpty) {
+      followUp = l10n.reading_plan_complete;
+    } else if (monday.remaining.isEmpty) {
+      followUp = l10n.no_kirans_due_today;
+    } else {
+      followUp = l10n.reading_plan_start_today(monday.remaining.join(', '));
     }
 
-    final notificationId =
-        plan.id.hashCode + (reminderTime.hour * 100 + reminderTime.minute);
-
-    AppLocalizations appLocalizations =
-        AppLocalizations.of(NavigationService.navigatorKey.currentContext!)!;
-
     await _flutterLocalNotificationsPlugin.zonedSchedule(
-      id: notificationId,
-      title: '📚 ${appLocalizations.reading_time}',
-      body: _getReminderMessage(plan, reminderTime),
-      scheduledDate: scheduledDate,
-      notificationDetails: NotificationDetails(
-        android: AndroidNotificationDetails(
-          _readingReminderChannelId,
-          'Reading Reminders',
-          channelDescription: 'Daily reading plan reminders',
-          importance: Importance.high,
-          priority: Priority.high,
-          icon: 'notifications_24dp_fill',
-          playSound: true,
-          enableVibration: true,
-          enableLights: true,
-          ledColor: Colors.blue,
-          ledOnMs: 1000,
-          ledOffMs: 500,
-          showWhen: true,
-          when: DateTime.now().millisecondsSinceEpoch,
-          usesChronometer: false,
-          fullScreenIntent: true,
-          actions: [
-            AndroidNotificationAction(
-              'read_now',
-              '📖 ${appLocalizations.read_now}',
-              //icon: DrawableResourceAndroidBitmap('menu_book_24dp'),
-              showsUserInterface: true,
-            ),
-            AndroidNotificationAction(
-              'remind_later',
-              '⏰ ${appLocalizations.remind_later}',
-              //icon: DrawableResourceAndroidBitmap('notifications_24dp_fill'),
-              showsUserInterface: true,
-            ),
-          ],
-        ),
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-          categoryIdentifier: 'reading_reminder',
-        ),
-      ),
+      id: readingPlanWeeklyReviewId,
+      title: l10n.reading_plan_weekly_title,
+      body: '$summary $followUp',
+      scheduledDate: reviewAt,
+      notificationDetails: _readingPlanNotificationDetails(l10n),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
-      payload:
-          'reading_reminder:${plan.id}:${reminderTime.hour}:${reminderTime.minute}', // Add payload
+      payload: readingPlanPayload,
     );
   }
 
-  /// Get appropriate reminder message based on time and plan
-  String _getReminderMessage(ReadingPlan plan, ReminderTime reminderTime) {
-    AppLocalizations localizations =
-        AppLocalizations.of(NavigationService.navigatorKey.currentContext!)!;
-    final hour = reminderTime.hour;
-    final minutes = plan.targetSeconds ~/ 60;
-    final kirans = plan.targetKirans;
+  /// Next Monday at the daily reminder time, or 8:00 when reminders are off.
+  /// Skips Mondays whose previous week had no days on this plan.
+  tz.TZDateTime? _nextWeeklyReview(ReadingPlan plan, tz.TZDateTime now) {
+    final hour =
+        plan.reminderTimes.isNotEmpty ? plan.reminderTimes.first.hour : 8;
+    final minute =
+        plan.reminderTimes.isNotEmpty ? plan.reminderTimes.first.minute : 0;
 
-    switch (hour) {
-      case 6:
-        return localizations.reminder_6am(minutes);
-      case 7:
-        return localizations.reminder_7am(kirans);
-      case 8:
-        return localizations.reminder_8am;
-      case 9:
-        return localizations.reminder_9am;
-      case 12:
-        return localizations.reminder_12pm(minutes);
-      case 15:
-        return localizations.reminder_3pm;
-      case 18:
-        return localizations.reminder_6pm;
-      case 19:
-        return localizations.reminder_7pm(kirans);
-      case 20:
-        return localizations.reminder_8pm;
-      case 21:
-        return localizations.reminder_9pm;
-      default:
-        return localizations.reminder_default(minutes);
+    var monday = DateTime(now.year, now.month, now.day);
+    while (monday.weekday != DateTime.monday) {
+      monday = monday.add(const Duration(days: 1));
     }
+
+    for (var i = 0; i < 8; i++) {
+      final day = monday.add(Duration(days: 7 * i));
+      final reviewAt = tz.TZDateTime(
+        tz.local,
+        day.year,
+        day.month,
+        day.day,
+        hour,
+        minute,
+      );
+      if (!reviewAt.isAfter(now)) continue;
+      final previousSunday = day.subtract(const Duration(days: 1));
+      final week = plan.readingSchedule.weekContaining(
+        previousSunday,
+        today: day,
+      );
+      if (week.target > 0) return reviewAt;
+    }
+    return null;
+  }
+
+  String _dailyReminderBody(AppLocalizations l10n, List<int> kirans) {
+    if (kirans.length == 1) {
+      return l10n.reading_plan_read_kiran(kirans.first);
+    }
+    return l10n.reading_plan_read_kirans(kirans.join(', '));
+  }
+
+  NotificationDetails _readingPlanNotificationDetails(AppLocalizations l10n) {
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        _readingReminderChannelId,
+        'Reading Reminders',
+        channelDescription: 'Daily reading plan reminders',
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: 'notifications_24dp_fill',
+        playSound: true,
+        enableVibration: true,
+        enableLights: true,
+        ledColor: Colors.blue,
+        ledOnMs: 1000,
+        ledOffMs: 500,
+        showWhen: true,
+        actions: [
+          AndroidNotificationAction(
+            'read_now',
+            '📖 ${l10n.read_now}',
+            showsUserInterface: true,
+          ),
+          AndroidNotificationAction(
+            'remind_later',
+            '⏰ ${l10n.remind_later}',
+            showsUserInterface: true,
+          ),
+        ],
+      ),
+      iOS: const DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        categoryIdentifier: 'reading_reminder',
+      ),
+    );
+  }
+
+  AppLocalizations _readingPlanLocalizations() {
+    final context = NavigationService.navigatorKey.currentContext;
+    final current = context == null ? null : AppLocalizations.of(context);
+    if (current != null) return current;
+    return lookupAppLocalizations(const Locale('en'));
+  }
+
+  /// Show today's due kirans immediately.
+  Future<void> showTodayReadingPlanNotification(ReadingPlan plan) async {
+    if (!_isInitialized) await initialize();
+    if (!plan.hasStartKiran) return;
+    final l10n = _readingPlanLocalizations();
+    final assignment = plan.assignmentOn(DateTime.now());
+    final body =
+        assignment.planComplete && assignment.remaining.isEmpty
+            ? l10n.reading_plan_complete_body
+            : assignment.remaining.isEmpty
+            ? l10n.no_kirans_due_today
+            : _dailyReminderBody(l10n, assignment.remaining);
+    await _flutterLocalNotificationsPlugin.show(
+      id: readingPlanReminderIdBase - 1,
+      title: l10n.reading_plan_notification_title,
+      body: body,
+      notificationDetails: _readingPlanNotificationDetails(l10n),
+      payload: readingPlanPayload,
+    );
   }
 
   /// Show goal achieved notification
@@ -542,14 +616,27 @@ class NotificationService {
     if (!_isInitialized) await initialize();
 
     try {
+      final l10n = _readingPlanLocalizations();
+      final assignment =
+          plan.hasStartKiran ? plan.assignmentOn(DateTime.now()) : null;
+      final tomorrow =
+          plan.hasStartKiran
+              ? plan.assignmentOn(DateTime.now().add(const Duration(days: 1)))
+              : null;
       final streak = plan.streakDays;
       final title =
-          streak > 1
+          assignment?.planComplete == true
+              ? l10n.reading_plan_complete
+              : streak > 1
               ? "🎉 Goal Achieved! $streak Day Streak!"
-              : "🎉 Daily Goal Achieved!";
+              : "🎉 ${l10n.today_goal_achieved}";
 
       final body =
-          streak > 1
+          assignment?.planComplete == true
+              ? l10n.reading_plan_complete_body
+              : tomorrow != null && tomorrow.assigned.isNotEmpty
+              ? l10n.reading_plan_goal_body(tomorrow.assigned.first)
+              : streak > 1
               ? "Amazing! You've maintained your reading habit for $streak days straight. Keep the momentum going!"
               : "Congratulations! You've completed today's reading goal. Your dedication to spiritual growth is inspiring.";
 
@@ -750,16 +837,28 @@ class NotificationService {
 
   Future<void> cancelReadingPlanReminders() async {
     try {
-      // Cancel all scheduled notifications
-      await _flutterLocalNotificationsPlugin.cancelAll();
-      debugPrint('🚫 Cancelled all reading plan reminders');
-      await ensureDailyQuizReminderScheduled();
+      await cancelSequentialReadingPlanReminders();
+      debugPrint('🚫 Cancelled reading plan reminders');
     } catch (e) {
       debugPrint('❌ Error cancelling reminders: $e');
     }
   }
 
-  /// Cancel reminders for a specific reading plan
+  Future<void> cancelSequentialReadingPlanReminders() async {
+    if (!_isInitialized) await initialize();
+    for (var day = 0; day < readingPlanHorizonDays; day++) {
+      for (var index = 0; index < readingPlanMaxReminders; index++) {
+        await _flutterLocalNotificationsPlugin.cancel(
+          id: _readingPlanReminderId(day, index),
+        );
+      }
+    }
+    await _flutterLocalNotificationsPlugin.cancel(
+      id: readingPlanWeeklyReviewId,
+    );
+  }
+
+  /// Cancel the older repeating reminder ids for a specific reading plan.
   Future<void> cancelReadingPlanRemindersForPlan(ReadingPlan plan) async {
     if (!_isInitialized) await initialize();
 
@@ -853,10 +952,19 @@ class NotificationService {
           _handleNamedRouteTap('/daily-quiz');
           return;
         }
+        if (payload == readingPlanPayload ||
+            payload.startsWith('reading_reminder')) {
+          if (response.actionId == 'remind_later') {
+            NotificationService()._scheduleRemindLater();
+            return;
+          }
+          _openDueKiran();
+          return;
+        }
         switch (response.actionId) {
           case 'read_now':
             debugPrint('📚 Processing READ NOW action...');
-            _handleReadNowAction();
+            _openDueKiran();
             break;
           case 'remind_later':
             debugPrint('⏰ Processing REMIND LATER action...');
@@ -913,6 +1021,17 @@ class NotificationService {
       debugPrint('❌ Error navigating to $routeName: $e');
       NotificationService()._pendingNamedRoute = routeName;
     }
+  }
+
+  /// Open the kiran that is still due, looked up when the notification is tapped.
+  static void _openDueKiran() {
+    final kiran = NotificationService().currentDueKiran?.call();
+    final context = NavigationService.navigatorKey.currentContext;
+    if (kiran != null && context != null) {
+      openKiran(context, kiranIndex: kiran);
+      return;
+    }
+    _handleReadNowAction();
   }
 
   /// Handle the "Read Now" action
