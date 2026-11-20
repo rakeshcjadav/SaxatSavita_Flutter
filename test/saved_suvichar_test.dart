@@ -50,6 +50,16 @@ void main() {
     );
 
     expect(SavedSuvichar.fromJson(original.toJson()), original);
+    expect(
+      original.hasSameContent(
+        original.copyWith(updatedAt: DateTime.utc(2026, 4, 1)),
+      ),
+      isTrue,
+    );
+    expect(
+      original.hasSameContent(original.copyWith(quote: 'changed')),
+      isFalse,
+    );
   });
 
   test('missing optional fields fall back to defaults', () {

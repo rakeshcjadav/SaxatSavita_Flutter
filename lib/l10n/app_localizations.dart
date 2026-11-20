@@ -2156,6 +2156,60 @@ abstract class AppLocalizations {
   /// **'Download image'**
   String get download_image;
 
+  /// No description provided for @search_suvichars.
+  ///
+  /// In en, this message translates to:
+  /// **'Search quote or author'**
+  String get search_suvichars;
+
+  /// No description provided for @any_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Any time'**
+  String get any_time;
+
+  /// No description provided for @last_30_days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get last_30_days;
+
+  /// No description provided for @custom_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom dates'**
+  String get custom_range;
+
+  /// No description provided for @from_date.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get from_date;
+
+  /// No description provided for @to_date.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get to_date;
+
+  /// No description provided for @no_author.
+  ///
+  /// In en, this message translates to:
+  /// **'No author'**
+  String get no_author;
+
+  /// No description provided for @no_part.
+  ///
+  /// In en, this message translates to:
+  /// **'No part'**
+  String get no_part;
+
+  /// No description provided for @filter_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get filter_date;
+
   /// Error message when saving a Suvichar fails
   ///
   /// In en, this message translates to:

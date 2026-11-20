@@ -21,6 +21,8 @@ import 'package:saxatsavita_flutter/models/saved_suvichar.dart';
 import 'package:saxatsavita_flutter/services/saved_suvichar_service.dart';
 import 'package:gal/gal.dart';
 
+enum _LeaveChoice { save, discard }
+
 // Model class for sticker data
 class StickerData {
   String assetPath;
@@ -105,7 +107,9 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   final SavedSuvicharService _savedSuvicharService = SavedSuvicharService();
   String? _savedId;
   DateTime? _savedCreatedAt;
+  SavedSuvichar? _savedBaseline;
   bool _isSavingSuvichar = false;
+  bool _isConfirmingLeave = false;
 
   bool hasEnableEditing = false;
 
@@ -164,6 +168,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     // Set first predefined quote as default
     if (widget.saved != null) {
       _applySaved(widget.saved!);
+      _savedBaseline = _captureSuvichar();
       hasEnableEditing = true;
     } else if (widget.quote != null) {
       _currentSelectedQuote = widget.quote;
@@ -269,125 +274,180 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     super.dispose();
   }
 
+  bool get _hasUnsavedChanges {
+    final baseline = _savedBaseline;
+    if (baseline == null || _savedId == null) return false;
+    return !_captureSuvichar().hasSameContent(baseline);
+  }
+
+  Future<void> _confirmLeave() async {
+    final l10n = AppLocalizations.of(context)!;
+    final choice = await showDialog<_LeaveChoice>(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: Text(l10n.unsaved_changes),
+            content: Text(l10n.unsaved_changes_message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text(l10n.cancel),
+              ),
+              TextButton(
+                onPressed:
+                    () => Navigator.pop(dialogContext, _LeaveChoice.discard),
+                child: Text(l10n.discard),
+              ),
+              TextButton(
+                onPressed:
+                    () => Navigator.pop(dialogContext, _LeaveChoice.save),
+                child: Text(l10n.save),
+              ),
+            ],
+          ),
+    );
+    if (!mounted || choice == null) return;
+    if (choice == _LeaveChoice.discard) {
+      Navigator.of(context).pop();
+      return;
+    }
+    final saved = await _saveSuvichar();
+    if (saved && mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(
-        context,
-        title: AppLocalizations.of(context)!.quotes_image_generator,
-        extraActions: [
-          if (hasEnableEditing) ...[
-            IconButton(
-              icon: const Icon(Icons.shuffle),
-              onPressed: _getRandomQuote,
-              tooltip: AppLocalizations.of(context)!.random_quote,
-            ),
-          ],
-          IconButton(
-            icon: Icon(
-              _savedId == null ? Icons.bookmark_add_outlined : Icons.bookmark,
-            ),
-            tooltip:
-                _savedId == null
-                    ? AppLocalizations.of(context)!.save_suvichar
-                    : AppLocalizations.of(context)!.update_suvichar,
-            onPressed: _isSavingSuvichar ? null : _saveSuvichar,
-          ),
-          IconButton(
-            icon: const Icon(Icons.bookmarks_outlined),
-            tooltip: AppLocalizations.of(context)!.my_suvichars,
-            onPressed: () {
-              Navigator.pushNamed(context, '/saved_suvichars');
-            },
-          ),
-          IconButton(
-            icon: Stack(
-              children: [
-                Icon(Icons.share),
-                if (kIsWeb || FirebaseAuth.instance.currentUser == null) ...[
-                  // Lock icon
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Icon(Icons.lock, size: 15, color: Colors.red),
-                  ),
-                ],
-              ],
-            ),
-            tooltip: AppLocalizations.of(context)!.share_quote,
-            onPressed: _shareImage,
-          ),
-          IconButton(
-            icon: Stack(
-              children: [
-                Icon(Icons.download),
-                if (kIsWeb || FirebaseAuth.instance.currentUser == null) ...[
-                  // Lock icon
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Icon(Icons.lock, size: 15, color: Colors.red),
-                  ),
-                ],
-              ],
-            ),
-            onPressed: _saveImage,
-            tooltip: AppLocalizations.of(context)!.download_image,
-          ),
-        ],
-        bottom: TabBar(
-          controller: _customizationTabController,
-          isScrollable: true,
-          tabs: [
+    return PopScope(
+      canPop: !_hasUnsavedChanges,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop || _isConfirmingLeave) return;
+        _isConfirmingLeave = true;
+        try {
+          await _confirmLeave();
+        } finally {
+          _isConfirmingLeave = false;
+        }
+      },
+      child: Scaffold(
+        appBar: buildAppBar(
+          context,
+          title: AppLocalizations.of(context)!.quotes_image_generator,
+          extraActions: [
             if (hasEnableEditing) ...[
-              Tab(
-                icon: Icon(Icons.message),
-                text: AppLocalizations.of(context)!.quote_text,
+              IconButton(
+                icon: const Icon(Icons.shuffle),
+                onPressed: _getRandomQuote,
+                tooltip: AppLocalizations.of(context)!.random_quote,
               ),
             ],
-            Tab(
-              icon: Icon(Icons.dashboard_customize),
-              text: AppLocalizations.of(context)!.tab_templates,
-            ),
-            Tab(
-              icon: Icon(Icons.palette),
-              text: AppLocalizations.of(context)!.tab_colors,
-            ),
-            Tab(
-              icon: Icon(Icons.text_fields),
-              text: AppLocalizations.of(context)!.tab_font_size,
-            ),
-            Tab(
-              icon: Icon(Icons.photo_size_select_large),
-              text: AppLocalizations.of(context)!.tab_image_size,
-            ),
-            Tab(
-              icon: Icon(Icons.person),
-              text: AppLocalizations.of(context)!.tab_user_info,
-            ),
-            if (_enableStickers) ...[
-              Tab(
-                icon: Icon(Icons.add_photo_alternate),
-                text: AppLocalizations.of(context)!.tab_stickers,
+            IconButton(
+              icon: Icon(
+                _savedId == null ? Icons.bookmark_add_outlined : Icons.bookmark,
               ),
-            ],
+              tooltip:
+                  _savedId == null
+                      ? AppLocalizations.of(context)!.save_suvichar
+                      : AppLocalizations.of(context)!.update_suvichar,
+              onPressed: _isSavingSuvichar ? null : _saveSuvichar,
+            ),
+            IconButton(
+              icon: const Icon(Icons.bookmarks_outlined),
+              tooltip: AppLocalizations.of(context)!.my_suvichars,
+              onPressed: () {
+                Navigator.pushNamed(context, '/saved_suvichars');
+              },
+            ),
+            IconButton(
+              icon: Stack(
+                children: [
+                  Icon(Icons.share),
+                  if (kIsWeb || FirebaseAuth.instance.currentUser == null) ...[
+                    // Lock icon
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Icon(Icons.lock, size: 15, color: Colors.red),
+                    ),
+                  ],
+                ],
+              ),
+              tooltip: AppLocalizations.of(context)!.share_quote,
+              onPressed: _shareImage,
+            ),
+            IconButton(
+              icon: Stack(
+                children: [
+                  Icon(Icons.download),
+                  if (kIsWeb || FirebaseAuth.instance.currentUser == null) ...[
+                    // Lock icon
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Icon(Icons.lock, size: 15, color: Colors.red),
+                    ),
+                  ],
+                ],
+              ),
+              onPressed: _saveImage,
+              tooltip: AppLocalizations.of(context)!.download_image,
+            ),
           ],
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Customization Section
-              _buildCustomizationSection(),
-              // Preview Section
-              _buildPreviewSectionSimplified(),
-
-              if (hasEnableEditing && _selectedTab == 0) ...[
-                _buildMessageTab(),
+          bottom: TabBar(
+            controller: _customizationTabController,
+            isScrollable: true,
+            tabs: [
+              if (hasEnableEditing) ...[
+                Tab(
+                  icon: Icon(Icons.message),
+                  text: AppLocalizations.of(context)!.quote_text,
+                ),
+              ],
+              Tab(
+                icon: Icon(Icons.dashboard_customize),
+                text: AppLocalizations.of(context)!.tab_templates,
+              ),
+              Tab(
+                icon: Icon(Icons.palette),
+                text: AppLocalizations.of(context)!.tab_colors,
+              ),
+              Tab(
+                icon: Icon(Icons.text_fields),
+                text: AppLocalizations.of(context)!.tab_font_size,
+              ),
+              Tab(
+                icon: Icon(Icons.photo_size_select_large),
+                text: AppLocalizations.of(context)!.tab_image_size,
+              ),
+              Tab(
+                icon: Icon(Icons.person),
+                text: AppLocalizations.of(context)!.tab_user_info,
+              ),
+              if (_enableStickers) ...[
+                Tab(
+                  icon: Icon(Icons.add_photo_alternate),
+                  text: AppLocalizations.of(context)!.tab_stickers,
+                ),
               ],
             ],
+          ),
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Customization Section
+                _buildCustomizationSection(),
+                // Preview Section
+                _buildPreviewSectionSimplified(),
+
+                if (hasEnableEditing && _selectedTab == 0) ...[
+                  _buildMessageTab(),
+                ],
+              ],
+            ),
           ),
         ),
       ),
@@ -3330,23 +3390,24 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     );
   }
 
-  Future<void> _saveSuvichar() async {
+  Future<bool> _saveSuvichar() async {
     final l10n = AppLocalizations.of(context)!;
     if (_quoteController.text.trim().isEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.suvichar_text_required)));
-      return;
+      return false;
     }
 
     final isUpdate = _savedId != null;
     setState(() => _isSavingSuvichar = true);
     try {
       final saved = await _savedSuvicharService.save(_captureSuvichar());
-      if (!mounted) return;
+      if (!mounted) return false;
       setState(() {
         _savedId = saved.id;
         _savedCreatedAt = saved.createdAt;
+        _savedBaseline = saved;
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -3354,11 +3415,13 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
           backgroundColor: Colors.green,
         ),
       );
+      return true;
     } catch (e) {
-      if (!mounted) return;
+      if (!mounted) return false;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.error_saving_suvichar(e.toString()))),
       );
+      return false;
     } finally {
       if (mounted) {
         setState(() => _isSavingSuvichar = false);

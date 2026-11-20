@@ -1132,6 +1132,33 @@ class AppLocalizationsGu extends AppLocalizations {
   String get download_image => 'છબી ડાઉનલોડ કરો';
 
   @override
+  String get search_suvichars => 'સુવિચાર અથવા લેખક શોધો';
+
+  @override
+  String get any_time => 'ગમે ત્યારે';
+
+  @override
+  String get last_30_days => 'છેલ્લા 30 દિવસ';
+
+  @override
+  String get custom_range => 'પસંદગીની તારીખ';
+
+  @override
+  String get from_date => 'થી';
+
+  @override
+  String get to_date => 'સુધી';
+
+  @override
+  String get no_author => 'લેખક વગર';
+
+  @override
+  String get no_part => 'ભાગ વગર';
+
+  @override
+  String get filter_date => 'તારીખ';
+
+  @override
   String error_saving_suvichar(String error) {
     return 'સુવિચાર સાચવવામાં ભૂલ: $error';
   }

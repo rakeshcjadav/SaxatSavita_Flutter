@@ -1128,6 +1128,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get download_image => 'Download image';
 
   @override
+  String get search_suvichars => 'Search quote or author';
+
+  @override
+  String get any_time => 'Any time';
+
+  @override
+  String get last_30_days => 'Last 30 days';
+
+  @override
+  String get custom_range => 'Custom dates';
+
+  @override
+  String get from_date => 'From';
+
+  @override
+  String get to_date => 'To';
+
+  @override
+  String get no_author => 'No author';
+
+  @override
+  String get no_part => 'No part';
+
+  @override
+  String get filter_date => 'Date';
+
+  @override
   String error_saving_suvichar(String error) {
     return 'Error saving Suvichar: $error';
   }

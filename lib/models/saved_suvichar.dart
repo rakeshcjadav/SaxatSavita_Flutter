@@ -230,6 +230,33 @@ class SavedSuvichar {
     );
   }
 
+  /// Content match that ignores save timestamps.
+  bool hasSameContent(SavedSuvichar other) {
+    return other.id == id &&
+        other.quote == quote &&
+        other.author == author &&
+        other.partNumber == partNumber &&
+        other.kiranIndex == kiranIndex &&
+        other.templateIndex == templateIndex &&
+        other.gradientKey == gradientKey &&
+        other.customGradientStart == customGradientStart &&
+        other.customGradientEnd == customGradientEnd &&
+        other.fontSize == fontSize &&
+        other.authorFontSize == authorFontSize &&
+        other.imageWidth == imageWidth &&
+        other.isQuoteBold == isQuoteBold &&
+        other.isQuoteItalic == isQuoteItalic &&
+        other.isAuthorBold == isAuthorBold &&
+        other.isAuthorItalic == isAuthorItalic &&
+        other.quoteTextColor == quoteTextColor &&
+        other.authorTextColor == authorTextColor &&
+        _mapEquals(other.wordColors, wordColors) &&
+        other.showUserAvatar == showUserAvatar &&
+        other.showUserName == showUserName &&
+        other.fontFamily == fontFamily &&
+        _listEquals(other.stickers, stickers);
+  }
+
   @override
   bool operator ==(Object other) {
     return other is SavedSuvichar &&
