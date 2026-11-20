@@ -24,7 +24,7 @@ java {
 
 android {
     namespace = "com.farenidham.books.saxatsavita.app"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

@@ -21,6 +21,7 @@ enum DrawerItem {
   readingPlans,
   readingHistory,
   quotesImageGenerator,
+  savedSuvichars,
   profile,
   settings,
   welcomeTour,
@@ -352,6 +353,17 @@ class _DrawerState extends State<MyDrawer> {
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/quotes_generator', arguments: {null});
+        },
+      ),
+      DrawerItem.savedSuvichars => ListTile(
+        leading: const Icon(Icons.bookmarks_outlined),
+        title: Text(
+          AppLocalizations.of(context)!.my_suvichars,
+          style: textStyle,
+        ),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/saved_suvichars');
         },
       ),
       DrawerItem.profile => ListTile(

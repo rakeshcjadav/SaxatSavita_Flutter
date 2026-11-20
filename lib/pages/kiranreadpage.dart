@@ -170,9 +170,10 @@ class _KiranReadPageState extends State<KiranReadPage>
 
     _loadQuizAvailability();
 
-    // If searchQuery is provided, open search mode and perform search
+    _search.setTitle(_kiranHeading);
     if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
-      searchKiranContent(widget.searchQuery!);
+      _search.armQuery(widget.searchQuery!);
+      _pauseTimer();
     } else if (widget.highlightHaribhakt != null &&
         widget.highlightHaribhakt!.trim().isNotEmpty) {
       _focusedHaribhakt = widget.highlightHaribhakt!.trim();
@@ -185,23 +186,8 @@ class _KiranReadPageState extends State<KiranReadPage>
     _checkAudioAvailability();
   }
 
-  Future<void> searchKiranContent(String query) async {
-    await _futureKiranContent.then((contentData) {
-      if (mounted) {
-        setState(() {
-          getKiranContent(contentData);
-        });
-      }
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _search.textController.text = widget.searchQuery!;
-      _search.open();
-      _search.performSearch(widget.searchQuery!);
-      _pauseTimer();
-      _search.performScrollToMatch();
-    });
-  }
+  String get _kiranHeading =>
+      '${widget.kiranInfo.number} ${widget.kiranInfo.title}';
 
   void _focusHaribhaktInKiran(String name) {
     final trimmed = name.trim();
@@ -469,6 +455,9 @@ class _KiranReadPageState extends State<KiranReadPage>
   }
 
   void _setInitialScrollPosition() {
+    if (_search.isActive && _search.textController.text.trim().isNotEmpty) {
+      return;
+    }
     if (widget.highlightHaribhakt != null &&
         widget.highlightHaribhakt!.trim().isNotEmpty) {
       return;
@@ -1378,13 +1367,7 @@ class _KiranReadPageState extends State<KiranReadPage>
                   scrollDirection: Axis.horizontal,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      '${widget.kiranInfo.number} ${widget.kiranInfo.title}',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    child: _buildKiranHeading(),
                   ),
                 ),
               ),
@@ -1799,6 +1782,44 @@ class _KiranReadPageState extends State<KiranReadPage>
     );
   }
 
+  Widget _buildKiranHeading() {
+    final title = _kiranHeading;
+    final style = Theme.of(context).textTheme.titleMedium!.copyWith(
+      color: Theme.of(context).colorScheme.primary,
+      overflow: TextOverflow.ellipsis,
+    );
+    final query = _search.isActive ? _search.textController.text : '';
+    final hits = KiranSearchController.findHits(title, query);
+    if (hits.isEmpty) {
+      return Text(title, style: style);
+    }
+
+    final spans = <InlineSpan>[];
+    var cursor = 0;
+    for (final hit in hits) {
+      if (hit.start > cursor) {
+        spans.add(TextSpan(text: title.substring(cursor, hit.start)));
+      }
+      final isCurrent = _search.isCurrentTitleHit(hit.start);
+      spans.add(
+        TextSpan(
+          text: title.substring(hit.start, hit.end),
+          style: TextStyle(
+            backgroundColor:
+                isCurrent ? const Color(0xFFFF9800) : const Color(0xFFFFEB3B),
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+      cursor = hit.end;
+    }
+    if (cursor < title.length) {
+      spans.add(TextSpan(text: title.substring(cursor)));
+    }
+    return Text.rich(TextSpan(style: style, children: spans));
+  }
+
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
@@ -1830,18 +1851,12 @@ class _KiranReadPageState extends State<KiranReadPage>
                       _search.matchCount > 0) ...[
                     IconButton(
                       icon: const Icon(Icons.keyboard_arrow_up),
-                      onPressed:
-                          _search.currentMatchIndex > 0
-                              ? _search.previousMatch
-                              : null,
+                      onPressed: _search.previousMatch,
                       tooltip: 'Previous match',
                     ),
                     IconButton(
                       icon: const Icon(Icons.keyboard_arrow_down),
-                      onPressed:
-                          _search.currentMatchIndex < _search.matchCount - 1
-                              ? _search.nextMatch
-                              : null,
+                      onPressed: _search.nextMatch,
                       tooltip: 'Next match',
                     ),
                   ],
@@ -1864,7 +1879,8 @@ class _KiranReadPageState extends State<KiranReadPage>
             onChanged: _search.performSearch,
             textInputAction: TextInputAction.search,
           ),
-          if (_search.textController.text.isNotEmpty) ...[
+          if (_search.textController.text.isNotEmpty &&
+              (_search.contentReady || _search.matchCount > 0)) ...[
             const SizedBox(height: 8),
             Text(
               _search.matchCount == 0

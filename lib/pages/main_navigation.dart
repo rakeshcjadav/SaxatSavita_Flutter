@@ -74,6 +74,7 @@ class _MainNavigationState extends State<MainNavigation> {
                   DrawerItem.readingPlans,
                   DrawerItem.readingHistory,
                   DrawerItem.quotesImageGenerator,
+                  DrawerItem.savedSuvichars,
                   DrawerItem.profile,
                   DrawerItem.welcomeTour,
                   DrawerItem.marketingShowcase,

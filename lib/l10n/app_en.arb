@@ -578,6 +578,36 @@
     "modern": "Modern",
     "share_quote": "Share Quote",
     "save_quote": "Save Quote",
+    "save_suvichar": "Save Suvichar",
+    "update_suvichar": "Update Suvichar",
+    "suvichar_saved": "Suvichar saved",
+    "suvichar_updated": "Suvichar updated",
+    "my_suvichars": "My Suvichars",
+    "no_saved_suvichars": "No saved Suvichars yet",
+    "no_saved_suvichars_hint": "Save the text and template from the quote generator, then open it here to share or download.",
+    "delete_suvichar": "Delete Suvichar",
+    "suvichar_delete_confirm": "Delete this saved Suvichar?",
+    "suvichar_deleted": "Suvichar deleted",
+    "suvichar_text_required": "Enter Suvichar text before saving",
+    "download_image": "Download image",
+    "error_saving_suvichar": "Error saving Suvichar: {error}",
+    "@error_saving_suvichar": {
+        "description": "Error message when saving a Suvichar fails",
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "error_loading_suvichars": "Could not load saved Suvichars: {error}",
+    "@error_loading_suvichars": {
+        "description": "Error message when loading saved Suvichars fails",
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
     "random_quote": "Random Quote",
     "image_saved": "Image saved to gallery",
     "error_saving_image": "Error saving image: {error}",

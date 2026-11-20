@@ -2084,6 +2084,90 @@ abstract class AppLocalizations {
   /// **'Save Quote'**
   String get save_quote;
 
+  /// No description provided for @save_suvichar.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Suvichar'**
+  String get save_suvichar;
+
+  /// No description provided for @update_suvichar.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Suvichar'**
+  String get update_suvichar;
+
+  /// No description provided for @suvichar_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Suvichar saved'**
+  String get suvichar_saved;
+
+  /// No description provided for @suvichar_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Suvichar updated'**
+  String get suvichar_updated;
+
+  /// No description provided for @my_suvichars.
+  ///
+  /// In en, this message translates to:
+  /// **'My Suvichars'**
+  String get my_suvichars;
+
+  /// No description provided for @no_saved_suvichars.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved Suvichars yet'**
+  String get no_saved_suvichars;
+
+  /// No description provided for @no_saved_suvichars_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the text and template from the quote generator, then open it here to share or download.'**
+  String get no_saved_suvichars_hint;
+
+  /// No description provided for @delete_suvichar.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Suvichar'**
+  String get delete_suvichar;
+
+  /// No description provided for @suvichar_delete_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this saved Suvichar?'**
+  String get suvichar_delete_confirm;
+
+  /// No description provided for @suvichar_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Suvichar deleted'**
+  String get suvichar_deleted;
+
+  /// No description provided for @suvichar_text_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Suvichar text before saving'**
+  String get suvichar_text_required;
+
+  /// No description provided for @download_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Download image'**
+  String get download_image;
+
+  /// Error message when saving a Suvichar fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving Suvichar: {error}'**
+  String error_saving_suvichar(String error);
+
+  /// Error message when loading saved Suvichars fails
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load saved Suvichars: {error}'**
+  String error_loading_suvichars(String error);
+
   /// No description provided for @random_quote.
   ///
   /// In en, this message translates to:

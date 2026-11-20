@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Manages all search state, logic, and scroll-to-match behaviour for
-/// [KiranReadPage]. The page owns one instance and calls [dispose] when done.
+/// One search hit in the kiran title or body.
+class KiranSearchHit {
+  const KiranSearchHit({
+    required this.start,
+    required this.end,
+    this.inTitle = false,
+  });
+
+  final int start;
+  final int end;
+  final bool inTitle;
+
+  bool overlaps(KiranSearchHit other) => start < other.end && other.start < end;
+}
+
+/// Manages search state, highlighting, and match navigation for [KiranReadPage].
 class KiranSearchController {
   KiranSearchController({
     required ScrollController scrollController,
@@ -18,116 +32,151 @@ class KiranSearchController {
   final FocusNode _focusNode;
 
   bool _isActive = false;
-  String _currentContent = '';
-  List<int> _matches = [];
+  bool _contentReady = false;
+  bool _needsInitialScroll = false;
+  bool _refreshScheduled = false;
+  bool _scrollOnRefresh = false;
+  String _title = '';
+  String _body = '';
+  List<KiranSearchHit> _hits = [];
   int _currentMatchIndex = -1;
-
-  // ── Public accessors ─────────────────────────────────────────────────────
 
   TextEditingController get textController => _textController;
   FocusNode get focusNode => _focusNode;
   bool get isActive => _isActive;
-  int get matchCount => _matches.length;
+  bool get contentReady => _contentReady;
+  int get matchCount => _hits.length;
   int get currentMatchIndex => _currentMatchIndex;
-  String get plainText => _currentContent;
+  String get plainText => _body;
 
-  // ── Content cache ────────────────────────────────────────────────────────
-
-  /// Call this with plain-text content whenever the page loads new HTML so
-  /// search positions stay correct.
-  void setContent(String plainText) {
-    _currentContent = plainText;
+  bool get currentHitInTitle {
+    final hit = _currentHit;
+    return hit != null && hit.inTitle;
   }
 
-  // ── Search lifecycle ─────────────────────────────────────────────────────
+  KiranSearchHit? get _currentHit {
+    if (_currentMatchIndex < 0 || _currentMatchIndex >= _hits.length) {
+      return null;
+    }
+    return _hits[_currentMatchIndex];
+  }
+
+  /// Stores the heading shown above the kiran so title matches can be cycled.
+  void setTitle(String title) {
+    if (title == _title) return;
+    _title = title;
+    if (_isActive) _rebuildHits(resetIndex: false);
+  }
+
+  /// Call with the plain text of the kiran body whenever HTML is loaded.
+  void setContent(String plainText) {
+    final becameReady = !_contentReady;
+    _contentReady = true;
+    if (plainText == _body) {
+      if (becameReady && _isActive && _textController.text.trim().isNotEmpty) {
+        _needsInitialScroll = false;
+        _scheduleRefresh(scroll: _hits.isNotEmpty);
+      }
+      return;
+    }
+    final hadBody = _body.isNotEmpty;
+    _body = plainText;
+    if (!_isActive || _textController.text.trim().isEmpty) return;
+    _rebuildHits(resetIndex: !hadBody);
+    if (_needsInitialScroll) {
+      _needsInitialScroll = false;
+      _scheduleRefresh(scroll: _hits.isNotEmpty);
+    } else {
+      _scheduleRefresh(scroll: false);
+    }
+  }
+
+  /// Opens search for [query] without notifying listeners.
+  /// Safe to call from [State.initState].
+  void armQuery(String query) {
+    _textController.text = query;
+    _isActive = true;
+    _needsInitialScroll = query.trim().isNotEmpty;
+    _rebuildHits(resetIndex: true);
+  }
 
   void open() {
     _isActive = true;
+    _rebuildHits(resetIndex: true);
     _onStateChanged();
   }
 
   void close() {
     _isActive = false;
+    _needsInitialScroll = false;
     _textController.clear();
-    _matches.clear();
+    _hits = [];
     _currentMatchIndex = -1;
     _onStateChanged();
   }
 
-  // ── Search execution ─────────────────────────────────────────────────────
-
   void performSearch(String query) {
-    query = query.trim();
-    if (query.isEmpty) {
-      _matches.clear();
-      _currentMatchIndex = -1;
-      _onStateChanged();
-      return;
+    if (_textController.text != query) {
+      _textController.text = query;
     }
-
-    final String plainContent = _currentContent;
-    final List<int> matches = [];
-    final lowerContent = plainContent.toLowerCase();
-    final lowerQuery = query.toLowerCase();
-
-    String strQuery = lowerQuery.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
-    final List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
-
-    final pattern = RegExp(
-      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
-      caseSensitive: false,
-    );
-
-    for (final match in pattern.allMatches(lowerContent)) {
-      matches.add(match.start);
-    }
-
-    _matches = matches;
-    _currentMatchIndex = matches.isNotEmpty ? 0 : -1;
+    _rebuildHits(resetIndex: true);
     _onStateChanged();
   }
 
-  // ── Match navigation ─────────────────────────────────────────────────────
-
   void previousMatch() {
-    if (_currentMatchIndex > 0) {
-      HapticFeedback.selectionClick();
-      _currentMatchIndex--;
-      _onStateChanged();
-      scrollToMatch();
-    }
+    if (_hits.isEmpty) return;
+    HapticFeedback.selectionClick();
+    _currentMatchIndex = (_currentMatchIndex - 1 + _hits.length) % _hits.length;
+    scrollToMatch();
   }
 
   void nextMatch() {
-    if (_currentMatchIndex < _matches.length - 1) {
-      HapticFeedback.selectionClick();
-      _currentMatchIndex++;
-      _onStateChanged();
-      scrollToMatch();
-    }
+    if (_hits.isEmpty) return;
+    HapticFeedback.selectionClick();
+    _currentMatchIndex = (_currentMatchIndex + 1) % _hits.length;
+    scrollToMatch();
   }
 
-  /// Triggers a rebuild then scrolls after the frame.
   void scrollToMatch() {
     _onStateChanged();
+    _scrollWhenReady();
+  }
+
+  void _scrollWhenReady([int attempt = 0]) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final waitingForLayout =
+          !_scrollController.hasClients ||
+          (_scrollController.position.maxScrollExtent <= 0 && attempt < 8);
+      if (waitingForLayout && attempt < 12) {
+        _scrollWhenReady(attempt + 1);
+        return;
+      }
       performScrollToMatch();
     });
   }
 
   void performScrollToMatch() {
-    if (_matches.isEmpty || _currentMatchIndex < 0) return;
-    scrollToPlainOffset(_matches[_currentMatchIndex]);
+    final hit = _currentHit;
+    if (hit == null) return;
+    scrollToPlainOffset(hit.inTitle ? 0 : hit.start);
   }
 
   void scrollToPlainOffset(int matchPosition) {
     if (!_scrollController.hasClients) return;
 
     try {
-      final plainText = _currentContent;
-      if (plainText.isEmpty || matchPosition >= plainText.length) return;
+      final plainText = _body;
+      if (plainText.isEmpty) {
+        _scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOutCubic,
+        );
+        return;
+      }
 
-      final matchRatio = matchPosition / plainText.length;
+      final safePosition = matchPosition.clamp(0, plainText.length);
+      final matchRatio = safePosition / plainText.length;
       final maxScrollExtent = _scrollController.position.maxScrollExtent;
       final viewportHeight = _scrollController.position.viewportDimension;
       final targetScrollOffset =
@@ -144,167 +193,158 @@ class KiranSearchController {
     }
   }
 
-  // ── Highlight helpers ────────────────────────────────────────────────────
-
-  /// Strips HTML tags and returns plain text. Used to cache content for search
-  /// offset calculations.
-  static String getPlainText(String html) {
-    return html.replaceAll(RegExp(r'<[^>]*>', multiLine: true), '').trim();
+  void _scheduleRefresh({required bool scroll}) {
+    _scrollOnRefresh = _scrollOnRefresh || scroll;
+    if (_refreshScheduled) return;
+    _refreshScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final shouldScroll = _scrollOnRefresh;
+      _refreshScheduled = false;
+      _scrollOnRefresh = false;
+      _onStateChanged();
+      if (shouldScroll) _scrollWhenReady();
+    });
   }
 
-  /// Returns [html] with search matches wrapped in `<span>` highlight tags
-  /// (used by the CustomHtmlWidget path).
-  String getHighlightedContent(String html) {
-    if (_textController.text.isEmpty || _matches.isEmpty) {
-      return html;
+  void _rebuildHits({required bool resetIndex}) {
+    final query = _textController.text;
+    final next = <KiranSearchHit>[
+      ...findHits(_title, query).map(
+        (hit) => KiranSearchHit(start: hit.start, end: hit.end, inTitle: true),
+      ),
+      ...findHits(_body, query),
+    ];
+    _hits = next;
+    if (_hits.isEmpty) {
+      _currentMatchIndex = -1;
+    } else if (resetIndex ||
+        _currentMatchIndex < 0 ||
+        _currentMatchIndex >= _hits.length) {
+      _currentMatchIndex = 0;
     }
+  }
 
-    final String highlighted = html;
-    final query = _textController.text.trim();
-    String strQuery = query.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
-    final List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
+  /// Every non-overlapping occurrence of each word in [query].
+  /// Longer words keep the range when a shorter word sits inside them.
+  static List<KiranSearchHit> findHits(String text, String query) {
+    final words =
+        query
+            .trim()
+            .split(RegExp(r'\s+'))
+            .where((word) => word.isNotEmpty)
+            .toList();
+    if (text.isEmpty || words.isEmpty) return const [];
 
-    final pattern = RegExp(
-      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
-      caseSensitive: false,
-    );
+    words.sort((a, b) => b.length.compareTo(a.length));
+    final claimed = <KiranSearchHit>[];
+    for (final word in words) {
+      final pattern = RegExp(RegExp.escape(word), caseSensitive: false);
+      for (final match in pattern.allMatches(text)) {
+        final hit = KiranSearchHit(start: match.start, end: match.end);
+        if (claimed.any(hit.overlaps)) continue;
+        claimed.add(hit);
+      }
+    }
+    claimed.sort((a, b) => a.start.compareTo(b.start));
+    return claimed;
+  }
 
-    final anchorRegExp = RegExp(
-      r'(<a\b[^>]*>)',
-      caseSensitive: false,
-      dotAll: true,
-    );
-    final anchorMatches = anchorRegExp.allMatches(highlighted).toList();
+  static String getPlainText(String html) {
+    return html.replaceAll(RegExp(r'<[^>]*>', multiLine: true), '');
+  }
 
-    final matches = pattern.allMatches(highlighted).toList();
-    if (matches.isEmpty) return html;
+  String getHighlightedContent(String html) => _highlightHtml(html);
+
+  String getHighlightedContentForTextSpan(String content) =>
+      _highlightHtml(content);
+
+  String _highlightHtml(String html) {
+    if (_textController.text.trim().isEmpty || _hits.isEmpty) return html;
+
+    final bodyHits = <KiranSearchHit>[];
+    int? currentBodyIndex;
+    for (var i = 0; i < _hits.length; i++) {
+      final hit = _hits[i];
+      if (hit.inTitle) continue;
+      if (i == _currentMatchIndex) currentBodyIndex = bodyHits.length;
+      bodyHits.add(hit);
+    }
+    if (bodyHits.isEmpty) return html;
+    return wrapHtml(html, bodyHits, currentHitIndex: currentBodyIndex);
+  }
+
+  static String wrapHtml(
+    String html,
+    List<KiranSearchHit> hits, {
+    int? currentHitIndex,
+  }) {
+    if (hits.isEmpty) return html;
 
     final buffer = StringBuffer();
-    int lastMatchEnd = 0;
-    int matchCounter = 0;
+    var plainPos = 0;
+    var matchIndex = 0;
+    var i = 0;
 
-    for (final match in matches) {
-      buffer.write(highlighted.substring(lastMatchEnd, match.start));
-
-      bool isInsideAnchor = false;
-      for (final anchorMatch in anchorMatches) {
-        if (match.start >= anchorMatch.start && match.end <= anchorMatch.end) {
-          debugPrint(
-            'Found match: ${match.group(0)} at ${match.start}-${match.end}',
-          );
-          debugPrint(
-            'Anchor found match: ${anchorMatch.group(0)} at ${anchorMatch.start}-${anchorMatch.end}',
-          );
-          buffer.write(highlighted.substring(match.start, match.end));
-          lastMatchEnd = match.end;
-          isInsideAnchor = true;
-          break;
+    while (i < html.length) {
+      final char = html[i];
+      if (char == '<') {
+        final tagEnd = html.indexOf('>', i);
+        if (tagEnd != -1) {
+          buffer.write(html.substring(i, tagEnd + 1));
+          i = tagEnd + 1;
+          continue;
         }
       }
 
-      if (isInsideAnchor) {
+      while (matchIndex < hits.length && plainPos > hits[matchIndex].start) {
+        matchIndex++;
+      }
+
+      if (matchIndex < hits.length && plainPos == hits[matchIndex].start) {
+        final hit = hits[matchIndex];
+        final isCurrent = matchIndex == currentHitIndex;
+        buffer.write(_markOpen(isCurrent));
+
+        final matchLength = hit.end - hit.start;
+        var written = 0;
+        while (written < matchLength && i < html.length) {
+          final c = html[i];
+          if (c == '<') {
+            final tagEnd = html.indexOf('>', i);
+            if (tagEnd != -1) {
+              buffer.write(html.substring(i, tagEnd + 1));
+              i = tagEnd + 1;
+              continue;
+            }
+          }
+          buffer.write(c);
+          written++;
+          i++;
+        }
+
+        buffer.write('</mark>');
+        plainPos += matchLength;
+        matchIndex++;
         continue;
       }
 
-      final isCurrentMatch = matchCounter == _currentMatchIndex;
-      final matchId = 'search-match-$matchCounter';
-      final highlightClass =
-          isCurrentMatch ? 'current-highlight' : 'search-highlight';
-      final backgroundColor = isCurrentMatch ? '#ff9800' : '#ffeb3b';
-
-      buffer.write(
-        '<span id="$matchId" class="$highlightClass" style="background-color: $backgroundColor; color: black; padding: 2px; border-radius: 2px;">${match.group(0)}</span>',
-      );
-
-      lastMatchEnd = match.end;
-      matchCounter++;
-    }
-
-    buffer.write(highlighted.substring(lastMatchEnd));
-    return buffer.toString();
-  }
-
-  /// Returns [content] with search matches wrapped in `<mark>` tags
-  /// (used by the HtmlToTextSpan path).
-  String getHighlightedContentForTextSpan(String content) {
-    if (_textController.text.isEmpty || _matches.isEmpty) {
-      return content;
-    }
-
-    final query = _textController.text.trim();
-    String strQuery = query.replaceAll("[-\\[\\]\\+\\*\"\\\\().{}]+", "");
-    final List<String> listQuery = strQuery.split(RegExp(r"[ \t]+"));
-
-    final pattern = RegExp(
-      listQuery.where((w) => w.isNotEmpty).map(RegExp.escape).join('[^.!?]*'),
-      caseSensitive: false,
-    );
-
-    final plainText = getPlainText(content);
-    final plainMatches = pattern.allMatches(plainText).toList();
-    if (plainMatches.isEmpty) return content;
-
-    final buffer = StringBuffer();
-    int plainPos = 0;
-    int matchCounter = 0;
-    int currentPlainMatchIndex = 0;
-
-    for (int i = 0; i < content.length; i++) {
-      final char = content[i];
-
-      if (char == '<') {
-        final tagEnd = content.indexOf('>', i);
-        if (tagEnd != -1) {
-          buffer.write(content.substring(i, tagEnd + 1));
-          i = tagEnd;
-          continue;
-        }
-      }
-
-      if (currentPlainMatchIndex < plainMatches.length) {
-        final match = plainMatches[currentPlainMatchIndex];
-
-        if (plainPos == match.start) {
-          final isCurrentMatch = matchCounter == _currentMatchIndex;
-          buffer.write('<mark data-current="$isCurrentMatch">');
-
-          final matchLength = match.end - match.start;
-          int charsWritten = 0;
-          int j = i;
-
-          while (charsWritten < matchLength && j < content.length) {
-            final c = content[j];
-            if (c == '<') {
-              final tagEnd = content.indexOf('>', j);
-              if (tagEnd != -1) {
-                buffer.write(content.substring(j, tagEnd + 1));
-                j = tagEnd + 1;
-                continue;
-              }
-            }
-            buffer.write(c);
-            charsWritten++;
-            j++;
-          }
-
-          buffer.write('</mark>');
-          i = j - 1; // -1 because the loop will increment
-          plainPos += matchLength;
-          currentPlainMatchIndex++;
-          matchCounter++;
-          continue;
-        }
-      }
-
-      // Regular character
       buffer.write(char);
       plainPos++;
+      i++;
     }
 
     return buffer.toString();
   }
 
-  // ── Lifecycle ────────────────────────────────────────────────────────────
+  static String _markOpen(bool isCurrent) {
+    final background = isCurrent ? '#FF9800' : '#FFEB3B';
+    return '<mark data-current="$isCurrent" style="background-color: $background; color: #000000;">';
+  }
+
+  bool isCurrentTitleHit(int start) {
+    final hit = _currentHit;
+    return hit != null && hit.inTitle && hit.start == start;
+  }
 
   void dispose() {
     _textController.dispose();

@@ -155,6 +155,7 @@ class _DashboardPageState extends State<DashboardPage> {
           DrawerItem.readingPlans,
           DrawerItem.readingHistory,
           DrawerItem.quotesImageGenerator,
+          DrawerItem.savedSuvichars,
           DrawerItem.profile,
           DrawerItem.welcomeTour,
           DrawerItem.marketingShowcase,

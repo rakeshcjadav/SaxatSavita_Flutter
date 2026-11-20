@@ -747,7 +747,8 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               partNumber: "part${result.partNumber}",
               kiranInfo: result.kiranInfo,
               kiranUserInfo: kiranUserInfo,
-              searchQuery: result.isContentMatch ? query : null,
+              searchQuery:
+                  !result.isHaribhaktMatch && query.isNotEmpty ? query : null,
               highlightHaribhakt: highlightHaribhakt,
               readingMode: ReadingMode.reading,
             ),

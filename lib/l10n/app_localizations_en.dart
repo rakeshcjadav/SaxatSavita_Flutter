@@ -1091,6 +1091,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save_quote => 'Save Quote';
 
   @override
+  String get save_suvichar => 'Save Suvichar';
+
+  @override
+  String get update_suvichar => 'Update Suvichar';
+
+  @override
+  String get suvichar_saved => 'Suvichar saved';
+
+  @override
+  String get suvichar_updated => 'Suvichar updated';
+
+  @override
+  String get my_suvichars => 'My Suvichars';
+
+  @override
+  String get no_saved_suvichars => 'No saved Suvichars yet';
+
+  @override
+  String get no_saved_suvichars_hint =>
+      'Save the text and template from the quote generator, then open it here to share or download.';
+
+  @override
+  String get delete_suvichar => 'Delete Suvichar';
+
+  @override
+  String get suvichar_delete_confirm => 'Delete this saved Suvichar?';
+
+  @override
+  String get suvichar_deleted => 'Suvichar deleted';
+
+  @override
+  String get suvichar_text_required => 'Enter Suvichar text before saving';
+
+  @override
+  String get download_image => 'Download image';
+
+  @override
+  String error_saving_suvichar(String error) {
+    return 'Error saving Suvichar: $error';
+  }
+
+  @override
+  String error_loading_suvichars(String error) {
+    return 'Could not load saved Suvichars: $error';
+  }
+
+  @override
   String get random_quote => 'Random Quote';
 
   @override

@@ -17,6 +17,8 @@ import 'package:saxatsavita_flutter/models/user_profile_model.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
+import 'package:saxatsavita_flutter/models/saved_suvichar.dart';
+import 'package:saxatsavita_flutter/services/saved_suvichar_service.dart';
 import 'package:gal/gal.dart';
 
 // Model class for sticker data
@@ -35,9 +37,10 @@ class StickerData {
 }
 
 class QuotesImageGeneratorPage extends StatefulWidget {
-  const QuotesImageGeneratorPage({super.key, required this.quote});
+  const QuotesImageGeneratorPage({super.key, required this.quote, this.saved});
 
   final InspirationalQuote? quote;
+  final SavedSuvichar? saved;
 
   @override
   State<QuotesImageGeneratorPage> createState() =>
@@ -54,7 +57,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
   // Customization options
   final Color _textColor = Colors.white;
   final Color _authorColor = Colors.white70;
-  final String _selectedFont = 'NotoSansGujarati';
+  String _selectedFont = 'NotoSansGujarati';
   double _fontSize = 24.0;
   double _authorFontSize = 16.0;
   double _imageWidth = 370.0;
@@ -98,6 +101,11 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 
   // Current quote reference
   InspirationalQuote? _currentSelectedQuote;
+
+  final SavedSuvicharService _savedSuvicharService = SavedSuvicharService();
+  String? _savedId;
+  DateTime? _savedCreatedAt;
+  bool _isSavingSuvichar = false;
 
   bool hasEnableEditing = false;
 
@@ -154,7 +162,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     super.initState();
     _loadUserProfile();
     // Set first predefined quote as default
-    if (widget.quote != null) {
+    if (widget.saved != null) {
+      _applySaved(widget.saved!);
+      hasEnableEditing = true;
+    } else if (widget.quote != null) {
       _currentSelectedQuote = widget.quote;
       _quoteController.text = widget.quote!.quote;
       _authorController.text = widget.quote!.author;
@@ -228,6 +239,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     super.didChangeDependencies();
     // Call this here where localization is available
     if (widget.quote == null &&
+        widget.saved == null &&
         hasEnableEditing &&
         _quoteController.text.isEmpty) {
       _getRandomQuote();
@@ -272,6 +284,23 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
             ),
           ],
           IconButton(
+            icon: Icon(
+              _savedId == null ? Icons.bookmark_add_outlined : Icons.bookmark,
+            ),
+            tooltip:
+                _savedId == null
+                    ? AppLocalizations.of(context)!.save_suvichar
+                    : AppLocalizations.of(context)!.update_suvichar,
+            onPressed: _isSavingSuvichar ? null : _saveSuvichar,
+          ),
+          IconButton(
+            icon: const Icon(Icons.bookmarks_outlined),
+            tooltip: AppLocalizations.of(context)!.my_suvichars,
+            onPressed: () {
+              Navigator.pushNamed(context, '/saved_suvichars');
+            },
+          ),
+          IconButton(
             icon: Stack(
               children: [
                 Icon(Icons.share),
@@ -303,7 +332,7 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
               ],
             ),
             onPressed: _saveImage,
-            tooltip: AppLocalizations.of(context)!.save_quote,
+            tooltip: AppLocalizations.of(context)!.download_image,
           ),
         ],
         bottom: TabBar(
@@ -1933,8 +1962,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 border: const OutlineInputBorder(),
               ),
               onChanged: (value) {
-                // Clear current selected quote when manually editing
-                _currentSelectedQuote = null;
+                final linked = _currentSelectedQuote;
+                if (linked != null && value != linked.quote) {
+                  _currentSelectedQuote = null;
+                }
                 setState(() {});
               },
             ),
@@ -1949,8 +1980,10 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
                 border: const OutlineInputBorder(),
               ),
               onChanged: (value) {
-                // Clear current selected quote when manually editing
-                _currentSelectedQuote = null;
+                final linked = _currentSelectedQuote;
+                if (linked != null && value != linked.author) {
+                  linked.setAuthor = value;
+                }
                 setState(() {});
               },
             ),
@@ -3191,6 +3224,148 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
     );
   }
 
+  void _applySaved(SavedSuvichar item) {
+    _savedId = item.id;
+    _savedCreatedAt = item.createdAt;
+    _quoteController.text = item.quote;
+    _authorController.text = item.author;
+    _fontSize = item.fontSize;
+    _authorFontSize = item.authorFontSize;
+    _imageWidth = item.imageWidth;
+    _isQuoteBold = item.isQuoteBold;
+    _isQuoteItalic = item.isQuoteItalic;
+    _isAuthorBold = item.isAuthorBold;
+    _isAuthorItalic = item.isAuthorItalic;
+    _selectedFont = item.fontFamily;
+    _selectedTemplate = item.templateIndex;
+    _selectedGradient = item.gradientKey;
+    _customGradientStart = _colorFromArgb(item.customGradientStart);
+    _customGradientEnd = _colorFromArgb(item.customGradientEnd);
+    _selectedQuoteTextColor =
+        item.quoteTextColor == null
+            ? null
+            : _colorFromArgb(item.quoteTextColor!);
+    _selectedAuthorTextColor =
+        item.authorTextColor == null
+            ? null
+            : _colorFromArgb(item.authorTextColor!);
+    _showUserAvatar = item.showUserAvatar;
+    _showUserName = item.showUserName;
+    _wordColors
+      ..clear()
+      ..addAll({
+        for (final entry in item.wordColors.entries)
+          entry.key: _colorFromArgb(entry.value),
+      });
+    _stickers
+      ..clear()
+      ..addAll([
+        for (final sticker in item.stickers)
+          StickerData(
+            assetPath: sticker.assetPath,
+            position: Offset(sticker.dx, sticker.dy),
+            size: sticker.size,
+            rotation: sticker.rotation,
+          ),
+      ]);
+    if (item.partNumber != -1 || item.kiranIndex != -1) {
+      _currentSelectedQuote = InspirationalQuote(
+        quote: item.quote,
+        author: item.author,
+        partNumber: item.partNumber,
+        kiranIndex: item.kiranIndex,
+      );
+    } else {
+      _currentSelectedQuote = null;
+    }
+  }
+
+  SavedSuvichar _captureSuvichar() {
+    final now = DateTime.now();
+    final source = _currentSelectedQuote;
+    return SavedSuvichar(
+      id: _savedId ?? newSavedSuvicharId(),
+      createdAt: _savedCreatedAt ?? now,
+      updatedAt: now,
+      quote: _quoteController.text.trim(),
+      author: _authorController.text.trim(),
+      partNumber: source?.partNumber ?? -1,
+      kiranIndex: source?.kiranIndex ?? -1,
+      templateIndex: _selectedTemplate,
+      gradientKey: _selectedGradient,
+      customGradientStart: _colorToArgb(_customGradientStart),
+      customGradientEnd: _colorToArgb(_customGradientEnd),
+      fontSize: _fontSize,
+      authorFontSize: _authorFontSize,
+      imageWidth: _imageWidth,
+      isQuoteBold: _isQuoteBold,
+      isQuoteItalic: _isQuoteItalic,
+      isAuthorBold: _isAuthorBold,
+      isAuthorItalic: _isAuthorItalic,
+      quoteTextColor:
+          _selectedQuoteTextColor == null
+              ? null
+              : _colorToArgb(_selectedQuoteTextColor!),
+      authorTextColor:
+          _selectedAuthorTextColor == null
+              ? null
+              : _colorToArgb(_selectedAuthorTextColor!),
+      wordColors: {
+        for (final entry in _wordColors.entries)
+          entry.key: _colorToArgb(entry.value),
+      },
+      showUserAvatar: _showUserAvatar,
+      showUserName: _showUserName,
+      fontFamily: _selectedFont,
+      stickers: [
+        for (final sticker in _stickers)
+          SavedSuvicharSticker(
+            assetPath: sticker.assetPath,
+            dx: sticker.position.dx,
+            dy: sticker.position.dy,
+            size: sticker.size,
+            rotation: sticker.rotation,
+          ),
+      ],
+    );
+  }
+
+  Future<void> _saveSuvichar() async {
+    final l10n = AppLocalizations.of(context)!;
+    if (_quoteController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.suvichar_text_required)));
+      return;
+    }
+
+    final isUpdate = _savedId != null;
+    setState(() => _isSavingSuvichar = true);
+    try {
+      final saved = await _savedSuvicharService.save(_captureSuvichar());
+      if (!mounted) return;
+      setState(() {
+        _savedId = saved.id;
+        _savedCreatedAt = saved.createdAt;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(isUpdate ? l10n.suvichar_updated : l10n.suvichar_saved),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.error_saving_suvichar(e.toString()))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSavingSuvichar = false);
+      }
+    }
+  }
+
   Future<void> _shareImage() async {
     // If user is not logged in ask to login
     if (kIsWeb || FirebaseAuth.instance.currentUser == null) {
@@ -3448,6 +3623,17 @@ class _QuotesImageGeneratorPageState extends State<QuotesImageGeneratorPage>
 }
 
 // Custom painter for geometric pattern
+int _colorToArgb(Color color) => color.toARGB32();
+
+Color _colorFromArgb(int argb) {
+  return Color.fromARGB(
+    (argb >> 24) & 0xFF,
+    (argb >> 16) & 0xFF,
+    (argb >> 8) & 0xFF,
+    argb & 0xFF,
+  );
+}
+
 class GeometricPatternPainter extends CustomPainter {
   final Color color;
 

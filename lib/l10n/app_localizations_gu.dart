@@ -1095,6 +1095,53 @@ class AppLocalizationsGu extends AppLocalizations {
   String get save_quote => 'સુવિચાર સેવ કરો';
 
   @override
+  String get save_suvichar => 'સુવિચાર સાચવો';
+
+  @override
+  String get update_suvichar => 'સુવિચાર અપડેટ કરો';
+
+  @override
+  String get suvichar_saved => 'સુવિચાર સાચવાયો';
+
+  @override
+  String get suvichar_updated => 'સુવિચાર અપડેટ થયો';
+
+  @override
+  String get my_suvichars => 'મારા સુવિચાર';
+
+  @override
+  String get no_saved_suvichars => 'હજુ સુધી કોઈ સુવિચાર સાચવ્યા નથી';
+
+  @override
+  String get no_saved_suvichars_hint =>
+      'સુવિચાર બનાવોમાંથી લખાણ અને ટેમ્પલેટ સાચવો, પછી અહીંથી શેર અથવા ડાઉનલોડ કરો.';
+
+  @override
+  String get delete_suvichar => 'સુવિચાર કાઢી નાખો';
+
+  @override
+  String get suvichar_delete_confirm => 'આ સાચવેલો સુવિચાર કાઢી નાખવો છે?';
+
+  @override
+  String get suvichar_deleted => 'સુવિચાર કાઢી નાખ્યો';
+
+  @override
+  String get suvichar_text_required => 'સાચવતા પહેલાં સુવિચાર લખો';
+
+  @override
+  String get download_image => 'છબી ડાઉનલોડ કરો';
+
+  @override
+  String error_saving_suvichar(String error) {
+    return 'સુવિચાર સાચવવામાં ભૂલ: $error';
+  }
+
+  @override
+  String error_loading_suvichars(String error) {
+    return 'સાચવેલા સુવિચાર લોડ થયા નહીં: $error';
+  }
+
+  @override
   String get random_quote => 'રેન્ડમ સુવિચાર';
 
   @override

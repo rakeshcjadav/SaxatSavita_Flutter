@@ -21,6 +21,7 @@ import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
+import 'package:saxatsavita_flutter/pages/saved_suvichars_page.dart';
 import 'package:saxatsavita_flutter/pages/profile_page.dart';
 import 'package:saxatsavita_flutter/pages/dashboard_page.dart';
 import 'package:saxatsavita_flutter/pages/daily_quiz_page.dart';
@@ -370,6 +371,7 @@ class SakshatSavitaApp extends StatelessWidget {
             '/quotes_generator':
                 (context) => const QuotesImageGeneratorPage(quote: null),
             '/quotes': (context) => const QuotesImageGeneratorPage(quote: null),
+            '/saved_suvichars': (context) => const SavedSuvicharsPage(),
             '/profile':
                 (context) => const ProfilePage(continueAfterProfile: false),
             '/welcome': (context) => const WelcomeScreen(),
