@@ -9,6 +9,7 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
+import 'package:saxatsavita_flutter/services/kiran_calendar_service.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
@@ -61,6 +62,10 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
   List<String> _villages = [];
   String? _villageFilter;
   bool _loading = true;
+  final Map<int, String> _tithis = {};
+  final Set<int> _tithiRequested = {};
+  final List<_ChronoEntry> _tithiQueue = [];
+  bool _tithiFlushScheduled = false;
 
   @override
   void initState() {
@@ -123,6 +128,27 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
       rows.add(_EntryRow(entry));
     }
     _rows = rows;
+  }
+
+  void _queueTithi(_ChronoEntry entry) {
+    if (!_tithiRequested.add(entry.kiranInfo.index)) return;
+    _tithiQueue.add(entry);
+    if (_tithiFlushScheduled) return;
+    _tithiFlushScheduled = true;
+    Future.microtask(_flushTithis);
+  }
+
+  Future<void> _flushTithis() async {
+    _tithiFlushScheduled = false;
+    final batch = List<_ChronoEntry>.from(_tithiQueue);
+    _tithiQueue.clear();
+    if (batch.isEmpty || !mounted) return;
+    final loaded = await KiranCalendarService().tithisForIndexes([
+      for (final entry in batch)
+        (partNumber: entry.partNumber, index: entry.kiranInfo.index),
+    ]);
+    if (!mounted || loaded.isEmpty) return;
+    setState(() => _tithis.addAll(loaded));
   }
 
   Future<void> _pickVillage() async {
@@ -329,6 +355,8 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
 
     final String fullDate =
         entry.date != null ? DateFormat('d MMM yyyy').format(entry.date!) : '';
+    final tithi = _tithis[entry.kiranInfo.index];
+    if (tithi == null) _queueTithi(entry);
 
     return ListTile(
       tileColor: partBg,
@@ -392,6 +420,16 @@ class _KiranChronologicalPageState extends State<KiranChronologicalPage> {
               ],
             ],
           ),
+          if (tithi != null && tithi.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              tithi,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
           KiranPlaceLine(kiranInfo: entry.kiranInfo),
         ],
       ),

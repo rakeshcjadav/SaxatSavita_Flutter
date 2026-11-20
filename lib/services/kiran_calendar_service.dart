@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:saxatsavita_flutter/helpers/kiran_tithi.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 
@@ -31,6 +32,10 @@ class KiranCalendarService {
 
   // Date (midnight UTC) → entries for that day
   Map<DateTime, List<KiranCalendarEntry>>? _calendar;
+
+  /// Kiran index → lunar date such as `સંવત્ ૨૦૩૧ વૈશાખ સુદિ-૧૦`.
+  /// Empty string means the kiran was checked and has no tithi.
+  final Map<int, String> _tithis = {};
 
   bool get isLoaded => _calendar != null;
 
@@ -73,6 +78,51 @@ class KiranCalendarService {
     }
 
     _calendar = calendar;
+  }
+
+  /// Lunar date for each entry, loaded from the kiran's meta date line.
+  Future<Map<int, String>> tithisFor(List<KiranCalendarEntry> entries) {
+    return tithisForIndexes([
+      for (final entry in entries)
+        (partNumber: entry.partNumber, index: entry.kiranInfo.index),
+    ]);
+  }
+
+  /// Lunar date for each kiran, keyed by global kiran index.
+  ///
+  /// Already loaded kirans are returned from cache. An empty result for an
+  /// index means that kiran has no readable tithi.
+  Future<Map<int, String>> tithisForIndexes(
+    List<({int partNumber, int index})> kirans,
+  ) async {
+    final pending = <({int partNumber, int index})>[];
+    for (final kiran in kirans) {
+      if (!_tithis.containsKey(kiran.index)) pending.add(kiran);
+    }
+
+    await Future.wait(
+      pending.map((kiran) async {
+        try {
+          final raw = await rootBundle.loadString(
+            'assets/book/saxatsavita/part${kiran.partNumber}/kiran_${kiran.index}.json',
+          );
+          final json = jsonDecode(raw);
+          final metaDate =
+              json is Map
+                  ? (json['meta']?['date'] as String? ?? '').trim()
+                  : '';
+          _tithis[kiran.index] = kiranTithiFromMetaDate(metaDate) ?? '';
+        } catch (_) {
+          _tithis[kiran.index] = '';
+        }
+      }),
+    );
+
+    return {
+      for (final kiran in kirans)
+        if ((_tithis[kiran.index] ?? '').isNotEmpty)
+          kiran.index: _tithis[kiran.index]!,
+    };
   }
 
   /// Returns entries for [day], or an empty list if none.

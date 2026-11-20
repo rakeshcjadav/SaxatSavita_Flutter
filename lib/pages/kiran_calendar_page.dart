@@ -33,6 +33,7 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
   DateTime _focusedDay = _todayIn2000();
   DateTime? _selectedDay = _todayIn2000();
   List<KiranCalendarEntry> _selectedEntries = [];
+  final Map<int, String> _tithis = {};
   String? _villageFilter;
 
   @override
@@ -52,14 +53,20 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    final entries = _service.entriesFor(selectedDay, village: _villageFilter);
     setState(() {
       _selectedDay = selectedDay;
       _focusedDay = focusedDay;
-      _selectedEntries = _service.entriesFor(
-        selectedDay,
-        village: _villageFilter,
-      );
+      _selectedEntries = entries;
     });
+    _loadTithis(entries);
+  }
+
+  Future<void> _loadTithis(List<KiranCalendarEntry> entries) async {
+    if (entries.isEmpty) return;
+    final loaded = await _service.tithisFor(entries);
+    if (!mounted || loaded.isEmpty) return;
+    setState(() => _tithis.addAll(loaded));
   }
 
   List<KiranCalendarEntry> _eventLoader(DateTime day) =>
@@ -72,15 +79,18 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
       selected: _villageFilter,
     );
     if (!mounted || result == null) return;
+    final entries =
+        _selectedDay == null
+            ? _selectedEntries
+            : _service.entriesFor(
+              _selectedDay!,
+              village: result.isEmpty ? null : result,
+            );
     setState(() {
       _villageFilter = result.isEmpty ? null : result;
-      if (_selectedDay != null) {
-        _selectedEntries = _service.entriesFor(
-          _selectedDay!,
-          village: _villageFilter,
-        );
-      }
+      if (_selectedDay != null) _selectedEntries = entries;
     });
+    if (_selectedDay != null) _loadTithis(entries);
   }
 
   Future<void> _openKiran(KiranCalendarEntry entry) async {
@@ -185,14 +195,15 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
                       context: context,
                       village: _villageFilter!,
                       onCleared: () {
+                        final entries =
+                            _selectedDay == null
+                                ? _selectedEntries
+                                : _service.entriesFor(_selectedDay!);
                         setState(() {
                           _villageFilter = null;
-                          if (_selectedDay != null) {
-                            _selectedEntries = _service.entriesFor(
-                              _selectedDay!,
-                            );
-                          }
+                          if (_selectedDay != null) _selectedEntries = entries;
                         });
+                        if (_selectedDay != null) _loadTithis(entries);
                       },
                     ),
                   _buildCalendar(colorScheme),
@@ -349,6 +360,7 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
     final progress =
         KiranUserService().getKiranUserInfo(entry.kiranInfo.index).progress;
     final fullDate = DateFormat('d MMM yyyy').format(entry.date);
+    final tithi = _tithis[entry.kiranInfo.index];
 
     return ListTile(
       tileColor: partBg,
@@ -405,6 +417,16 @@ class _KiranCalendarPageState extends State<KiranCalendarPage> {
               ],
             ],
           ),
+          if (tithi != null && tithi.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              tithi,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
           KiranPlaceLine(kiranInfo: entry.kiranInfo),
         ],
       ),
