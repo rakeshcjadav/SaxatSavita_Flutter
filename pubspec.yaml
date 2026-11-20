@@ -48,14 +48,14 @@ dependencies:
   path_provider: ^2.1.5
   flutter_html: ^3.0.0
   # flutter_html 3.0.0 calls html's internal qs.matches(), removed in 0.15.7.
-  html: 0.15.6
+  html: ^0.15.7
   package_info_plus: ^10.0.0
   shared_preferences: ^2.2.2
   device_info_plus: ^13.0.0
   flutter_quill: ^11.5.1
-  flutter_local_notifications: ^22.0.0-dev.3
+  flutter_local_notifications: ^23.0.3
   share_plus: ^13.0.0
-  gal: ^2.3.0
+  gal: ^3.0.1
   fl_chart: ^1.1.1
   scrollable_positioned_list: ^0.3.8
   in_app_update: ^5.0.0
