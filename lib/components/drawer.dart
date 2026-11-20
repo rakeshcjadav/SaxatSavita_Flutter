@@ -255,7 +255,9 @@ class _DrawerState extends State<MyDrawer> {
   bool _shouldShowDrawerItem(DrawerItem item) {
     final loggedIn = FirebaseAuth.instance.currentUser != null;
     if (!loggedIn &&
-        (item == DrawerItem.haribhakts || item == DrawerItem.profile)) {
+        (item == DrawerItem.search ||
+            item == DrawerItem.haribhakts ||
+            item == DrawerItem.profile)) {
       return false;
     }
     if (item == DrawerItem.dailyQuiz &&
