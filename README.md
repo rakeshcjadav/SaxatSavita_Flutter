@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.52.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.53.0-green.svg)]()
 
 ## 🌟 Overview
 
@@ -224,7 +224,12 @@ For support, feature requests, or bug reports, create an issue in this repositor
 
 ## 🔄 Version History
 
-### Version 2.52.0 (Current)
+### Version 2.53.0 (Current)
+- **Reminders**: Fire at the device's local time, so a 9:20 reminder stays 9:20 in India
+- **Home**: Round button opens the kiran due on the active reading plan
+- **Notifications**: Bell on the home app bar with a count, a list of recent notifications, and a way to clear each one
+
+### Version 2.52.0
 - **Reading plans**: Sequential kirans from a chosen start. Missed days pile up, extra reading moves the next day forward, and a Monday–Sunday week succeeds at the daily count times 7. Reminders name today's kiran, with a Monday review
 
 ### Version 2.51.0

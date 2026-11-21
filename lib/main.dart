@@ -18,6 +18,7 @@ import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
 import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
+import 'package:saxatsavita_flutter/pages/notifications_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_history_page.dart';
 import 'package:saxatsavita_flutter/pages/reading_plan_page.dart';
 import 'package:saxatsavita_flutter/pages/quotes_image_generator_page.dart';
@@ -360,6 +361,7 @@ class SakshatSavitaApp extends StatelessWidget {
             '/home': (context) => const HomePage(),
             '/bookmainpage': (context) => const BookMainpage(),
             '/notes': (context) => const NoteListPage(),
+            '/notifications': (context) => const NotificationsPage(),
             '/notelist': (context) => const NoteListPage(),
             '/bookmarks': (context) => const BookmarksPage(partNumber: 1),
             '/readinghistory': (context) => const ReadingHistoryPage(),

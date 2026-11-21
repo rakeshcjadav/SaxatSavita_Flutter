@@ -2,12 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
+import 'package:saxatsavita_flutter/helpers/open_kiran.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
+import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/pages/bookmainpage.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
 import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
 import 'package:saxatsavita_flutter/services/home_widget_service.dart';
+import 'package:saxatsavita_flutter/services/notification_service.dart';
+import 'package:saxatsavita_flutter/services/reading_plan_service.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:async';
@@ -42,6 +46,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     // Update home widgets
     HomeWidgetService().scheduleWidgetUpdates();
+    unawaited(NotificationService().syncInboxFromActive());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkProfileAndNavigate();
@@ -152,7 +157,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.sakshatSavita,
-        actionItems: [ActionOptions.info, ActionOptions.settings],
+        actionItems: [
+          ActionOptions.info,
+          ActionOptions.notifications,
+          ActionOptions.settings,
+        ],
         extraActions: [
           if (_isOffline) ...[
             IconButton(
@@ -363,26 +372,75 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget _buildHomeCtas(BuildContext context) {
-    final bookButton = _buildBookCtaButton(context);
-
-    if (!_showDailyQuiz) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: bookButton,
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+    return ValueListenableBuilder<int>(
+      valueListenable: ReadingPlanService().revision,
+      builder: (context, _, _) {
+        final kiran = _continueKiran(ReadingPlanService().activePlan);
+        final bookButton = _buildBookCtaButton(context);
+        final children = <Widget>[
+          if (kiran != null) ...[
+            _buildPlanRoundButton(context, kiran),
+            const SizedBox(width: 8),
+          ],
           bookButton,
-          const SizedBox(width: 8),
-          _buildDailyQuizIconButton(context),
-        ],
+          if (_showDailyQuiz) ...[
+            const SizedBox(width: 8),
+            _buildDailyQuizIconButton(context),
+          ],
+        ];
+
+        if (children.length == 1) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: bookButton,
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: children,
+          ),
+        );
+      },
+    );
+  }
+
+  int? _continueKiran(ReadingPlan? plan) {
+    if (plan == null || !plan.isActive || !plan.hasStartKiran) return null;
+    final now = DateTime.now();
+    final today = plan.assignmentOn(now);
+    if (today.remaining.isNotEmpty) return today.remaining.first;
+    if (today.planComplete) return null;
+    final tomorrow = plan.assignmentOn(now.add(const Duration(days: 1)));
+    if (tomorrow.assigned.isNotEmpty) return tomorrow.assigned.first;
+    return plan.readingSchedule.nextUnfinishedOn(now);
+  }
+
+  Widget _buildPlanRoundButton(BuildContext context, int kiran) {
+    return Tooltip(
+      message: AppLocalizations.of(context)!.home_plan_kiran(kiran),
+      child: ElevatedButton(
+        onPressed: () => _openPlanKiran(kiran),
+        style: ButtonStyle(
+          shape: const WidgetStatePropertyAll(CircleBorder()),
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+          minimumSize: const WidgetStatePropertyAll(Size(52, 52)),
+          fixedSize: const WidgetStatePropertyAll(Size(52, 52)),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          elevation: const WidgetStatePropertyAll(10),
+        ),
+        child: Icon(
+          Icons.auto_stories,
+          size: appSettingsNotifier.value.appFontSize,
+        ),
       ),
     );
+  }
+
+  Future<void> _openPlanKiran(int kiran) async {
+    await openKiran(context, kiranIndex: kiran);
   }
 
   Widget _buildBookCtaButton(BuildContext context) {

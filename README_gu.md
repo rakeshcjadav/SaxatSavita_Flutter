@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.52.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.53.0-green.svg)]()
 
 ## 🌟 પરિચય
 
@@ -224,7 +224,12 @@ flutter build ios --release
 
 ## 🔄 આવૃત્તિ ઇતિહાસ
 
-### આવૃત્તિ ૨.૫૨.૦ (હાલની)
+### આવૃત્તિ ૨.૫૩.૦ (હાલની)
+- **રિમાઇન્ડર**: ઉપકરણના સ્થાનિક સમયે વાગે, એટલે ૯:૨૦નું રિમાઇન્ડર ભારતમાં ૯:૨૦ વાગ્યે જ આવે
+- **હોમ**: ગોળ બટન સક્રિય વાંચન યોજનાનું આજનું કિરણ ખોલે
+- **નોટિફિકેશન**: હોમ ઍપ બારમાં ઘંટડી, સંખ્યા, તાજેતરની યાદી, અને દરેકને અલગ સાફ કરવાની સુવિધા
+
+### આવૃત્તિ ૨.૫૨.૦
 - **વાંચન યોજનાઓ**: પસંદ કરેલા કિરણથી ક્રમાનુસાર. ચૂકી ગયેલા દિવસ ભેગા થાય, વધારાનું વાંચન આવતીકાલે આગળ લઈ જાય, અને સોમથી રવિ સુધીનું અઠવાડિયું દૈનિક સંખ્યા × ૭ પર સફળ ગણાય. રિમાઇન્ડર આજનું કિરણ જણાવે, અને સોમવારે અઠવાડિયાની સમીક્ષા આવે
 
 ### આવૃત્તિ ૨.૫૧.૦

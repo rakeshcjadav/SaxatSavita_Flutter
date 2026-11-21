@@ -21,6 +21,11 @@ class ReadingPlanService {
   List<ReadingPlan> _readingPlans = [];
   String? _activePlanId;
 
+  /// Bumps when plans or progress change so the home screen can refresh.
+  final ValueNotifier<int> revision = ValueNotifier(0);
+
+  void _changed() => revision.value++;
+
   List<ReadingPlan> get readingPlans => List.unmodifiable(_readingPlans);
   ReadingPlan? get activePlan =>
       _readingPlans.where((p) => p.id == _activePlanId).firstOrNull;
@@ -36,6 +41,7 @@ class ReadingPlanService {
         break;
       }
     }
+    _changed();
   }
 
   /// Load reading plans from storage
@@ -156,6 +162,7 @@ class ReadingPlanService {
           await NotificationService().cancelSequentialReadingPlanReminders();
         }
       }
+      _changed();
     }
   }
 
@@ -178,6 +185,7 @@ class ReadingPlanService {
     await FirebaseIntegrationHelper().onReadingPlanDeleted(planId);
 
     debugPrint('🗑️ Deleted reading plan: $planId');
+    _changed();
   }
 
   /// Rebuild reminders for the active plan. Called when the app resumes so
@@ -425,6 +433,7 @@ class ReadingPlanService {
   void clearAllPlans() {
     _readingPlans.clear();
     _activePlanId = null;
+    _changed();
     debugPrint('🧹 All reading plans cleared from memory');
   }
 

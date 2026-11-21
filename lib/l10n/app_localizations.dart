@@ -2096,6 +2096,12 @@ abstract class AppLocalizations {
   /// **'Today\'s kiran'**
   String get reading_plan_notification_title;
 
+  /// No description provided for @home_plan_kiran.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiran {kiran}'**
+  String home_plan_kiran(int kiran);
+
   /// No description provided for @reading_plan_read_kiran.
   ///
   /// In en, this message translates to:
@@ -4153,6 +4159,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Test notification sent on this phone'**
   String get push_test_notification_sent;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @notifications_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent notifications'**
+  String get notifications_empty;
 }
 
 class _AppLocalizationsDelegate

@@ -5,11 +5,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:saxatsavita_flutter/firebase_options.dart';
 import 'package:saxatsavita_flutter/helpers/open_kiran.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
 import 'package:saxatsavita_flutter/services/navigationservice.dart';
+import 'package:saxatsavita_flutter/services/notification_inbox_service.dart';
 import 'package:saxatsavita_flutter/services/daily_quiz_service.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -111,7 +113,24 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     'FCM background: id=${message.messageId} '
     'title=${message.notification?.title} data=${message.data}',
   );
-  if (message.notification != null) return;
+  if (message.notification != null) {
+    try {
+      final text = pushNotificationText(
+        title: message.notification?.title,
+        body: message.notification?.body,
+        data: message.data,
+      );
+      await NotificationInboxService().record(
+        systemId: pushNotificationId(message.messageId),
+        title: text.title,
+        body: text.body,
+        payload: fcmPushPayload,
+      );
+    } catch (e) {
+      debugPrint('FCM background inbox error: $e');
+    }
+    return;
+  }
   try {
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
@@ -172,6 +191,29 @@ class NotificationService {
   bool _readyForNamedRoutes = false;
   Future<void>? _initFuture;
 
+  /// `tz.local` defaults to UTC. A 9:20 reminder would then fire at 14:50 in India.
+  Future<void> _configureLocalTimeZone() async {
+    tz.initializeTimeZones();
+    if (kIsWeb) return;
+    try {
+      final info = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(info.identifier));
+      debugPrint('📍 Timezone set to ${info.identifier}');
+      return;
+    } catch (e) {
+      debugPrint('📍 Could not read device timezone: $e');
+    }
+
+    final offset = DateTime.now().timeZoneOffset;
+    for (final location in tz.timeZoneDatabase.locations.values) {
+      if (tz.TZDateTime.now(location).timeZoneOffset == offset) {
+        tz.setLocalLocation(location);
+        debugPrint('📍 Timezone set from offset to ${location.name}');
+        return;
+      }
+    }
+  }
+
   /// Initialize the notification service
   Future<void> initialize() async {
     if (kIsWeb) return;
@@ -185,9 +227,7 @@ class NotificationService {
     if (_isInitialized) return;
 
     try {
-      // Initialize timezone data
-      tz.initializeTimeZones();
-      debugPrint('📍 Timezone initialized');
+      await _configureLocalTimeZone();
 
       // Android initialization
       const AndroidInitializationSettings initializationSettingsAndroid =
@@ -231,6 +271,7 @@ class NotificationService {
       await _captureLaunchPayload();
       await _initializeFirebaseMessaging();
       _isInitialized = true;
+      await _syncInboxFromActive();
       debugPrint('✅ Notification service initialized successfully');
     } catch (e, stackTrace) {
       _initFuture = null;
@@ -609,6 +650,12 @@ class NotificationService {
       notificationDetails: _readingPlanNotificationDetails(l10n),
       payload: readingPlanPayload,
     );
+    await _rememberNotification(
+      id: readingPlanReminderIdBase - 1,
+      title: l10n.reading_plan_notification_title,
+      body: body,
+      payload: readingPlanPayload,
+    );
   }
 
   /// Show goal achieved notification
@@ -671,6 +718,11 @@ class NotificationService {
             categoryIdentifier: 'goal_achieved',
           ),
         ),
+      );
+      await _rememberNotification(
+        id: plan.id.hashCode + 1000,
+        title: title,
+        body: body,
       );
 
       debugPrint('🎉 Showed goal achieved notification');
@@ -750,6 +802,11 @@ class NotificationService {
             presentSound: false,
           ),
         ),
+      );
+      await _rememberNotification(
+        id: streakDays + 2000,
+        title: title,
+        body: body,
       );
 
       debugPrint('🔥 Showed streak milestone notification: $streakDays days');
@@ -928,6 +985,11 @@ class NotificationService {
           presentSound: true,
         ),
       ),
+    );
+    await _rememberNotification(
+      id: 9999,
+      title: "💡 Reading Suggestion",
+      body: randomSuggestion,
     );
   }
 
@@ -1353,7 +1415,7 @@ class NotificationService {
 
   Future<void> _ensurePluginForBackgroundIsolate() async {
     if (_localPluginReady) return;
-    tz.initializeTimeZones();
+    await _configureLocalTimeZone();
     const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('ic_launcher_foreground'),
       iOS: DarwinInitializationSettings(
@@ -1438,6 +1500,87 @@ class NotificationService {
       notificationDetails: _pushNotificationDetails(title: title, body: body),
       payload: fcmPushPayload,
     );
+    await _rememberNotification(
+      id: id,
+      title: title,
+      body: body,
+      payload: fcmPushPayload,
+    );
+  }
+
+  bool inboxNotificationOpens(String? payload) {
+    if (payload == null || payload.isEmpty) return false;
+    if (payload == fcmPushPayload) return false;
+    return payload == dailyQuizPayload ||
+        payload.startsWith('daily_quiz') ||
+        payload == readingPlanPayload ||
+        payload.startsWith('reading_reminder');
+  }
+
+  void openFromInbox(String? payload) {
+    onDidReceiveNotificationResponse(
+      NotificationResponse(
+        notificationResponseType: NotificationResponseType.selectedNotification,
+        payload: payload,
+      ),
+    );
+  }
+
+  Future<void> dismissDisplayed({int? id, String? tag}) async {
+    if (kIsWeb || id == null) return;
+    try {
+      if (!_localPluginReady) await initialize();
+      if (!_localPluginReady) return;
+      await _flutterLocalNotificationsPlugin.cancel(id: id, tag: tag);
+    } catch (e) {
+      debugPrint('Dismiss displayed notification failed: $e');
+    }
+  }
+
+  Future<void> syncInboxFromActive() async {
+    if (kIsWeb) return;
+    if (!_localPluginReady) await initialize();
+    await _syncInboxFromActive();
+  }
+
+  Future<void> _syncInboxFromActive() async {
+    if (kIsWeb || !_localPluginReady) return;
+    try {
+      final active =
+          await _flutterLocalNotificationsPlugin.getActiveNotifications();
+      for (final notification in active) {
+        final title = notification.title?.trim() ?? '';
+        final body = (notification.body ?? notification.bigText)?.trim() ?? '';
+        await NotificationInboxService().record(
+          systemId: notification.id,
+          tag: notification.tag,
+          title: title,
+          body: body,
+          payload: notification.payload,
+          fromActiveTray: true,
+        );
+      }
+    } catch (e) {
+      debugPrint('Inbox sync failed: $e');
+    }
+  }
+
+  Future<void> _rememberNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    try {
+      await NotificationInboxService().record(
+        systemId: id,
+        title: title,
+        body: body,
+        payload: payload,
+      );
+    } catch (e) {
+      debugPrint('Notification inbox record failed: $e');
+    }
   }
 
   /// Shows the same channel and copy as an incoming test push, and returns

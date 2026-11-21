@@ -1120,6 +1120,11 @@ class AppLocalizationsGu extends AppLocalizations {
   String get reading_plan_notification_title => 'આજનું કિરણ';
 
   @override
+  String home_plan_kiran(int kiran) {
+    return 'કિરણ $kiran';
+  }
+
+  @override
   String reading_plan_read_kiran(int kiran) {
     return 'આજે કિરણ $kiran વાંચો.';
   }
@@ -2271,4 +2276,10 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get push_test_notification_sent =>
       'આ ફોન પર ટેસ્ટ નોટિફિકેશન મોકલ્યું';
+
+  @override
+  String get notifications => 'નોટિફિકેશન';
+
+  @override
+  String get notifications_empty => 'તાજેતરની કોઈ નોટિફિકેશન નથી';
 }

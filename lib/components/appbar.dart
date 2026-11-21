@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saxatsavita_flutter/components/notification_bell_button.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 
 enum ActionOptions {
@@ -9,6 +10,7 @@ enum ActionOptions {
   favorite,
   aashirvachan,
   preface,
+  notifications,
 }
 
 PreferredSizeWidget buildAppBar(
@@ -53,9 +55,8 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
   static const _titleIconGap = 8.0;
 
   @override
-  Size get preferredSize => Size.fromHeight(
-    kToolbarHeight + (bottom?.preferredSize.height ?? 0),
-  );
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +104,9 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
               titleWanted + titleIconW + 8 + actionsWidth() <= contentW + 0.5;
 
           void hideLastOverflowable() {
-            final index = visible.lastIndexWhere((action) => action.overflowable);
+            final index = visible.lastIndexWhere(
+              (action) => action.overflowable,
+            );
             if (index < 0) return;
             overflow.insert(0, visible.removeAt(index));
           }
@@ -252,6 +255,18 @@ class _AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     for (final widget in extraActions ?? const <Widget>[]) {
       actions.add(_BarAction.fromWidget(widget));
+    }
+
+    if (items.contains(ActionOptions.notifications)) {
+      actions.add(
+        _BarAction(
+          widget: const NotificationBellButton(),
+          icon: const Icon(Icons.notifications_outlined),
+          tooltip: l10n.notifications,
+          onPressed: () => Navigator.pushNamed(context, '/notifications'),
+          overflowable: true,
+        ),
+      );
     }
 
     if (items.contains(ActionOptions.settings)) {

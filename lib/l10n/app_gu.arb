@@ -643,6 +643,14 @@
     },
     "reading_plan_complete": "વાંચન યોજના પૂર્ણ",
     "reading_plan_notification_title": "આજનું કિરણ",
+    "home_plan_kiran": "કિરણ {kiran}",
+    "@home_plan_kiran": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
     "reading_plan_read_kiran": "આજે કિરણ {kiran} વાંચો.",
     "@reading_plan_read_kiran": {
         "placeholders": {
@@ -1082,5 +1090,7 @@
     "push_token_copied": "{count} અક્ષર નકલ થયા. Firebaseમાં + દબાવો, પછી Test.",
     "push_installation_missing": "ઍપ બંધ કરીને ફરી ચલાવો ત્યાં સુધી ઉપલબ્ધ નથી. ઉપરનું FCM ટોકન વાપરો.",
     "push_show_test_notification": "ટેસ્ટ નોટિફિકેશન બતાવો",
-    "push_test_notification_sent": "આ ફોન પર ટેસ્ટ નોટિફિકેશન મોકલ્યું"
+    "push_test_notification_sent": "આ ફોન પર ટેસ્ટ નોટિફિકેશન મોકલ્યું",
+    "notifications": "નોટિફિકેશન",
+    "notifications_empty": "તાજેતરની કોઈ નોટિફિકેશન નથી"
 }

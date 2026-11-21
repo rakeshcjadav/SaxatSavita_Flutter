@@ -58,6 +58,7 @@ class _MainNavigationState extends State<MainNavigation>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(ReadingPlanService().refreshActivePlanReminders());
+      unawaited(NotificationService().syncInboxFromActive());
     }
   }
 

@@ -645,6 +645,14 @@
     },
     "reading_plan_complete": "Reading plan complete",
     "reading_plan_notification_title": "Today's kiran",
+    "home_plan_kiran": "Kiran {kiran}",
+    "@home_plan_kiran": {
+        "placeholders": {
+            "kiran": {
+                "type": "int"
+            }
+        }
+    },
     "reading_plan_read_kiran": "Today read kiran {kiran}.",
     "@reading_plan_read_kiran": {
         "placeholders": {
@@ -1204,5 +1212,7 @@
     },
     "push_installation_missing": "Not available until you stop the app and run it again. Use the FCM token above.",
     "push_show_test_notification": "Show test notification",
-    "push_test_notification_sent": "Test notification sent on this phone"
+    "push_test_notification_sent": "Test notification sent on this phone",
+    "notifications": "Notifications",
+    "notifications_empty": "No recent notifications"
 }
