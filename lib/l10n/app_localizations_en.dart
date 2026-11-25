@@ -406,6 +406,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get people => 'Haribhakts & Swamis';
+
+  @override
+  String get people_search_hint => 'Search names';
+
+  @override
+  String get people_empty => 'No named people found';
+
+  @override
+  String get people_no_matches => 'No names match this search';
+
+  @override
+  String people_count(int count) {
+    return '$count names';
+  }
+
+  @override
   String see_all_kirans_for(String name) {
     return 'See all kirans for $name';
   }

@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.53.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.54.0-green.svg)]()
 
 ## 🌟 પરિચય
 
@@ -224,7 +224,10 @@ flutter build ios --release
 
 ## 🔄 આવૃત્તિ ઇતિહાસ
 
-### આવૃત્તિ ૨.૫૩.૦ (હાલની)
+### આવૃત્તિ ૨.૫૪.૦ (હાલની)
+- **સંતો અને હરિભક્તો**: એક ડ્રૉયર આઇટમ બંને યાદી ખોલે. પહેલી ટૅબ સંતો, બીજી હરિભક્તો, દરેક પર આઇકન. ભૂમિકા અને ક્રમ ડ્રોપડાઉનમાં
+
+### આવૃત્તિ ૨.૫૩.૦
 - **રિમાઇન્ડર**: ઉપકરણના સ્થાનિક સમયે વાગે, એટલે ૯:૨૦નું રિમાઇન્ડર ભારતમાં ૯:૨૦ વાગ્યે જ આવે
 - **હોમ**: ગોળ બટન સક્રિય વાંચન યોજનાનું આજનું કિરણ ખોલે
 - **નોટિફિકેશન**: હોમ ઍપ બારમાં ઘંટડી, સંખ્યા, તાજેતરની યાદી, અને દરેકને અલગ સાફ કરવાની સુવિધા

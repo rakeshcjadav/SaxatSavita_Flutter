@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.53.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.54.0-green.svg)]()
 
 ## 🌟 Overview
 
@@ -224,7 +224,10 @@ For support, feature requests, or bug reports, create an issue in this repositor
 
 ## 🔄 Version History
 
-### Version 2.53.0 (Current)
+### Version 2.54.0 (Current)
+- **Saints and haribhakts**: One drawer item opens both lists. Santo is the first tab, Haribhakts the second, each with an icon. Role and sort are dropdowns
+
+### Version 2.53.0
 - **Reminders**: Fire at the device's local time, so a 9:20 reminder stays 9:20 in India
 - **Home**: Round button opens the kiran due on the active reading plan
 - **Notifications**: Bell on the home app bar with a count, a list of recent notifications, and a way to clear each one

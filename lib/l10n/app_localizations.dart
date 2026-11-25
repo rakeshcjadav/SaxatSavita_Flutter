@@ -812,6 +812,36 @@ abstract class AppLocalizations {
   /// **'{count} swamis'**
   String swami_people_count(int count);
 
+  /// No description provided for @people.
+  ///
+  /// In en, this message translates to:
+  /// **'Haribhakts & Swamis'**
+  String get people;
+
+  /// No description provided for @people_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search names'**
+  String get people_search_hint;
+
+  /// No description provided for @people_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No named people found'**
+  String get people_empty;
+
+  /// No description provided for @people_no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No names match this search'**
+  String get people_no_matches;
+
+  /// Number of haribhakts and swamis in the combined list
+  ///
+  /// In en, this message translates to:
+  /// **'{count} names'**
+  String people_count(int count);
+
   /// Link to the full kiran list for one haribhakt
   ///
   /// In en, this message translates to:

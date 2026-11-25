@@ -3,11 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/haribhakt_model.dart';
+import 'package:saxatsavita_flutter/models/swami_model.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
+import 'package:saxatsavita_flutter/pages/swami_list_page.dart';
 import 'package:saxatsavita_flutter/services/haribhakt_service.dart';
+import 'package:saxatsavita_flutter/services/swami_service.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
@@ -58,6 +61,55 @@ enum _RoleFilter { all, host, reader, question, mentioned }
 
 enum _SortMode { count, name }
 
+class _NamedPerson {
+  const _NamedPerson({
+    required this.name,
+    required this.count,
+    required this.isSwami,
+    required this.hostCount,
+    required this.readerCount,
+    required this.questionCount,
+    required this.mentionedCount,
+  });
+
+  final String name;
+  final int count;
+  final bool isSwami;
+  final int hostCount;
+  final int readerCount;
+  final int questionCount;
+  final int mentionedCount;
+
+  bool get hasHost => hostCount > 0;
+  bool get hasReader => readerCount > 0;
+  bool get hasQuestion => questionCount > 0;
+  bool get hasMentioned => mentionedCount > 0;
+
+  factory _NamedPerson.haribhakt(HaribhaktItem item) {
+    return _NamedPerson(
+      name: item.name,
+      count: item.count,
+      isSwami: false,
+      hostCount: item.hostCount,
+      readerCount: item.readerCount,
+      questionCount: item.questionCount,
+      mentionedCount: item.mentionedCount,
+    );
+  }
+
+  factory _NamedPerson.swami(SwamiItem item) {
+    return _NamedPerson(
+      name: item.name,
+      count: item.count,
+      isSwami: true,
+      hostCount: 0,
+      readerCount: 0,
+      questionCount: item.questionCount,
+      mentionedCount: item.mentionedCount,
+    );
+  }
+}
+
 class _RoleStyle {
   const _RoleStyle({
     required this.color,
@@ -75,51 +127,51 @@ class _RoleStyle {
       case 'host':
         return dark
             ? const _RoleStyle(
-                color: Color(0xFFFFB74D),
-                container: Color(0xFF5D4037),
-                onContainer: Color(0xFFFFE0B2),
-              )
+              color: Color(0xFFFFB74D),
+              container: Color(0xFF5D4037),
+              onContainer: Color(0xFFFFE0B2),
+            )
             : const _RoleStyle(
-                color: Color(0xFFEF6C00),
-                container: Color(0xFFFFE0B2),
-                onContainer: Color(0xFFBF360C),
-              );
+              color: Color(0xFFEF6C00),
+              container: Color(0xFFFFE0B2),
+              onContainer: Color(0xFFBF360C),
+            );
       case 'question':
         return dark
             ? const _RoleStyle(
-                color: Color(0xFF80CBC4),
-                container: Color(0xFF004D40),
-                onContainer: Color(0xFFB2DFDB),
-              )
+              color: Color(0xFF80CBC4),
+              container: Color(0xFF004D40),
+              onContainer: Color(0xFFB2DFDB),
+            )
             : const _RoleStyle(
-                color: Color(0xFF00796B),
-                container: Color(0xFFB2DFDB),
-                onContainer: Color(0xFF004D40),
-              );
+              color: Color(0xFF00796B),
+              container: Color(0xFFB2DFDB),
+              onContainer: Color(0xFF004D40),
+            );
       case 'mentioned':
         return dark
             ? const _RoleStyle(
-                color: Color(0xFFCE93D8),
-                container: Color(0xFF4A148C),
-                onContainer: Color(0xFFE1BEE7),
-              )
+              color: Color(0xFFCE93D8),
+              container: Color(0xFF4A148C),
+              onContainer: Color(0xFFE1BEE7),
+            )
             : const _RoleStyle(
-                color: Color(0xFF7B1FA2),
-                container: Color(0xFFE1BEE7),
-                onContainer: Color(0xFF4A148C),
-              );
+              color: Color(0xFF7B1FA2),
+              container: Color(0xFFE1BEE7),
+              onContainer: Color(0xFF4A148C),
+            );
       default:
         return dark
             ? const _RoleStyle(
-                color: Color(0xFF64B5F6),
-                container: Color(0xFF0D47A1),
-                onContainer: Color(0xFFBBDEFB),
-              )
+              color: Color(0xFF64B5F6),
+              container: Color(0xFF0D47A1),
+              onContainer: Color(0xFFBBDEFB),
+            )
             : const _RoleStyle(
-                color: Color(0xFF1565C0),
-                container: Color(0xFFBBDEFB),
-                onContainer: Color(0xFF0D47A1),
-              );
+              color: Color(0xFF1565C0),
+              container: Color(0xFFBBDEFB),
+              onContainer: Color(0xFF0D47A1),
+            );
     }
   }
 }
@@ -131,62 +183,120 @@ class HaribhaktListPage extends StatefulWidget {
   State<HaribhaktListPage> createState() => _HaribhaktListPageState();
 }
 
-class _HaribhaktListPageState extends State<HaribhaktListPage> {
+class _HaribhaktListPageState extends State<HaribhaktListPage>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  List<HaribhaktItem> _all = const [];
+  final ScrollController _haribhaktScroll = ScrollController();
+  final ScrollController _swamiScroll = ScrollController();
+  late final TabController _tabs;
   bool _loading = true;
-  _RoleFilter _roleFilter = _RoleFilter.all;
+  _RoleFilter _haribhaktRole = _RoleFilter.all;
+  _RoleFilter _swamiRole = _RoleFilter.all;
   _SortMode _sortMode = _SortMode.count;
 
   @override
   void initState() {
     super.initState();
+    _tabs = TabController(length: 2, vsync: this);
+    _tabs.addListener(_onTabChanged);
     _searchController.addListener(() => setState(() {}));
     _load();
   }
 
+  void _onTabChanged() {
+    if (_tabs.indexIsChanging) return;
+    setState(() {});
+  }
+
   Future<void> _load() async {
     await HaribhaktService().load();
+    await SwamiService().load();
     if (!mounted) return;
-    setState(() {
-      _all = HaribhaktService().list;
-      _loading = false;
-    });
+    setState(() => _loading = false);
   }
 
   bool get _isSearching => _searchController.text.trim().isNotEmpty;
 
-  List<HaribhaktItem> get _visible {
-    var items = HaribhaktService().searchNames(_searchController.text);
-    switch (_roleFilter) {
-      case _RoleFilter.host:
-        items = items.where((item) => item.hasHost).toList();
-      case _RoleFilter.reader:
-        items = items.where((item) => item.hasReader).toList();
-      case _RoleFilter.question:
-        items = items.where((item) => item.hasQuestion).toList();
-      case _RoleFilter.mentioned:
-        items = items.where((item) => item.hasMentioned).toList();
-      case _RoleFilter.all:
-        items = List<HaribhaktItem>.from(items);
+  bool get _showingSwamis => _tabs.index == 0;
+
+  _RoleFilter get _roleFilter => _showingSwamis ? _swamiRole : _haribhaktRole;
+
+  void _setRole(_RoleFilter role) {
+    setState(() {
+      if (_showingSwamis) {
+        _swamiRole = role;
+      } else {
+        _haribhaktRole = role;
+      }
+    });
+  }
+
+  int _matchRank(_NamedPerson person, String query) {
+    if (query.isEmpty) return 1;
+    final forms =
+        person.isSwami
+            ? SwamiService().formsFor(person.name)
+            : HaribhaktService().formsFor(person.name);
+    final names = [person.name, ...forms];
+    if (names.any((name) => name == query)) return 0;
+    if (names.any(
+      (name) =>
+          name.startsWith(query) ||
+          name.split(' ').any((token) => token.startsWith(query)),
+    )) {
+      return 1;
     }
-    if (!_isSearching) {
-      items.sort((a, b) {
-        if (_sortMode == _SortMode.count) {
-          final byCount = b.count.compareTo(a.count);
-          if (byCount != 0) return byCount;
-        }
-        return a.name.compareTo(b.name);
-      });
-    }
+    return 2;
+  }
+
+  List<_NamedPerson> _people({required bool swami}) {
+    final query = _searchController.text.trim();
+    final role = swami ? _swamiRole : _haribhaktRole;
+    final people =
+        swami
+            ? [
+              for (final item in SwamiService().searchNames(query))
+                _NamedPerson.swami(item),
+            ]
+            : [
+              for (final item in HaribhaktService().searchNames(query))
+                _NamedPerson.haribhakt(item),
+            ];
+    final items =
+        people.where((item) {
+          switch (role) {
+            case _RoleFilter.host:
+              return item.hasHost;
+            case _RoleFilter.reader:
+              return item.hasReader;
+            case _RoleFilter.question:
+              return item.hasQuestion;
+            case _RoleFilter.mentioned:
+              return item.hasMentioned;
+            case _RoleFilter.all:
+              return true;
+          }
+        }).toList();
+    items.sort((a, b) {
+      if (_isSearching) {
+        final byRank = _matchRank(a, query).compareTo(_matchRank(b, query));
+        if (byRank != 0) return byRank;
+      } else if (_sortMode == _SortMode.count) {
+        final byCount = b.count.compareTo(a.count);
+        if (byCount != 0) return byCount;
+      }
+      return a.name.compareTo(b.name);
+    });
     return items;
   }
 
   @override
   void dispose() {
+    _tabs.removeListener(_onTabChanged);
+    _tabs.dispose();
     _searchController.dispose();
-    _scrollController.dispose();
+    _haribhaktScroll.dispose();
+    _swamiScroll.dispose();
     super.dispose();
   }
 
@@ -195,7 +305,20 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: buildAppBar(context, title: l10n.haribhakts),
+      appBar: buildAppBar(
+        context,
+        title: l10n.people,
+        bottom: TabBar(
+          controller: _tabs,
+          tabs: [
+            Tab(
+              icon: const Icon(Icons.auto_stories_outlined),
+              text: l10n.swamis,
+            ),
+            Tab(icon: const Icon(Icons.people_outline), text: l10n.haribhakts),
+          ],
+        ),
+      ),
       body:
           _loading
               ? const Center(child: CircularProgressIndicator())
@@ -207,7 +330,10 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
                       controller: _searchController,
                       textInputAction: TextInputAction.search,
                       decoration: InputDecoration(
-                        hintText: l10n.haribhakt_search_hint,
+                        hintText:
+                            _showingSwamis
+                                ? l10n.swami_search_hint
+                                : l10n.haribhakt_search_hint,
                         prefixIcon: const Icon(Icons.search),
                         suffixIcon:
                             _searchController.text.isEmpty
@@ -227,125 +353,153 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: Row(
                       children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Row(
-                              children: [
-                                _RoleFilterChip(
-                                  label: l10n.haribhakt_filter_all,
-                                  selected: _roleFilter == _RoleFilter.all,
-                                  onSelected:
-                                      () => setState(
-                                        () => _roleFilter = _RoleFilter.all,
-                                      ),
-                                ),
-                                const SizedBox(width: 8),
-                                _RoleFilterChip(
-                                  label: l10n.haribhakt_role_host,
-                                  icon: Icons.home_outlined,
-                                  role: 'host',
-                                  selected: _roleFilter == _RoleFilter.host,
-                                  onSelected:
-                                      () => setState(
-                                        () => _roleFilter = _RoleFilter.host,
-                                      ),
-                                ),
-                                const SizedBox(width: 8),
-                                _RoleFilterChip(
-                                  label: l10n.haribhakt_role_reader,
-                                  icon: Icons.menu_book_outlined,
-                                  role: 'reader',
-                                  selected: _roleFilter == _RoleFilter.reader,
-                                  onSelected:
-                                      () => setState(
-                                        () => _roleFilter = _RoleFilter.reader,
-                                      ),
-                                ),
-                                const SizedBox(width: 8),
-                                _RoleFilterChip(
-                                  label: l10n.haribhakt_role_question,
-                                  icon: Icons.help_outline,
-                                  role: 'question',
-                                  selected: _roleFilter == _RoleFilter.question,
-                                  onSelected:
-                                      () => setState(
-                                        () =>
-                                            _roleFilter = _RoleFilter.question,
-                                      ),
-                                ),
-                                const SizedBox(width: 8),
-                                _RoleFilterChip(
-                                  label: l10n.haribhakt_role_mentioned,
-                                  icon: Icons.chat_bubble_outline,
-                                  role: 'mentioned',
-                                  selected: _roleFilter == _RoleFilter.mentioned,
-                                  onSelected:
-                                      () => setState(
-                                        () =>
-                                            _roleFilter = _RoleFilter.mentioned,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        Expanded(child: _roleDropdown(l10n)),
+                        const SizedBox(width: 12),
+                        Expanded(child: _sortDropdown(l10n)),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabs,
+                      children: [
+                        _buildPeopleList(
+                          l10n: l10n,
+                          colorScheme: colorScheme,
+                          swami: true,
+                          scrollController: _swamiScroll,
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.sort),
-                          tooltip: l10n.haribhakt_sort_count,
-                          color:
-                              !_isSearching && _sortMode == _SortMode.count
-                                  ? colorScheme.primary
-                                  : null,
-                          onPressed:
-                              _isSearching
-                                  ? null
-                                  : () => setState(
-                                    () => _sortMode = _SortMode.count,
-                                  ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.sort_by_alpha),
-                          tooltip: l10n.haribhakt_sort_name,
-                          color:
-                              !_isSearching && _sortMode == _SortMode.name
-                                  ? colorScheme.primary
-                                  : null,
-                          onPressed:
-                              _isSearching
-                                  ? null
-                                  : () => setState(
-                                    () => _sortMode = _SortMode.name,
-                                  ),
+                        _buildPeopleList(
+                          l10n: l10n,
+                          colorScheme: colorScheme,
+                          swami: false,
+                          scrollController: _haribhaktScroll,
                         ),
                       ],
                     ),
                   ),
-                  Expanded(child: _buildList(l10n, colorScheme)),
                 ],
               ),
     );
   }
 
-  Widget _buildList(AppLocalizations l10n, ColorScheme colorScheme) {
-    if (_all.isEmpty) {
+  Widget _roleDropdown(AppLocalizations l10n) {
+    return DropdownButtonFormField<_RoleFilter>(
+      key: ValueKey(_showingSwamis),
+      initialValue: _roleFilter,
+      isExpanded: true,
+      decoration: _dropdownDecoration(l10n.filters),
+      items: [
+        DropdownMenuItem(
+          value: _RoleFilter.all,
+          child: _DropdownChoice(label: l10n.haribhakt_filter_all),
+        ),
+        if (!_showingSwamis) ...[
+          DropdownMenuItem(
+            value: _RoleFilter.host,
+            child: _DropdownChoice(
+              label: l10n.haribhakt_role_host,
+              icon: Icons.home_outlined,
+              color: _RoleStyle.of(context, 'host').color,
+            ),
+          ),
+          DropdownMenuItem(
+            value: _RoleFilter.reader,
+            child: _DropdownChoice(
+              label: l10n.haribhakt_role_reader,
+              icon: Icons.menu_book_outlined,
+              color: _RoleStyle.of(context, 'reader').color,
+            ),
+          ),
+        ],
+        DropdownMenuItem(
+          value: _RoleFilter.question,
+          child: _DropdownChoice(
+            label: l10n.haribhakt_role_question,
+            icon: Icons.help_outline,
+            color: _RoleStyle.of(context, 'question').color,
+          ),
+        ),
+        DropdownMenuItem(
+          value: _RoleFilter.mentioned,
+          child: _DropdownChoice(
+            label: l10n.haribhakt_role_mentioned,
+            icon: Icons.chat_bubble_outline,
+            color: _RoleStyle.of(context, 'mentioned').color,
+          ),
+        ),
+      ],
+      onChanged: (role) {
+        if (role != null) _setRole(role);
+      },
+    );
+  }
+
+  Widget _sortDropdown(AppLocalizations l10n) {
+    return DropdownButtonFormField<_SortMode>(
+      initialValue: _sortMode,
+      isExpanded: true,
+      decoration: _dropdownDecoration(l10n.sortBy),
+      items: [
+        DropdownMenuItem(
+          value: _SortMode.count,
+          child: _DropdownChoice(label: l10n.haribhakt_sort_count),
+        ),
+        DropdownMenuItem(
+          value: _SortMode.name,
+          child: _DropdownChoice(label: l10n.haribhakt_sort_name),
+        ),
+      ],
+      onChanged:
+          _isSearching
+              ? null
+              : (mode) {
+                if (mode != null) setState(() => _sortMode = mode);
+              },
+    );
+  }
+
+  InputDecoration _dropdownDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      isDense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      border: const OutlineInputBorder(),
+    );
+  }
+
+  Widget _buildPeopleList({
+    required AppLocalizations l10n,
+    required ColorScheme colorScheme,
+    required bool swami,
+    required ScrollController scrollController,
+  }) {
+    final total =
+        swami ? SwamiService().list.length : HaribhaktService().list.length;
+    if (total == 0) {
       return _EmptyState(
-        icon: Icons.people_outline,
-        title: l10n.haribhakt_empty,
+        icon: swami ? Icons.auto_stories_outlined : Icons.people_outline,
+        title: swami ? l10n.swami_empty : l10n.haribhakt_empty,
       );
     }
-    final visible = _visible;
+    final visible = _people(swami: swami);
+    final role = swami ? _swamiRole : _haribhaktRole;
     if (visible.isEmpty) {
       return _EmptyState(
         icon: Icons.search_off,
-        title: l10n.haribhakt_no_matches,
+        title: swami ? l10n.swami_no_matches : l10n.haribhakt_no_matches,
         subtitle: l10n.haribhakt_try_different_name,
       );
     }
+    final countLabel =
+        _isSearching || role != _RoleFilter.all
+            ? l10n.results_filtered(visible.length, total)
+            : swami
+            ? l10n.swami_people_count(visible.length)
+            : l10n.haribhakt_people_count(visible.length);
     return Column(
       children: [
         Padding(
@@ -353,9 +507,7 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              _isSearching || _roleFilter != _RoleFilter.all
-                  ? l10n.results_filtered(visible.length, _all.length)
-                  : l10n.haribhakt_people_count(visible.length),
+              countLabel,
               style: Theme.of(
                 context,
               ).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
@@ -364,14 +516,13 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
         ),
         Expanded(
           child: Scrollbar(
-            controller: _scrollController,
+            controller: scrollController,
             child: ListView.separated(
-              controller: _scrollController,
+              controller: scrollController,
               itemCount: visible.length,
               separatorBuilder: (_, _) => const Divider(height: 1, indent: 72),
               itemBuilder: (context, index) {
-                final item = visible[index];
-                return _HaribhaktListTile(item: item);
+                return _HaribhaktListTile(item: visible[index]);
               },
             ),
           ),
@@ -384,7 +535,7 @@ class _HaribhaktListPageState extends State<HaribhaktListPage> {
 class _HaribhaktListTile extends StatelessWidget {
   const _HaribhaktListTile({required this.item});
 
-  final HaribhaktItem item;
+  final _NamedPerson item;
 
   @override
   Widget build(BuildContext context) {
@@ -395,7 +546,11 @@ class _HaribhaktListTile extends StatelessWidget {
       button: true,
       label: item.name,
       child: InkWell(
-        onTap: () => openHaribhaktDetail(context, item.name),
+        onTap:
+            () =>
+                item.isSwami
+                    ? openSwamiDetail(context, item.name)
+                    : openHaribhaktDetail(context, item.name),
         child: SizedBox(
           height: 76,
           child: Padding(
@@ -431,20 +586,24 @@ class _HaribhaktListTile extends StatelessWidget {
                       const SizedBox(height: 6),
                       Row(
                         children: [
-                          _RoleCount(
-                            role: 'host',
-                            count: item.hostCount,
-                            tooltip: l10n.haribhakt_host_count(item.hostCount),
-                          ),
-                          const SizedBox(width: 10),
-                          _RoleCount(
-                            role: 'reader',
-                            count: item.readerCount,
-                            tooltip: l10n.haribhakt_reader_count(
-                              item.readerCount,
+                          if (!item.isSwami) ...[
+                            _RoleCount(
+                              role: 'host',
+                              count: item.hostCount,
+                              tooltip: l10n.haribhakt_host_count(
+                                item.hostCount,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 10),
+                            const SizedBox(width: 10),
+                            _RoleCount(
+                              role: 'reader',
+                              count: item.readerCount,
+                              tooltip: l10n.haribhakt_reader_count(
+                                item.readerCount,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                          ],
                           _RoleCount(
                             role: 'question',
                             count: item.questionCount,
@@ -598,9 +757,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
       case _RoleFilter.reader:
         return _appearances.where((row) => row.ref.role == 'reader').toList();
       case _RoleFilter.question:
-        return _appearances
-            .where((row) => row.ref.role == 'question')
-            .toList();
+        return _appearances.where((row) => row.ref.role == 'question').toList();
       case _RoleFilter.mentioned:
         return _appearances
             .where((row) => row.ref.role == 'mentioned')
@@ -611,8 +768,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
   }
 
   List<({_HaribhaktAppearance row, String question})> get _questionRows {
-    if (_roleFilter != _RoleFilter.all &&
-        _roleFilter != _RoleFilter.question) {
+    if (_roleFilter != _RoleFilter.all && _roleFilter != _RoleFilter.question) {
       return const [];
     }
     return [
@@ -787,9 +943,9 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
               child: Text(
                 l10n.haribhakt_questions,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
           ),
@@ -900,10 +1056,7 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                       Expanded(
                         child: Text(
                           [
-                            Bookservice().getPartTitle(
-                              context,
-                              row.partNumber,
-                            ),
+                            Bookservice().getPartTitle(context, row.partNumber),
                             if (dateLabel.isNotEmpty) dateLabel,
                           ].join(' · '),
                           maxLines: 1,
@@ -922,11 +1075,12 @@ class _HaribhaktDetailPageState extends State<HaribhaktDetailPage> {
                         padding: const EdgeInsets.only(bottom: 4),
                         child: Text(
                           question,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: _RoleStyle.of(context, 'question').color,
-                                height: 1.35,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(
+                            color: _RoleStyle.of(context, 'question').color,
+                            height: 1.35,
+                          ),
                         ),
                       ),
                   ],
@@ -981,6 +1135,34 @@ class HaribhaktRoleChip extends StatelessWidget {
   }
 }
 
+class _DropdownChoice extends StatelessWidget {
+  const _DropdownChoice({required this.label, this.icon, this.color});
+
+  final String label;
+  final IconData? icon;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (icon != null) ...[
+          Icon(icon, size: 18, color: color),
+          const SizedBox(width: 8),
+        ],
+        Expanded(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _RoleFilterChip extends StatelessWidget {
   const _RoleFilterChip({
     required this.label,
@@ -1014,7 +1196,10 @@ class _RoleFilterChip extends StatelessWidget {
       label: Text(label),
       labelStyle:
           selected && selectedForeground != null
-              ? TextStyle(color: selectedForeground, fontWeight: FontWeight.w600)
+              ? TextStyle(
+                color: selectedForeground,
+                fontWeight: FontWeight.w600,
+              )
               : null,
       selectedColor: style?.container,
       checkmarkColor: selectedForeground,

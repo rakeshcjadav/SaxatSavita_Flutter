@@ -218,14 +218,27 @@
     "haribhakt_try_different_name": "બીજું નામ અજમાવો",
     "haribhakt_open_profile": "પ્રોફાઇલ ખોલો",
     "haribhakt_chip_hint": "કિરણમાં શોધવા ટૅપ કરો. પ્રોફાઇલ ખોલવા લાંબા સમય સુધી દબાવો.",
-    "swami_match": "સ્વામી",
-    "swamis": "સ્વામીઓ",
-    "swami_search_hint": "સ્વામીના નામ શોધો",
-    "swami_empty": "નામધારી સ્વામી મળ્યા નથી",
-    "swami_no_matches": "આ શોધ સાથે કોઈ સ્વામી મેળ ખાતા નથી",
-    "swami_people_count": "{count} સ્વામીઓ",
+    "swami_match": "સંત",
+    "swamis": "સંતો",
+    "swami_search_hint": "સંતોના નામ શોધો",
+    "swami_empty": "નામધારી સંતો મળ્યા નથી",
+    "swami_no_matches": "આ શોધ સાથે કોઈ સંત મેળ ખાતા નથી",
+    "swami_people_count": "{count} સંતો",
     "@swami_people_count": {
         "description": "Number of people in the swami list",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "people": "સંતો અને હરિભક્તો",
+    "people_search_hint": "નામ શોધો",
+    "people_empty": "કોઈ નામ મળ્યું નથી",
+    "people_no_matches": "આ શોધ સાથે કોઈ નામ મેળ ખાતું નથી",
+    "people_count": "{count} નામ",
+    "@people_count": {
+        "description": "Number of haribhakts and swamis in the combined list",
         "placeholders": {
             "count": {
                 "type": "int"

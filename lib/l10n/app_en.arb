@@ -234,6 +234,19 @@
             }
         }
     },
+    "people": "Haribhakts & Swamis",
+    "people_search_hint": "Search names",
+    "people_empty": "No named people found",
+    "people_no_matches": "No names match this search",
+    "people_count": "{count} names",
+    "@people_count": {
+        "description": "Number of haribhakts and swamis in the combined list",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "see_all_kirans_for": "See all kirans for {name}",
     "@see_all_kirans_for": {
         "description": "Link to the full kiran list for one haribhakt",
