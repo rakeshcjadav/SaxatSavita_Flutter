@@ -6,6 +6,7 @@ import 'package:saxatsavita_flutter/models/bookpart_model.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/models/meanings_model.dart';
 import 'package:saxatsavita_flutter/services/haribhakt_service.dart';
+import 'package:saxatsavita_flutter/services/swami_service.dart';
 
 class Bookservice {
   static final Bookservice _instance = Bookservice._internal();
@@ -129,6 +130,7 @@ class Bookservice {
       }
       _meanings = await loadMeanings(bookName);
       await HaribhaktService().load(bookName: bookName);
+      await SwamiService().load(bookName: bookName);
     }
   }
 

@@ -16,6 +16,7 @@ import 'package:saxatsavita_flutter/pages/infodetailspage.dart';
 import 'package:saxatsavita_flutter/pages/infolistpage.dart';
 import 'package:saxatsavita_flutter/pages/kiransearchpage.dart';
 import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
+import 'package:saxatsavita_flutter/pages/swami_list_page.dart';
 import 'package:saxatsavita_flutter/pages/welcome_screen.dart';
 import 'package:saxatsavita_flutter/pages/notelistpage.dart';
 import 'package:saxatsavita_flutter/pages/notifications_page.dart';
@@ -347,6 +348,7 @@ class SakshatSavitaApp extends StatelessWidget {
                 ),
             '/search': (context) => const Kiransearchpage(),
             '/haribhakts': (context) => const HaribhaktListPage(),
+            '/swamis': (context) => const SwamiListPage(),
             '/settings': (context) => const SettingsPage(),
             '/aashirvachan': (context) => const Aashirvachanpage(),
             '/kiran-calendar': (context) => const KiranCalendarPage(),

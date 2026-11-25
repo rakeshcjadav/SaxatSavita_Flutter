@@ -9,11 +9,14 @@ import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/models/haribhakt_model.dart';
+import 'package:saxatsavita_flutter/models/swami_model.dart';
 import 'package:saxatsavita_flutter/models/kiranuserinfo_model.dart';
 import 'package:saxatsavita_flutter/pages/kiranreadpage.dart';
 import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
+import 'package:saxatsavita_flutter/pages/swami_list_page.dart';
 import 'package:saxatsavita_flutter/services/bookservice.dart';
 import 'package:saxatsavita_flutter/services/haribhakt_service.dart';
+import 'package:saxatsavita_flutter/services/swami_service.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
@@ -167,6 +170,7 @@ class SearchResult {
   final String snippet;
   final bool isContentMatch;
   final bool isHaribhaktMatch;
+  final bool isSwamiMatch;
   final double relevanceScore;
 
   SearchResult({
@@ -175,6 +179,7 @@ class SearchResult {
     required this.snippet,
     this.isContentMatch = false,
     this.isHaribhaktMatch = false,
+    this.isSwamiMatch = false,
     this.relevanceScore = 0.0,
   });
 }
@@ -203,6 +208,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
   bool _showTitleMatches = true;
   bool _showContentMatches = true;
   bool _showHaribhaktMatches = true;
+  bool _showSwamiMatches = true;
   bool _isFiltersExpanded = false; // Collapsible filter state
 
   // Search history state
@@ -212,6 +218,11 @@ class _KiransearchpageState extends State<Kiransearchpage> {
   HaribhaktItem? get _exactHaribhaktMatch {
     if (!_hasSearched) return null;
     return HaribhaktService().findByName(_searchController.text.trim());
+  }
+
+  SwamiItem? get _exactSwamiMatch {
+    if (!_hasSearched) return null;
+    return SwamiService().findByName(_searchController.text.trim());
   }
 
   @override
@@ -275,6 +286,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         await _kiranListService.loadPart('saxatsavita', 'part$partNumber');
       }
       await HaribhaktService().load();
+      await SwamiService().load();
     } catch (e) {
       debugPrint('Error loading parts: $e');
     }
@@ -483,6 +495,19 @@ class _KiransearchpageState extends State<Kiransearchpage> {
         );
       }
 
+      final swamiHits = SwamiService().searchKirans(query);
+      for (final hit in swamiHits) {
+        results.add(
+          SearchResult(
+            kiranInfo: hit.kiranInfo,
+            partNumber: hit.partNumber,
+            snippet: hit.names.join(', '),
+            isSwamiMatch: true,
+            relevanceScore: hit.names.any((name) => name == query) ? 20.0 : 8.0,
+          ),
+        );
+      }
+
       // Sort results by relevance score (highest first)
       results.sort((a, b) {
         // Primary sort: by relevance score (descending)
@@ -538,6 +563,9 @@ class _KiransearchpageState extends State<Kiransearchpage> {
           }
 
           // Filter by match type
+          if (result.isSwamiMatch) {
+            return _showSwamiMatches;
+          }
           if (result.isHaribhaktMatch) {
             return _showHaribhaktMatches;
           }
@@ -596,6 +624,13 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     });
   }
 
+  void _toggleSwamiFilter() {
+    setState(() {
+      _showSwamiMatches = !_showSwamiMatches;
+      _applyFilters();
+    });
+  }
+
   int _getActiveFiltersCount() {
     int count = 0;
 
@@ -606,6 +641,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
     if (!_showTitleMatches) count++;
     if (!_showContentMatches) count++;
     if (!_showHaribhaktMatches) count++;
+    if (!_showSwamiMatches) count++;
 
     return count;
   }
@@ -731,9 +767,17 @@ class _KiransearchpageState extends State<Kiransearchpage> {
 
     final query = _searchController.text.trim();
     String? highlightHaribhakt;
+    String? highlightSwami;
     if (result.isHaribhaktMatch && result.snippet.isNotEmpty) {
       final names = result.snippet.split(', ');
       highlightHaribhakt = names.firstWhere(
+        (name) => name == query || name.contains(query) || query.contains(name),
+        orElse: () => names.first,
+      );
+    }
+    if (result.isSwamiMatch && result.snippet.isNotEmpty) {
+      final names = result.snippet.split(', ');
+      highlightSwami = names.firstWhere(
         (name) => name == query || name.contains(query) || query.contains(name),
         orElse: () => names.first,
       );
@@ -748,8 +792,13 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               kiranInfo: result.kiranInfo,
               kiranUserInfo: kiranUserInfo,
               searchQuery:
-                  !result.isHaribhaktMatch && query.isNotEmpty ? query : null,
+                  !result.isHaribhaktMatch &&
+                          !result.isSwamiMatch &&
+                          query.isNotEmpty
+                      ? query
+                      : null,
               highlightHaribhakt: highlightHaribhakt,
+              highlightSwami: highlightSwami,
               readingMode: ReadingMode.reading,
             ),
       ),
@@ -1049,6 +1098,7 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 _showTitleMatches = true;
                 _showContentMatches = true;
                 _showHaribhaktMatches = true;
+                _showSwamiMatches = true;
                 _applyFilters();
               });
             },
@@ -1135,6 +1185,26 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                         _showHaribhaktMatches
                             ? const Icon(Icons.check)
                             : const Icon(Icons.people_outline),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    selectedColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  FilterChip(
+                    selected: _showSwamiMatches,
+                    onSelected: (_) => _toggleSwamiFilter(),
+                    label: Text(AppLocalizations.of(context)!.swami_match),
+                    labelStyle: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(
+                      color:
+                          _showSwamiMatches
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.onSurface,
+                    ),
+                    avatar:
+                        _showSwamiMatches
+                            ? const Icon(Icons.check)
+                            : const Icon(Icons.auto_stories_outlined),
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     selectedColor:
                         Theme.of(context).colorScheme.primaryContainer,
@@ -1353,6 +1423,39 @@ class _KiransearchpageState extends State<Kiransearchpage> {
               ),
             ),
           ),
+        if (_exactSwamiMatch != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Material(
+              color: Theme.of(
+                context,
+              ).colorScheme.tertiaryContainer.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(12),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.tertiary,
+                  child: Icon(
+                    Icons.auto_stories_outlined,
+                    color: Theme.of(context).colorScheme.onTertiary,
+                  ),
+                ),
+                title: Text(
+                  _exactSwamiMatch!.name,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.haribhakt_kiran_count(_exactSwamiMatch!.count),
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+                onTap: () => openSwamiDetail(context, _exactSwamiMatch!.name),
+              ),
+            ),
+          ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -1424,7 +1527,9 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                   ),
                   const SizedBox(width: 8),
                   Icon(
-                    result.isHaribhaktMatch
+                    result.isSwamiMatch
+                        ? Icons.auto_stories_outlined
+                        : result.isHaribhaktMatch
                         ? Icons.people_outline
                         : result.isContentMatch
                         ? Icons.article
@@ -1434,7 +1539,9 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    result.isHaribhaktMatch
+                    result.isSwamiMatch
+                        ? AppLocalizations.of(context)!.swami_match
+                        : result.isHaribhaktMatch
                         ? AppLocalizations.of(context)!.haribhakt_match
                         : result.isContentMatch
                         ? AppLocalizations.of(context)!.content_match
@@ -1460,7 +1567,9 @@ class _KiransearchpageState extends State<Kiransearchpage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    result.isContentMatch || result.isHaribhaktMatch
+                    result.isContentMatch ||
+                            result.isHaribhaktMatch ||
+                            result.isSwamiMatch
                         ? Text(
                           '${result.kiranInfo.number} ${result.kiranInfo.title}',
                           style: Theme.of(context).textTheme.titleMedium

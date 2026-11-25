@@ -8,6 +8,7 @@ import 'package:saxatsavita_flutter/helpers/html_to_textspan.dart';
 import 'package:saxatsavita_flutter/helpers/haribhakt_text_highlight.dart';
 import 'package:saxatsavita_flutter/models/reading_event_model.dart';
 import 'package:saxatsavita_flutter/services/haribhakt_service.dart';
+import 'package:saxatsavita_flutter/services/swami_service.dart';
 import 'package:saxatsavita_flutter/services/kiranlistservice.dart';
 import 'package:saxatsavita_flutter/services/kiranuser_service.dart';
 import 'package:saxatsavita_flutter/services/reading_event_service.dart';
@@ -26,6 +27,7 @@ import 'package:saxatsavita_flutter/pages/settingspage.dart';
 import 'package:saxatsavita_flutter/pages/simple_note_editor_page.dart';
 import 'package:saxatsavita_flutter/pages/note_editor_page.dart';
 import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
+import 'package:saxatsavita_flutter/pages/swami_list_page.dart';
 import 'package:saxatsavita_flutter/services/utils.dart';
 import 'package:saxatsavita_flutter/models/inspirational_quote_model.dart';
 import 'package:saxatsavita_flutter/services/analytics_service.dart';
@@ -46,6 +48,7 @@ class KiranReadPage extends StatefulWidget {
     required this.kiranUserInfo,
     this.searchQuery,
     this.highlightHaribhakt,
+    this.highlightSwami,
     this.readingMode = ReadingMode.reading,
     this.existingEvent,
   });
@@ -54,6 +57,7 @@ class KiranReadPage extends StatefulWidget {
   final KiranUserInfo kiranUserInfo;
   final String? searchQuery;
   final String? highlightHaribhakt;
+  final String? highlightSwami;
   final ReadingMode readingMode;
   final ReadingEvent? existingEvent;
 
@@ -117,6 +121,7 @@ class _KiranReadPageState extends State<KiranReadPage>
   late final KiranSearchController _search;
   String _metaSelectedText = '';
   String? _focusedHaribhakt;
+  String? _focusedSwami;
   bool _hasQuiz = false;
 
   @override
@@ -178,7 +183,13 @@ class _KiranReadPageState extends State<KiranReadPage>
         widget.highlightHaribhakt!.trim().isNotEmpty) {
       _focusedHaribhakt = widget.highlightHaribhakt!.trim();
       _futureKiranContent.then((_) {
-        if (mounted) _scrollToHaribhakt(_focusedHaribhakt!);
+        if (mounted) _scrollToPerson(_focusedHaribhakt!);
+      });
+    } else if (widget.highlightSwami != null &&
+        widget.highlightSwami!.trim().isNotEmpty) {
+      _focusedSwami = widget.highlightSwami!.trim();
+      _futureKiranContent.then((_) {
+        if (mounted) _scrollToPerson(_focusedSwami!, swami: true);
       });
     }
 
@@ -193,17 +204,39 @@ class _KiranReadPageState extends State<KiranReadPage>
     final trimmed = name.trim();
     if (trimmed.isEmpty) return;
     if (_search.isActive) _search.close();
-    setState(() => _focusedHaribhakt = trimmed);
-    _scrollToHaribhakt(trimmed, showMissing: true);
+    setState(() {
+      _focusedHaribhakt = trimmed;
+      _focusedSwami = null;
+    });
+    _scrollToPerson(trimmed, showMissing: true);
   }
 
-  void _scrollToHaribhakt(String name, {bool showMissing = false}) {
+  void _focusSwamiInKiran(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    if (_search.isActive) _search.close();
+    setState(() {
+      _focusedSwami = trimmed;
+      _focusedHaribhakt = null;
+    });
+    _scrollToPerson(trimmed, swami: true, showMissing: true);
+  }
+
+  void _scrollToPerson(
+    String name, {
+    bool swami = false,
+    bool showMissing = false,
+  }) {
     void attempt([int tries = 0]) {
       if (!mounted) return;
+      final forms =
+          swami
+              ? SwamiService().formsFor(name)
+              : HaribhaktService().formsFor(name);
       final offset = HaribhaktTextHighlight.firstOffset(
         _search.plainText,
         name,
-        also: HaribhaktService().formsFor(name),
+        also: forms,
       );
       final waitingForLayout =
           !_scrollController.hasClients ||
@@ -243,13 +276,25 @@ class _KiranReadPageState extends State<KiranReadPage>
     final names =
         widget.kiranInfo.haribhakts.map((person) => person.name).toList();
     final haribhakts = HaribhaktService();
-    return HaribhaktTextHighlight.wrap(
+    final withHaribhakts = HaribhaktTextHighlight.wrap(
       html: raw,
       names: names,
       focusedName: _focusedHaribhakt,
       currentColor: _cssHex(Theme.of(context).colorScheme.tertiary),
       otherColor: _cssHex(Theme.of(context).colorScheme.secondary),
       formsByName: {for (final name in names) name: haribhakts.formsFor(name)},
+    );
+    final swamiNames =
+        widget.kiranInfo.swamis.map((person) => person.name).toList();
+    final swamis = SwamiService();
+    return HaribhaktTextHighlight.wrap(
+      html: withHaribhakts,
+      names: swamiNames,
+      focusedName: _focusedSwami,
+      currentColor: '#E65100',
+      otherColor: '#6D4C41',
+      formsByName: {for (final name in swamiNames) name: swamis.formsFor(name)},
+      attribute: 'data-swami',
     );
   }
 
@@ -460,6 +505,10 @@ class _KiranReadPageState extends State<KiranReadPage>
     }
     if (widget.highlightHaribhakt != null &&
         widget.highlightHaribhakt!.trim().isNotEmpty) {
+      return;
+    }
+    if (widget.highlightSwami != null &&
+        widget.highlightSwami!.trim().isNotEmpty) {
       return;
     }
     if (mounted &&
@@ -1492,6 +1541,10 @@ class _KiranReadPageState extends State<KiranReadPage>
       selectedHaribhakt: _focusedHaribhakt,
       onHaribhaktTap: _focusHaribhaktInKiran,
       onHaribhaktLongPress: (name) => openHaribhaktDetail(context, name),
+      swamis: widget.kiranInfo.swamis,
+      selectedSwami: _focusedSwami,
+      onSwamiTap: _focusSwamiInKiran,
+      onSwamiLongPress: (name) => openSwamiDetail(context, name),
       onAddNote: (selectedText) async {
         _pauseTimer();
         await _openNoteEditor(selectedText: selectedText);
@@ -1602,6 +1655,13 @@ class _KiranReadPageState extends State<KiranReadPage>
       },
       onHaribhaktLongPress: (name) {
         openHaribhaktDetail(context, name);
+      },
+      selectedSwami: _focusedSwami,
+      onSwamiTap: (name) {
+        _focusSwamiInKiran(name);
+      },
+      onSwamiLongPress: (name) {
+        openSwamiDetail(context, name);
       },
       onAddNote: (selectedText) async {
         _pauseTimer();

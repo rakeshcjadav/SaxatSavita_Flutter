@@ -199,6 +199,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           DrawerItem.search,
           DrawerItem.dailyQuiz,
           DrawerItem.haribhakts,
+          DrawerItem.swamis,
           DrawerItem.readingPlans,
           DrawerItem.readingHistory,
           DrawerItem.quotesImageGenerator,

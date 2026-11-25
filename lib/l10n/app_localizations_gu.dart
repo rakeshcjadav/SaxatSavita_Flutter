@@ -386,6 +386,26 @@ class AppLocalizationsGu extends AppLocalizations {
       'કિરણમાં શોધવા ટૅપ કરો. પ્રોફાઇલ ખોલવા લાંબા સમય સુધી દબાવો.';
 
   @override
+  String get swami_match => 'સ્વામી';
+
+  @override
+  String get swamis => 'સ્વામીઓ';
+
+  @override
+  String get swami_search_hint => 'સ્વામીના નામ શોધો';
+
+  @override
+  String get swami_empty => 'નામધારી સ્વામી મળ્યા નથી';
+
+  @override
+  String get swami_no_matches => 'આ શોધ સાથે કોઈ સ્વામી મેળ ખાતા નથી';
+
+  @override
+  String swami_people_count(int count) {
+    return '$count સ્વામીઓ';
+  }
+
+  @override
   String see_all_kirans_for(String name) {
     return '$nameનાં બધાં કિરણો જુઓ';
   }

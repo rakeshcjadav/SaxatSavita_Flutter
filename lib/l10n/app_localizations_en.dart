@@ -386,6 +386,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap to find in kiran. Long-press to open profile.';
 
   @override
+  String get swami_match => 'Swami';
+
+  @override
+  String get swamis => 'Swamis';
+
+  @override
+  String get swami_search_hint => 'Search swami names';
+
+  @override
+  String get swami_empty => 'No named swamis found';
+
+  @override
+  String get swami_no_matches => 'No swamis match this search';
+
+  @override
+  String swami_people_count(int count) {
+    return '$count swamis';
+  }
+
+  @override
   String see_all_kirans_for(String name) {
     return 'See all kirans for $name';
   }

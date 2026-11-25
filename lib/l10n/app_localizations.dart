@@ -776,6 +776,42 @@ abstract class AppLocalizations {
   /// **'Tap to find in kiran. Long-press to open profile.'**
   String get haribhakt_chip_hint;
 
+  /// No description provided for @swami_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Swami'**
+  String get swami_match;
+
+  /// No description provided for @swamis.
+  ///
+  /// In en, this message translates to:
+  /// **'Swamis'**
+  String get swamis;
+
+  /// No description provided for @swami_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search swami names'**
+  String get swami_search_hint;
+
+  /// No description provided for @swami_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No named swamis found'**
+  String get swami_empty;
+
+  /// No description provided for @swami_no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No swamis match this search'**
+  String get swami_no_matches;
+
+  /// Number of people in the swami list
+  ///
+  /// In en, this message translates to:
+  /// **'{count} swamis'**
+  String swami_people_count(int count);
+
   /// Link to the full kiran list for one haribhakt
   ///
   /// In en, this message translates to:

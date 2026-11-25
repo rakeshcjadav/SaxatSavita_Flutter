@@ -218,6 +218,20 @@
     "haribhakt_try_different_name": "બીજું નામ અજમાવો",
     "haribhakt_open_profile": "પ્રોફાઇલ ખોલો",
     "haribhakt_chip_hint": "કિરણમાં શોધવા ટૅપ કરો. પ્રોફાઇલ ખોલવા લાંબા સમય સુધી દબાવો.",
+    "swami_match": "સ્વામી",
+    "swamis": "સ્વામીઓ",
+    "swami_search_hint": "સ્વામીના નામ શોધો",
+    "swami_empty": "નામધારી સ્વામી મળ્યા નથી",
+    "swami_no_matches": "આ શોધ સાથે કોઈ સ્વામી મેળ ખાતા નથી",
+    "swami_people_count": "{count} સ્વામીઓ",
+    "@swami_people_count": {
+        "description": "Number of people in the swami list",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "see_all_kirans_for": "{name}નાં બધાં કિરણો જુઓ",
     "@see_all_kirans_for": {
         "description": "Link to the full kiran list for one haribhakt",

@@ -15,6 +15,24 @@
                     "name": "માધવજીભાઈ",
                     "role": "host"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "કૃષ્ણજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વાસુદેવ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -27,7 +45,29 @@
             "places": [
                 "જૂનાગઢ"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિશ્વપ્રકાશ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "4-11-1977",
@@ -44,7 +84,8 @@
                     "name": "પુરુષોત્તમભાઈ",
                     "role": "mentioned"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "5-11-1977",
@@ -60,6 +101,12 @@
                 {
                     "name": "ઓઈલમીલવાળા ખીમજીભાઈ",
                     "role": "host"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -87,6 +134,40 @@
                     "name": "કુંડળવાળા રાયબાઈ",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "અક્ષરાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નારાયણદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિત્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિષ્ણુ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સચ્ચિદાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -103,6 +184,20 @@
                 {
                     "name": "લાલજીભાઈ",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "ચૈતન્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નરસિંહાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિશ્વપ્રકાશ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -138,6 +233,20 @@
                     "name": "ઓધવજીભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "પ્રસાદાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "રામાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -150,7 +259,17 @@
             "places": [
                 "મેંદરડા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "10-11-1977",
@@ -162,7 +281,13 @@
             "places": [
                 "મેંદરડા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "રઘુનાથચરણદાસ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "11-11-1977",
@@ -180,6 +305,16 @@
                 {
                     "name": "નરસીભાઈ",
                     "role": "host"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "રામાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "હરિપ્રસાદ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -201,6 +336,12 @@
                 {
                     "name": "જેઠાબાપા",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "વિશ્વપ્રકાશ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -230,6 +371,28 @@
                     "name": "અયોધ્યાપ્રસાદજી મહારાજ",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "કૃપાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિશ્વપ્રકાશ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -252,6 +415,24 @@
                     "name": "જેઠાબાપા",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "રામાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિશ્વપ્રકાશ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -264,7 +445,13 @@
             "places": [
                 "થાણાપીપળી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "હરિપ્રસાદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "16-11-1977",
@@ -276,7 +463,8 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "17-11-1977",
@@ -293,7 +481,8 @@
                     "name": "કરશનબાપા",
                     "role": "mentioned"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "18-11-1977",
@@ -312,6 +501,12 @@
                 },
                 {
                     "name": "કાલીદાસ",
+                    "role": "mentioned"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "નિષ્કુળાનંદ સ્વામી",
                     "role": "mentioned"
                 }
             ]
@@ -339,7 +534,8 @@
                     "name": "ધીરૂભાઈ ટાંક",
                     "role": "reader"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "20-11-1977",
@@ -354,6 +550,12 @@
             "haribhakts": [
                 {
                     "name": "દેવશીભગત",
+                    "role": "mentioned"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "નારાયણસ્વરૂપદાસ સ્વામી",
                     "role": "mentioned"
                 }
             ]
@@ -373,6 +575,20 @@
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "કૃષ્ણજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -385,7 +601,17 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગોવિંદપ્રકાશ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "પ્રેમાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "5-12-1977",
@@ -406,7 +632,8 @@
                     "name": "પુરુષોત્તમભાઈ",
                     "role": "reader"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "6-12-1977",
@@ -422,6 +649,24 @@
                 {
                     "name": "ભાણજીભાઈ",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "ઈશ્વરાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નારાયણદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ભગવાનદાસ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -440,7 +685,8 @@
                     "name": "ધીરૂભાઈ",
                     "role": "reader"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "11-12-1977",
@@ -452,7 +698,17 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "કૃષ્ણસેવાદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બાળમુકુંદદાસ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "12-12-1977",
@@ -464,7 +720,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "13-12-1977",
@@ -476,7 +733,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "3-2-1978",
@@ -488,7 +746,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "4-2-1978",
@@ -505,7 +764,8 @@
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "12-2-1978",
@@ -517,7 +777,13 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "બાળમુકુંદદાસ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "13-2-1978",
@@ -529,7 +795,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "15-2-1978",
@@ -541,7 +808,13 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "વ્યાપકાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "7-3-1978",
@@ -553,7 +826,13 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "10-4-1978",
@@ -570,7 +849,8 @@
                     "name": "ઈશ્વરદાસ",
                     "role": "mentioned"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "16-4-1978",
@@ -595,6 +875,16 @@
                     "name": "વંથલીવાળા કલ્યાણબાપા",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -612,6 +902,16 @@
                     "name": "ભાણજીભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "રામાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -624,7 +924,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "19-4-1978",
@@ -645,7 +946,8 @@
                     "name": "જતનબાઈ",
                     "role": "mentioned"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "20-4-1978",
@@ -674,6 +976,32 @@
                     "name": "નારણદાસ",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "અક્ષરસ્વરૂપદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નારાયણદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -694,6 +1022,16 @@
                         "ગૃહસ્થને ભગવાનના સ્વરૂપમાં મનની અખંડ વૃત્તિ કેમ રહે ?"
                     ]
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "નિરંજનાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -711,7 +1049,8 @@
                     "name": "જતનબાઈ",
                     "role": "mentioned"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "23-4-1978",
@@ -732,6 +1071,24 @@
                     "name": "જતનબાઈ",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ચૈતન્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -744,7 +1101,29 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "અખંડાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિશ્વચૈતન્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિશ્વપ્રકાશાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સર્વનિવાસાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "25-4-1978",
@@ -765,6 +1144,52 @@
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નારાયણદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિત્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિષ્કુળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "પ્રેમાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "રામાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સચ્ચિદાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -777,7 +1202,8 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "8-5-1978",
@@ -789,7 +1215,8 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "9-5-1978",
@@ -801,7 +1228,13 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "25-5-1978",
@@ -813,7 +1246,25 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "કેવળાત્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "રામાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "26-5-1978",
@@ -830,7 +1281,8 @@
                     "name": "ગોપીનાથદાસજી પુરાણી",
                     "role": "mentioned"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "31-8-1978",
@@ -853,6 +1305,20 @@
                     "name": "કૃષ્ણજી",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિત્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -870,6 +1336,12 @@
                     "name": "માધવજીભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -882,7 +1354,17 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સહજાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "4-9-1978",
@@ -894,7 +1376,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "5-9-1978",
@@ -906,7 +1389,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "10-9-1978",
@@ -931,6 +1415,36 @@
                     "name": "કૃષ્ણજી",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "અખંડાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "જીજ્ઞાસાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિર્ગુણાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ભગવદાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ભૂતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિરક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -947,6 +1461,28 @@
                 {
                     "name": "લક્ષ્મણભાઈ",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નારાયણદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિર્ગુણદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બાળમુકુંદદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -965,6 +1501,12 @@
                     "name": "પુરુષોત્તમભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -977,7 +1519,25 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "જીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બાળમુકુંદદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વ્યાપકાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "16-9-1978",
@@ -993,6 +1553,12 @@
                 {
                     "name": "ચંદુભાઈ",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "યોગેશ્વરદાસ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1010,6 +1576,24 @@
                 {
                     "name": "ભાણજીભાઈ",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિષ્કુળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1032,6 +1616,12 @@
                     "name": "શુકદેવજી",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "વામનપ્રસાદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1044,7 +1634,13 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "21-9-1978",
@@ -1065,6 +1661,16 @@
                     "name": "શુકદેવજી",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1077,7 +1683,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "24-9-1978",
@@ -1089,7 +1696,17 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગોવિંદપ્રકાશ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "25-9-1978",
@@ -1105,6 +1722,20 @@
                 {
                     "name": "બેચરભાઈ ગોંવિદભાઈ માણાવદરવાળા",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "કૃષ્ણપ્રસાદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોવિંદપ્રકાશ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1123,6 +1754,20 @@
                     "name": "પીજવાળા અવલબાઈ",
                     "role": "mentioned"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "નિત્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બાળમુકુંદદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1135,7 +1780,13 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગોવિંદપ્રકાશ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "28-9-1978",
@@ -1147,7 +1798,17 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "રામાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "29-9-1978",
@@ -1159,7 +1820,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "30-9-1978",
@@ -1175,6 +1837,24 @@
                 {
                     "name": "ભગવાનજીભાઈ",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "નિષ્કુળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સચ્ચિદાનંદ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1194,6 +1874,24 @@
                     "name": "દેવજીભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સચ્ચિદાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1207,7 +1905,8 @@
                 "જૂનાગઢ",
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "3-10-1978",
@@ -1224,6 +1923,12 @@
                     "name": "ચંદુભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1236,7 +1941,17 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "હરિપ્રસાદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "5-10-1978",
@@ -1248,7 +1963,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "6-10-1978",
@@ -1264,6 +1980,40 @@
                 {
                     "name": "પુરુષોત્તમભાઈ",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નારાયણદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિત્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બાળમુકુંદદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સચ્ચિદાનંદ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1289,6 +2039,40 @@
                         "ઘણા દિવસ સુધી સત્સંગ કરે છે તો પણ સંશય કેમ થાય છે ?"
                     ]
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિત્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સચ્ચિદાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "હરિપ્રસાદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1308,6 +2092,24 @@
                 },
                 {
                     "name": "ભગવાનદાસ",
+                    "role": "mentioned"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ભગવાનદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સચ્ચિદાનંદ સ્વામી",
                     "role": "mentioned"
                 }
             ]
@@ -1332,6 +2134,16 @@
                     "name": "પુરુષોત્તમભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "આત્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સહજાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1349,6 +2161,16 @@
                     "name": "છગનભગત",
                     "role": "host"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વિષ્ણુ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1361,7 +2183,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "12-10-1978",
@@ -1373,7 +2196,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "13-10-1978",
@@ -1385,7 +2209,17 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સહજાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "18-10-1978",
@@ -1402,7 +2236,8 @@
                     "name": "ભાણજીભાઈ",
                     "role": "reader"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "20-10-1978",
@@ -1414,7 +2249,17 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગુણાતીતાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વાસુદેવપ્રસાદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "24-10-1978",
@@ -1426,7 +2271,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "25-10-1978",
@@ -1443,6 +2289,20 @@
                     "name": "ભાણજીભાઈ",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "આત્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "કૃપાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1455,7 +2315,21 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "વ્રજજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "28-10-1978",
@@ -1467,7 +2341,8 @@
             "places": [
                 "વંથલી"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "29-10-1978",
@@ -1483,6 +2358,16 @@
                 {
                     "name": "ચંદુભાઈ",
                     "role": "reader"
+                }
+            ],
+            "swamis": [
+                {
+                    "name": "મહાપુરુષદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
                 }
             ]
         },
@@ -1501,6 +2386,16 @@
                     "name": "ભગવાનજીભાઈ માસ્તર",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "કૃષ્ણજીવનદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ભૂમાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1513,7 +2408,8 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "1-11-1978",
@@ -1530,7 +2426,8 @@
                     "name": "અભયસિંહજી દરબાર",
                     "role": "mentioned"
                 }
-            ]
+            ],
+            "swamis": []
         },
         {
             "date": "2-11-1978",
@@ -1542,7 +2439,17 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ભક્તિતનયદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સ્વરૂપાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "3-11-1978",
@@ -1559,6 +2466,12 @@
                     "name": "જેઠાબાપા",
                     "role": "reader"
                 }
+            ],
+            "swamis": [
+                {
+                    "name": "બ્રહ્માનંદ સ્વામી",
+                    "role": "mentioned"
+                }
             ]
         },
         {
@@ -1571,7 +2484,29 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "ગોપાળાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "ત્યાગવલ્લભદાસ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "નિત્યાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "મુક્તાનંદ સ્વામી",
+                    "role": "mentioned"
+                },
+                {
+                    "name": "સચ્ચિદાનંદ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         },
         {
             "date": "5-11-1978",
@@ -1583,7 +2518,8 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": []
         },
         {
             "date": "8-11-1978",
@@ -1595,7 +2531,13 @@
             "places": [
                 "પીપલાણા"
             ],
-            "haribhakts": []
+            "haribhakts": [],
+            "swamis": [
+                {
+                    "name": "બાળમુકુંદદાસ સ્વામી",
+                    "role": "mentioned"
+                }
+            ]
         }
     ],
     "name": "ભાગ-૪",

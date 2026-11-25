@@ -6,6 +6,7 @@ import 'package:saxatsavita_flutter/l10n/app_localizations.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/kiraninfo_model.dart';
 import 'package:saxatsavita_flutter/pages/haribhakt_list_page.dart';
+import 'package:saxatsavita_flutter/pages/swami_list_page.dart';
 import 'package:saxatsavita_flutter/services/remote_config_service.dart';
 import 'package:saxatsavita_flutter/widgets/kiran_meta_panel.dart';
 
@@ -42,6 +43,9 @@ Future<void> showKiranMetaSheet({
   String? selectedHaribhakt,
   void Function(String name)? onHaribhaktTap,
   void Function(String name)? onHaribhaktLongPress,
+  String? selectedSwami,
+  void Function(String name)? onSwamiTap,
+  void Function(String name)? onSwamiLongPress,
   Future<void> Function(String selectedText)? onAddNote,
   Future<void> Function(String selectedText)? onCreateQuoteImage,
   VoidCallback? onTakeQuiz,
@@ -138,6 +142,9 @@ Future<void> showKiranMetaSheet({
                             selectedHaribhakt: selectedHaribhakt,
                             onHaribhaktTap: onHaribhaktTap,
                             onHaribhaktLongPress: onHaribhaktLongPress,
+                            selectedSwami: selectedSwami,
+                            onSwamiTap: onSwamiTap,
+                            onSwamiLongPress: onSwamiLongPress,
                             onAddNote: onAddNote,
                             onCreateQuoteImage: onCreateQuoteImage,
                             onTakeQuiz: onTakeQuiz,
@@ -164,6 +171,9 @@ class _SelectableKiranMeta extends StatefulWidget {
     this.selectedHaribhakt,
     this.onHaribhaktTap,
     this.onHaribhaktLongPress,
+    this.selectedSwami,
+    this.onSwamiTap,
+    this.onSwamiLongPress,
     this.onAddNote,
     this.onCreateQuoteImage,
     this.onTakeQuiz,
@@ -175,6 +185,9 @@ class _SelectableKiranMeta extends StatefulWidget {
   final String? selectedHaribhakt;
   final void Function(String name)? onHaribhaktTap;
   final void Function(String name)? onHaribhaktLongPress;
+  final String? selectedSwami;
+  final void Function(String name)? onSwamiTap;
+  final void Function(String name)? onSwamiLongPress;
   final Future<void> Function(String selectedText)? onAddNote;
   final Future<void> Function(String selectedText)? onCreateQuoteImage;
   final VoidCallback? onTakeQuiz;
@@ -208,6 +221,24 @@ class _SelectableKiranMetaState extends State<_SelectableKiranMeta> {
           widget.onHaribhaktLongPress!(name);
         } else {
           openHaribhaktDetail(widget.pageContext, name);
+        }
+      },
+      swamis: widget.kiranInfo?.swamis ?? const [],
+      selectedSwami: widget.selectedSwami,
+      onSwamiTap: (name) {
+        Navigator.pop(context);
+        if (widget.onSwamiTap != null) {
+          widget.onSwamiTap!(name);
+        } else {
+          openSwamiDetail(widget.pageContext, name);
+        }
+      },
+      onSwamiLongPress: (name) {
+        Navigator.pop(context);
+        if (widget.onSwamiLongPress != null) {
+          widget.onSwamiLongPress!(name);
+        } else {
+          openSwamiDetail(widget.pageContext, name);
         }
       },
       onAddNote: widget.onAddNote,

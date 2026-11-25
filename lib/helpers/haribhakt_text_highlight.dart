@@ -12,6 +12,7 @@ class HaribhaktTextHighlight {
     String currentColor = defaultCurrentColor,
     String otherColor = defaultOtherColor,
     Map<String, List<String>>? formsByName,
+    String attribute = 'data-haribhakt',
   }) {
     final unique = _uniqueNames(names);
     if (html.isEmpty || unique.isEmpty) return html;
@@ -35,6 +36,7 @@ class HaribhaktTextHighlight {
       focusedName: focusedName?.trim(),
       currentColor: currentColor,
       otherColor: otherColor,
+      attribute: attribute,
     );
   }
 
@@ -97,10 +99,7 @@ class HaribhaktTextHighlight {
       }
       parts.add(part);
     }
-    return RegExp(
-      '(?<![$_gujLetter])${parts.join(r'\s+')}',
-      unicode: true,
-    );
+    return RegExp('(?<![$_gujLetter])${parts.join(r'\s+')}', unicode: true);
   }
 
   static String stripTags(String html) {
@@ -120,14 +119,8 @@ class HaribhaktTextHighlight {
 
   static String _honorificPattern(String token) {
     var escaped = RegExp.escape(token);
-    escaped = escaped.replaceAllMapped(
-      RegExp('ભાઈ|ભાઇ'),
-      (_) => '(?:ભાઈ|ભાઇ)',
-    );
-    escaped = escaped.replaceAllMapped(
-      RegExp('બાઈ|બાઇ'),
-      (_) => '(?:બાઈ|બાઇ)',
-    );
+    escaped = escaped.replaceAllMapped(RegExp('ભાઈ|ભાઇ'), (_) => '(?:ભાઈ|ભાઇ)');
+    escaped = escaped.replaceAllMapped(RegExp('બાઈ|બાઇ'), (_) => '(?:બાઈ|બાઇ)');
     return escaped;
   }
 
@@ -144,6 +137,7 @@ class HaribhaktTextHighlight {
     required String? focusedName,
     required String currentColor,
     required String otherColor,
+    required String attribute,
   }) {
     final buffer = StringBuffer();
     var plainPos = 0;
@@ -180,6 +174,7 @@ class HaribhaktTextHighlight {
                 isCurrent,
                 currentColor: currentColor,
                 otherColor: otherColor,
+                attribute: attribute,
               ),
             );
 
@@ -221,10 +216,11 @@ class HaribhaktTextHighlight {
     bool isCurrent, {
     required String currentColor,
     required String otherColor,
+    required String attribute,
   }) {
     final color = isCurrent ? currentColor : otherColor;
     final kind = isCurrent ? 'current' : 'other';
-    return '<b data-haribhakt="$kind" style="color: $color; font-weight: 700;">';
+    return '<b $attribute="$kind" style="color: $color; font-weight: 700;">';
   }
 
   static String _closeTag() => '</b>';

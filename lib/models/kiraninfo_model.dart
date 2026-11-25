@@ -45,6 +45,7 @@ class KiranInfo {
   final String place; // first village, empty if unknown
   final List<String> places; // unique villages in sitting order
   final List<KiranHaribhakt> haribhakts;
+  final List<KiranHaribhakt> swamis;
 
   KiranInfo({
     required this.index,
@@ -55,6 +56,7 @@ class KiranInfo {
     this.place = '',
     this.places = const [],
     this.haribhakts = const [],
+    this.swamis = const [],
   });
 
   /// Villages from first sitting to last, e.g. `પીપલાણા → જૂનાગઢ`.
@@ -82,6 +84,14 @@ class KiranInfo {
             )
             .where((item) => item.name.isNotEmpty)
             .toList();
+    final List<KiranHaribhakt> swamis =
+        (map['swamis'] as List<dynamic>? ?? [])
+            .whereType<Map>()
+            .map(
+              (item) => KiranHaribhakt.fromMap(Map<String, dynamic>.from(item)),
+            )
+            .where((item) => item.name.isNotEmpty)
+            .toList();
     return KiranInfo(
       index: map['index'] ?? 0,
       number: map['number'] ?? '',
@@ -91,6 +101,7 @@ class KiranInfo {
       place: place.isNotEmpty ? place : (places.isNotEmpty ? places.first : ''),
       places: places,
       haribhakts: haribhakts,
+      swamis: swamis,
     );
   }
 
@@ -104,6 +115,7 @@ class KiranInfo {
       'place': place,
       'places': places,
       'haribhakts': haribhakts.map((item) => item.toMap()).toList(),
+      'swamis': swamis.map((item) => item.toMap()).toList(),
     };
   }
 }

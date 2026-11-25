@@ -21,9 +21,7 @@ class HtmlToTextSpan {
 
   static Color? _colorFromCss(String? style) {
     if (style == null || style.isEmpty) return null;
-    final match = RegExp(
-      r'color:\s*#([0-9a-fA-F]{6})',
-    ).firstMatch(style);
+    final match = RegExp(r'color:\s*#([0-9a-fA-F]{6})').firstMatch(style);
     if (match == null) return null;
     return Color(int.parse('FF${match.group(1)}', radix: 16));
   }
@@ -345,7 +343,9 @@ class HtmlToTextSpan {
         case 'strong':
           _debugPrint('[HtmlToTextSpan]   -> Applying bold style');
           newStyle = currentStyle.copyWith(fontWeight: FontWeight.bold);
-          final haribhaktKind = node.attributes['data-haribhakt'];
+          final haribhaktKind =
+              node.attributes['data-haribhakt'] ??
+              node.attributes['data-swami'];
           if (haribhaktKind != null) {
             final fromStyle = _colorFromCss(node.attributes['style']);
             final scheme = Theme.of(context).colorScheme;

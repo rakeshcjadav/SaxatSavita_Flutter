@@ -38,6 +38,10 @@ class KiranMetaPanel extends StatelessWidget {
     this.onHaribhaktTap,
     this.onHaribhaktLongPress,
     this.selectedHaribhakt,
+    this.swamis = const [],
+    this.onSwamiTap,
+    this.onSwamiLongPress,
+    this.selectedSwami,
     this.showAiCaption = false,
     this.onAddNote,
     this.onCreateQuoteImage,
@@ -51,6 +55,10 @@ class KiranMetaPanel extends StatelessWidget {
     void Function(String name)? onHaribhaktTap,
     void Function(String name)? onHaribhaktLongPress,
     String? selectedHaribhakt,
+    List<KiranHaribhakt> swamis = const [],
+    void Function(String name)? onSwamiTap,
+    void Function(String name)? onSwamiLongPress,
+    String? selectedSwami,
     bool showAiCaption = false,
     Future<void> Function(String selectedText)? onAddNote,
     Future<void> Function(String selectedText)? onCreateQuoteImage,
@@ -71,6 +79,10 @@ class KiranMetaPanel extends StatelessWidget {
       onHaribhaktTap: onHaribhaktTap,
       onHaribhaktLongPress: onHaribhaktLongPress,
       selectedHaribhakt: selectedHaribhakt,
+      swamis: swamis,
+      onSwamiTap: onSwamiTap,
+      onSwamiLongPress: onSwamiLongPress,
+      selectedSwami: selectedSwami,
       showAiCaption: showAiCaption,
       onAddNote: onAddNote,
       onCreateQuoteImage: onCreateQuoteImage,
@@ -87,6 +99,10 @@ class KiranMetaPanel extends StatelessWidget {
   final void Function(String name)? onHaribhaktTap;
   final void Function(String name)? onHaribhaktLongPress;
   final String? selectedHaribhakt;
+  final List<KiranHaribhakt> swamis;
+  final void Function(String name)? onSwamiTap;
+  final void Function(String name)? onSwamiLongPress;
+  final String? selectedSwami;
   final bool showAiCaption;
   final Future<void> Function(String selectedText)? onAddNote;
   final Future<void> Function(String selectedText)? onCreateQuoteImage;
@@ -98,7 +114,8 @@ class KiranMetaPanel extends StatelessWidget {
       moral.isEmpty &&
       history.isEmpty &&
       summary.isEmpty &&
-      haribhakts.isEmpty;
+      haribhakts.isEmpty &&
+      swamis.isEmpty;
 
   static String toGujaratiNumeral(int n) {
     return n
@@ -174,7 +191,10 @@ class KiranMetaPanel extends StatelessWidget {
         }
 
         final hasContext =
-            locations.isNotEmpty || date.isNotEmpty || haribhakts.isNotEmpty;
+            locations.isNotEmpty ||
+            date.isNotEmpty ||
+            haribhakts.isNotEmpty ||
+            swamis.isNotEmpty;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +216,12 @@ class KiranMetaPanel extends StatelessWidget {
                 onHaribhaktTap: onHaribhaktTap,
                 onHaribhaktLongPress: onHaribhaktLongPress,
                 selectedHaribhakt: selectedHaribhakt,
+                swamis: swamis,
+                onSwamiTap: onSwamiTap,
+                onSwamiLongPress: onSwamiLongPress,
+                selectedSwami: selectedSwami,
                 peopleLabel: l10n.haribhakts,
+                swamiLabel: l10n.swamis,
                 hostLabel: l10n.haribhakt_role_host,
                 readerLabel: l10n.haribhakt_role_reader,
                 questionLabel: l10n.haribhakt_role_question,
@@ -245,7 +270,12 @@ class _ContextCard extends StatelessWidget {
     required this.onHaribhaktTap,
     required this.onHaribhaktLongPress,
     required this.selectedHaribhakt,
+    required this.swamis,
+    required this.onSwamiTap,
+    required this.onSwamiLongPress,
+    required this.selectedSwami,
     required this.peopleLabel,
+    required this.swamiLabel,
     required this.hostLabel,
     required this.readerLabel,
     required this.questionLabel,
@@ -262,7 +292,12 @@ class _ContextCard extends StatelessWidget {
   final void Function(String name)? onHaribhaktTap;
   final void Function(String name)? onHaribhaktLongPress;
   final String? selectedHaribhakt;
+  final List<KiranHaribhakt> swamis;
+  final void Function(String name)? onSwamiTap;
+  final void Function(String name)? onSwamiLongPress;
+  final String? selectedSwami;
   final String peopleLabel;
+  final String swamiLabel;
   final String hostLabel;
   final String readerLabel;
   final String questionLabel;
@@ -356,6 +391,60 @@ class _ContextCard extends StatelessWidget {
                                 onHaribhaktLongPress == null
                                     ? null
                                     : () => onHaribhaktLongPress!(person.name),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (swamis.isNotEmpty) ...[
+            if (locations.isNotEmpty ||
+                date.isNotEmpty ||
+                haribhakts.isNotEmpty)
+              const SizedBox(height: 10),
+            _ContextRow(
+              icon: Icons.auto_stories_outlined,
+              iconColor: iconColor,
+              showConnectorBelow: false,
+              connectorColor: connectorColor,
+              firstLineHeight: fontSize * 1.35,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    swamiLabel,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  SelectionContainer.disabled(
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        for (final person in swamis)
+                          _HaribhaktNameChip(
+                            person: person,
+                            hostLabel: hostLabel,
+                            readerLabel: readerLabel,
+                            questionLabel: questionLabel,
+                            mentionedLabel: mentionedLabel,
+                            chipHintLabel: chipHintLabel,
+                            colorScheme: colorScheme,
+                            textTheme: textTheme,
+                            selected: person.name == selectedSwami,
+                            onTap:
+                                onSwamiTap == null
+                                    ? null
+                                    : () => onSwamiTap!(person.name),
+                            onLongPress:
+                                onSwamiLongPress == null
+                                    ? null
+                                    : () => onSwamiLongPress!(person.name),
                           ),
                       ],
                     ),

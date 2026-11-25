@@ -18,6 +18,7 @@ enum DrawerItem {
   search,
   dailyQuiz,
   haribhakts,
+  swamis,
   readingPlans,
   readingHistory,
   quotesImageGenerator,
@@ -257,6 +258,7 @@ class _DrawerState extends State<MyDrawer> {
     if (!loggedIn &&
         (item == DrawerItem.search ||
             item == DrawerItem.haribhakts ||
+            item == DrawerItem.swamis ||
             item == DrawerItem.profile)) {
       return false;
     }
@@ -322,6 +324,14 @@ class _DrawerState extends State<MyDrawer> {
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/haribhakts');
+        },
+      ),
+      DrawerItem.swamis => ListTile(
+        leading: const Icon(Icons.auto_stories_outlined),
+        title: Text(AppLocalizations.of(context)!.swamis, style: textStyle),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/swamis');
         },
       ),
       DrawerItem.readingPlans => ListTile(

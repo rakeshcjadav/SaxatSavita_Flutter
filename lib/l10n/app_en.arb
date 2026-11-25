@@ -220,6 +220,20 @@
     "haribhakt_try_different_name": "Try a different name",
     "haribhakt_open_profile": "Open profile",
     "haribhakt_chip_hint": "Tap to find in kiran. Long-press to open profile.",
+    "swami_match": "Swami",
+    "swamis": "Swamis",
+    "swami_search_hint": "Search swami names",
+    "swami_empty": "No named swamis found",
+    "swami_no_matches": "No swamis match this search",
+    "swami_people_count": "{count} swamis",
+    "@swami_people_count": {
+        "description": "Number of people in the swami list",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "see_all_kirans_for": "See all kirans for {name}",
     "@see_all_kirans_for": {
         "description": "Link to the full kiran list for one haribhakt",
