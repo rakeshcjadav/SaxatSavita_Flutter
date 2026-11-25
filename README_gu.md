@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.54.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.55.0-green.svg)]()
 
 ## 🌟 પરિચય
 
@@ -224,7 +224,11 @@ flutter build ios --release
 
 ## 🔄 આવૃત્તિ ઇતિહાસ
 
-### આવૃત્તિ ૨.૫૪.૦ (હાલની)
+### આવૃત્તિ ૨.૫૫.૦ (હાલની)
+- **દૈનિક પ્રશ્નો**: ડિસેમ્બર ૨૦૨૬ના દરેક દિવસનો પ્રશ્ન સમૂહ
+- **હોમ**: ઘંટડી, માહિતી અને સેટિંગ્સ ઍપ બારમાં કનેક્શનની બાજુમાં
+
+### આવૃત્તિ ૨.૫૪.૦
 - **સંતો અને હરિભક્તો**: એક ડ્રૉયર આઇટમ બંને યાદી ખોલે. પહેલી ટૅબ સંતો, બીજી હરિભક્તો, દરેક પર આઇકન. ભૂમિકા અને ક્રમ ડ્રોપડાઉનમાં
 
 ### આવૃત્તિ ૨.૫૩.૦

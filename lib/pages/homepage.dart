@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saxatsavita_flutter/components/appbar.dart';
 import 'package:saxatsavita_flutter/components/drawer.dart';
+import 'package:saxatsavita_flutter/components/notification_bell_button.dart';
 import 'package:saxatsavita_flutter/helpers/open_kiran.dart';
 import 'package:saxatsavita_flutter/models/appsettings.dart';
 import 'package:saxatsavita_flutter/models/reading_plan_model.dart';
@@ -157,13 +158,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       appBar: buildAppBar(
         context,
         title: AppLocalizations.of(context)!.sakshatSavita,
-        actionItems: [
-          ActionOptions.info,
-          ActionOptions.notifications,
-          ActionOptions.settings,
-        ],
+        actionItems: const [],
         extraActions: [
-          if (_isOffline) ...[
+          const NotificationBellButton(),
+          if (_isOffline)
             IconButton(
               icon: Icon(Icons.wifi_off, color: Colors.red.shade400),
               tooltip: AppLocalizations.of(context)!.offline,
@@ -175,8 +173,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   ),
                 );
               },
-            ),
-          ] else ...[
+            )
+          else
             IconButton(
               icon: Icon(Icons.wifi, color: Colors.green.shade400),
               tooltip: AppLocalizations.of(context)!.online,
@@ -189,7 +187,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 );
               },
             ),
-          ],
+          IconButton(
+            icon: const Icon(Icons.info),
+            tooltip: AppLocalizations.of(context)!.information_section,
+            onPressed: () => Navigator.pushNamed(context, '/info'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: AppLocalizations.of(context)!.settings,
+            onPressed: () => Navigator.pushNamed(context, '/settings'),
+          ),
         ],
       ),
       drawer: MyDrawer(

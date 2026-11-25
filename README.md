@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.7.2+-blue.svg)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange.svg)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.54.0-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.55.0-green.svg)]()
 
 ## 🌟 Overview
 
@@ -224,7 +224,11 @@ For support, feature requests, or bug reports, create an issue in this repositor
 
 ## 🔄 Version History
 
-### Version 2.54.0 (Current)
+### Version 2.55.0 (Current)
+- **Daily quiz**: A pack for every day of December 2026
+- **Home**: Notification bell, info, and settings sit on the app bar beside the connection status
+
+### Version 2.54.0
 - **Saints and haribhakts**: One drawer item opens both lists. Santo is the first tab, Haribhakts the second, each with an icon. Role and sort are dropdowns
 
 ### Version 2.53.0

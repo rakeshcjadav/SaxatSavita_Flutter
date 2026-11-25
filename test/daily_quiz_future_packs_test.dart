@@ -10,7 +10,7 @@ import 'package:saxatsavita_flutter/quiz/quiz_option_distinctness.dart';
 void main() {
   test('future daily packs stay distinct and keep their marked answer', () {
     final start = DateTime(2026, 10, 24);
-    final end = DateTime(2026, 11, 30);
+    final end = DateTime(2026, 12, 31);
     final packs = <String, List<DailyQuizQuestion>>{};
     for (
       var day = start;
@@ -31,7 +31,7 @@ void main() {
       expect(questions, hasLength(5), reason: name);
       packs[name] = questions;
     }
-    expect(packs, hasLength(38));
+    expect(packs, hasLength(69));
 
     final bank =
         jsonDecode(File('scripts/daily_quizzes/_bank.json').readAsStringSync())
